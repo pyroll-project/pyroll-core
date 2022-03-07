@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "pyroll"
+version = "0.4.3"
+description = "Simulation program for groove pass design."
+authors = [
+    "Matthias Schmidtchen <matthias.schmidtchen@imf.tu-freiberg.de>",
+    "Max Weiner <max.weiner@imf.tu-freiberg.de>",
+    "Christoph Renzing <christoph.renzing@imf.tu-freiberg.de>",
+    "Max Stirl <max.stirl@imf.tu-freiberg.de>"
+]
+license = "GPL-3.0-only"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+matplotlib = "^3.5.0"
+numpy = "^1.21.4"
+scipy = "^1.7.2"
+Jinja2 = "^3.0.3"
+click = "^8.0.3"
+PyYAML = "^6.0"
+makefun = "^1.13.1"
+pluggy = "^1.0.0"
+pandas = "^1.4.1"
+lxml = "^4.7.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0.1"
+
+[tool.poetry.scripts]
+pyroll = 'pyroll.ui.cli:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

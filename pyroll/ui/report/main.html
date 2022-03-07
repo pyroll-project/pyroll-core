@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+{% macro print_properties(properties) %}
+{% if properties %}
+<table class="table">
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for label, value in properties.items()|sort %}
+    <tr>
+        <td>{{ label }}</td>
+        <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-danger">No properties to be printed.</p>
+{% endif %}
+{% endmacro %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PyRoll Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+
+</head>
+<body>
+
+<section class="container-md mt-5">
+    <h1>PyRoll Report</h1>
+</section>
+
+<section class="container-md">
+    <h2>Units</h2>
+    {% for unit, properties, plots in unit_infos %}
+    <div class="mt-2">
+        <div class="card-header text-center">{% if unit.label %}<h3 class="card-title">{{ unit.label }}</h3>{% endif %}
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 col-sm-6">
+                <div class="card-body">
+                    {{ print_properties(properties) }}
+                </div>
+            </div>
+            <div class="col-12 col-sm-6">
+                {% for plot in plots %}
+                {{ plot }}
+                {% else %}
+                <p class="text-danger">No plots available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-danger">No units defined.</p>
+    {% endfor %}
+</section>
+
+<section class="container-md">
+    <h2 class="mb-4">Sequence</h2>
+
+    <h3>Properties</h3>
+
+    {{ print_properties(sequence_properties) }}
+
+    <h3>Plots</h3>
+
+    {% for plot in sequence_plots %}
+    {{ plot }}
+    {% else %}
+    <p class="text-danger">No plots available.</p>
+    {% endfor %}
+</section>
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
+
