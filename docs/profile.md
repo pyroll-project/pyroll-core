@@ -1,4 +1,4 @@
-# The `Profile` class and its derivatives
+# The Concept of Profiles
 
 Think of a `Profile` object as of a state of the workpiece anywhere in the pass sequence. Every sequence unit has an
 incoming and an outgoing profile. Also, you must provide a profile as definition for the initial workpiece being
@@ -6,12 +6,12 @@ processed in the pass sequence.
 
 ## Main Attributes and Properties
 
-| Attribute | Description                                                                                    |
-|-----------|------------------------------------------------------------------------------------------------|
-| `groove`  | Groove object defining the shape of the profile, see [here](grooves/grooves.md).               |
-| `height`  | Dimension of the profile in height direction ($`y`$ direction of the groove coordinate system) |
-| `width`   | Dimension of the profile in width direction ($`z`$ direction of the groove coordinate system)  |
-| `strain`  | Equivalent strain of the profile material, mainly used for flow stress calculation.            |
+| Attribute | Description                                                                                  |
+|-----------|----------------------------------------------------------------------------------------------|
+| `groove`  | Groove object defining the shape of the profile, see [here](grooves.md).                     |
+| `height`  | Dimension of the profile in height direction ($y$ direction of the groove coordinate system) |
+| `width`   | Dimension of the profile in width direction ($z$ direction of the groove coordinate system)  |
+| `strain`  | Equivalent strain of the profile material, mainly used for flow stress calculation.          |
 
 Each profile has a certain shape, defined by the `groove` contour from which the profile was formed and its main
 dimensions `height` and `width`. Note, that `height` and `width` are meant relative to the groove. They are not changed,
@@ -42,7 +42,7 @@ signature:
 
 ## Derived classes
 
-For the units types [`RollPass`](units/roll_pass.md) and [`Transport`](units/transport.md), specialized versions of
+For the units types [`RollPass`](units.md#roll-passes) and [`Transport`](units.md#transports), specialized versions of
 the `Profile` class are defined. They all maintain their own hooks, so it is possible to specify hooks on profiles only
 for those places, were they are applicable.
 

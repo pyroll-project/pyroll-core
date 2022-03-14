@@ -14,8 +14,8 @@ hold class attributes used to maintain plugins on that class, these are in detai
 | `hookspec`       | A `pluggy.HookspecMarker` instance for defining new hook specifications.      |
 | `hookimpl`       | A `pluggy.HookimplMarker` instance for defining new hook implementations.     |
 
-The `hookspec` markers of all classes derived from [`Unit`](units/units.md) ([`RollPass`](units/roll_pass.md)
-and [`Transport`](units/transport.md)) and [`Profile`](profile.md) are preconfigured
+The `hookspec` markers of all classes derived from [`Unit`](units.md) ([`RollPass`](units.md#roll-passes)
+and [`Transport`](units.md#transports)) and [`Profile`](profile.md) are preconfigured
 as [`firstresult`](https://pluggy.readthedocs.io/en/stable/#first-result-only). That means, that the first hook
 implementation, that returns not `None` is used as only result of the hook call. This offers the possibility of
 implementing many specialized versions of a hook and fall back to general ones if no special one applies.

@@ -141,10 +141,10 @@ the `INFO` specifiers with `DEBUG`. To avoid log pollution by the `matplotlib` p
 The most flexible way of defining input for PyRoll is the direct use of a python script. A script loadable by
 the [`input-py`](#input-py) command must define at least two variables:
 
-| Variable     | Description                                                                                                                                           |
-|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `in_profile` | A [`Profile`](profile.md) object defining the properties of the incoming workpiece.                                                                   |
-| `sequence`   | A list of [`Unit`](units/units.md) objects (either [`RollPass`](units/roll_pass.md) or [`Transport`](units/transport.md)) defining the pass sequence. |
+| Variable     | Description                                                                                                                                        |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `in_profile` | A [`Profile`](profile.md) object defining the properties of the incoming workpiece.                                                                |
+| `sequence`   | A list of [`Unit`](units.md) objects (either [`RollPass`](units.md#roll-passes) or [`Transport`](units.md#transports)) defining the pass sequence. |
 
 A minimal input script is shown below:
 
@@ -196,4 +196,4 @@ sequence = [
 
 The attributes to give as keyword arguments to the constructors depend on the plugins loaded. 
 Most plugins need additional data about the pass sequence or the incoming profile.
-For information on the basic data needed see the docs of [Profile](profile.md), [RollPass](units/roll_pass.md) and [Transport](units/transport.md).
+For information on the basic data needed see the docs of [Profile](profile.md), [RollPass](units.md#roll-passes) and [Transport](units.md#transports).
