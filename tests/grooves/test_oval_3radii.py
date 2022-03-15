@@ -1,6 +1,6 @@
 from numpy import pi, isclose
 
-from pyroll.core.grooves import Oval3RadiiGroove
+from pyroll.core.grooves.ovals.oval_3radii import Oval3RadiiGroove
 
 
 def test_oval3radii():

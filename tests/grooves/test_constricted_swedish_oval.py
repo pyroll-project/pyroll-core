@@ -1,6 +1,6 @@
 from numpy import pi, isclose
 
-from pyroll.core.grooves import ConstrictedSwedishOvalGroove
+from pyroll.core.grooves.ovals.constricted_swedish_oval import ConstrictedSwedishOvalGroove
 
 
 def check(g):

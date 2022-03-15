@@ -1,7 +1,7 @@
 import pytest
 from numpy import pi, isclose
 
-from pyroll.core.grooves import SwedishOvalGroove
+from pyroll.core.grooves.ovals.swedish_oval import SwedishOvalGroove
 
 
 def test_swedish_oval_usable_width_ground_width():
