@@ -45,13 +45,6 @@ See [here](#python-input-format) for more information on the format of this file
 
 Runs the solution procedure for the pass sequence loaded by one of the input commands.
 
-### `export`
-
-Exports solution results to a data file. The file to write to can be specified with the `-f`/`--file` option, which
-defaults to `export.csv`. The format or file type can be specified by the `-F`/`--format` option, which defaluts
-to `csv`. Currently the formats `csv` and `xml` are available, but this can be extended by plugins.
-See [here](export.md) for further information.
-
 ### `report`
 
 Generates a HTML report page from the simulation results. The contents of the page can be extended by plugins, please
@@ -67,14 +60,6 @@ To read from a python script, solve and generate a report just use:
 To specify the files explicitly use:
 
     pyroll input-py -f input.py solve report -f report.html
-
-To export also to CSV:
-
-    pyroll input-py solve report export
-
-Or to XML:
-
-    pyroll input-py solve report export -F xml -f export.xml
 
 To use a different config file:
 
