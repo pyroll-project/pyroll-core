@@ -28,7 +28,7 @@ def unit_properties(unit: Unit) -> Mapping[str, Any]:
 
 
 @Report.hookspec
-def sequence_properties(unit: Unit) -> Mapping[str, Any]:
+def sequence_properties(units: List[Unit]) -> Mapping[str, Any]:
     """Extract some data from the unit sequence to be listed in the report.
     Return a mapping of label names to values.
     All hookimpls will be joined in order of definition."""

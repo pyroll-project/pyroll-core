@@ -1,6 +1,7 @@
 import sys
+from typing import List
 
-from pyroll import RollPass, Profile
+from pyroll import RollPass, Profile, Unit
 from pyroll.utils.hookutils import applies_to_unit_types
 from ..report import Report
 
@@ -32,6 +33,13 @@ def unit_properties(unit: RollPass):
     d.update(profile_props("in ", unit.in_profile))
     d.update(profile_props("out ", unit.out_profile))
     return d
+
+
+@Report.hookimpl
+def sequence_properties(units: List[Unit]):
+    return {
+        "total elongation": "{:.4g}".format(units[0].in_profile.cross_section / units[-1].out_profile.cross_section)
+    }
 
 
 Report.plugin_manager.register(sys.modules[__name__])
