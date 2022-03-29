@@ -19,13 +19,11 @@ class Transport(Unit):
     def __init__(
             self,
             time: float,
-            environment_temperature: float = 293,
             label: str = "Transport",
             **kwargs
     ):
         super().__init__(label)
         self.time = time
-        self.environment_temperature = environment_temperature
 
         self.__dict__.update(kwargs)
 
@@ -44,7 +42,7 @@ class Transport(Unit):
         result = hook(transport=self)
 
         if result is None:
-            return None
+            raise ValueError(f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
 
         self.__dict__[key] = result
         Transport._hook_results_to_clear.add(key)

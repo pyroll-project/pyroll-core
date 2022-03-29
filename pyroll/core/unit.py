@@ -34,7 +34,7 @@ class Unit(ABC):
         result = hook(unit=self)
 
         if result is None:
-            return None
+            raise ValueError(f"Hook call for '{key}' on unit '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
 
         self.__dict__[key] = result
         Unit._hook_results_to_clear.add(key)

@@ -8,6 +8,31 @@ def in_profile_rotation(roll_pass):
 
 
 @RollPass.hookspec
+def gap(roll_pass):
+    """Gap between the rolls."""
+
+
+@RollPass.hookspec
+def roll_radius(roll_pass):
+    """Outer radius of the rolls."""
+
+
+@RollPass.hookspec
+def velocity(roll_pass):
+    """Mean rolling velocity."""
+
+
+@RollPass.hookspec
+def height(roll_pass):
+    """Maximum height of the pass contour."""
+
+
+@RollPass.hookspec
+def tip_width(roll_pass):
+    """Tip width of the pass contour."""
+
+
+@RollPass.hookspec
 def roll_force(roll_pass):
     """Roll force of the pass."""
 
@@ -40,16 +65,6 @@ def width_change(roll_pass):
 @RollPass.hookspec
 def strain_change(roll_pass):
     """Applied strain in the pass."""
-
-
-@RollPass.hookspec
-def mean_temperature(roll_pass):
-    """Mean temperature of workpiece in the pass."""
-
-
-@RollPass.hookspec
-def mean_flow_stress(roll_pass):
-    """Mean flow stress of workpiece in the pass."""
 
 
 @RollPassProfile.hookspec

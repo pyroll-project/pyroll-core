@@ -38,7 +38,7 @@ class Impls:
         """
         log = logging.getLogger(__name__)
 
-        if roll_pass.geuze_coefficient is None:
+        if not hasattr(roll_pass, "geuze_coefficient"):
             log.warning(f"No Geuze coefficient available for {roll_pass.label}.")
             return None
 

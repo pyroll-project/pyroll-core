@@ -21,34 +21,14 @@ class RollPass(Unit):
     def __init__(
             self,
             groove: GrooveBase,
-            roll_radius: float,
-            velocity: float,
-            gap: float,
             label: str = "Roll Pass",
             **kwargs
     ):
         super().__init__(label)
 
         self.groove = groove
-        self.roll_radius = roll_radius
-        self.velocity = velocity
-        self.gap = gap
 
         self.__dict__.update(kwargs)
-
-        self.height = self.gap + 2 * self.groove.depth
-        self.tip_width = self.groove.usable_width + self.gap / 2 / np.tan(self.groove.alpha1)
-
-        self.usable_cross_section = 2 * quad(self.local_height, 0, self.groove.usable_width / 2)[0]
-        self.tip_cross_section = 2 * quad(self.local_height, 0, self.tip_width / 2)[0]
-
-        self.usable_mean_height = self.usable_cross_section / self.groove.usable_width
-        self.usable_mean_width = self.usable_cross_section / self.height
-
-        self.tip_mean_height = self.tip_cross_section / self.tip_width
-        self.tip_mean_width = self.tip_cross_section / self.height
-
-        self.minimal_roll_radius = self.roll_radius - self.groove.depth
 
         self.ideal_out_profile: Optional[RollPassOutProfile] = None
 
@@ -70,7 +50,7 @@ class RollPass(Unit):
         result = hook(roll_pass=self)
 
         if result is None:
-            return None
+            raise ValueError(f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
 
         self.__dict__[key] = result
         RollPass._hook_results_to_clear.add(key)
