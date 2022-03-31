@@ -48,7 +48,7 @@ class Transport(Unit):
         result = hook(transport=self)
 
         if result is None:
-            raise ValueError(f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
+            raise AttributeError(f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
 
         self.__dict__[key] = result
         Transport._hook_results_to_clear.add(key)

@@ -25,7 +25,7 @@ def test_hook_not_present():
 def test_hook_result_none():
     roll_pass = RollPass(groove=groove_dummy)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(AttributeError):
         print(roll_pass.hook1)
 
 

@@ -54,7 +54,7 @@ class RollPass(Unit):
         result = hook(roll_pass=self)
 
         if result is None:
-            raise ValueError(
+            raise AttributeError(
                 f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
 
         self.__dict__[key] = result
@@ -131,7 +131,7 @@ class RollPassProfile(Profile):
         result = hook(roll_pass=self._roll_pass, profile=self)
 
         if result is None:
-            raise ValueError(
+            raise AttributeError(
                 f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
 
         self.__dict__[key] = result

@@ -22,5 +22,5 @@ def test_hook_not_present():
 def test_hook_result_none():
     transport = Transport(time=1)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(AttributeError):
         print(transport.hook1)

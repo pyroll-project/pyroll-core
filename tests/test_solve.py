@@ -14,6 +14,7 @@ def test_solve(tmp_path: Path):
     report = Report()
 
     rendered = report.render(sequence)
+    print()
 
     report_file = tmp_path / "report.html"
     report_file.write_text(rendered)
