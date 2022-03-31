@@ -39,5 +39,6 @@ class ConstrictedSwedishOvalGroove(OvalGrooveBase):
             even_ground_width=even_ground_width, indent=indent
         )
 
-    def __str__(self):
-        return 'ConstrictedHexagonalGroove with label {}'.format(self.groove_label)
+    @property
+    def types(self):
+        return super().types + ("constricted_swedish_oval",)

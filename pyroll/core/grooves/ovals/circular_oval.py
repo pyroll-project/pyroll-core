@@ -13,5 +13,6 @@ class CircularOvalGroove(OvalGrooveBase):
 
         self.bachtinow_shternov_first_radius_test(lower_bound=0.07, upper_bound=0.08, dependent_value=self.depth)
 
-    def __str__(self):
-        return 'CircularOvalGroove {}'.format(self.groove_label)
+    @property
+    def types(self):
+        return super().types + ("circular_oval",)

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyroll"
-version = "0.5.1"
+version = "0.6.0"
 description = "PyRoll rolling simulation framework - core library."
 authors = [
     "Matthias Schmidtchen <matthias.schmidtchen@imf.tu-freiberg.de>",
@@ -25,6 +25,7 @@ makefun = "^1.13.1"
 pluggy = "^1.0.0"
 pandas = "^1.4.1"
 lxml = "^4.7.1"
+Shapely = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.0"

@@ -7,7 +7,7 @@ from ..roll_pass import RollPass, RollPassOutProfile
 
 @RollPass.hookimpl
 def strain_change(roll_pass: RollPass):
-    strain = np.log(roll_pass.in_profile.cross_section / roll_pass.out_profile.cross_section)
+    strain = np.log(roll_pass.in_profile.cross_section.area / roll_pass.out_profile.cross_section.area)
     return strain
 
 

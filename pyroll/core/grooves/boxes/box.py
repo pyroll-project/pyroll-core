@@ -34,6 +34,3 @@ class BoxGroove(BoxGrooveBase):
 
         self.bachtinow_shternov_first_radius_test(lower_bound=0.8, upper_bound=1.0, dependent_value=self.r1)
         self.bachtinow_shternov_second_radius_test(lower_bound=0.08, upper_bound=1.0, dependent_value=self.depth)
-
-    def __str__(self):
-        return 'BoxGroove {}'.format(self.groove_label)

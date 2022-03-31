@@ -1,6 +1,11 @@
+import math
+
 import numpy as np
 import pluggy
 from scipy.integrate import quad
+from shapely.affinity import translate, rotate
+from shapely.geometry import Polygon
+from shapely.ops import polygonize, clip_by_rect
 
 from ..grooves import GrooveBase
 
@@ -26,18 +31,45 @@ class Profile:
         self.height = height
         self.groove = groove
         self.rotation = rotation
+        self._cross_section_cache = {}
+        self._upper_contour_cache = {}
+        self._lower_contour_cache = {}
 
     @property
     def cross_section(self):
-        return 2 * quad(self.local_height, 0, self.width / 2)[0]
+        if (self.height, self.width) in self._cross_section_cache:
+            return self._cross_section_cache[(self.height, self.width)]
+
+        poly = Polygon(np.concatenate([
+            self.upper_contour_line.coords,
+            self.lower_contour_line.coords
+        ]))
+
+        result = clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
+        self._cross_section_cache[(self.height, self.width)] = result
+        return result
+
+    @property
+    def upper_contour_line(self):
+        if (self.height, self.width) in self._upper_contour_cache:
+            return self._upper_contour_cache[(self.height, self.width)]
+
+        result = translate(self.groove.contour_line, yoff=self.gap / 2)
+        self._upper_contour_cache[(self.height, self.width)] = result
+        return result
+
+    @property
+    def lower_contour_line(self):
+        if (self.height, self.width) in self._lower_contour_cache:
+            return self._lower_contour_cache[(self.height, self.width)]
+
+        result = rotate(self.upper_contour_line, angle=180, origin=(0, 0))
+        self._lower_contour_cache[(self.height, self.width)] = result
+        return result
 
     @property
     def perimeter(self):
-        contour_length = quad(
-            lambda z: np.sqrt(1 + self.groove.contour_derivative(z) ** 2),
-            0, self.width / 2
-        )[0]
-        return 4 * contour_length + 2 * self.local_height(self.width / 2)
+        return self.cross_section.boundary.length
 
     @property
     def filling_ratio(self):
@@ -48,7 +80,7 @@ class Profile:
         return self.height - 2 * self.groove.depth
 
     def local_height(self, z):
-        return 2 * self.groove.contour_line(z) + self.height - 2 * self.groove.depth
+        return 2 * self.groove.local_depth(z) + self.height - 2 * self.groove.depth
 
     def __getattr__(self, key):
         if hasattr(Profile.plugin_manager.hook, key):
@@ -70,3 +102,6 @@ class Profile:
         for key in Profile._hook_results_to_clear:
             if key in self.__dict__:
                 self.__dict__.pop(key, None)
+
+    def __str__(self):
+        return f"Profile {self.width:.4g} x {self.height:.4g} from {self.groove}"

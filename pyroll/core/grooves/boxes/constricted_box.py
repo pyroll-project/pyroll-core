@@ -40,5 +40,6 @@ class ConstrictedBoxGroove(BoxGrooveBase):
             even_ground_width=even_ground_width, indent=indent
         )
 
-    def __str__(self):
-        return 'ConstrictedBoxGroove {}'.format(self.groove_label)
+    @property
+    def types(self):
+        return super().types + ("constricted_box",)

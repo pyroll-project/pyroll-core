@@ -27,8 +27,8 @@ def applies_to_materials(*keys: str):
     return decorator
 
 
-def applies_to_in_grooves(*grooves: type):
-    """Wraps the hookimpl with a check for specified in profile grooves, so that the hookimpl returns None if the roll pass' in profile has no groove of one of the specified types.
+def applies_to_in_grooves(*grooves: str):
+    """Wraps the hookimpl with a check for specified in profile grooves, so that the hookimpl returns None if the roll pass' in profile has no groove of one of the specified types (the groove.types property does not return an appropriate string).
     The hookspec must contain a roll_pass argument."""
 
     def decorator(func):
@@ -40,7 +40,7 @@ def applies_to_in_grooves(*grooves: type):
         def wrapper(**kwargs):
             roll_pass = kwargs["roll_pass"]
             for g in wrapper.in_grooves:
-                if isinstance(roll_pass.in_profile.groove, g):
+                if g in roll_pass.in_profile.groove.types:
                     return func(**kwargs)
             return None
 
@@ -51,7 +51,7 @@ def applies_to_in_grooves(*grooves: type):
     return decorator
 
 
-def applies_to_out_grooves(*grooves: type):
+def applies_to_out_grooves(*grooves: str):
     """Wraps the hookimpl with a check for specified out profile grooves, so that the hookimpl returns None if the roll pass' out profile has no groove of one of the specified types.
     The hookspec must contain a roll_pass argument."""
 
@@ -64,7 +64,7 @@ def applies_to_out_grooves(*grooves: type):
         def wrapper(**kwargs):
             roll_pass = kwargs["roll_pass"]
             for g in wrapper.out_grooves:
-                if isinstance(roll_pass.groove, g):
+                if g in roll_pass.out_profile.groove.types:
                     return func(**kwargs)
             return None
 

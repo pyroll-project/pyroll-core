@@ -12,8 +12,8 @@ def equivalent_rectangle(profile: Profile):
     width = profile.rotated.width
     height = profile.rotated.height
 
-    eq_width = np.sqrt(profile.cross_section * width / height)
-    eq_height = np.sqrt(profile.cross_section * height / width)
+    eq_width = np.sqrt(profile.cross_section.area * width / height)
+    eq_height = np.sqrt(profile.cross_section.area * height / width)
 
     return Dimensions(eq_width, eq_height)
 

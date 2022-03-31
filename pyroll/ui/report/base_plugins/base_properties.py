@@ -12,7 +12,7 @@ def profile_props(prefix, profile: Profile):
         prefix + "width": "{:.4g}".format(profile.width),
         prefix + "strain": "{:.4g}".format(profile.strain),
         prefix + "temperature": "{:.4g}".format(profile.temperature),
-        prefix + "cross section": "{:.4g}".format(profile.cross_section),
+        prefix + "cross section": "{:.4g}".format(profile.cross_section.area),
         prefix + "flow stress": "{:.4g}".format(profile.flow_stress),
     }
 
@@ -38,7 +38,7 @@ def unit_properties(unit: RollPass):
 @Report.hookimpl
 def sequence_properties(units: List[Unit]):
     return {
-        "total elongation": "{:.4g}".format(units[0].in_profile.cross_section / units[-1].out_profile.cross_section)
+        "total elongation": "{:.4g}".format(units[0].in_profile.cross_section.area / units[-1].out_profile.cross_section.area)
     }
 
 

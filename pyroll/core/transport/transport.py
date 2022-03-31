@@ -19,7 +19,7 @@ class Transport(Unit):
     def __init__(
             self,
             time: float,
-            label: str = "Transport",
+            label: str = "",
             **kwargs
     ):
         super().__init__(label)
@@ -28,6 +28,12 @@ class Transport(Unit):
         self.__dict__.update(kwargs)
 
         self._log = logging.getLogger(__name__)
+
+    def __str__(self):
+        return "Transport {label} for {time:.4g}".format(
+            label=f"'{self.label}' " if self.label else "",
+            time=self.time
+        )
 
     def __getattr__(self, key):
         if hasattr(Transport.plugin_manager.hook, key):

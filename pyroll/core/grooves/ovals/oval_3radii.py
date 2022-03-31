@@ -46,5 +46,6 @@ class Oval3RadiiGroove(OvalGrooveBase):
             alpha1=alpha1, alpha2=alpha2, alpha3=alpha3
         )
 
-    def __str__(self):
-        return 'Oval3Radii {}'.format(self.groove_label)
+    @property
+    def types(self):
+        return super().types + ("3_radii_oval",)

@@ -17,5 +17,6 @@ class SquareGroove(DiamondGroove):
             raise ValueError(
                 "The tip angle of this SquareGroove significantly deviates from 90°, you should use a DiamondGroove instead.")
 
-    def __str__(self):
-        return 'SquareGroove {}'.format(self.groove_label)
+    @property
+    def types(self):
+        return super().types + ("square",)

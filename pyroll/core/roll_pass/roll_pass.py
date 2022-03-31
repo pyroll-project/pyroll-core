@@ -3,7 +3,8 @@ from typing import Optional
 
 import numpy as np
 import pluggy
-from scipy.integrate import quad
+from shapely.affinity import translate, rotate
+
 from ..profile import Profile
 from ..grooves import GrooveBase
 from ..unit import Unit
@@ -35,7 +36,10 @@ class RollPass(Unit):
         self._log = logging.getLogger(__name__)
 
     def __str__(self):
-        return self.label
+        return "RollPass {label}with {groove}".format(
+            label=f"'{self.label}' " if self.label else "",
+            groove=self.groove
+        )
 
     def __getattr__(self, key):
         if hasattr(RollPass.plugin_manager.hook, key):
@@ -50,7 +54,8 @@ class RollPass(Unit):
         result = hook(roll_pass=self)
 
         if result is None:
-            raise ValueError(f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
+            raise ValueError(
+                f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
 
         self.__dict__[key] = result
         RollPass._hook_results_to_clear.add(key)
@@ -63,16 +68,23 @@ class RollPass(Unit):
         super().clear_hook_results()
 
     def local_height(self, z):
-        return 2 * self.groove.contour_line(z) + self.gap
+        return 2 * self.groove.local_depth(z) + self.gap
+
+    @property
+    def upper_contour_line(self):
+        return translate(self.groove.contour_line, yoff=self.gap / 2)
+
+    @property
+    def lower_contour_line(self):
+        return rotate(self.upper_contour_line, angle=180, origin=(0, 0))
 
     def solve(self, in_profile: Profile) -> Profile:
         self._log.info(f"Started calculation of roll pass {self.label}")
 
         self.in_profile = RollPassInProfile(in_profile, self)
+        self.out_profile = RollPassOutProfile(self, 0.95)
         self.in_profile.rotation = self.in_profile_rotation
         self.in_profile.clear_hook_results()
-
-        self.out_profile = RollPassOutProfile(self, 0.95)
         self.ideal_out_profile = RollPassOutProfile(self, 1)
 
         old_values = np.full(len(self.hooks) + len(self.out_profile.hooks), np.nan)
@@ -119,7 +131,8 @@ class RollPassProfile(Profile):
         result = hook(roll_pass=self._roll_pass, profile=self)
 
         if result is None:
-            return None
+            raise ValueError(
+                f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
 
         self.__dict__[key] = result
         RollPassProfile._hook_results_to_clear.add(key)

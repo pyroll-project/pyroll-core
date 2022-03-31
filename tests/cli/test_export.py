@@ -3,8 +3,8 @@ from click.testing import CliRunner
 
 import pytest
 
-PARENT_DIR = Path(__file__).parent.parent
-INPUT = (PARENT_DIR.parent / "pyroll" / "ui" / "cli" / "res" / "input_trio.py").read_text()
+PARENT_DIR = Path(__file__).parent
+INPUT = (PARENT_DIR.parent.parent / "pyroll" / "ui" / "cli" / "res" / "input_trio.py").read_text()
 CONFIG = (PARENT_DIR / "config.yaml").read_text()
 
 

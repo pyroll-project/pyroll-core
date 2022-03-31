@@ -35,5 +35,6 @@ class SwedishOvalGroove(OvalGrooveBase):
         self.bachtinow_shternov_second_radius_test(lower_bound=0.1, upper_bound=0.4, dependent_value=self.depth)
         self.bachtinow_shternov_first_radius_test(lower_bound=0.07, upper_bound=0.08, dependent_value=self.depth)
 
-    def __str__(self):
-        return 'SwedishOvalGroove {}'.format(self.groove_label)
+    @property
+    def types(self):
+        return super().types + ("swedish_oval",)
