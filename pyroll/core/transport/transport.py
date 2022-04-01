@@ -1,20 +1,14 @@
 import logging
 
 import numpy as np
-import pluggy
 
 from pyroll.core.profile import Profile
 from pyroll.core.unit import Unit
+from pyroll.utils.plugin_host import PluginHost
 
 
-class Transport(Unit):
-    plugin_manager = pluggy.PluginManager("pyroll_transport")
-    hookspec = pluggy.HookspecMarker("pyroll_transport")(firstresult=True)
-    hookimpl = pluggy.HookimplMarker("pyroll_transport")
-
+class Transport(Unit, metaclass=PluginHost):
     hooks = set()
-
-    _hook_results_to_clear = set()
 
     def __init__(
             self,
@@ -29,43 +23,22 @@ class Transport(Unit):
 
         self._log = logging.getLogger(__name__)
 
+        self.hook_args = dict(
+            transport=self
+        )
+
     def __str__(self):
         return "Transport {label} for {time:.4g}".format(
             label=f"'{self.label}' " if self.label else "",
             time=self.time
         )
 
-    def __getattr__(self, key):
-        if hasattr(Transport.plugin_manager.hook, key):
-            return self.get_from_hook(key)
-        return super().__getattr__(key)
-
-    def get_from_hook(self, key):
-        if not hasattr(Transport.plugin_manager.hook, key):
-            return super().get_from_hook(key)
-
-        hook = getattr(Transport.plugin_manager.hook, key)
-        result = hook(transport=self)
-
-        if result is None:
-            raise AttributeError(f"Hook call for '{key}' on roll pass '{self.label}' returned None. Seems no suitable implementation of this hook is loaded.")
-
-        self.__dict__[key] = result
-        Transport._hook_results_to_clear.add(key)
-        return self.__dict__[key]
-
-    def clear_hook_results(self):
-        for key in Transport._hook_results_to_clear:
-            if key in self.__dict__:
-                delattr(self, key)
-        super().clear_hook_results()
-
     def solve(self, in_profile):
         self.in_profile = in_profile
 
         self._log.info(f"Starting transport of profile with temperature: {self.in_profile.temperature:.2f}K")
 
-        self.in_profile = TransportInProfile(in_profile, self)
+        self.in_profile = TransportInProfile(self, in_profile)
         self.out_profile = TransportOutProfile(self)
 
         old_values = np.full(len(self.hooks) + len(self.out_profile.hooks), np.nan)
@@ -93,83 +66,26 @@ class Transport(Unit):
         return self.out_profile
 
 
-class TransportProfile(Profile):
-    plugin_manager = pluggy.PluginManager("pyroll_transport_profile")
-    hookspec = pluggy.HookspecMarker("pyroll_transport_profile")(firstresult=True)
-    hookimpl = pluggy.HookimplMarker("pyroll_transport_profile")
-
-    _hook_results_to_clear = set()
-
-    def __getattr__(self, key):
-        if hasattr(TransportProfile.plugin_manager.hook, key):
-            return self.get_from_hook(key)
-        return super().__getattr__(key)
-
-    def get_from_hook(self, key):
-        if not hasattr(TransportProfile.plugin_manager.hook, key):
-            return super().get_from_hook(key)
-        hook = getattr(TransportProfile.plugin_manager.hook, key)
-        result = hook(transport=self._transport, profile=self)
-
-        if result is None:
-            return None
-
-        self.__dict__[key] = result
-        TransportProfile._hook_results_to_clear.add(key)
-        return self.__dict__[key]
-
-    def clear_hook_results(self):
-        for key in TransportProfile._hook_results_to_clear:
-            if key in self.__dict__:
-                delattr(self, key)
-        super().clear_hook_results()
+class TransportProfile(Profile, metaclass=PluginHost):
+    def __init__(self, transport: Transport, **kwargs):
+        super().__init__(**kwargs)
+        self.hook_args = dict(
+            profile=self,
+            transport=transport
+        )
 
 
-class TransportInProfile(TransportProfile):
-    def __init__(self, template: Profile, transport: Transport):
+class TransportInProfile(TransportProfile, metaclass=PluginHost):
+    def __init__(self, transport: Transport, template: Profile):
         kwargs = template.__dict__.copy()
         kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
-        super().__init__(**kwargs)
-        self._transport = transport
+        super().__init__(transport, **kwargs)
 
 
-class TransportOutProfile(TransportProfile):
-    plugin_manager = pluggy.PluginManager("pyroll_transport_out_profile")
-    hookspec = pluggy.HookspecMarker("pyroll_transport_out_profile")(firstresult=True)
-    hookimpl = pluggy.HookimplMarker("pyroll_transport_out_profile")
-
+class TransportOutProfile(TransportProfile, metaclass=PluginHost):
     hooks = set()
-
-    _hook_results_to_clear = set()
 
     def __init__(self, transport: Transport):
         kwargs = transport.in_profile.__dict__.copy()
         kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
-        super().__init__(**kwargs)
-        self._transport = transport
-
-    def __getattr__(self, key):
-        if key in self.hooks:
-            return getattr(self._transport.in_profile, key)
-        if hasattr(TransportOutProfile.plugin_manager.hook, key):
-            return self.get_from_hook(key)
-        return super().__getattr__(key)
-
-    def get_from_hook(self, key):
-        if not hasattr(TransportOutProfile.plugin_manager.hook, key):
-            return super().get_from_hook(key)
-        hook = getattr(TransportOutProfile.plugin_manager.hook, key)
-        result = hook(transport=self._transport, profile=self)
-
-        if result is None:
-            return None
-
-        self.__dict__[key] = result
-        TransportOutProfile._hook_results_to_clear.add(key)
-        return self.__dict__[key]
-
-    def clear_hook_results(self):
-        for key in TransportOutProfile._hook_results_to_clear:
-            if key in self.__dict__ and key not in self.hooks:
-                delattr(self, key)
-        super().clear_hook_results()
+        super().__init__(transport, **kwargs)
