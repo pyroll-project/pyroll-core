@@ -8,7 +8,7 @@ from ..roll_pass import RollPass
 @RollPass.hookimpl
 def contact_length(roll_pass: RollPass):
     height_change = roll_pass.in_profile.rotated.height - roll_pass.height
-    return np.sqrt((roll_pass.roll_radius - roll_pass.groove.depth) * height_change - height_change ** 2 / 4)
+    return np.sqrt(roll_pass.min_roll_radius * height_change - height_change ** 2 / 4)
 
 
 @RollPass.hookimpl

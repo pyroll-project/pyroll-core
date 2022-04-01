@@ -35,7 +35,7 @@ sequence = [
             r1=12e-3,
             r2=8e-3
         ),
-        roll_radius=mean_roll_radius_1_lower,
+        nominal_roll_radius=mean_roll_radius_1_lower,
         velocity=1,
         gap=3e-3,
     ),
@@ -50,7 +50,7 @@ sequence = [
             r1=8e-3,
             r2=6e-3
         ),
-        roll_radius=mean_roll_radius_1_upper,
+        nominal_roll_radius=mean_roll_radius_1_upper,
         velocity=1,
         gap=3e-3,
     ),
@@ -65,7 +65,7 @@ sequence = [
             r1=7e-3,
             r2=8e-3
         ),
-        roll_radius=mean_roll_radius_1_lower,
+        nominal_roll_radius=mean_roll_radius_1_lower,
         velocity=1,
         gap=3e-3,
     ),
@@ -80,7 +80,7 @@ sequence = [
             r1=7e-3,
             r2=5e-3
         ),
-        roll_radius=mean_roll_radius_1_upper,
+        nominal_roll_radius=mean_roll_radius_1_upper,
         velocity=1,
         gap=3e-3,
     ),
@@ -94,7 +94,7 @@ sequence = [
             r1=6e-3,
             r2=44.5e-3
         ),
-        roll_radius=mean_roll_radius_1_lower,
+        nominal_roll_radius=mean_roll_radius_1_lower,
         velocity=1,
         gap=3e-3,
     ),
@@ -109,7 +109,7 @@ sequence = [
             r1=6e-3,
             r2=4e-3
         ),
-        roll_radius=mean_roll_radius_1_upper,
+        nominal_roll_radius=mean_roll_radius_1_upper,
         velocity=1,
         gap=3e-3,
     ),
@@ -123,7 +123,7 @@ sequence = [
             r1=7e-3,
             r2=33e-3
         ),
-        roll_radius=mean_roll_radius_1_lower,
+        nominal_roll_radius=mean_roll_radius_1_lower,
         velocity=1,
         gap=3e-3,
     ),
@@ -138,7 +138,7 @@ sequence = [
             r1=5e-3,
             r2=3e-3
         ),
-        roll_radius=mean_roll_radius_1_upper,
+        nominal_roll_radius=mean_roll_radius_1_upper,
         velocity=1,
         gap=3e-3,
     ),
@@ -152,7 +152,7 @@ sequence = [
             r1=6e-3,
             r2=25.5e-3
         ),
-        roll_radius=mean_roll_radius_2_lower,
+        nominal_roll_radius=mean_roll_radius_2_lower,
         velocity=1,
         gap=1e-3,
     ),
@@ -166,7 +166,7 @@ sequence = [
             r2=15.8e-3 / 2,
             depth=7.65e-3
         ),
-        roll_radius=mean_roll_radius_2_upper,
+        nominal_roll_radius=mean_roll_radius_2_upper,
         velocity=1,
         gap=0.5e-3,
     ),

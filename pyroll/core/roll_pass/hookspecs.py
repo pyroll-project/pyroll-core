@@ -13,8 +13,23 @@ def gap(roll_pass):
 
 
 @RollPass.hookspec
-def roll_radius(roll_pass):
-    """Outer radius of the rolls."""
+def nominal_roll_radius(roll_pass):
+    """Nominal radius of the rolls (equal to the grooves y=0 axis)."""
+
+
+@RollPass.hookspec
+def working_roll_radius(roll_pass):
+    """Working radius of the rolls (some kind of equivalent radius to flat rolling)."""
+
+
+@RollPass.hookspec
+def min_roll_radius(roll_pass):
+    """Minimal (inner) radius of the rolls."""
+
+
+@RollPass.hookspec
+def max_roll_radius(roll_pass):
+    """Maximal (outer) radius of the rolls."""
 
 
 @RollPass.hookspec
