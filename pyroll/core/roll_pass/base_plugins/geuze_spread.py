@@ -22,7 +22,7 @@ class Impls:
 
     @staticmethod
     @RollPass.hookimpl
-    def width_change(roll_pass: RollPass):
+    def spread(roll_pass: RollPass):
         """
         Geuze spreading model: Δb = c * Δh
 
@@ -42,18 +42,14 @@ class Impls:
             log.warning(f"No Geuze coefficient available for {roll_pass.label}.")
             return None
 
-        in_equivalent_height = roll_pass.in_profile.equivalent_rectangle.height
-        out_equivalent_height = roll_pass.ideal_out_profile.equivalent_rectangle.height
-        equivalent_height_change = in_equivalent_height - out_equivalent_height
+        equivalent_height_change = (roll_pass.in_profile.equivalent_rectangle.height
+                                    - roll_pass.ideal_out_profile.equivalent_rectangle.height)
 
-        in_equivalent_width = roll_pass.in_profile.equivalent_rectangle.width
-        out_equivalent_width = in_equivalent_width + roll_pass.geuze_coefficient * equivalent_height_change
+        spread = (1 + roll_pass.geuze_coefficient * equivalent_height_change
+                  / roll_pass.in_profile.equivalent_rectangle.width)
 
-        out_profile_width = out_equivalent_width * roll_pass.out_profile.height / out_equivalent_height
-        width_change = out_profile_width - roll_pass.in_profile.rotated.width
-
-        log.debug(f"Width change after Geuze: {width_change}.")
-        return width_change
+        log.debug(f"Spread after Geuze: {spread}.")
+        return spread
 
 
 RollPass.plugin_manager.add_hookspecs(Specs())

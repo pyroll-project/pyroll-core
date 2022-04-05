@@ -24,7 +24,7 @@ def unit_properties(unit: RollPass):
         "roll force": "{:.4g}".format(unit.roll_force),
         "roll torque": "{:.4g}".format(unit.roll_torque),
         "strain change": "{:.4g}".format(unit.strain_change),
-        "width change": "{:.4g}".format(unit.width_change),
+        "spread": "{:.4g}".format(unit.spread),
         "filling ratio": "{:.3f}".format(unit.out_profile.filling_ratio),
         "strain rate": "{:.4g}".format(unit.strain_rate),
         "contact area": "{:.4g}".format(unit.contact_area),

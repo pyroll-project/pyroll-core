@@ -73,8 +73,8 @@ def contact_area(roll_pass):
 
 
 @RollPass.hookspec
-def width_change(roll_pass):
-    """Spread in the pass as width difference."""
+def spread(roll_pass):
+    """Spread in the pass as ratio b1/b0."""
 
 
 @RollPass.hookspec
