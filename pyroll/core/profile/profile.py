@@ -2,11 +2,11 @@ import math
 
 import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, LineString
 from shapely.ops import clip_by_rect
 
 from ..grooves import GrooveBase
-from ...utils.plugin_host import PluginHost
+from pyroll.core.plugin_host import PluginHost
 
 
 class Profile(metaclass=PluginHost):
@@ -33,7 +33,8 @@ class Profile(metaclass=PluginHost):
         )
 
     @property
-    def cross_section(self):
+    def cross_section(self) -> Polygon:
+        """Polygon object representing the cross-section of the profile."""
         if (self.height, self.width) in self._cross_section_cache:
             return self._cross_section_cache[(self.height, self.width)]
 
@@ -42,12 +43,14 @@ class Profile(metaclass=PluginHost):
             self.lower_contour_line.coords
         ]))
 
-        result = clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
-        self._cross_section_cache[(self.height, self.width)] = result
-        return result
+        clipped = clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
+        rotated = rotate(clipped, origin=(0, 0), angle=self.rotation)
+        self._cross_section_cache[(self.height, self.width)] = rotated
+        return rotated
 
     @property
-    def upper_contour_line(self):
+    def upper_contour_line(self) -> LineString:
+        """"""
         if (self.height, self.width) in self._upper_contour_cache:
             return self._upper_contour_cache[(self.height, self.width)]
 
@@ -56,7 +59,7 @@ class Profile(metaclass=PluginHost):
         return result
 
     @property
-    def lower_contour_line(self):
+    def lower_contour_line(self) -> LineString:
         if (self.height, self.width) in self._lower_contour_cache:
             return self._lower_contour_cache[(self.height, self.width)]
 

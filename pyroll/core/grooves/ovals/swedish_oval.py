@@ -32,9 +32,6 @@ class SwedishOvalGroove(OvalGrooveBase):
         super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=flank_angle, alpha2=flank_angle,
                          even_ground_width=even_ground_width)
 
-        self.bachtinow_shternov_second_radius_test(lower_bound=0.1, upper_bound=0.4, dependent_value=self.depth)
-        self.bachtinow_shternov_first_radius_test(lower_bound=0.07, upper_bound=0.08, dependent_value=self.depth)
-
     @property
     def types(self):
         return super().types + ("swedish_oval",)

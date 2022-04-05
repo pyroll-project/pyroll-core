@@ -17,9 +17,4 @@ def equivalent_rectangle(profile):
     """Get the dimensions of the equivalent rectangle of the rotated profile."""
 
 
-@Profile.hookspec
-def non_zero_strain(profile):
-    """Return a non null strain, to compensate possible model inadequacies"""
-
-
 Profile.plugin_manager.add_hookspecs(sys.modules[__name__])

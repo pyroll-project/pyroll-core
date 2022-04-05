@@ -3,14 +3,16 @@ from typing import Optional
 
 import numpy as np
 from shapely.affinity import translate, rotate
+from shapely.geometry import LineString
 
 from ..profile import Profile
 from ..grooves import GrooveBase
 from ..unit import Unit
-from ...utils.plugin_host import PluginHost
+from ..plugin_host import PluginHost
 
 
 class RollPass(Unit, metaclass=PluginHost):
+    """Unit representing a roll pass."""
     hooks = set()
 
     def __init__(
@@ -22,10 +24,9 @@ class RollPass(Unit, metaclass=PluginHost):
         super().__init__(label)
 
         self.groove = groove
+        """Groove of this passes rolls."""
 
         self.__dict__.update(kwargs)
-
-        self.ideal_out_profile: Optional[RollPassOutProfile] = None
 
         self._log = logging.getLogger(__name__)
         self.hook_args = dict(
@@ -39,14 +40,17 @@ class RollPass(Unit, metaclass=PluginHost):
         )
 
     def local_height(self, z):
+        """Local height of the roll gap in dependence on z."""
         return 2 * self.groove.local_depth(z) + self.gap
 
     @property
-    def upper_contour_line(self):
+    def upper_contour_line(self) -> LineString:
+        """Contour line object of the upper working roll."""
         return translate(self.groove.contour_line, yoff=self.gap / 2)
 
     @property
-    def lower_contour_line(self):
+    def lower_contour_line(self) -> LineString:
+        """Contour line object of the lower working roll."""
         return rotate(self.upper_contour_line, angle=180, origin=(0, 0))
 
     def solve(self, in_profile: Profile) -> Profile:
@@ -56,7 +60,6 @@ class RollPass(Unit, metaclass=PluginHost):
         self.out_profile = RollPassOutProfile(self, 0.95)
         self.in_profile.rotation = self.in_profile_rotation
         self.in_profile.clear_hook_results()
-        self.ideal_out_profile = RollPassOutProfile(self, 1)
 
         old_values = np.full(len(self.hooks) + len(self.out_profile.hooks), np.nan)
 

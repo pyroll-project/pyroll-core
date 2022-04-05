@@ -30,5 +30,5 @@ def test_hook_result_none():
 
 
 def test_hook():
-    roll_pass = RollPass(groove=groove_dummy)
+    roll_pass = RollPass(groove=groove_dummy, gap=1)
     print(roll_pass.tip_width)

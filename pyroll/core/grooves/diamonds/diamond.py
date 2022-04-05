@@ -28,6 +28,3 @@ class DiamondGroove(DiamondGrooveBase):
         depth = tip_depth - r2 / np.cos(alpha) + r2
 
         super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=alpha, alpha2=alpha)
-
-        self.bachtinow_shternov_first_radius_test(lower_bound=0.8, upper_bound=1.0, dependent_value=self.r1)
-        self.bachtinow_shternov_second_radius_test(lower_bound=0.08, upper_bound=1.0, dependent_value=tip_depth)

@@ -10,7 +10,7 @@ from ..report import Report
 
 def plot_profile(ax: plt.Axes, profile: Profile, color):
     if profile is not None:
-        ax.fill(*rotate(profile.cross_section, angle=profile.rotation, origin=(0, 0)).boundary.xy, alpha=0.5,
+        ax.fill(*profile.cross_section.boundary.xy, alpha=0.5,
                 color=color)
         ax.add_artist(
             Rectangle(

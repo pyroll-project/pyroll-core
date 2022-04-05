@@ -143,16 +143,6 @@ class UniversalElongationGroove(GrooveBase, ABC):
              self._flank_contour_line, self._r1_contour_line, self._face_contour_line]
         )
 
-    def bachtinow_shternov_first_radius_test(self, lower_bound: float, upper_bound: float, dependent_value: float):
-
-        if self.r1 < lower_bound * dependent_value or self.r1 > upper_bound * dependent_value:
-            self._log.warning('Groove %s first radius outside recommended values!' % self.__str__())
-
-    def bachtinow_shternov_second_radius_test(self, lower_bound: float, upper_bound: float, dependent_value: float):
-
-        if self.r2 < lower_bound * dependent_value or self.r2 > upper_bound * dependent_value:
-            self._log.warning('Groove %s second radius outside recommended values!' % self.__str__())
-
     def test_plausibility(self):
         if (self.alpha1 + self.alpha4 - self.alpha2 - self.alpha3) > 0.01:
             raise ValueError("given angles should fulfill α1 + α4 = α2 + α3 to be geometrically plausible")

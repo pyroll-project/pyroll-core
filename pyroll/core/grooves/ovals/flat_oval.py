@@ -11,9 +11,6 @@ class FlatOvalGroove(OvalGrooveBase):
         super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=alpha, alpha2=alpha,
                          even_ground_width=even_ground_width)
 
-        self.bachtinow_shternov_first_radius_test(lower_bound=0.07, upper_bound=0.08, dependent_value=self.depth)
-        self.bachtinow_shternov_second_radius_test(lower_bound=0.98, upper_bound=1.02, dependent_value=self.depth / 2)
-
     @property
     def types(self):
         return super().types + ("flat_oval",)

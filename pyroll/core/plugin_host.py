@@ -22,7 +22,6 @@ class PluginHost(type):
                     raise AttributeError(f"Hook call for '{key}' on '{self}' resulted in None.")
 
                 self.__dict__[key] = result
-                cls._hook_results_to_clear.add(key)
 
                 return result
 
@@ -37,6 +36,7 @@ class PluginHost(type):
         cls.get_from_hook = get_from_hook
 
         def __getattr__(self, key):
+            cls._hook_results_to_clear.add(key)
             return self.get_from_hook(key)
 
         cls.__getattr__ = __getattr__

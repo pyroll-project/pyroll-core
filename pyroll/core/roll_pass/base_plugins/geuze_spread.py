@@ -43,7 +43,7 @@ class Impls:
             return None
 
         equivalent_height_change = (roll_pass.in_profile.equivalent_rectangle.height
-                                    - roll_pass.ideal_out_profile.equivalent_rectangle.height)
+                                    - roll_pass.out_profile.equivalent_rectangle.height)
 
         spread = (1 + roll_pass.geuze_coefficient * equivalent_height_change
                   / roll_pass.in_profile.equivalent_rectangle.width)

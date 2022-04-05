@@ -2,9 +2,9 @@ import logging
 
 import numpy as np
 
-from pyroll.core.profile import Profile
-from pyroll.core.unit import Unit
-from pyroll.utils.plugin_host import PluginHost
+from ..profile import Profile
+from ..unit import Unit
+from ..plugin_host import PluginHost
 
 
 class Transport(Unit, metaclass=PluginHost):
