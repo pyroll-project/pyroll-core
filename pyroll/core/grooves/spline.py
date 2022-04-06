@@ -53,7 +53,7 @@ class SplineGroove(GrooveBase):
         self._types = tuple(types)
 
     @property
-    def types(self) -> Tuple[str]:
+    def types(self) -> Tuple[str, ...]:
         return self._types
 
     @property

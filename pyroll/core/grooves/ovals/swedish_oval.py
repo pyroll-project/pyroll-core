@@ -2,10 +2,11 @@ from typing import Optional
 
 import numpy as np
 
-from .base import OvalGrooveBase
+from ..generic_elongation import GenericElongationGroove
 
 
-class SwedishOvalGroove(OvalGrooveBase):
+class SwedishOvalGroove(GenericElongationGroove):
+    """Represents a hexagonal shaped groove that is used like an oval groove (swedish oval)."""
 
     def __init__(
             self,
@@ -16,6 +17,18 @@ class SwedishOvalGroove(OvalGrooveBase):
             usable_width: Optional[float] = None,
             flank_angle: Optional[float] = None
     ):
+        """
+        Exactly two of ground_width, usable_width and flank_angle must be given.
+
+        :param r1:
+        :param r2:
+        :param depth:
+        :param ground_width:
+        :param usable_width:
+        :param flank_angle:
+        :raises ValueError: if not exactly two of ground_width, usable_width and flank_angle are given
+        """
+
         if ground_width and usable_width and not flank_angle:
             flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
         elif usable_width and flank_angle and not ground_width:
@@ -24,7 +37,7 @@ class SwedishOvalGroove(OvalGrooveBase):
             usable_width = ground_width + 2 * depth / np.tan(flank_angle)
         else:
             raise ValueError(
-                "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle must be given."
+                "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle."
             )
 
         even_ground_width = ground_width - 2 * r2 * np.tan(flank_angle / 2)
@@ -33,5 +46,5 @@ class SwedishOvalGroove(OvalGrooveBase):
                          even_ground_width=even_ground_width)
 
     @property
-    def types(self):
-        return super().types + ("swedish_oval",)
+    def types(self) -> '("oval", "swedish_oval")':
+        return "oval", "swedish_oval"

@@ -2,10 +2,11 @@ from typing import Optional
 
 import numpy as np
 
-from .base import BoxGrooveBase
+from ..generic_elongation import GenericElongationGroove
 
 
-class ConstrictedBoxGroove(BoxGrooveBase):
+class ConstrictedBoxGroove(GenericElongationGroove):
+    """Represents a box shaped groove with an indented ground."""
 
     def __init__(
             self,
@@ -18,6 +19,19 @@ class ConstrictedBoxGroove(BoxGrooveBase):
             usable_width: Optional[float] = None,
             flank_angle: Optional[float] = None
     ):
+        """
+        Exactly two of ground_width, usable_width and flank_angle must be given.
+
+        :param r1:
+        :param r2:
+        :param r4:
+        :param depth:
+        :param indent:
+        :param ground_width:
+        :param usable_width:
+        :param flank_angle:
+        :raises ValueError: if not exactly two of ground_width, usable_width and flank_angle are given
+        """
         if ground_width and usable_width and not flank_angle:
             flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
         elif usable_width and flank_angle and not ground_width:
@@ -41,5 +55,5 @@ class ConstrictedBoxGroove(BoxGrooveBase):
         )
 
     @property
-    def types(self):
-        return super().types + ("constricted_box",)
+    def types(self) -> '("box", "constricted_box")':
+        return "box", "constricted_box"

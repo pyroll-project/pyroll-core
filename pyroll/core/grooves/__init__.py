@@ -1,6 +1,6 @@
 from .base import GrooveBase
 from .spline import SplineGroove
-from .universal_elongation import UniversalElongationGroove
+from .generic_elongation import GenericElongationGroove
 from .boxes import *
 from .diamonds import *
 from .ovals import *

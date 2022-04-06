@@ -2,10 +2,11 @@ from typing import Optional
 
 import numpy as np
 
-from .base import BoxGrooveBase
+from ..generic_elongation import GenericElongationGroove
 
 
-class BoxGroove(BoxGrooveBase):
+class BoxGroove(GenericElongationGroove):
+    """Represents a box shaped groove."""
 
     def __init__(
             self,
@@ -16,6 +17,17 @@ class BoxGroove(BoxGrooveBase):
             usable_width: Optional[float] = None,
             flank_angle: Optional[float] = None
     ):
+        """
+        Exactly two of ground_width, usable_width and flank_angle must be given.
+
+        :param r1:
+        :param r2:
+        :param depth:
+        :param ground_width:
+        :param usable_width:
+        :param flank_angle:
+        :raises ValueError: if not exactly two of ground_width, usable_width and flank_angle are given
+        """
         if ground_width and usable_width and not flank_angle:
             flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
         elif usable_width and flank_angle and not ground_width:
@@ -31,3 +43,7 @@ class BoxGroove(BoxGrooveBase):
 
         super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=flank_angle, alpha2=flank_angle,
                          even_ground_width=even_ground_width)
+
+    @property
+    def types(self) -> '("box",)':
+        return "box",

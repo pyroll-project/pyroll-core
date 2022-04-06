@@ -2,10 +2,11 @@ from typing import Optional
 from scipy.optimize import brentq
 from numpy import sin, cos, tan, pi
 
-from .base import OvalGrooveBase
+from ..generic_elongation import GenericElongationGroove
 
 
-class Oval3RadiiFlankedGroove(OvalGrooveBase):
+class Oval3RadiiFlankedGroove(GenericElongationGroove):
+    """Represents an oval shaped groove with 3 main radii and a dedicated flank."""
 
     def __init__(
             self,
@@ -16,6 +17,15 @@ class Oval3RadiiFlankedGroove(OvalGrooveBase):
             usable_width: float,
             flank_angle: float,
     ):
+        """
+        :param r1:
+        :param r2:
+        :param r3:
+        :param depth:
+        :param usable_width:
+        :param flank_angle:
+        """
+
         alpha1 = flank_angle
         r32 = r3 - r2
         gamma = pi / 2 - alpha1
@@ -45,5 +55,5 @@ class Oval3RadiiFlankedGroove(OvalGrooveBase):
         )
 
     @property
-    def types(self):
-        return super().types + ("3_radii_oval",)
+    def types(self) -> '("oval", "oval_3_radii", "oval_3_radii_flanked")':
+        return "oval", "oval_3_radii", "oval_3_radii_flanked"

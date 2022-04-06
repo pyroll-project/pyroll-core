@@ -1,4 +1,3 @@
-from .base import OvalGrooveBase
 from .circular_oval import CircularOvalGroove
 from .flat_oval import FlatOvalGroove
 from .swedish_oval import SwedishOvalGroove

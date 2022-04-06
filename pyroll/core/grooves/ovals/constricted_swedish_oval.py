@@ -2,10 +2,12 @@ from typing import Optional
 
 import numpy as np
 
-from .base import OvalGrooveBase
+from ..generic_elongation import GenericElongationGroove
 
 
-class ConstrictedSwedishOvalGroove(OvalGrooveBase):
+class ConstrictedSwedishOvalGroove(GenericElongationGroove):
+    """Represents a hexagonal shaped groove with an indented ground that is used like an oval groove (swedish oval)."""
+
     def __init__(
             self,
             r1: float,
@@ -17,6 +19,20 @@ class ConstrictedSwedishOvalGroove(OvalGrooveBase):
             usable_width: Optional[float] = None,
             flank_angle: Optional[float] = None
     ):
+        """
+        Exactly two of ground_width, usable_width and flank_angle must be given.
+
+        :param r1:
+        :param r2:
+        :param r4:
+        :param depth:
+        :param indent:
+        :param ground_width:
+        :param usable_width:
+        :param flank_angle:
+        :raises ValueError: if not exactly two of ground_width, usable_width and flank_angle are given
+        """
+
         if ground_width and usable_width and not flank_angle:
             flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
         elif usable_width and flank_angle and not ground_width:
@@ -25,7 +41,7 @@ class ConstrictedSwedishOvalGroove(OvalGrooveBase):
             usable_width = ground_width + 2 * depth / np.tan(flank_angle)
         else:
             raise ValueError(
-                "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle must be given."
+                "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle."
             )
 
         alpha4 = np.arccos(1 - indent / (r2 + r4))
@@ -40,5 +56,5 @@ class ConstrictedSwedishOvalGroove(OvalGrooveBase):
         )
 
     @property
-    def types(self):
-        return super().types + ("constricted_swedish_oval",)
+    def types(self) -> '("oval", "swedish_oval", "constricted_swedish_oval")':
+        return "oval", "swedish_oval", "constricted_swedish_oval"

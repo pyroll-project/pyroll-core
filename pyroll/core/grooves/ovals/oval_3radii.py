@@ -1,11 +1,12 @@
 from typing import Optional
 import numpy as np
-from .base import OvalGrooveBase
 from scipy.optimize import minimize, Bounds
 from numpy import sin, cos, tan, pi, array
+from ..generic_elongation import GenericElongationGroove
 
 
-class Oval3RadiiGroove(OvalGrooveBase):
+class Oval3RadiiGroove(GenericElongationGroove):
+    """Represents an oval shaped groove with 3 main radii."""
 
     def __init__(
             self,
@@ -15,6 +16,14 @@ class Oval3RadiiGroove(OvalGrooveBase):
             depth: float,
             usable_width: float,
     ):
+        """
+        :param r1:
+        :param r2:
+        :param r3:
+        :param depth:
+        :param usable_width:
+        """
+
         r32 = r3 - r2
 
         def half_outer_width(alpha1):
@@ -47,5 +56,5 @@ class Oval3RadiiGroove(OvalGrooveBase):
         )
 
     @property
-    def types(self):
-        return super().types + ("3_radii_oval",)
+    def types(self) -> '("oval", "oval_3_radii")':
+        return "oval", "oval_3_radii"

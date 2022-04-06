@@ -8,7 +8,7 @@ from shapely.geometry import LineString, Polygon, Point
 class GrooveBase(ABC):
     @property
     @abstractmethod
-    def types(self) -> Tuple[str]:
+    def types(self) -> Tuple[str, ...]:
         """A tuple of keywords to specify the types of this groove."""
         raise NotImplemented
 
