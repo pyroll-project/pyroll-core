@@ -13,7 +13,7 @@ def contact_length(roll_pass: RollPass):
 
 @RollPass.hookimpl
 def contact_area(roll_pass: RollPass):
-    return (roll_pass.in_profile.rotated.width + roll_pass.out_profile.width) * roll_pass.contact_length
+    return (roll_pass.in_profile.rotated.width + roll_pass.out_profile.width) / 2 * roll_pass.contact_length
 
 
 RollPass.plugin_manager.register(sys.modules[__name__])
