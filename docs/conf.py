@@ -32,7 +32,8 @@ release = '1.0.0'
 # ones.
 extensions = [
     "myst_parser",
-    "sphinx.ext.autodoc"
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -57,7 +58,6 @@ html_theme = 'alabaster'
 html_static_path = ['_static']
 
 # MyST
-
 myst_heading_anchors = 3
 myst_title_to_header = True
 myst_enable_extensions = [
@@ -68,3 +68,8 @@ myst_enable_extensions = [
 add_module_names = False
 autodoc_typehints_format = "short"
 autoclass_content = "both"
+
+# InterSphinx
+intersphinx_mapping = {
+    "pluggy": ("https://pluggy.readthedocs.io/en/stable", None)
+}

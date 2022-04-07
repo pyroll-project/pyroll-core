@@ -8,11 +8,18 @@ approaches, look into the various official and unofficial plugins available for 
 Unlike the other mentioned projects, PyRoll has not only one plugin system, but several. Many main classes of PyRoll
 hold class attributes used to maintain plugins on that class, these are in detail:
 
-| Attribute        | Description                                                                   |
-|------------------|-------------------------------------------------------------------------------|
-| `plugin_manager` | A `pluggy.PluginManager` instance used to maintain the plugins on this class. |
-| `hookspec`       | A `pluggy.HookspecMarker` instance for defining new hook specifications.      |
-| `hookimpl`       | A `pluggy.HookimplMarker` instance for defining new hook implementations.     |
+| Attribute        | Description                                                                                                                                           |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `plugin_manager` | A {py:class}`pluggy.PluginManager` instance used to maintain the plugins on this class.                                                               |
+| `hookspec`       | A wrapper around a {py:class}`pluggy.HookspecMarker` instance for defining new hook specifications. Supports only a subset of the original arguments. |
+| `hookimpl`       | A wrapper around a {py:class}`pluggy.HookimplMarker` instance for defining new hook implementations.                                                  |
+
+This is implemented using the {py:class}`pyroll.plugin_host.PluginHost` metaclass.
+
+```{eval-rst}
+.. autoclass:: pyroll.plugin_host.PluginHost
+    :members:
+```
 
 The `hookspec` markers of all classes derived from [`Unit`](units.md) ([`RollPass`](units.md#roll-passes)
 and [`Transport`](units.md#transports)) and [`Profile`](profile.md) are preconfigured
