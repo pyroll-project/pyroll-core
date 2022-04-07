@@ -7,12 +7,28 @@ from ..roll_pass import RollPass
 
 @RollPass.hookimpl
 def contact_length(roll_pass: RollPass):
+    """
+    Contact length between rolls and stock calculated using Siebel's approach
+
+    :param roll_pass: roll setup
+    :type roll_pass: Unit
+    :return: contact length
+    :rtype: float
+    """
     height_change = roll_pass.in_profile.rotated.height - roll_pass.height
     return np.sqrt(roll_pass.min_roll_radius * height_change - height_change ** 2 / 4)
 
 
 @RollPass.hookimpl
 def contact_area(roll_pass: RollPass):
+    """
+    Contact area between rolls and stock calculated using Siebel's approach
+
+    :param roll_pass: roll setup
+    type roll_pass: Unit
+    :return: contact area
+    :rtype: float
+    """
     return (roll_pass.in_profile.rotated.width + roll_pass.out_profile.width) / 2 * roll_pass.contact_length
 
 

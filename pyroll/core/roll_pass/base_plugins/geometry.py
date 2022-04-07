@@ -1,5 +1,4 @@
 import sys
-
 import numpy as np
 
 from ..roll_pass import RollPass

@@ -8,9 +8,12 @@ class RoundGroove(GenericElongationGroove):
 
     def __init__(self, r1: float, r2: float, depth: float):
         """
-        :param r1:
-        :param r2:
-        :param depth:
+        :param r1: radius of the first edge
+        :type r1: float
+        :param r2: radius of the second edge
+        :type r2: float
+        :param depth: depth of the groove
+        :type depth: float
         """
 
         alpha = np.arccos(1 - depth / (r1 + r2))

@@ -2,10 +2,12 @@ from abc import ABC, abstractmethod
 from typing import Union, Tuple
 
 import numpy as np
-from shapely.geometry import LineString, Polygon, Point
+from shapely.geometry import LineString, Polygon
 
 
 class GrooveBase(ABC):
+    """Abstract base class for all grooves."""
+
     @property
     @abstractmethod
     def types(self) -> Tuple[str, ...]:
@@ -15,26 +17,30 @@ class GrooveBase(ABC):
     @property
     @abstractmethod
     def cross_section(self) -> Polygon:
-        """A polygon representing the cross-section of this profile"""
+        """A polygon representing the cross-section of this groove limited by the contour line and y=0."""
         raise NotImplemented
 
     @property
     @abstractmethod
     def usable_width(self) -> float:
+        """The usable width of the groove, meaning the width of ideal filling."""
         raise NotImplemented
 
     @property
     @abstractmethod
     def depth(self) -> float:
+        """The maximum depth of the groove."""
         raise NotImplemented
 
     @property
     @abstractmethod
     def contour_line(self) -> LineString:
+        """A line representing the geometry of the groove contour."""
         raise NotImplemented
 
     @abstractmethod
-    def local_depth(self, z) -> Union[float, np.ndarray]:
+    def local_depth(self, z: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+        """Function of the local groove depth in dependence on the z-coordinate."""
         raise NotImplemented
 
     def __str__(self):

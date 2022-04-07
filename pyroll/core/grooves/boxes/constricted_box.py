@@ -22,15 +22,21 @@ class ConstrictedBoxGroove(GenericElongationGroove):
         """
         Exactly two of ground_width, usable_width and flank_angle must be given.
 
-        :param r1:
-        :param r2:
-        :param r4:
-        :param depth:
-        :param indent:
-        :param ground_width:
-        :param usable_width:
-        :param flank_angle:
-        :raises ValueError: if not exactly two of ground_width, usable_width and flank_angle are given
+       :param r1: radius of the first edge
+        :type r1: float
+        :param r2: radius of the second edge
+        :type r2: float
+        :param depth: depth of the groove
+        :type depth: float
+        :param indent: indentation of the depth of the groove towards the grooves center
+        :type indent: float
+        :param ground_width: width of the groove from intersection between two flanks and ground width
+        :type ground_width: float
+        :param usable_width:  ground width excluding influence of radii
+        :type usable_width: float
+        :param flank_angle: angle of the flanks
+        :type flank_angle: float
+        :raises ValueError:  if not exactly two of ground_width, usable_width and flank_angle are given
         """
         if ground_width and usable_width and not flank_angle:
             flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)

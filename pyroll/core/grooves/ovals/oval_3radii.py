@@ -17,11 +17,16 @@ class Oval3RadiiGroove(GenericElongationGroove):
             usable_width: float,
     ):
         """
-        :param r1:
-        :param r2:
-        :param r3:
-        :param depth:
-        :param usable_width:
+        :param r1: radius of the first edge
+        :type r1: float
+        :param r2: radius of the second edge
+        :type r2: float
+        :param r2: radius of the third edge
+        :type r2: float
+        :param depth: depth of the groove
+        :type depth: float
+        :param usable_width:  ground width excluding influence of radii
+        :type usable_width: float
         """
 
         r32 = r3 - r2

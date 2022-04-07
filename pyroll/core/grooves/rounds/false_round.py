@@ -8,10 +8,14 @@ class FalseRoundGroove(GenericElongationGroove):
 
     def __init__(self, r1: float, r2: float, depth: float, flank_angle: float):
         """
-        :param r1:
-        :param r2:
-        :param depth:
-        :param flank_angle:
+        :param r1: radius of the first edge
+        :type r1: float
+        :param r2: radius of the second edge
+        :type r2: float
+        :param depth: depth of the groove
+        :type depth: float
+        :param flank_angle: angle of the flanks
+        :type flank_angle: float
         """
 
         tip_depth = depth + r2 / np.cos(flank_angle) - r2

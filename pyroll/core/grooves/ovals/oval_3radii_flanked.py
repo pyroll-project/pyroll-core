@@ -18,12 +18,19 @@ class Oval3RadiiFlankedGroove(GenericElongationGroove):
             flank_angle: float,
     ):
         """
-        :param r1:
-        :param r2:
-        :param r3:
-        :param depth:
-        :param usable_width:
-        :param flank_angle:
+        Exactly two of ground_width, usable_width and flank_angle must be given.
+
+        :param r1: radius of the first edge
+        :type r1: float
+        :param r2: radius of the second edge
+        :type r2: float
+        :param depth: depth of the groove
+        :type depth: float
+        :param usable_width:  ground width excluding influence of radii
+        :type usable_width: float
+        :param flank_angle: angle of the flanks
+        :type flank_angle: float
+        :raises ValueError:  if not exactly two of ground_width, usable_width and flank_angle are given
         """
 
         alpha1 = flank_angle

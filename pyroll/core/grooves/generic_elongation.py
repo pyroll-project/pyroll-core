@@ -9,6 +9,11 @@ from pyroll.core.grooves import GrooveBase
 
 
 class GenericElongationGroove(GrooveBase):
+    """Represents a groove defined by the generic elongation groove geometry."""
+
+    usable_width: float = 0
+
+    depth: float = 0
 
     def __init__(
             self,

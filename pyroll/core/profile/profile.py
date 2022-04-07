@@ -50,7 +50,8 @@ class Profile(metaclass=PluginHost):
 
     @property
     def upper_contour_line(self) -> LineString:
-        """"""
+        """Upper contour line edging this profile."""
+
         if (self.height, self.width) in self._upper_contour_cache:
             return self._upper_contour_cache[(self.height, self.width)]
 
@@ -60,6 +61,8 @@ class Profile(metaclass=PluginHost):
 
     @property
     def lower_contour_line(self) -> LineString:
+        """Lower contour line edging this profile."""
+
         if (self.height, self.width) in self._lower_contour_cache:
             return self._lower_contour_cache[(self.height, self.width)]
 
@@ -69,17 +72,21 @@ class Profile(metaclass=PluginHost):
 
     @property
     def perimeter(self):
+        """The length of the cross-section perimeter."""
         return self.cross_section.boundary.length
 
     @property
     def filling_ratio(self):
+        """The ratio of the profile width to the groove's usable width."""
         return self.width / self.groove.usable_width
 
     @property
     def gap(self):
+        """Estimation of the roll gap by lowering the profile height with twice the groove depth."""
         return self.height - 2 * self.groove.depth
 
     def local_height(self, z):
+        """Function of the local profile height in dependence on the z-coordinate."""
         return 2 * self.groove.local_depth(z) + self.height - 2 * self.groove.depth
 
     def __str__(self):

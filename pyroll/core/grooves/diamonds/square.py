@@ -19,11 +19,16 @@ class SquareGroove(DiamondGroove):
         """
         Exactly two of usable_width, tip_depth and tip_angle must be given.
 
-        :param r1:
-        :param r2:
-        :param usable_width:
-        :param tip_depth:
-        :param tip_angle:
+        :param r1: radius of the first edge
+        :type r1: float
+        :param r2: radius of the second edge
+        :type r2: float
+        :param usable_width:  ground width excluding influence of radii
+        :type usable_width: float
+        :param tip_depth: depth of the tip of the groove
+        :type tip_depth: float
+        :param tip_angle: angle at witch the tip is formed
+        :type tip_angle: float
         :raises ValueError: if not exactly two of usable_width, tip_depth and tip_angle are given
         :raises ValueError: if tip angle is <85° or >95° (no matter if given or calculated internally)
         """

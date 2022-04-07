@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import numpy as np
 from shapely.affinity import translate, rotate
@@ -12,8 +11,10 @@ from ..plugin_host import PluginHost
 
 
 class RollPass(Unit, metaclass=PluginHost):
-    """Unit representing a roll pass."""
+    """Represents a roll pass."""
+
     hooks = set()
+    """Set of hooks to call in every solution iteration."""
 
     def __init__(
             self,
@@ -24,7 +25,7 @@ class RollPass(Unit, metaclass=PluginHost):
         super().__init__(label)
 
         self.groove = groove
-        """Groove of this passes rolls."""
+        """Groove of this pass' rolls."""
 
         self.__dict__.update(kwargs)
 
@@ -87,6 +88,7 @@ class RollPass(Unit, metaclass=PluginHost):
 
 
 class RollPassProfile(Profile, metaclass=PluginHost):
+    """Represents a profile in context of a roll pass."""
     def __init__(self, roll_pass, **kwargs):
         super().__init__(**kwargs)
         self.hook_args = dict(
@@ -96,6 +98,7 @@ class RollPassProfile(Profile, metaclass=PluginHost):
 
 
 class RollPassInProfile(RollPassProfile, metaclass=PluginHost):
+    """Represents an incoming profile of a roll pass."""
     def __init__(self, roll_pass: RollPass, template: Profile):
         kwargs = template.__dict__.copy()
         kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
@@ -103,10 +106,12 @@ class RollPassInProfile(RollPassProfile, metaclass=PluginHost):
 
 
 class RollPassOutProfile(RollPassProfile, metaclass=PluginHost):
+    """Represents an outgoing profile of a roll pass."""
     hooks = {
         "strain",
         "width",
     }
+    """Set of hooks to call in every solution iteration."""
 
     def __init__(self, roll_pass: RollPass, filling_ratio: float):
         kwargs = roll_pass.in_profile.__dict__.copy()

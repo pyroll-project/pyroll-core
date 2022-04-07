@@ -107,7 +107,8 @@ logging: # configuration for the logging standard library package
 
 In the plugins node several plugins can be specified to load additionally to the core functionalities. List the full
 qualified package name you want to load, as you would import in Python. For example to load
-the [Wusatowski Spreading](../../pyroll-wusatowski-spreading) and the [Integral Thermal](../../pyroll-integral-thermal)
+the [Wusatowski Spreading](https://github.com/pyroll-project/pyroll-wusatowski-spreading) and
+the [Integral Thermal](https://github.com/pyroll-project/pyroll-wusatowski-spreading)
 plugins:
 
 ```yaml
@@ -179,6 +180,6 @@ sequence = [
 ]
 ```
 
-The attributes to give as keyword arguments to the constructors depend on the plugins loaded. 
-Most plugins need additional data about the pass sequence or the incoming profile.
-For information on the basic data needed see the docs of [Profile](profile.md), [RollPass](units.md#roll-passes) and [Transport](units.md#transports).
+The attributes to give as keyword arguments to the constructors depend on the plugins loaded. Most plugins need
+additional data about the pass sequence or the incoming profile. For information on the basic data needed see the docs
+of [Profile](profile.md), [RollPass](units.md#roll-passes) and [Transport](units.md#transports).

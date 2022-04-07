@@ -8,12 +8,18 @@ from pyroll.core.grooves import GrooveBase
 
 
 class SplineGroove(GrooveBase):
+    """Represents a groove defined by a linear spline contour."""
 
     def __init__(self,
                  contour_points: Union[Iterable[Tuple[float, float]], np.ndarray],
                  types: Iterable[str],
                  usable_width: Optional[float] = None,
                  ):
+        """
+        :param contour_points: an iterable of contour points to be used for the spline
+        :param types: an interable of string keys used as type classifiers
+        :param usable_width: the usable width to assume for this instance, if None, the maximum width will be used
+        """
         contour_points = np.asarray(contour_points, dtype="float64")
 
         if contour_points.ndim != 2:

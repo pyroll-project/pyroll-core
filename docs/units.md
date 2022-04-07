@@ -58,7 +58,14 @@ The class provides several basics geometric attributes calculated from this info
 > To read about the basics of hooks and plugins, see [here](plugins.md).
 
 On roll passes, several basic hooks are specified and implemented. You can provide your own implementations of them and
-also specify new ones.
+also specify new ones. The following are defined by default.
+
+```{eval-rst} 
+.. automodule:: pyroll.core.roll_pass.hookspecs
+    :members:
+```
+
+Below you will find detailed descriptions of selected hooks as example of using them.
 
 #### `in_profile_rotation`
 
@@ -76,20 +83,6 @@ def diamonds(roll_pass):
     return 90
 ```
 
-#### `roll_force`
 
-The roll force occurring in this pass. The default implementation calculates the roll force according to the Hensel
-model[^HenselPoluchin1990]. This is an empirical model using an master curve for an inverse rolling efficiency as shown
-in the figure below.
-
-![Hensel roll force master curve](img/deformation_resistance_hensel.svg)\
-
-#### `roll_torque`
-
-The roll torque occurring at one roll in this pass. The default implementation calculates the roll torque according to
-the Hensel model[^HenselPoluchin1990].
-
-[^HenselPoluchin1990]:  A. Hensel, P. I. Poluchin, W. P. Poluchin: Technologie der Metallformung. Deutscher Verlag für
-Grundstoffindustrie, Leipzig, 1990
 
 ## Transports

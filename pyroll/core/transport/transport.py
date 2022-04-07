@@ -8,7 +8,10 @@ from ..plugin_host import PluginHost
 
 
 class Transport(Unit, metaclass=PluginHost):
+    """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
+
     hooks = set()
+    """Set of hooks to call in every solution iteration."""
 
     def __init__(
             self,
@@ -17,7 +20,9 @@ class Transport(Unit, metaclass=PluginHost):
             **kwargs
     ):
         super().__init__(label)
+
         self.time = time
+        """Duration of this transport."""
 
         self.__dict__.update(kwargs)
 
@@ -67,6 +72,7 @@ class Transport(Unit, metaclass=PluginHost):
 
 
 class TransportProfile(Profile, metaclass=PluginHost):
+    """Represents a profile in context of a transport unit."""
     def __init__(self, transport: Transport, **kwargs):
         super().__init__(**kwargs)
         self.hook_args = dict(
@@ -76,6 +82,7 @@ class TransportProfile(Profile, metaclass=PluginHost):
 
 
 class TransportInProfile(TransportProfile, metaclass=PluginHost):
+    """Represents an incoming profile of a transport unit."""
     def __init__(self, transport: Transport, template: Profile):
         kwargs = template.__dict__.copy()
         kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
@@ -83,7 +90,9 @@ class TransportInProfile(TransportProfile, metaclass=PluginHost):
 
 
 class TransportOutProfile(TransportProfile, metaclass=PluginHost):
+    """Represents an outgoing profile of a transport unit."""
     hooks = set()
+    """Set of hooks to call in every solution iteration."""
 
     def __init__(self, transport: Transport):
         kwargs = transport.in_profile.__dict__.copy()

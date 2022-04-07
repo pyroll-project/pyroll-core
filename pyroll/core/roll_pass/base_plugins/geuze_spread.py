@@ -1,7 +1,4 @@
 import logging
-import sys
-
-import numpy as np
 
 from ..roll_pass import RollPass
 
@@ -26,15 +23,10 @@ class Impls:
         """
         Geuze spreading model: Δb = c * Δh
 
-
-        Parameters
-        ----------
-        roll_pass
-
-        Returns
-        -------
-        dict with width_change (Δb) and spreading (β)
-
+        :param roll_pass: roll setup
+        :type roll_pass: Unit
+        :return: spread of the material
+        :rtype: float
         """
         log = logging.getLogger(__name__)
 

@@ -1,7 +1,5 @@
 import sys
 
-import numpy as np
-
 from pyroll.core.roll_pass.roll_pass import RollPass
 
 

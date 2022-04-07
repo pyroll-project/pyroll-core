@@ -8,7 +8,7 @@ from . import utils
 from pyroll import RollPass, Unit
 
 
-def merge_properties(hook_results):
+def _merge_properties(hook_results):
     d = dict()
 
     for r in hook_results:
@@ -18,6 +18,8 @@ def merge_properties(hook_results):
 
 
 class Report:
+    """Class able to generate an HTML report sheet out of simulation results."""
+
     plugin_manager = pluggy.PluginManager("pyroll_report")
     hookspec = pluggy.HookspecMarker("pyroll_report")
     hookimpl = pluggy.HookimplMarker("pyroll_report")
@@ -27,6 +29,13 @@ class Report:
     )
 
     def render(self, units: List[Unit]) -> str:
+        """
+        Render an HTML report from the specified units list.
+
+        :param units: list of units to take the data from
+        :returns: generated HTML code as string
+        """
+
         template = self.env.get_template("main.html")
 
         unit_plots = [
@@ -40,7 +49,7 @@ class Report:
         ]
 
         unit_properties = [
-            merge_properties(self.plugin_manager.hook.unit_properties(unit=u))
+            _merge_properties(self.plugin_manager.hook.unit_properties(unit=u))
             for u in units
         ]
 
@@ -51,7 +60,7 @@ class Report:
             )
         )
 
-        sequence_properties = merge_properties(self.plugin_manager.hook.sequence_properties(units=units))
+        sequence_properties = _merge_properties(self.plugin_manager.hook.sequence_properties(units=units))
 
         rendered = template.render(
             units=units,
