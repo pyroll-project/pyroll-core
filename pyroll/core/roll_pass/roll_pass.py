@@ -54,6 +54,12 @@ class RollPass(Unit, metaclass=PluginHost):
         """Contour line object of the lower working roll."""
         return rotate(self.upper_contour_line, angle=180, origin=(0, 0))
 
+    @property
+    def types(self):
+        """A tuple of keywords to specify the shape types of this roll pass.
+        Shortcut to ``self.groove.types``."""
+        return self.groove.types
+
     def solve(self, in_profile: Profile) -> Profile:
         self._log.info(f"Started calculation of roll pass {self.label}")
 

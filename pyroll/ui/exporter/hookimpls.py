@@ -5,11 +5,11 @@ import pandas as pd
 
 from .exporter import Exporter
 from ... import RollPass, Unit
-from ...utils.hookutils import applies_to_unit_types
+from ...utils.hookutils import for_units
 
 
 @Exporter.hookimpl
-@applies_to_unit_types(Unit)
+@for_units(Unit)
 def columns(unit: Unit):
     return dict(
         type=type(unit).__name__,
@@ -18,7 +18,7 @@ def columns(unit: Unit):
 
 
 @Exporter.hookimpl
-@applies_to_unit_types(RollPass)
+@for_units(RollPass)
 def columns(unit: RollPass):
     return dict(
         roll_force=unit.roll_force,

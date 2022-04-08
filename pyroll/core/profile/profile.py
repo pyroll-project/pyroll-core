@@ -91,3 +91,9 @@ class Profile(metaclass=PluginHost):
 
     def __str__(self):
         return f"Profile {self.width:.4g} x {self.height:.4g} from {self.groove}"
+
+    @property
+    def types(self):
+        """A tuple of keywords to specify the shape types of this profile.
+        Shortcut to ``self.groove.types``."""
+        return self.groove.types

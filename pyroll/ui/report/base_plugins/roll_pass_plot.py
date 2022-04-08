@@ -4,7 +4,7 @@ from matplotlib.patches import Rectangle
 from shapely.affinity import rotate
 
 from pyroll import RollPass, Profile
-from pyroll.utils.hookutils import applies_to_unit_types
+from pyroll.utils.hookutils import for_units
 from ..report import Report
 
 
@@ -27,7 +27,7 @@ def plot_pass_groove_contour(ax: plt.Axes, roll_pass: RollPass):
 
 
 @Report.hookimpl
-@applies_to_unit_types(RollPass)
+@for_units(RollPass)
 def unit_plot(unit: RollPass):
     """Plot roll pass contour and its profiles"""
     fig: plt.Figure = plt.figure(constrained_layout=True, figsize=(4, 4))

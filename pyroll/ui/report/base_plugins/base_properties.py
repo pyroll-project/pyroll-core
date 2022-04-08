@@ -2,7 +2,7 @@ import sys
 from typing import List
 
 from pyroll import RollPass, Profile, Unit
-from pyroll.utils.hookutils import applies_to_unit_types
+from pyroll.utils.hookutils import for_units
 from ..report import Report
 
 
@@ -18,7 +18,7 @@ def profile_props(prefix, profile: Profile):
 
 
 @Report.hookimpl
-@applies_to_unit_types(RollPass)
+@for_units(RollPass)
 def unit_properties(unit: RollPass):
     d = {
         "roll force": "{:.4g}".format(unit.roll_force),
