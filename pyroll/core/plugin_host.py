@@ -1,3 +1,4 @@
+import numpy as np
 import pluggy
 
 
@@ -100,6 +101,7 @@ class PluginHost(type):
 
             :raises AttributeError: if the hook call resulted in None
             :raises AttributeError: if the hook name is not known to this class, nor to base classes
+            :raises ValueError: if the hook call resulted in
             """
 
             if hasattr(cls.plugin_manager.hook, key):
@@ -108,6 +110,12 @@ class PluginHost(type):
 
                 if result is None:
                     raise AttributeError(f"Hook call for '{key}' on '{self}' resulted in None.")
+
+                try:
+                    if not np.isfinite(result).any():
+                        raise ValueError(f"Hook call for '{key}' on '{self}' resulted in an infinite value.")
+                except TypeError:
+                    pass  # only numeric types can be tested for finiteness, for others it is meaningless
 
                 self.__dict__[key] = result
 

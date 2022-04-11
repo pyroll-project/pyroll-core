@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from pyroll import RollPass
@@ -26,6 +27,21 @@ def test_hook_result_none():
     roll_pass = RollPass(groove=groove_dummy)
 
     with pytest.raises(AttributeError):
+        print(roll_pass.hook1)
+
+
+def test_hook_result_nan():
+    class Impls:
+        @staticmethod
+        @RollPass.hookimpl
+        def hook1():
+            return np.nan
+
+    RollPass.plugin_manager.register(Impls)
+
+    roll_pass = RollPass(groove=groove_dummy)
+
+    with pytest.raises(ValueError):
         print(roll_pass.hook1)
 
 

@@ -8,6 +8,7 @@ from ..profile import Profile
 from ..grooves import GrooveBase
 from ..unit import Unit
 from ..plugin_host import PluginHost
+from ..exceptions import MaxIterationCountExceededError
 
 
 class RollPass(Unit, metaclass=PluginHost):
@@ -61,7 +62,7 @@ class RollPass(Unit, metaclass=PluginHost):
         return self.groove.types
 
     def solve(self, in_profile: Profile) -> Profile:
-        self._log.info(f"Started calculation of roll pass {self.label}")
+        self._log.info(f"Started solving of {self}.")
 
         self.in_profile = RollPassInProfile(self, in_profile)
         self.out_profile = RollPassOutProfile(self, 0.95)
@@ -70,7 +71,7 @@ class RollPass(Unit, metaclass=PluginHost):
 
         old_values = np.full(len(self.hooks) + len(self.out_profile.hooks), np.nan)
 
-        while True:
+        for i in range(1, self.max_iteration_count):
             self.clear_hook_results()
             self.out_profile.clear_hook_results()
 
@@ -85,12 +86,14 @@ class RollPass(Unit, metaclass=PluginHost):
                 +
                 list(map(lambda h: getattr(self.out_profile, h), self.out_profile.hooks))
             )
+
             if np.all((current_values - old_values) <= old_values * 1e-2):
-                break
+                self._log.info(f"Finished solving of {self} after {i} iterations.")
+                return self.out_profile
 
             old_values = current_values
 
-        return self.out_profile
+        raise MaxIterationCountExceededError
 
 
 class RollPassProfile(Profile, metaclass=PluginHost):

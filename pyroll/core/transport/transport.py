@@ -5,6 +5,7 @@ import numpy as np
 from ..profile import Profile
 from ..unit import Unit
 from ..plugin_host import PluginHost
+from ..exceptions import MaxIterationCountExceededError
 
 
 class Transport(Unit, metaclass=PluginHost):
@@ -33,7 +34,7 @@ class Transport(Unit, metaclass=PluginHost):
         )
 
     def __str__(self):
-        return "Transport {label} for {time:.4g}".format(
+        return "Transport {label}of duration {time:.4g}".format(
             label=f"'{self.label}' " if self.label else "",
             time=self.time
         )
@@ -41,14 +42,14 @@ class Transport(Unit, metaclass=PluginHost):
     def solve(self, in_profile):
         self.in_profile = in_profile
 
-        self._log.info(f"Starting transport of profile with temperature: {self.in_profile.temperature:.2f}K")
+        self._log.info(f"Started solving of {self}.")
 
         self.in_profile = TransportInProfile(self, in_profile)
         self.out_profile = TransportOutProfile(self)
 
         old_values = np.full(len(self.hooks) + len(self.out_profile.hooks), np.nan)
 
-        while True:
+        for i in range(1, self.max_iteration_count):
             self.clear_hook_results()
             self.out_profile.clear_hook_results()
 
@@ -64,11 +65,12 @@ class Transport(Unit, metaclass=PluginHost):
                 list(map(lambda h: getattr(self.out_profile, h), self.out_profile.hooks))
             )
             if np.all((current_values - old_values) <= old_values * 1e-2):
-                break
+                self._log.info(f"Finished solving of {self} after {i} iterations.")
+                return self.out_profile
 
             old_values = current_values
 
-        return self.out_profile
+        raise MaxIterationCountExceededError
 
 
 class TransportProfile(Profile, metaclass=PluginHost):
