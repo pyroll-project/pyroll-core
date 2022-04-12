@@ -20,8 +20,7 @@ def sequence_plot(units: Sequence[Unit]):
         def gen_seq():
             yield -0.5, units[0].in_profile.cross_section.area
             for i, u in enumerate(units):
-                if isinstance(u, RollPass):
-                    yield i + 0.5, u.out_profile.cross_section.area
+                yield i + 0.5, u.out_profile.cross_section.area
 
         x, y = np.transpose(
             list(gen_seq())

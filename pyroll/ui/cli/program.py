@@ -1,6 +1,7 @@
 import importlib.util
 import logging.config
 import logging
+import os
 import re
 import sys
 from dataclasses import dataclass, field
@@ -34,11 +35,27 @@ class State:
 @click.option("--config-file", "-c", default=DEFAULT_CONFIG_FILE, help="The configuration YAML file.",
               type=click.Path())
 @click.option("--plugin", "-p", multiple=True, default=[])
-def main(ctx, config_file, plugin):
+@click.option(
+    "-d", "--dir",
+    help="Change the working directory to the specified one.",
+    type=click.Path(file_okay=False, writable=True, path_type=Path),
+    default=".", show_default=True
+)
+def main(ctx: click.Context, config_file: Path, plugin: List[str], dir: Path):
     state = State()
     ctx.obj = state
 
-    config = yaml.safe_load((Path(__file__).parent / "res" / "config.yaml").read_text())
+    dir.mkdir(exist_ok=True)
+    os.chdir(dir)
+
+    config_dir = Path(click.get_app_dir("pyroll"))
+    base_config_file = config_dir / "config.yaml"
+
+    if not base_config_file.exists():
+        config_dir.mkdir(exist_ok=True)
+        base_config_file.write_text((Path(__file__).parent / "res" / "config.yaml").read_text())
+
+    config = yaml.safe_load(base_config_file.read_text())
 
     if Path(config_file).exists():
         config.update(yaml.safe_load(Path(config_file).read_text()))
@@ -165,7 +182,8 @@ def export(state: State, file: Path, format: str):
 )
 @click.option(
     "-p", "--include-plugins",
-    help="Whether to include a list of all installed plugins. A package is considered as plugin for PyRoll, if its name matches the regular expression 'pyroll.+'",
+    help="Whether to include a list of all installed plugins. A package is considered as plugin for PyRoll, "
+         "if its name matches the regular expression 'pyroll.+'",
     type=click.BOOL,
     default=True, show_default=True
 )
@@ -188,7 +206,8 @@ def create_config(file: Path, include_plugins: bool):
         ]
 
         plugins_itemized = "\n".join([f"  - {p}" for p in plugins])
-        content = re.sub(r"plugins:(.*)\n\s*\[\]", rf"plugins:\g<1>\n{plugins_itemized}", content)
+        if plugins_itemized:
+            content = re.sub(r"plugins:(.*)\n\s*\[\]", rf"plugins:\g<1>\n{plugins_itemized}", content)
 
     file.write_text(content, encoding='utf-8')
     log.info(f"Created config file in: {file.absolute()}")
@@ -201,13 +220,65 @@ def create_config(file: Path, include_plugins: bool):
     type=click.Path(dir_okay=False, path_type=Path),
     default=DEFAULT_INPUT_PY_FILE, show_default=True
 )
-def create_input_py(file: Path):
+@click.option(
+    "-k", "--key",
+    help="The name of the sample to create.",
+    type=click.Choice(["min", "trio"], case_sensitive=False),
+    default="trio", show_default=True
+)
+def create_input_py(file: Path, key: str):
     """Creates a sample input script in FILE that can be loaded using input-py command."""
     log = logging.getLogger(__name__)
 
     if file.exists():
         click.confirm(f"File {file} already exists, overwrite?", abort=True)
 
-    content = (RES_DIR / "input_trio.py").read_text()
+    content = (RES_DIR / f"input_{key}.py").read_text()
     file.write_text(content, encoding='utf-8')
     log.info(f"Created input file in: {file.absolute()}")
+
+
+@main.command()
+@click.option(
+    "-d", "--dir",
+    help="Path to the project directory.",
+    type=click.Path(file_okay=False, writable=True, path_type=Path),
+    default=".", show_default=True
+)
+@click.pass_context
+def new(ctx: click.Context, dir: Path):
+    """
+    Creates a new PyRoll simulation project in the directory specified by -d/--dir.
+    The directory will be created if not already existing.
+    Creates a config.yaml and an input.py in the specified directory.
+    This command is basically a shortcut for
+    "pyroll -c <dir>/config.yaml create-config -p -f "<dir>/config.yaml create-input-py -k min -f <dir>/input.py"
+    in a fresh or existing directory.
+    """
+
+    dir.mkdir(exist_ok=True)
+
+    ctx.invoke(create_config, include_plugins=True, file=dir / DEFAULT_CONFIG_FILE)
+    ctx.invoke(create_input_py, key="min", file=dir / DEFAULT_INPUT_PY_FILE)
+
+
+@main.command()
+@click.option(
+    "-d", "--dir",
+    help="Path to the project directory.",
+    type=click.Path(file_okay=False, writable=True, path_type=Path),
+    default=".", show_default=True
+)
+@click.pass_context
+def run(ctx: click.Context, dir: Path):
+    """
+    Runs the PyRoll solver in a project and generates a report and export data.
+    This command is basically a shortcut for
+    "pyroll input-py -f "<dir>/input.py solve report -f <dir>/report.html export -F csv -f <dir>/export.csv"
+    in a fresh or existing directory.
+    """
+
+    ctx.invoke(input_py, file=dir / DEFAULT_INPUT_PY_FILE)
+    ctx.invoke(solve)
+    ctx.invoke(report, file=dir / DEFAULT_REPORT_FILE)
+    ctx.invoke(export, file=dir / DEFAULT_EXPORT_FILE, format="csv")
