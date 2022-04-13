@@ -1,6 +1,6 @@
 # HTML Report Generation
 
-```{currentmodule} pyroll.ui.report.hookspecs
+```{currentmodule} pyroll.ui.reporter.hookspecs
 ```
 
 PyRoll includes a class capable of generating an HTML page presenting the simulation results, which can be archived and
@@ -24,13 +24,13 @@ instance of matplotlib's `Figure` class.
 ## Class Documentation
 
 ```{eval-rst}
-.. autoclass:: pyroll.ui.report.Report
+.. autoclass:: pyroll.ui.reporter.Reporter
     :members:
 ```
 
 ## Hooks
 
 ```{eval-rst}
-.. automodule:: pyroll.ui.report.hookspecs
+.. automodule:: pyroll.ui.reporter.hookspecs
     :members:
 ```

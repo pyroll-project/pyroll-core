@@ -3,7 +3,7 @@ from typing import List
 
 from pyroll import RollPass, Profile, Unit
 from pyroll.utils.hookutils import for_units
-from ..report import Report
+from ..reporter import Reporter
 
 
 def profile_props(prefix, profile: Profile):
@@ -17,7 +17,7 @@ def profile_props(prefix, profile: Profile):
     }
 
 
-@Report.hookimpl
+@Reporter.hookimpl
 @for_units(RollPass)
 def unit_properties(unit: RollPass):
     d = {
@@ -35,11 +35,11 @@ def unit_properties(unit: RollPass):
     return d
 
 
-@Report.hookimpl
+@Reporter.hookimpl
 def sequence_properties(units: List[Unit]):
     return {
         "total elongation": "{:.4g}".format(units[0].in_profile.cross_section.area / units[-1].out_profile.cross_section.area)
     }
 
 
-Report.plugin_manager.register(sys.modules[__name__])
+Reporter.plugin_manager.register(sys.modules[__name__])

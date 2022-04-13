@@ -36,7 +36,7 @@ intermediate and result values on profiles and units you want to calculate, and 
 implementation of them. Afterwards you can proceed providing more specialized implementations in the same plugin
 package, or maybe also in another one if you need more flexibility in loading different implementations.
 
-The classes [`Report`](report.md) and [`Export`](export.md) are also maintaining a plugin system, to allow plugins to
+The classes [`Reporter`](report.md) and [`Exporter`](export.md) are also maintaining a plugin system, to allow plugins to
 contribute their own results to the output. But those hooks are
 not [`firstresult`](https://pluggy.readthedocs.io/en/stable/#first-result-only) per default and specifying new hooks is
 not as easy as with units and profiles.

@@ -17,7 +17,7 @@ def _merge_properties(hook_results):
     return d
 
 
-class Report:
+class Reporter:
     """Class able to generate an HTML report sheet out of simulation results."""
 
     plugin_manager = pluggy.PluginManager("pyroll_report")

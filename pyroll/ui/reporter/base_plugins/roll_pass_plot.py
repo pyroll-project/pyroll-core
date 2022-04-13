@@ -5,7 +5,7 @@ from shapely.affinity import rotate
 
 from pyroll import RollPass, Profile
 from pyroll.utils.hookutils import for_units
-from ..report import Report
+from ..reporter import Reporter
 
 
 def plot_profile(ax: plt.Axes, profile: Profile, color):
@@ -26,7 +26,7 @@ def plot_pass_groove_contour(ax: plt.Axes, roll_pass: RollPass):
     ax.plot(*roll_pass.lower_contour_line.xy, color="k")
 
 
-@Report.hookimpl
+@Reporter.hookimpl
 @for_units(RollPass)
 def unit_plot(unit: RollPass):
     """Plot roll pass contour and its profiles"""
@@ -43,4 +43,4 @@ def unit_plot(unit: RollPass):
     return fig
 
 
-Report.plugin_manager.register(sys.modules[__name__])
+Reporter.plugin_manager.register(sys.modules[__name__])

@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from pyroll import solve
-from pyroll.ui.report import Report
+from pyroll.ui.reporter import Reporter
 
 
 def test_solve_min(tmp_path: Path, caplog):
@@ -14,7 +14,7 @@ def test_solve_min(tmp_path: Path, caplog):
 
     solve(sequence, input_py.in_profile)
 
-    report = Report()
+    report = Reporter()
 
     rendered = report.render(sequence)
     print()
@@ -36,7 +36,7 @@ def test_solve_trio(tmp_path: Path, caplog):
 
     solve(sequence, input_py.in_profile)
 
-    report = Report()
+    report = Reporter()
 
     rendered = report.render(sequence)
     print()

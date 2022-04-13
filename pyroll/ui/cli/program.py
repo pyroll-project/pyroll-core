@@ -140,10 +140,10 @@ def solve(state):
 @click.pass_obj
 def report(state: State, file: Path):
     """Generates a HTML report from the simulation results and writes it to FILE."""
-    from ..report import Report
+    from ..reporter import Reporter
     log = logging.getLogger(__name__)
 
-    rendered = Report().render(state.sequence)
+    rendered = Reporter().render(state.sequence)
 
     file.write_text(rendered, encoding='utf-8')
     log.info(f"Wrote report to: {file.absolute()}")

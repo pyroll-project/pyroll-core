@@ -4,11 +4,11 @@ from typing import Sequence
 import numpy as np
 
 from pyroll import RollPass, Unit
-from ..report import Report
+from ..reporter import Reporter
 from .. import utils
 
 
-@Report.hookimpl
+@Reporter.hookimpl
 def sequence_plot(units: Sequence[Unit]):
     """Plot the roll forces of all passes"""
     fig, ax = utils.create_sequence_plot(units)
@@ -30,4 +30,4 @@ def sequence_plot(units: Sequence[Unit]):
         return fig
 
 
-Report.plugin_manager.register(sys.modules[__name__])
+Reporter.plugin_manager.register(sys.modules[__name__])
