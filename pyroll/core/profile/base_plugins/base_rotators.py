@@ -25,9 +25,7 @@ def default(profile: Profile):
 
 @Profile.hookimpl(specname="rotated")
 def square45(profile: Profile):
-    from ...grooves import SquareGroove
-
-    if isinstance(profile.groove, SquareGroove) and profile.rotation == 45:
+    if "square" in profile.types and profile.rotation == 45:
         d = profile.height + 2 * (profile.groove.r2 / np.cos(profile.groove.alpha2) - profile.groove.r2)
         a = d / np.sqrt(2)
 
@@ -38,9 +36,7 @@ def square45(profile: Profile):
 
 @Profile.hookimpl(specname="rotated")
 def box45(profile: Profile):
-    from ...grooves import BoxGrooveBase
-
-    if isinstance(profile.groove, BoxGrooveBase) and profile.rotation == 45:
+    if "box" in profile.types and profile.rotation == 45:
 
         if not np.isclose(profile.height, profile.width, rtol=0.05):
             log = logging.getLogger(__name__)
