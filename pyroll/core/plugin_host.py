@@ -142,7 +142,7 @@ class PluginHost(metaclass=PluginHostMeta):
             raise AttributeError(f"Hook call for '{key}' on '{self}' resulted in None.")
 
         try:
-            if not np.isfinite(result).any():
+            if not np.isfinite(result).all():
                 raise ValueError(f"Hook call for '{key}' on '{self}' resulted in an infinite value.")
         except TypeError:
             pass  # only numeric types can be tested for finiteness, for others it is meaningless
