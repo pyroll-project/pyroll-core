@@ -9,15 +9,14 @@ from ..grooves import GrooveBase
 from pyroll.core.plugin_host import PluginHost
 
 
-class Profile(metaclass=PluginHost):
-    def __init__(
-            self,
-            width: float,
-            height: float,
-            groove: GrooveBase,
-            rotation: int = 0,
-            **kwargs
-    ):
+class Profile(PluginHost):
+    def __init__(self, width: float, height: float, groove: GrooveBase, rotation: int = 0, **kwargs):
+        super().__init__(dict(
+            profile=self
+        ))
+
+        if "hook_args" in kwargs:
+            del kwargs["hook_args"]
         self.__dict__.update(kwargs)
 
         self.width = width
@@ -27,10 +26,6 @@ class Profile(metaclass=PluginHost):
         self._cross_section_cache = {}
         self._upper_contour_cache = {}
         self._lower_contour_cache = {}
-
-        self.hook_args = dict(
-            profile=self
-        )
 
     @property
     def cross_section(self) -> Polygon:

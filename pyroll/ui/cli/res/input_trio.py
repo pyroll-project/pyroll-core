@@ -1,6 +1,6 @@
-from pyroll.core.grooves import SquareGroove, DiamondGroove, CircularOvalGroove, RoundGroove
-from pyroll.core import Profile
-from pyroll.core import RollPass, Transport
+from pyroll import SquareGroove, DiamondGroove, CircularOvalGroove, RoundGroove
+from pyroll import Profile
+from pyroll import RollPass, Transport
 from numpy import pi
 
 # initial profile

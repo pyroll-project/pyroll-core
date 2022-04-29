@@ -1,18 +1,11 @@
 import logging
 
-import numpy as np
-
-from ..profile import Profile
+from ..profile import Profile as BaseProfile
 from ..unit import Unit
-from ..plugin_host import PluginHost
-from ..exceptions import MaxIterationCountExceededError
 
 
-class Transport(Unit, metaclass=PluginHost):
+class Transport(Unit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
-
-    hooks = set()
-    """Set of hooks to call in every solution iteration."""
 
     def __init__(
             self,
@@ -26,12 +19,9 @@ class Transport(Unit, metaclass=PluginHost):
         """Duration of this transport."""
 
         self.__dict__.update(kwargs)
+        self.hook_args["transport"] = self
 
         self._log = logging.getLogger(__name__)
-
-        self.hook_args = dict(
-            transport=self
-        )
 
     def __str__(self):
         return "Transport {label}of duration {time:.4g}".format(
@@ -39,64 +29,28 @@ class Transport(Unit, metaclass=PluginHost):
             time=self.time
         )
 
-    def solve(self, in_profile):
-        self.in_profile = in_profile
+    def init_solve(self, in_profile: BaseProfile):
+        self.in_profile = self.InProfile(self, in_profile)
+        self.out_profile = self.OutProfile(self)
 
-        self._log.info(f"Started solving of {self}.")
+    class Profile(Unit.Profile):
+        """Represents a profile in context of a transport unit."""
 
-        self.in_profile = TransportInProfile(self, in_profile)
-        self.out_profile = TransportOutProfile(self)
+        def __init__(self, transport: 'Transport', template: BaseProfile):
+            super().__init__(transport, template)
+            self.hook_args["transport"] = transport
 
-        old_values = np.full(len(self.hooks) + len(self.out_profile.hooks), np.nan)
+    class InProfile(Profile):
+        """Represents an incoming profile of a transport unit."""
 
-        for i in range(1, self.max_iteration_count):
-            self.clear_hook_results()
-            self.out_profile.clear_hook_results()
+        def __init__(self, transport: 'Transport', template: BaseProfile):
+            super().__init__(transport, template)
 
-            for key in self.hooks:
-                self.get_from_hook(key)
+    class OutProfile(Profile):
+        """Represents an outgoing profile of a transport unit."""
 
-            for key in self.out_profile.hooks:
-                self.out_profile.get_from_hook(key)
-
-            current_values = np.array(
-                list(map(lambda h: getattr(self, h), self.hooks))
-                +
-                list(map(lambda h: getattr(self.out_profile, h), self.out_profile.hooks))
-            )
-            if np.all((current_values - old_values) <= old_values * 1e-2):
-                self._log.info(f"Finished solving of {self} after {i} iterations.")
-                return self.out_profile
-
-            old_values = current_values
-
-        raise MaxIterationCountExceededError
+        def __init__(self, transport: 'Transport'):
+            super().__init__(transport, transport.in_profile)
 
 
-class TransportProfile(Profile, metaclass=PluginHost):
-    """Represents a profile in context of a transport unit."""
-    def __init__(self, transport: Transport, **kwargs):
-        super().__init__(**kwargs)
-        self.hook_args = dict(
-            profile=self,
-            transport=transport
-        )
-
-
-class TransportInProfile(TransportProfile, metaclass=PluginHost):
-    """Represents an incoming profile of a transport unit."""
-    def __init__(self, transport: Transport, template: Profile):
-        kwargs = template.__dict__.copy()
-        kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
-        super().__init__(transport, **kwargs)
-
-
-class TransportOutProfile(TransportProfile, metaclass=PluginHost):
-    """Represents an outgoing profile of a transport unit."""
-    hooks = set()
-    """Set of hooks to call in every solution iteration."""
-
-    def __init__(self, transport: Transport):
-        kwargs = transport.in_profile.__dict__.copy()
-        kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
-        super().__init__(transport, **kwargs)
+Transport.OutProfile.root_hooks.add("strain")

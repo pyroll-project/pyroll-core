@@ -1,3 +1,5 @@
+from typing import Set, Dict, Any
+
 import numpy as np
 import pluggy
 
@@ -55,7 +57,7 @@ class HookimplMarker:
         return func
 
 
-class PluginHost(type):
+class PluginHostMeta(type):
     """
     Metaclass that provides plugin functionality to a class.
 
@@ -72,9 +74,7 @@ class PluginHost(type):
     def __init__(cls, name, bases, dct):
         super().__init__(name, bases, dct)
 
-        project_name = f"pyroll_{cls.__name__}"
-
-        cls.plugin_manager = pluggy.PluginManager(project_name)
+        cls.plugin_manager = pluggy.PluginManager(f"pyroll_{cls.__name__}")
         """A :py:class:`pluggy.PluginManager` instance used to maintain the plugins on this class."""
 
         cls.hookspec = HookspecMarker(cls)
@@ -84,67 +84,95 @@ class PluginHost(type):
         cls.hookimpl = HookimplMarker(cls)
         """A wrapper around a :py:class:`pluggy.HookimplMarker` instance for defining new hook implementations."""
 
-        cls._hook_results_to_clear = set()
-        """Internal memory of called hook names to clear when running :py:meth:`clear_hook_results`"""
+        cls.root_hooks: Set[str] = set()
+        """Set of hooks to call in every solution iteration."""
 
-        def get_from_hook(self, key):
-            """
-            Explicitly tries to get a value from a hook specified on this class.
-            Returns and caches the result of the hook call as attribute.
-            Use `clear_hook_results()` to clear the cache.
-            Hook calls done by this function are not cleared, only those by attribute syntax.
+        cls._hook_result_attributes: Set[str] = set()
+        """List remembering all hooks that were called on this class, used by :py:meth:`delete_hook_result_attributes`."""
 
-            If the plugin manager does not know a hook of name `key`,
-            the function dispatches to eventual base classes.
 
-            :param key: the hook name to call
+class PluginHost(metaclass=PluginHostMeta):
+    """
+    A base class providing plugin functionality using the :py:class:`PluginHostMeta` metaclass.
+    """
 
-            :raises AttributeError: if the hook call resulted in None
-            :raises AttributeError: if the hook name is not known to this class, nor to base classes
-            :raises ValueError: if the hook call resulted in
-            """
+    def __init__(self, hook_args: Dict[str, Any]):
+        """
+        :param hook_args: keyword arguments to pass to hook calls
+        """
+        self.hook_args = hook_args
+        """Keyword arguments to pass to hook calls."""
 
-            if hasattr(cls.plugin_manager.hook, key):
-                hook = getattr(cls.plugin_manager.hook, key)
-                result = hook(**self.hook_args)
+    def get_hook(self, key: str):
+        """
+        Search a hook on the class of this instance or its superclasses of the name specied by ``key``.
 
-                if result is None:
-                    raise AttributeError(f"Hook call for '{key}' on '{self}' resulted in None.")
+        :param str key: the name of the hook to get
+        """
+        self_type = type(self)
 
-                try:
-                    if not np.isfinite(result).any():
-                        raise ValueError(f"Hook call for '{key}' on '{self}' resulted in an infinite value.")
-                except TypeError:
-                    pass  # only numeric types can be tested for finiteness, for others it is meaningless
+        for t in self_type.__mro__:
+            if hasattr(t, "plugin_manager") and hasattr(t.plugin_manager.hook, key):
+                return getattr(t.plugin_manager.hook, key)
 
-                self.__dict__[key] = result
+        raise AttributeError(
+            f"No hook '{key}' available on '{self_type.__name__}'.")
 
-                return result
+    def get_from_hook(self, key: str):
+        """
+        Explicitly tries to get a value from a hook specified on this class.
+        Returns and caches the result of the hook call as attribute.
+        Use `clear_hook_results()` to clear the cache.
+        Hook calls done by this function are not cleared, only those by attribute syntax.
 
-            # try to get from super class
-            s = super(cls, self)
-            if hasattr(s, "get_from_hook"):
-                return s.get_from_hook(key)
+        If the plugin manager does not know a hook of name `key`,
+        the function dispatches to eventual base classes.
 
-            raise AttributeError(
-                f"No hook '{key}' available on '{self}'.")
+        :param str key: the hook name to call
 
-        cls.get_from_hook = get_from_hook
+        :raises AttributeError: if the hook call resulted in None
+        :raises AttributeError: if the hook name is not known to this class, nor to base classes
+        :raises ValueError: if the hook call resulted in an infinite value
+        """
 
-        def __getattr__(self, key):
-            cls._hook_results_to_clear.add(key)
-            return self.get_from_hook(key)
+        hook = self.get_hook(key)
+        result = hook(**self.hook_args)
 
-        cls.__getattr__ = __getattr__
+        if result is None:
+            raise AttributeError(f"Hook call for '{key}' on '{self}' resulted in None.")
 
-        def clear_hook_results(self):
-            """Delete the attributes created by hook calls using attribute syntax."""
-            for key in cls._hook_results_to_clear:
-                if key in self.__dict__:
-                    delattr(self, key)
+        try:
+            if not np.isfinite(result).any():
+                raise ValueError(f"Hook call for '{key}' on '{self}' resulted in an infinite value.")
+        except TypeError:
+            pass  # only numeric types can be tested for finiteness, for others it is meaningless
 
-            s = super(cls, self)
-            if hasattr(s, "clear_hook_results"):
-                s.clear_hook_results()
+        self.__dict__[key] = result
+        self._hook_result_attributes.add(key)
 
-        cls.clear_hook_results = clear_hook_results
+        return result
+
+    def __getattr__(self, key: str):
+        return self.get_from_hook(key)
+
+    def get_root_hook_results(self):
+        """
+        Call necessary root hooks of this instance and return an array of their results.
+        """
+        results = []
+        for key in self.root_hooks:
+            result = self.get_from_hook(key)
+            try:
+                results.append(float(result))
+            except TypeError:
+                pass  # only add numeric values, since they are used for loop control
+
+        return np.asarray(results)
+
+    def delete_hook_result_attributes(self):
+        """Recalls all hooks that have been called by :py:meth:`get_from_hook` so far on this instance."""
+        self_type = type(self)
+
+        for hook in self_type._hook_result_attributes:
+            if hook in self.__dict__ and hook not in self_type.root_hooks:
+                del self.__dict__[hook]

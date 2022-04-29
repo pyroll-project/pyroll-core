@@ -2,7 +2,7 @@ import sys
 
 import numpy as np
 
-from ..roll_pass import RollPass, RollPassOutProfile
+from ..roll_pass import RollPass
 
 
 @RollPass.hookimpl
@@ -11,10 +11,10 @@ def strain_change(roll_pass: RollPass):
     return strain
 
 
-@RollPassOutProfile.hookimpl
+@RollPass.OutProfile.hookimpl
 def strain(roll_pass: RollPass):
     return roll_pass.in_profile.strain + roll_pass.strain_change
 
 
 RollPass.plugin_manager.register(sys.modules[__name__])
-RollPassOutProfile.plugin_manager.register(sys.modules[__name__])
+RollPass.OutProfile.plugin_manager.register(sys.modules[__name__])

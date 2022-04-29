@@ -1,5 +1,5 @@
 import sys
-from .roll_pass import RollPass, RollPassOutProfile, RollPassProfile
+from .roll_pass import RollPass
 
 
 @RollPass.hookspec
@@ -82,21 +82,21 @@ def strain_change(roll_pass):
     """Applied strain in the pass."""
 
 
-@RollPassProfile.hookspec
+@RollPass.Profile.hookspec
 def flow_stress(roll_pass, profile):
     """Flow stress of workpiece material."""
 
 
-@RollPassOutProfile.hookspec
+@RollPass.OutProfile.hookspec
 def width(roll_pass, profile):
     """Width of the out profile."""
 
 
-@RollPassOutProfile.hookspec
+@RollPass.OutProfile.hookspec
 def strain(roll_pass, profile):
     """Strain of the out profile."""
 
 
 RollPass.plugin_manager.add_hookspecs(sys.modules[__name__])
-RollPassProfile.plugin_manager.add_hookspecs(sys.modules[__name__])
-RollPassOutProfile.plugin_manager.add_hookspecs(sys.modules[__name__])
+RollPass.Profile.plugin_manager.add_hookspecs(sys.modules[__name__])
+RollPass.OutProfile.plugin_manager.add_hookspecs(sys.modules[__name__])

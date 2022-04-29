@@ -24,7 +24,7 @@ def test_export_csv(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "report",
             "export"
         ],
-
+        catch_exceptions=False
     )
 
     print("\n")
@@ -54,7 +54,7 @@ def test_export_xml(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "-F", "xml",
             "-f", "export.xml",
         ],
-
+        catch_exceptions=False
     )
 
     print("\n")

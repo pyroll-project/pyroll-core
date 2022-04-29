@@ -1,11 +1,11 @@
 import sys
 
-from .transport import TransportOutProfile
+from .transport import Transport
 
 
-@TransportOutProfile.hookspec
+@Transport.OutProfile.hookspec
 def strain(transport):
     """The equivalent strain of the outgoing profile of the transport unit."""
 
 
-TransportOutProfile.plugin_manager.add_hookspecs(sys.modules[__name__])
+Transport.OutProfile.plugin_manager.add_hookspecs(sys.modules[__name__])

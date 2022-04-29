@@ -11,7 +11,7 @@ import click
 import yaml
 
 import pyroll.core
-from ...core import Profile
+from ...core.profile import Profile
 from ...core.unit import Unit
 
 from pathlib import Path
@@ -126,7 +126,7 @@ def solve(state):
     log = logging.getLogger(__name__)
 
     log.info("Starting solution process...")
-    pyroll.core.solve(state.sequence, state.in_profile)
+    pyroll.solve(state.sequence, state.in_profile)
     log.info("Finished solution process.")
 
 

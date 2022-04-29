@@ -23,7 +23,7 @@ def test_input_solve_report(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             "solve",
             "report",
         ],
-
+        catch_exceptions=False
     )
 
     print("\n")

@@ -15,6 +15,3 @@ def roll_torque(roll_pass: RollPass):
 
 
 RollPass.plugin_manager.register(sys.modules[__name__])
-
-RollPass.hooks.add("roll_force")
-RollPass.hooks.add("roll_torque")

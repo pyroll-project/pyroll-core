@@ -4,8 +4,8 @@ from .core.solve import solve
 from .core.grooves import BoxGroove, ConstrictedBoxGroove, SquareGroove, DiamondGroove, RoundGroove, FalseRoundGroove, \
     CircularOvalGroove, FlatOvalGroove, SwedishOvalGroove, ConstrictedSwedishOvalGroove, Oval3RadiiGroove, \
     Oval3RadiiFlankedGroove
-from .core.transport import Transport, TransportProfile, TransportInProfile, TransportOutProfile
-from .core.roll_pass import RollPass, RollPassProfile, RollPassInProfile, RollPassOutProfile
+from .core.transport import Transport
+from .core.roll_pass import RollPass
 from .core.unit import Unit
 from .core.profile import Profile
 from .core.exceptions import MaxIterationCountExceededError
