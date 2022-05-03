@@ -1,4 +1,4 @@
-from pyroll import Profile
+from pyroll import Profile, Roll
 from pyroll import RollPass, Transport
 from pyroll import RoundGroove, CircularOvalGroove
 
@@ -17,13 +17,15 @@ in_profile = Profile(
 sequence = [
     RollPass(
         label="Oval I",
-        groove=CircularOvalGroove(
-            depth=5e-3,
-            r1=6e-3,
-            r2=40e-3
+        roll=Roll(
+            groove=CircularOvalGroove(
+                depth=5e-3,
+                r1=6e-3,
+                r2=40e-3
+            ),
+            nominal_radius=160e-3,
+            rotational_frequency=1
         ),
-        nominal_roll_radius=160,
-        velocity=1,
         gap=1e-3,
     ),
     Transport(
@@ -32,13 +34,15 @@ sequence = [
     ),
     RollPass(
         label="Round II",
-        groove=RoundGroove(
-            r1=1e-3,
-            r2=9e-3,
-            depth=8.5e-3
+        roll=Roll(
+            groove=RoundGroove(
+                r1=1e-3,
+                r2=9e-3,
+                depth=8.5e-3
+            ),
+            nominal_radius=160e-3,
+            rotational_frequency=1
         ),
-        nominal_roll_radius=160,
-        velocity=1,
         gap=1e-3,
     ),
 ]

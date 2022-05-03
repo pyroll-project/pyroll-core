@@ -4,12 +4,16 @@ import numpy as np
 import pluggy
 
 
+def _full_name(cls: type):
+    return f"{cls.__module__}.{cls.__qualname__}"
+
+
 class HookspecMarker:
     """Wrapper around :py:class:`pluggy.HookspecMarker` with minified interface.
     Implicitly sets ``firstresult=True`` and ``historic=False``"""
 
     def __init__(self, cls):
-        self._marker = pluggy.HookspecMarker(f"pyroll_{cls.__name__}")
+        self._marker = pluggy.HookspecMarker(_full_name(cls))
         self.plugin_host = cls
 
     def __call__(self, function=None, warn_on_impl=None):
@@ -29,7 +33,7 @@ class HookimplMarker:
     """Wrapper around :py:class:`pluggy.HookimplMarker` with minified interface."""
 
     def __init__(self, cls):
-        self._marker = pluggy.HookimplMarker(f"pyroll_{cls.__name__}")
+        self._marker = pluggy.HookimplMarker(_full_name(cls))
         self.plugin_host = cls
 
     def __call__(
@@ -74,7 +78,7 @@ class PluginHostMeta(type):
     def __init__(cls, name, bases, dct):
         super().__init__(name, bases, dct)
 
-        cls.plugin_manager = pluggy.PluginManager(f"pyroll_{cls.__name__}")
+        cls.plugin_manager = pluggy.PluginManager(_full_name(cls))
         """A :py:class:`pluggy.PluginManager` instance used to maintain the plugins on this class."""
 
         cls.hookspec = HookspecMarker(cls)
@@ -86,9 +90,6 @@ class PluginHostMeta(type):
 
         cls.root_hooks: Set[str] = set()
         """Set of hooks to call in every solution iteration."""
-
-        cls._hook_result_attributes: Set[str] = set()
-        """List remembering all hooks that were called on this class, used by :py:meth:`delete_hook_result_attributes`."""
 
 
 class PluginHost(metaclass=PluginHostMeta):
@@ -102,6 +103,9 @@ class PluginHost(metaclass=PluginHostMeta):
         """
         self.hook_args = hook_args
         """Keyword arguments to pass to hook calls."""
+
+        self.hook_result_attributes: Set[str] = set()
+        """Set remembering all hooks that were called on this class, used by :py:meth:`delete_hook_result_attributes`."""
 
     def get_hook(self, key: str):
         """
@@ -148,7 +152,7 @@ class PluginHost(metaclass=PluginHostMeta):
             pass  # only numeric types can be tested for finiteness, for others it is meaningless
 
         self.__dict__[key] = result
-        self._hook_result_attributes.add(key)
+        self.hook_result_attributes.add(key)
 
         return result
 
@@ -171,8 +175,7 @@ class PluginHost(metaclass=PluginHostMeta):
 
     def delete_hook_result_attributes(self):
         """Recalls all hooks that have been called by :py:meth:`get_from_hook` so far on this instance."""
-        self_type = type(self)
 
-        for hook in self_type._hook_result_attributes:
-            if hook in self.__dict__ and hook not in self_type.root_hooks:
+        for hook in self.hook_result_attributes:
+            if hook in self.__dict__ and hook not in self.root_hooks:
                 del self.__dict__[hook]

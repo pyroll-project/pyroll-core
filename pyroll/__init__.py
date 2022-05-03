@@ -7,6 +7,7 @@ from .core.grooves import BoxGroove, ConstrictedBoxGroove, SquareGroove, Diamond
 from .core.transport import Transport
 from .core.roll_pass import RollPass
 from .core.unit import Unit
+from .core.roll import Roll
 from .core.profile import Profile
 from .core.exceptions import MaxIterationCountExceededError
 

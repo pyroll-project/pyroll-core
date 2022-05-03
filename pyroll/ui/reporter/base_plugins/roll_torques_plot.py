@@ -19,7 +19,7 @@ def sequence_plot(units: Sequence[Unit]):
     if len(units) > 0:
         x, y = np.transpose(
             [
-                (index, unit.roll_torque)
+                (index, unit.roll.roll_torque)
                 for index, unit in enumerate(units)
                 if isinstance(unit, RollPass)
             ]

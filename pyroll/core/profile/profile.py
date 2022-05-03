@@ -11,13 +11,12 @@ from pyroll.core.plugin_host import PluginHost
 
 class Profile(PluginHost):
     def __init__(self, width: float, height: float, groove: GrooveBase, rotation: int = 0, **kwargs):
+
+        self.__dict__.update(kwargs)
+
         super().__init__(dict(
             profile=self
         ))
-
-        if "hook_args" in kwargs:
-            del kwargs["hook_args"]
-        self.__dict__.update(kwargs)
 
         self.width = width
         self.height = height

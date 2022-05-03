@@ -13,26 +13,6 @@ def gap(roll_pass):
 
 
 @RollPass.hookspec
-def nominal_roll_radius(roll_pass):
-    """Nominal radius of the rolls (equal to the grooves y=0 axis)."""
-
-
-@RollPass.hookspec
-def working_roll_radius(roll_pass):
-    """Working radius of the rolls (some kind of equivalent radius to flat rolling)."""
-
-
-@RollPass.hookspec
-def min_roll_radius(roll_pass):
-    """Minimal (inner) radius of the rolls."""
-
-
-@RollPass.hookspec
-def max_roll_radius(roll_pass):
-    """Maximal (outer) radius of the rolls."""
-
-
-@RollPass.hookspec
 def velocity(roll_pass):
     """Mean rolling velocity."""
 
@@ -52,8 +32,8 @@ def roll_force(roll_pass):
     """Roll force of the pass."""
 
 
-@RollPass.hookspec
-def roll_torque(roll_pass):
+@RollPass.Roll.hookspec
+def roll_torque(roll_pass, roll):
     """Roll torque of the pass."""
 
 
@@ -62,13 +42,13 @@ def strain_rate(roll_pass):
     """Mean strain rate in the pass."""
 
 
-@RollPass.hookspec
-def contact_length(roll_pass):
+@RollPass.Roll.hookspec
+def contact_length(roll_pass, roll):
     """Contact length in rolling direction between rolls and workpiece."""
 
 
-@RollPass.hookspec
-def contact_area(roll_pass):
+@RollPass.Roll.hookspec
+def contact_area(roll_pass, roll):
     """Area of contact between workpiece and one roll."""
 
 
@@ -100,3 +80,4 @@ def strain(roll_pass, profile):
 RollPass.plugin_manager.add_hookspecs(sys.modules[__name__])
 RollPass.Profile.plugin_manager.add_hookspecs(sys.modules[__name__])
 RollPass.OutProfile.plugin_manager.add_hookspecs(sys.modules[__name__])
+RollPass.Roll.plugin_manager.add_hookspecs(sys.modules[__name__])

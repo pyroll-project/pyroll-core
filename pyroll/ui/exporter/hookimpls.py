@@ -22,11 +22,11 @@ def columns(unit: Unit):
 def columns(unit: RollPass):
     return dict(
         roll_force=unit.roll_force,
-        roll_torque=unit.roll_torque,
+        roll_torque=unit.roll.roll_torque,
         filling_ratio=unit.out_profile.filling_ratio,
         strain_rate=unit.strain_rate,
-        contact_area=unit.contact_area,
-        contact_length=unit.contact_length
+        contact_area=unit.roll.contact_area,
+        contact_length=unit.roll.contact_length
     )
 
 

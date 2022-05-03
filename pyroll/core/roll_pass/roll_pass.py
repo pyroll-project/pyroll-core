@@ -2,8 +2,8 @@ import logging
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString
 
+from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
-from ..grooves import GrooveBase
 from ..unit import Unit
 
 
@@ -12,14 +12,15 @@ class RollPass(Unit):
 
     def __init__(
             self,
-            groove: GrooveBase,
+            roll: BaseRoll,
             label: str = "Roll Pass",
             **kwargs
     ):
         super().__init__(label)
 
-        self.groove = groove
-        """Groove of this pass' rolls."""
+        self.roll = self.Roll(roll, self)
+        """The working roll of this pass (equal upper and lower)."""
+        self.roll.roll_pass = self
 
         self.__dict__.update(kwargs)
         self.hook_args["roll_pass"] = self
@@ -29,17 +30,17 @@ class RollPass(Unit):
     def __str__(self):
         return "RollPass {label}with {groove}".format(
             label=f"'{self.label}' " if self.label else "",
-            groove=self.groove
+            groove=self.roll.groove
         )
 
     def local_height(self, z):
         """Local height of the roll gap in dependence on z."""
-        return 2 * self.groove.local_depth(z) + self.gap
+        return 2 * self.roll.groove.local_depth(z) + self.gap
 
     @property
     def upper_contour_line(self) -> LineString:
         """Contour line object of the upper working roll."""
-        return translate(self.groove.contour_line, yoff=self.gap / 2)
+        return translate(self.roll.groove.contour_line, yoff=self.gap / 2)
 
     @property
     def lower_contour_line(self) -> LineString:
@@ -50,7 +51,7 @@ class RollPass(Unit):
     def types(self):
         """A tuple of keywords to specify the shape types of this roll pass.
         Shortcut to ``self.groove.types``."""
-        return self.groove.types
+        return self.roll.groove.types
 
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
@@ -75,12 +76,21 @@ class RollPass(Unit):
 
         def __init__(self, roll_pass: 'RollPass', filling_ratio: float):
             super().__init__(roll_pass, roll_pass.in_profile)
-            self.width = roll_pass.groove.usable_width * filling_ratio
+            self.width = roll_pass.roll.groove.usable_width * filling_ratio
             self.height = roll_pass.height
-            self.groove = roll_pass.groove
+            self.groove = roll_pass.roll.groove
             self.rotation = 0
+
+    class Roll(BaseRoll):
+        """Represents a roll applied in a :py:class:`RollPass`."""
+
+        def __init__(self, template: BaseRoll, roll_pass: 'RollPass'):
+            kwargs = template.__dict__.copy()
+            kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
+            super().__init__(**kwargs)
+            self.hook_args["roll_pass"] = roll_pass
 
 
 RollPass.OutProfile.root_hooks.add("width")
 RollPass.root_hooks.add("roll_force")
-RollPass.root_hooks.add("roll_torque")
+RollPass.Roll.root_hooks.add("roll_torque")

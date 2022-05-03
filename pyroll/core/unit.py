@@ -72,7 +72,13 @@ class Unit(PluginHost):
 
             if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
                 self._log.info(f"Finished solving of {self} after {i} iterations.")
-                return self.out_profile
+
+                result = BaseProfile(**dict(
+                    e for e in self.out_profile.__dict__.items()
+                    if not e[0].startswith("_") and
+                    (e[0] not in self.out_profile.hook_result_attributes or e[0] in self.out_profile.root_hooks)
+                ))
+                return result
 
             old_values = current_values
 
@@ -84,8 +90,6 @@ class Unit(PluginHost):
         def __init__(self, unit: 'Unit', template: BaseProfile):
             kwargs = template.__dict__.copy()
             kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
-            if "hook_args" in kwargs:
-                del kwargs["hook_args"]
             super().__init__(**kwargs)
             self.hook_args["unit"] = unit
 
