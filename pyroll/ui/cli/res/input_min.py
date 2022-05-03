@@ -30,7 +30,7 @@ sequence = [
     ),
     Transport(
         label="I => II",
-        time=1
+        duration=1
     ),
     RollPass(
         label="Round II",

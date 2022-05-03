@@ -23,7 +23,7 @@ mean_roll_radius_2_lower = (297e-3 + 295e-3) / 2 / 2
 mean_roll_radius_3_upper = (280e-3 + 278e-3) / 2 / 2
 mean_roll_radius_3_lower = (278e-3 + 276e-3) / 2 / 2
 
-transport_time = 2  # average time to feed workpiece into next pass
+transport_duration = 2  # average time to feed workpiece into next pass
 
 # pass sequence
 sequence = [
@@ -42,7 +42,7 @@ sequence = [
         gap=3e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Quadrat II",
@@ -59,7 +59,7 @@ sequence = [
         gap=3e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Raute III",
@@ -76,7 +76,7 @@ sequence = [
         gap=3e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Quadrat IV",
@@ -93,7 +93,7 @@ sequence = [
         gap=3e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Oval V",
@@ -109,7 +109,7 @@ sequence = [
         gap=3e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Quadrat VI",
@@ -126,7 +126,7 @@ sequence = [
         gap=3e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Oval VII",
@@ -142,7 +142,7 @@ sequence = [
         gap=3e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Quadrat VIII",
@@ -159,7 +159,7 @@ sequence = [
         gap=3e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Oval IX",
@@ -175,7 +175,7 @@ sequence = [
         gap=1e-3,
     ),
     Transport(
-        time=transport_time
+        duration=transport_duration
     ),
     RollPass(
         label="Fertigrund Xa",

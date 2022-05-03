@@ -9,14 +9,10 @@ class Transport(Unit):
 
     def __init__(
             self,
-            time: float,
             label: str = "",
             **kwargs
     ):
         super().__init__(label)
-
-        self.time = time
-        """Duration of this transport."""
 
         self.__dict__.update(kwargs)
         self.hook_args["transport"] = self
@@ -24,9 +20,8 @@ class Transport(Unit):
         self._log = logging.getLogger(__name__)
 
     def __str__(self):
-        return "Transport {label}of duration {time:.4g}".format(
-            label=f"'{self.label}' " if self.label else "",
-            time=self.time
+        return "Transport {label}".format(
+            label=f"'{self.label}' " if self.label else ""
         )
 
     def init_solve(self, in_profile: BaseProfile):

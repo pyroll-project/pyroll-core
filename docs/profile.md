@@ -29,16 +29,12 @@ the instance. Which you may or must provide depends on the loaded plugins.
 
 > To read about the basics of hooks and plugins, see [here](plugins.md).
 
-The basic `Profile` class defines per default only one hook:
+The following hooks are defined on plain profiles per default:
 
-| Hook              | Description                                                              |
-|-------------------|--------------------------------------------------------------------------|
-| `rotated`         | Get height and width of the profile after rotation by `rotation` degree. |
-
-All hooks on `Profile` receive the profile instance as argument, so each hook has the
-signature:
-
-    hook_name(profile: Profile)
+```{eval-rst} 
+.. automodule:: pyroll.core.profile.hookspecs
+    :members:
+```
 
 ## Derived classes
 

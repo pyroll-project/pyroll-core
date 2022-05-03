@@ -60,8 +60,31 @@ The class provides several basics geometric attributes calculated from this info
 On roll passes, several basic hooks are specified and implemented. You can provide your own implementations of them and
 also specify new ones. The following are defined by default.
 
+#### `RollPass`
+
 ```{eval-rst} 
-.. automodule:: pyroll.core.roll_pass.hookspecs
+.. automodule:: pyroll.core.roll_pass.hookspecs.roll_pass
+    :members:
+```
+
+#### `RollPass.Roll`
+
+```{eval-rst} 
+.. automodule:: pyroll.core.roll_pass.hookspecs.roll
+    :members:
+```
+
+#### `RollPass.Profile`
+
+```{eval-rst} 
+.. automodule:: pyroll.core.roll_pass.hookspecs.profile
+    :members:
+```
+
+#### `RollPass.OutProfile`
+
+```{eval-rst} 
+.. automodule:: pyroll.core.roll_pass.hookspecs.out_profile
     :members:
 ```
 
@@ -86,3 +109,24 @@ def diamonds(roll_pass):
 
 
 ## Transports
+
+### Hooks
+
+> To read about the basics of hooks and plugins, see [here](plugins.md).
+
+On transports, several basic hooks are specified and implemented. You can provide your own implementations of them and
+also specify new ones. The following are defined by default.
+
+#### `Transport`
+
+```{eval-rst} 
+.. automodule:: pyroll.core.transport.hookspecs.transport
+    :members:
+```
+
+#### `Transport.OutProfile`
+
+```{eval-rst} 
+.. automodule:: pyroll.core.transport.hookspecs.out_profile
+    :members:
+```
