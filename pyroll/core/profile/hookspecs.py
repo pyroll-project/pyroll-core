@@ -1,7 +1,40 @@
 import sys
 
+from shapely.geometry import LineString, Polygon
+
 from .profile import Profile
 from ..dimensions import Dimensions
+from ..shapes import Rectangle
+
+
+@Profile.hookspec
+def upper_contour_line(profile: Profile) -> LineString:
+    """Upper bounding contour line of the profile."""
+
+
+@Profile.hookspec
+def lower_contour_line(profile: Profile) -> LineString:
+    """Lower bounding contour line of the profile."""
+
+
+@Profile.hookspec
+def cross_section(profile: Profile) -> Polygon:
+    """Cross-section polygon of the profile."""
+
+
+@Profile.hookspec
+def height(profile: Profile) -> float:
+    """Height of the profile."""
+
+
+@Profile.hookspec
+def width(profile: Profile) -> float:
+    """Width of the profile."""
+
+
+@Profile.hookspec
+def types(profile: Profile) -> float:
+    """A tuple of keywords to specify the shape types of the profile."""
 
 
 @Profile.hookspec
@@ -10,7 +43,7 @@ def rotated(profile: Profile) -> Dimensions:
 
 
 @Profile.hookspec
-def equivalent_rectangle(profile: Profile) -> Dimensions:
+def equivalent_rectangle(profile: Profile) -> Rectangle:
     """Get the dimensions of the equivalent rectangle of the rotated profile."""
 
 

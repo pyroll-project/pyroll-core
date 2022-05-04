@@ -4,7 +4,7 @@ import sys
 import numpy as np
 
 from ..profile import Profile
-from ...dimensions import Dimensions
+from ...shapes import Rectangle
 
 
 @Profile.hookimpl
@@ -15,7 +15,7 @@ def equivalent_rectangle(profile: Profile):
     eq_width = np.sqrt(profile.cross_section.area * width / height)
     eq_height = np.sqrt(profile.cross_section.area * height / width)
 
-    return Dimensions(eq_width, eq_height)
+    return Rectangle(eq_width, eq_height)
 
 
 Profile.plugin_manager.register(sys.modules[__name__])

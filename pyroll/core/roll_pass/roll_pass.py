@@ -78,8 +78,10 @@ class RollPass(Unit):
             super().__init__(roll_pass, roll_pass.in_profile)
             self.width = roll_pass.roll.groove.usable_width * filling_ratio
             self.height = roll_pass.height
-            self.groove = roll_pass.roll.groove
+            self.upper_contour_line = roll_pass.upper_contour_line
+            self.lower_contour_line = roll_pass.lower_contour_line
             self.rotation = 0
+            self.types = roll_pass.roll.groove.types
 
     class Roll(BaseRoll):
         """Represents a roll applied in a :py:class:`RollPass`."""

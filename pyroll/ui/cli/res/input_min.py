@@ -3,10 +3,8 @@ from pyroll import RollPass, Transport
 from pyroll import RoundGroove, CircularOvalGroove
 
 # initial profile
-in_profile = Profile(
-    width=30e-3,
-    height=30e-3,
-    groove=RoundGroove(r1=0, r2=15e-3, depth=15e-3),
+in_profile = Profile.round(
+    diameter=30e-3,
     temperature=1200 + 273.15,
     strain=0,
     material="C45",
