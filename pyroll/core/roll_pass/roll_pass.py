@@ -1,9 +1,14 @@
 import logging
+import math
+
+import matplotlib.pyplot as plt
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString
+from shapely.ops import clip_by_rect, linemerge
 
 from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
+from ..shapes import linemerge_if_multi
 from ..unit import Unit
 
 
@@ -56,7 +61,20 @@ class RollPass(Unit):
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
         self.out_profile = self.OutProfile(self, 0.95)
-        self.in_profile.rotation = self.in_profile_rotation
+
+        rotated_cross_section = rotate(in_profile.cross_section, angle=self.in_profile_rotation, origin=(0, 0))
+
+        self.in_profile.upper_contour_line = linemerge_if_multi(
+            clip_by_rect(rotated_cross_section.exterior, -math.inf, 0, math.inf, math.inf)
+        )
+
+        self.in_profile.lower_contour_line = linemerge_if_multi(
+            clip_by_rect(rotated_cross_section.exterior, -math.inf, -math.inf, math.inf, 0)
+        )
+
+        self.in_profile.width = rotated_cross_section.bounds[2] - rotated_cross_section.bounds[0]
+        self.in_profile.height = rotated_cross_section.bounds[3] - rotated_cross_section.bounds[1]
+        self.in_profile.delete_hook_result_attributes()
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a roll pass."""

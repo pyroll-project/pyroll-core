@@ -1,13 +1,11 @@
 from pyroll import SquareGroove, DiamondGroove, CircularOvalGroove, RoundGroove, Roll
 from pyroll import Profile
 from pyroll import RollPass, Transport
-from numpy import pi
 
 # initial profile
-in_profile = Profile(
-    width=68e-3,
-    height=68e-3,
-    groove=SquareGroove(r1=0, r2=3e-3, tip_angle=pi / 2, tip_depth=34e-3),
+in_profile = Profile.square(
+    side=45e-3,
+    corner_radius=3e-3,
     temperature=1200 + 273.15,
     strain=0,
     material="C45",
@@ -15,7 +13,7 @@ in_profile = Profile(
 )
 
 # mean roll radii
-# in reality asymmetrical, but spreading model is not able to work with
+# in reality asymmetrical, but current implementation only for symmetrical problems
 mean_roll_radius_1_upper = (328e-3 + 324e-3) / 2 / 2
 mean_roll_radius_1_lower = (324e-3 + 320e-3) / 2 / 2
 mean_roll_radius_2_upper = (299e-3 + 297e-3) / 2 / 2

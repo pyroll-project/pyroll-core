@@ -65,27 +65,20 @@ class PluginHostMeta(type):
     """
     Metaclass that provides plugin functionality to a class.
 
-    Adds the following members to a class:
-
-    ``plugin_host`` - a :py:class:`pluggy.PluginManager` instance used to maintain the plugins on this class.
-
-    ``hookspec`` - a wrapper around a :py:class:`pluggy.HookspecMarker` instance for defining new hook specifications.
-    Supports only a subset of the original arguments.
-
-    ``hookimpl`` - a wrapper around a :py:class:`pluggy.HookimplMarker` instance for defining new hook implementations.
+    Not for direct uses but through :py:class:`PluginHost` base class.
     """
 
     def __init__(cls, name, bases, dct):
         super().__init__(name, bases, dct)
 
-        cls.plugin_manager = pluggy.PluginManager(_full_name(cls))
+        cls.plugin_manager: pluggy.PluginManager = pluggy.PluginManager(_full_name(cls))
         """A :py:class:`pluggy.PluginManager` instance used to maintain the plugins on this class."""
 
-        cls.hookspec = HookspecMarker(cls)
+        cls.hookspec: HookspecMarker = HookspecMarker(cls)
         """A wrapper around a :py:class:`pluggy.HookspecMarker` instance for defining new hook specifications. 
         Supports only a subset of the original arguments."""
 
-        cls.hookimpl = HookimplMarker(cls)
+        cls.hookimpl: HookimplMarker = HookimplMarker(cls)
         """A wrapper around a :py:class:`pluggy.HookimplMarker` instance for defining new hook implementations."""
 
         cls.root_hooks: Set[str] = set()
@@ -95,6 +88,9 @@ class PluginHostMeta(type):
 class PluginHost(metaclass=PluginHostMeta):
     """
     A base class providing plugin functionality using the :py:class:`PluginHostMeta` metaclass.
+
+    The :py:meth:`get_from_hook` method is also callable through the attribute syntax (``.`` notation),
+    where the key equals the attributes name.
     """
 
     def __init__(self, hook_args: Dict[str, Any]):
@@ -157,6 +153,10 @@ class PluginHost(metaclass=PluginHostMeta):
         return result
 
     def __getattr__(self, key: str):
+        """
+        Call a hook through attribute syntax if there is no explicit attribute with that name
+        by use of :py:meth:`get_from_hook`.
+        """
         return self.get_from_hook(key)
 
     def get_root_hook_results(self):
@@ -174,7 +174,10 @@ class PluginHost(metaclass=PluginHostMeta):
         return np.asarray(results)
 
     def delete_hook_result_attributes(self):
-        """Recalls all hooks that have been called by :py:meth:`get_from_hook` so far on this instance."""
+        """
+        Deletes the attributes created by :py:meth:`get_from_hook` calls, except those present in
+        :py:attr:`root_hooks`.
+        """
 
         for hook in self.hook_result_attributes:
             if hook in self.__dict__ and hook not in self.root_hooks:

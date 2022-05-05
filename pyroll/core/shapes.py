@@ -1,6 +1,9 @@
+from typing import Iterable
+
 import numpy as np
 from shapely.affinity import rotate
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, MultiLineString
+from shapely.ops import linemerge
 
 _RECTANGLE_CORNERS = np.asarray([
     (-0.5, -0.5),
@@ -44,3 +47,9 @@ class Rectangle(Polygon):
 
     def to_polygon(self):
         return Polygon(self)
+
+
+def linemerge_if_multi(lines):
+    if isinstance(lines, MultiLineString) or isinstance(lines, Iterable):
+        return linemerge(lines)
+    return lines

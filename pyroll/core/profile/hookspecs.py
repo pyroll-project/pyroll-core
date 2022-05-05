@@ -38,13 +38,8 @@ def types(profile: Profile) -> float:
 
 
 @Profile.hookspec
-def rotated(profile: Profile) -> Dimensions:
-    """Get the dimensions of the profile rotated by its ``rotation``."""
-
-
-@Profile.hookspec
 def equivalent_rectangle(profile: Profile) -> Rectangle:
-    """Get the dimensions of the equivalent rectangle of the rotated profile."""
+    """Get the dimensions of the equivalent rectangle of the profile."""
 
 
 @Profile.hookspec

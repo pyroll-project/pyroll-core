@@ -1,6 +1,5 @@
 from ..profile import Profile
 
-from . import base_rotators
 from . import equivalent_rectangle
 
 from . import shape

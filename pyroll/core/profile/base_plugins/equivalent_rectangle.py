@@ -9,8 +9,8 @@ from ...shapes import Rectangle
 
 @Profile.hookimpl
 def equivalent_rectangle(profile: Profile):
-    width = profile.rotated.width
-    height = profile.rotated.height
+    width = profile.width
+    height = profile.height
 
     eq_width = np.sqrt(profile.cross_section.area * width / height)
     eq_height = np.sqrt(profile.cross_section.area * height / width)

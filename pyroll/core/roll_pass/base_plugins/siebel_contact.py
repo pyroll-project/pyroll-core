@@ -10,7 +10,7 @@ def contact_length(roll_pass: RollPass, roll: Roll):
     """
     Contact length between rolls and stock calculated using Siebel's approach
     """
-    height_change = roll_pass.in_profile.rotated.height - roll_pass.height
+    height_change = roll_pass.in_profile.height - roll_pass.height
     return np.sqrt(roll.min_radius * height_change - height_change ** 2 / 4)
 
 
@@ -19,7 +19,7 @@ def contact_area(roll_pass: RollPass, roll: Roll):
     """
     Contact area between rolls and stock calculated using Siebel's approach
     """
-    return (roll_pass.in_profile.rotated.width + roll_pass.out_profile.width) / 2 * roll.contact_length
+    return (roll_pass.in_profile.width + roll_pass.out_profile.width) / 2 * roll.contact_length
 
 
 RollPass.Roll.plugin_manager.register(sys.modules[__name__])

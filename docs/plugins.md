@@ -14,11 +14,17 @@ hold class attributes used to maintain plugins on that class, these are in detai
 | `hookspec`       | A wrapper around a {py:class}`pluggy.HookspecMarker` instance for defining new hook specifications. Supports only a subset of the original arguments. |
 | `hookimpl`       | A wrapper around a {py:class}`pluggy.HookimplMarker` instance for defining new hook implementations.                                                  |
 
-This is implemented using the {py:class}`pyroll.plugin_host.PluginHost` metaclass.
+This is implemented using the {py:class}`pyroll.plugin_host.PluginHost` class and the {py:class}`pyroll.plugin_host.PluginHostMeta` metaclass.
 
 ```{eval-rst}
-.. autoclass:: pyroll.plugin_host.PluginHost
+.. autoclass:: pyroll.core.plugin_host.PluginHostMeta
     :members:
+```
+
+```{eval-rst}
+.. autoclass:: pyroll.core.plugin_host.PluginHost
+    :members:
+    :special-members: __getattr__
 ```
 
 The `hookspec` markers of all classes derived from [`Unit`](units.md) ([`RollPass`](units.md#roll-passes)
