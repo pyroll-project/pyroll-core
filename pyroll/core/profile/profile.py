@@ -293,3 +293,14 @@ class Profile(PluginHost):
         intersection = vline.intersection(self.cross_section)
 
         return intersection.length
+
+    def local_width(self, y: float) -> float:
+        coords = np.array([(-1, 1), (1, 1)]) * (self.width, y)
+
+        hline = LineString(
+            coords
+        )
+
+        intersection = hline.intersection(self.cross_section)
+
+        return intersection.length
