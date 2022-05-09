@@ -112,5 +112,6 @@ class RollPass(Unit):
 
 
 RollPass.OutProfile.root_hooks.add("width")
+RollPass.OutProfile.root_hooks.add("strain")
 RollPass.root_hooks.add("roll_force")
 RollPass.Roll.root_hooks.add("roll_torque")
