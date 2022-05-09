@@ -4,7 +4,7 @@ from typing import Optional
 
 import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import Point, LinearRing, Polygon
+from shapely.geometry import Point, LinearRing, Polygon, LineString
 from shapely.ops import clip_by_rect
 
 from pyroll.core.grooves import GrooveBase
@@ -282,3 +282,14 @@ class Profile(PluginHost):
             types=["diamond"],
             **kwargs
         )
+
+    def local_height(self, z: float) -> float:
+        coords = np.array([(1, -1), (1, 1)]) * (z, self.height)
+
+        vline = LineString(
+            coords
+        )
+
+        intersection = vline.intersection(self.cross_section)
+
+        return intersection.length
