@@ -1,6 +1,6 @@
 from numpy import pi, isclose
 
-from pyroll.core.grooves import FalseRoundGroove
+from pyroll.core import FalseRoundGroove
 
 
 def test_false_round():

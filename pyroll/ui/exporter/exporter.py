@@ -3,7 +3,7 @@ import pandas as pd
 
 import pluggy
 
-from pyroll import Unit
+from pyroll.core import Unit
 
 
 class Exporter:

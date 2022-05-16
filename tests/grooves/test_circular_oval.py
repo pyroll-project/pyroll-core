@@ -1,6 +1,6 @@
 from numpy import pi, isclose
 
-from pyroll.core.grooves import CircularOvalGroove
+from pyroll.core import CircularOvalGroove
 
 
 def test_circular_oval():

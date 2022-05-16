@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyroll import Profile
+from pyroll.core import Profile
 
 
 def test_local_height():

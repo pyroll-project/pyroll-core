@@ -126,7 +126,7 @@ def solve(state):
     log = logging.getLogger(__name__)
 
     log.info("Starting solution process...")
-    pyroll.solve(state.sequence, state.in_profile)
+    pyroll.core.solve(state.sequence, state.in_profile)
     log.info("Finished solution process.")
 
 

@@ -4,8 +4,8 @@ import sys
 import pandas as pd
 
 from .exporter import Exporter
-from ... import RollPass, Unit
-from ...utils.hookutils import for_units
+from pyroll.core import RollPass, Unit
+from pyroll.utils import for_units
 
 
 @Exporter.hookimpl

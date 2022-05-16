@@ -1,8 +1,8 @@
 import sys
 from typing import List
 
-from pyroll import RollPass, Profile, Unit
-from pyroll.utils.hookutils import for_units
+from pyroll.core import RollPass, Profile, Unit
+from pyroll.utils import for_units
 from ..reporter import Reporter
 
 

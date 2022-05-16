@@ -1,7 +1,7 @@
 import pytest
 from numpy import pi, isclose
 
-from pyroll.core.grooves import SquareGroove
+from pyroll.core import SquareGroove
 
 
 def test_square_usable_width_tip_depth():

@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.ticker import FixedLocator, FixedFormatter
 
-from pyroll import Unit
+from pyroll.core import Unit
 
 
 def create_sequence_plot(units: Sequence[Unit]):

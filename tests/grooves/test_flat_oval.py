@@ -1,6 +1,6 @@
 from numpy import pi, isclose
 
-from pyroll.core.grooves import FlatOvalGroove
+from pyroll.core import FlatOvalGroove
 
 
 def test_flat_oval():

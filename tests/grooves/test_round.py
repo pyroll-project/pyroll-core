@@ -1,6 +1,6 @@
 from numpy import pi, isclose
 
-from pyroll.core.grooves import RoundGroove
+from pyroll.core import RoundGroove
 
 
 def test_round():

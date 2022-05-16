@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from numpy import pi, isclose
 
-from pyroll.core.grooves.boxes import BoxGroove
+from pyroll.core import BoxGroove
 
 
 def test_box_usable_width_ground_width():

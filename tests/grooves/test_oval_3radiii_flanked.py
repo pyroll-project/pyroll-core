@@ -1,6 +1,6 @@
 from numpy import pi, isclose
 
-from pyroll.core.grooves.ovals.oval_3radii_flanked import Oval3RadiiFlankedGroove
+from pyroll.core import Oval3RadiiFlankedGroove
 
 
 def test_oval3radii_flanked():

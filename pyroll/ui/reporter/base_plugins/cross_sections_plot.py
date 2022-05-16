@@ -3,7 +3,7 @@ from typing import Sequence
 
 import numpy as np
 
-from pyroll import RollPass, Unit
+from pyroll.core import RollPass, Unit
 from ..reporter import Reporter
 from .. import utils
 

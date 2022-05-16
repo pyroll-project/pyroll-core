@@ -5,7 +5,7 @@ from typing import List
 import pluggy
 
 from . import utils
-from pyroll import RollPass, Unit
+from pyroll.core import Unit
 
 
 def _merge_properties(hook_results):

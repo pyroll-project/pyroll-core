@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from shapely.affinity import rotate
 
-from pyroll import SquareGroove, Profile
+from pyroll.core import SquareGroove, Profile
 
 groove = SquareGroove(0, 3, tip_depth=20, tip_angle=91 / 180 * np.pi)
 

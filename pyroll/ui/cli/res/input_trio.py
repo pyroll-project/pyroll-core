@@ -1,6 +1,4 @@
-from pyroll import SquareGroove, DiamondGroove, CircularOvalGroove, RoundGroove, Roll
-from pyroll import Profile
-from pyroll import RollPass, Transport
+from pyroll.core import SquareGroove, DiamondGroove, CircularOvalGroove, RoundGroove, Roll, Profile, RollPass, Transport
 
 # initial profile
 in_profile = Profile.square(

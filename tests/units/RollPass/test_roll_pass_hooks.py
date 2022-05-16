@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from pyroll import RollPass, Roll
-from pyroll.core.grooves import RoundGroove
+from pyroll.core import RollPass, Roll
+from pyroll.core import RoundGroove
 
 groove_dummy = RoundGroove(r1=1, r2=10, depth=9)
 roll_dummy = Roll(groove=groove_dummy)

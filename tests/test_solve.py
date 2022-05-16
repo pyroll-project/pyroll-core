@@ -1,8 +1,8 @@
 import logging
 from pathlib import Path
 
-from pyroll import solve
-from pyroll.ui.reporter import Reporter
+from pyroll.core import solve
+from pyroll.ui import Reporter
 
 
 def test_solve_min(tmp_path: Path, caplog):

@@ -4,7 +4,7 @@ from typing import List, Tuple, Mapping, Any
 from matplotlib.figure import Figure
 
 from .reporter import Reporter
-from ... import Unit
+from pyroll.core import Unit
 
 
 @Reporter.hookspec()

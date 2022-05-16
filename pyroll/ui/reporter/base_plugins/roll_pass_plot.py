@@ -1,10 +1,9 @@
 import sys
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
-from shapely.affinity import rotate
 
-from pyroll import RollPass, Profile
-from pyroll.utils.hookutils import for_units
+from pyroll.core import RollPass, Profile
+from pyroll.utils import for_units
 from ..reporter import Reporter
 
 

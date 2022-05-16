@@ -1,6 +1,6 @@
 from numpy import pi, isclose
 
-from pyroll.core.grooves.boxes import ConstrictedBoxGroove
+from pyroll.core import ConstrictedBoxGroove
 
 
 def check(g):

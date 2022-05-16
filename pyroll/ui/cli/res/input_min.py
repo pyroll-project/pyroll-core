@@ -1,6 +1,4 @@
-from pyroll import Profile, Roll
-from pyroll import RollPass, Transport
-from pyroll import RoundGroove, CircularOvalGroove
+from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove
 
 # initial profile
 in_profile = Profile.round(

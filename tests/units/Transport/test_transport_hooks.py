@@ -1,6 +1,6 @@
 import pytest
 
-from pyroll import Transport
+from pyroll.core import Transport
 
 
 class Specs:

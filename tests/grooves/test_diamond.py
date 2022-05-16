@@ -1,7 +1,7 @@
 import pytest
 from numpy import pi, isclose
 
-from pyroll.core.grooves import DiamondGroove
+from pyroll.core import DiamondGroove
 
 
 def test_diamond_usable_width_tip_depth():

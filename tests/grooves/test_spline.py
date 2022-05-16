@@ -1,5 +1,5 @@
 import numpy as np
-from pyroll.core.grooves.spline import SplineGroove
+from pyroll.core import SplineGroove
 
 points = [
     (-2, 0),
