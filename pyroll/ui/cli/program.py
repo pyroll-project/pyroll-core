@@ -182,8 +182,9 @@ def export(state: State, file: Path, format: str):
 )
 @click.option(
     "-p", "--include-plugins",
-    help="Whether to include a list of all installed plugins. A package is considered as plugin for PyRoll, "
-         "if its name matches the regular expression 'pyroll.+'",
+    help="Whether to include a list of all installed plugins. "
+         "As plugins are considered: top-level packages whose name is starting with 'pyroll_' and "
+         "all packages in the 'pyroll' namespace package except 'core', 'ui' and 'utils'.",
     type=click.BOOL,
     default=True, show_default=True
 )
@@ -197,12 +198,15 @@ def create_config(file: Path, include_plugins: bool):
     content = (RES_DIR / "config.yaml").read_text()
 
     if include_plugins:
-        import pkg_resources
-        re_plugin = re.compile(r"pyroll.+")
+        import pkgutil
         plugins = [
-            dist.project_name.replace("-", "_")
-            for dist in pkg_resources.working_set
-            if re_plugin.match(dist.project_name)
+            module.name
+            for module in pkgutil.iter_modules()
+            if module.name.startswith("pyroll_")
+        ] + [
+            "pyroll." + module.name
+            for module in pkgutil.iter_modules(pyroll.__path__)
+            if module.name not in ["core", "ui", "utils"]
         ]
 
         plugins_itemized = "\n".join([f"  - {p}" for p in plugins])

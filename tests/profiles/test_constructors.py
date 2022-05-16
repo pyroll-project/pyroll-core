@@ -1,3 +1,5 @@
+import logging
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
@@ -37,11 +39,14 @@ def test_from_groove_errors():
     with pytest.raises(ValueError):
         Profile.from_groove(groove, filling=0, height=50)
 
-
 def test_from_groove_warnings(caplog):
-    """Expected to fail if ran together with CLI tests, since CLI is modifying logging, so pytest does not capture."""
+    logging.getLogger("pyroll").error("Marker Error")
+
     Profile.from_groove(groove, width=55, height=50)
     Profile.from_groove(groove, filling=1.1, gap=3)
+
+    if not caplog.records:
+        pytest.xfail("Expected to fail if ran together with CLI tests, since CLI is modifying logging, so pytest does not capture.")
 
     assert len([r for r in caplog.records if r.levelname == "WARNING" and r.msg.startswith("Encountered")]) > 1
 

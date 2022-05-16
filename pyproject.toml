@@ -12,6 +12,11 @@ license = "BSD-3-Clause"
 homepage = "https://pyroll-project.github.io/"
 repository = "https://github.com/pyroll-project/pyroll-core"
 documentation = "https://pyroll-project.github.io/modules/pyroll-core/docs/"
+packages = [
+    { include = "core", from = "pyroll" },
+    { include = "ui", from = "pyroll" },
+    { include = "utils", from = "pyroll" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"

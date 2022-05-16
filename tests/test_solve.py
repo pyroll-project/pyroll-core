@@ -1,4 +1,5 @@
 import logging
+from importlib import reload
 from pathlib import Path
 
 from pyroll.core import solve
@@ -9,6 +10,7 @@ def test_solve_min(tmp_path: Path, caplog):
     caplog.set_level(logging.DEBUG, logger="pyroll")
 
     import pyroll.ui.cli.res.input_min as input_py
+    reload(input_py)
 
     sequence = input_py.sequence
 
