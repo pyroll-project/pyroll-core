@@ -2,8 +2,9 @@ import logging
 import math
 
 import matplotlib.pyplot as plt
+import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Polygon
 from shapely.ops import clip_by_rect, linemerge
 
 from ..roll import Roll as BaseRoll
@@ -33,19 +34,31 @@ class RollPass(Unit):
         self._log = logging.getLogger(__name__)
 
     def __str__(self):
-        return "RollPass {label}with {groove}".format(
+        return "RollPass {label}with {roll}".format(
             label=f"'{self.label}' " if self.label else "",
-            groove=self.roll.groove
+            roll=self.roll
         )
 
-    def local_height(self, z):
-        """Local height of the roll gap in dependence on z."""
-        return 2 * self.roll.groove.local_depth(z) + self.gap
+    def local_height(self, z: float) -> float:
+        coords = np.array([(1, -1), (1, 1)]) * (z, self.height)
+
+        vline = LineString(
+            coords
+        )
+
+        poly = Polygon(np.concatenate([
+            self.upper_contour_line.coords,
+            self.lower_contour_line.coords
+        ]))
+
+        intersection = vline.intersection(poly)
+
+        return intersection.length
 
     @property
     def upper_contour_line(self) -> LineString:
         """Contour line object of the upper working roll."""
-        return translate(self.roll.groove.contour_line, yoff=self.gap / 2)
+        return translate(self.roll.contour_line, yoff=self.gap / 2)
 
     @property
     def lower_contour_line(self) -> LineString:
@@ -99,7 +112,7 @@ class RollPass(Unit):
             self.upper_contour_line = roll_pass.upper_contour_line
             self.lower_contour_line = roll_pass.lower_contour_line
             self.rotation = 0
-            self.types = roll_pass.roll.groove.types
+            self.types = roll_pass.types
 
     class Roll(BaseRoll):
         """Represents a roll applied in a :py:class:`RollPass`."""

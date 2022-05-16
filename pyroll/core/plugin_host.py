@@ -1,4 +1,4 @@
-from typing import Set, Dict, Any
+from typing import Set, Dict, Any, Callable, List
 
 import numpy as np
 import pluggy
@@ -103,21 +103,6 @@ class PluginHost(metaclass=PluginHostMeta):
         self.hook_result_attributes: Set[str] = set()
         """Set remembering all hooks that were called on this class, used by :py:meth:`delete_hook_result_attributes`."""
 
-    def get_hook(self, key: str):
-        """
-        Search a hook on the class of this instance or its superclasses of the name specied by ``key``.
-
-        :param str key: the name of the hook to get
-        """
-        self_type = type(self)
-
-        for t in self_type.__mro__:
-            if hasattr(t, "plugin_manager") and hasattr(t.plugin_manager.hook, key):
-                return getattr(t.plugin_manager.hook, key)
-
-        raise AttributeError(
-            f"No hook '{key}' available on '{self_type.__name__}'.")
-
     def get_from_hook(self, key: str):
         """
         Explicitly tries to get a value from a hook specified on this class.
@@ -134,9 +119,24 @@ class PluginHost(metaclass=PluginHostMeta):
         :raises AttributeError: if the hook name is not known to this class, nor to base classes
         :raises ValueError: if the hook call resulted in an infinite value
         """
+        self_type = type(self)
 
-        hook = self.get_hook(key)
-        result = hook(**self.hook_args)
+        def enumerate_hooks():
+            for t in self_type.__mro__:
+                if hasattr(t, "plugin_manager") and hasattr(t.plugin_manager.hook, key):
+                    yield getattr(t.plugin_manager.hook, key)
+
+        hooks = list(enumerate_hooks())
+
+        if not hooks:
+            raise AttributeError(f"No hook '{key}' available on '{self_type.__name__}'.")
+
+        result = None
+        for hook in hooks:
+            result = hook(**self.hook_args)
+
+            if result is not None:
+                break
 
         if result is None:
             raise AttributeError(f"Hook call for '{key}' on '{self}' resulted in None.")
