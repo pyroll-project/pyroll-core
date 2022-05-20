@@ -1,6 +1,5 @@
-from shapely.geometry import LineString
-
 from .roll import Roll
+from ..shapes import ContourLine
 
 
 @Roll.hookspec
@@ -29,5 +28,5 @@ def rotational_frequency(roll: Roll) -> float:
 
 
 @Roll.hookspec
-def contour_line(roll: Roll) -> LineString:
+def contour_line(roll: Roll) -> ContourLine:
     """Contour line of the roll's surface."""

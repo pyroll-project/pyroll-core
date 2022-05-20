@@ -2,9 +2,9 @@ from typing import Union, Tuple, Iterable, Optional
 
 import numpy as np
 import scipy.interpolate
-from shapely.geometry import LineString, Polygon
 
 from pyroll.core.grooves import GrooveBase
+from pyroll.core.shapes import ContourLine, Polygon
 
 
 class SplineGroove(GrooveBase):
@@ -49,7 +49,7 @@ class SplineGroove(GrooveBase):
         contour_points = np.insert(contour_points, 0, (-half_width * 1.1, 0), axis=0)
         contour_points = np.append(contour_points, [(half_width * 1.1, 0)], axis=0)
 
-        self._contour_line = LineString(contour_points)
+        self._contour_line = ContourLine(contour_points)
         self._cross_section = Polygon(self._contour_line)
 
         self._depth = np.max(contour_points[:, 1])
@@ -75,7 +75,7 @@ class SplineGroove(GrooveBase):
         return self._depth
 
     @property
-    def contour_line(self) -> LineString:
+    def contour_line(self) -> ContourLine:
         return self._contour_line
 
     def local_depth(self, z) -> Union[float, np.ndarray]:

@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Union, Tuple
 
 import numpy as np
-from shapely.geometry import LineString, Polygon
+
+from pyroll.core.shapes import ContourLine, Polygon
 
 
 class GrooveBase(ABC):
@@ -34,7 +35,7 @@ class GrooveBase(ABC):
 
     @property
     @abstractmethod
-    def contour_line(self) -> LineString:
+    def contour_line(self) -> ContourLine:
         """A line representing the geometry of the groove contour."""
         raise NotImplemented
 

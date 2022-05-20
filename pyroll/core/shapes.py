@@ -1,8 +1,7 @@
 from typing import Iterable
 
 import numpy as np
-from shapely.affinity import rotate
-from shapely.geometry import Polygon, MultiLineString
+import shapely.geometry as geo
 from shapely.ops import linemerge
 
 _RECTANGLE_CORNERS = np.asarray([
@@ -14,42 +13,60 @@ _RECTANGLE_CORNERS = np.asarray([
 
 
 # noinspection PyAbstractClass
-class Rectangle(Polygon):
+class Polygon(geo.Polygon):
     """
-    A special rectangular Polygon built from width and height.
-    Width and height are exposed as properties.
-
-    Rectangle objects do not support transformations,
-    since the constructor does not accept ``shell`` and ``hull`` arguments.
-    The result may not be a rectangle anymore.
-    Convert explicitly to a ``Polygon`` before using them (f.e. by using :py:meth:`to_polygon`).
+    A subclass of shapely's Polygon with some additional computed properties for convenience.
     """
 
-    def __init__(self, width: float, height: float):
-        """
-        :param width: the width of the rectangle
-        :param height: the height of the rectangle
-        """
+    @property
+    def height(self) -> float:
+        """Computes the height of the bounding box."""
+        return self.bounds[3] - self.bounds[1]
 
-        try:
-            width = float(width)
-            height = float(height)
-            points = _RECTANGLE_CORNERS * (width, height)
-            super().__init__(points)
+    @property
+    def width(self) -> float:
+        """Computes the width of the bounding box."""
+        return self.bounds[2] - self.bounds[0]
 
-            self.height = height
-            """The height of the rectangle."""
-            self.width = width
-            """The width of the rectangle."""
 
-        except TypeError as e:
-            raise TypeError("width and height must be convertible to float") from e
+def rectangle(width: float, height: float):
+    """
+    Creates an instance of :py:class:`Polygon` with rectangular shape from height and width aligned to the axes.
 
-    def to_polygon(self):
-        return Polygon(self)
+    :param width: the width of the rectangle
+    :param height: the height of the rectangle
+    """
+
+    try:
+        width = float(width)
+        height = float(height)
+
+    except TypeError as e:
+        raise TypeError("width and height must be convertible to float") from e
+
+    points = _RECTANGLE_CORNERS * (width, height)
+    rect = Polygon(points)
+
+    return rect
+
+
+class ContourLine(geo.LineString):
+    """
+    A subclass of shapely's LineString representing a contour line with some additional computed properties for convenience.
+    """
+
+    @property
+    def depth(self) -> float:
+        """Computes the height of the bounding box."""
+        return self.bounds[3] - self.bounds[1]
+
+    @property
+    def width(self) -> float:
+        """Computes the width of the bounding box."""
+        return self.bounds[2] - self.bounds[0]
 
 
 def linemerge_if_multi(lines):
-    if isinstance(lines, MultiLineString) or isinstance(lines, Iterable):
+    if isinstance(lines, geo.MultiLineString) or isinstance(lines, Iterable):
         return linemerge(lines)
     return lines

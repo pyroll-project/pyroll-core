@@ -1,6 +1,5 @@
 import sys
 from matplotlib import pyplot as plt
-from matplotlib.patches import Rectangle
 
 from pyroll.core import RollPass, Profile
 from pyroll.utils import for_units
@@ -9,15 +8,8 @@ from ..reporter import Reporter
 
 def plot_profile(ax: plt.Axes, profile: Profile, color):
     if profile is not None:
-        ax.fill(*profile.cross_section.boundary.xy, alpha=0.5,
-                color=color)
-        ax.add_artist(
-            Rectangle(
-                (-profile.equivalent_rectangle.width / 2, - profile.equivalent_rectangle.height / 2),
-                profile.equivalent_rectangle.width, profile.equivalent_rectangle.height,
-                fill=False, color=color, ls="--"
-            )
-        )
+        ax.fill(*profile.cross_section.boundary.xy, alpha=0.5, color=color)
+        ax.fill(*profile.equivalent_rectangle.boundary.xy, fill=False, color=color, ls="--")
 
 
 def plot_pass_groove_contour(ax: plt.Axes, roll_pass: RollPass):

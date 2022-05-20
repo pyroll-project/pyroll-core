@@ -1,15 +1,14 @@
 import logging
 import math
 
-import matplotlib.pyplot as plt
 import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import LineString, Polygon
-from shapely.ops import clip_by_rect, linemerge
+from shapely.geometry import LineString
+from shapely.ops import clip_by_rect
 
 from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
-from ..shapes import linemerge_if_multi
+from ..shapes import linemerge_if_multi, ContourLine, Polygon
 from ..unit import Unit
 
 
@@ -56,12 +55,12 @@ class RollPass(Unit):
         return intersection.length
 
     @property
-    def upper_contour_line(self) -> LineString:
+    def upper_contour_line(self) -> ContourLine:
         """Contour line object of the upper working roll."""
         return translate(self.roll.contour_line, yoff=self.gap / 2)
 
     @property
-    def lower_contour_line(self) -> LineString:
+    def lower_contour_line(self) -> ContourLine:
         """Contour line object of the lower working roll."""
         return rotate(self.upper_contour_line, angle=180, origin=(0, 0))
 

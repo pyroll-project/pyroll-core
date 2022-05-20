@@ -1,19 +1,16 @@
 import sys
 
-from shapely.geometry import LineString, Polygon
-
 from .profile import Profile
-from ..dimensions import Dimensions
-from ..shapes import Rectangle
+from ..shapes import ContourLine, Polygon
 
 
 @Profile.hookspec
-def upper_contour_line(profile: Profile) -> LineString:
+def upper_contour_line(profile: Profile) -> ContourLine:
     """Upper bounding contour line of the profile."""
 
 
 @Profile.hookspec
-def lower_contour_line(profile: Profile) -> LineString:
+def lower_contour_line(profile: Profile) -> ContourLine:
     """Lower bounding contour line of the profile."""
 
 
@@ -38,7 +35,7 @@ def types(profile: Profile) -> float:
 
 
 @Profile.hookspec
-def equivalent_rectangle(profile: Profile) -> Rectangle:
+def equivalent_rectangle(profile: Profile) -> Polygon:
     """Get the dimensions of the equivalent rectangle of the profile."""
 
 

@@ -1,8 +1,5 @@
 import sys
 import numpy as np
-from shapely.geometry import Polygon
-from shapely.ops import clip_by_rect
-
 from ..roll_pass import RollPass
 
 
