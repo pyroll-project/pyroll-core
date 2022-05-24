@@ -88,6 +88,12 @@ class RollPass(Unit):
         self.in_profile.height = rotated_cross_section.bounds[3] - rotated_cross_section.bounds[1]
         self.in_profile.delete_hook_result_attributes()
 
+    def get_root_hook_results(self):
+        super_results = super().get_root_hook_results()
+        roll_results = self.roll.get_root_hook_results()
+
+        return np.concatenate([super_results, roll_results], axis=0)
+
     def delete_hook_result_attributes(self):
         super().delete_hook_result_attributes()
         self.roll.delete_hook_result_attributes()
