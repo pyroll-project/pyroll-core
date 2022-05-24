@@ -88,6 +88,10 @@ class RollPass(Unit):
         self.in_profile.height = rotated_cross_section.bounds[3] - rotated_cross_section.bounds[1]
         self.in_profile.delete_hook_result_attributes()
 
+    def delete_hook_result_attributes(self):
+        super().delete_hook_result_attributes()
+        self.roll.delete_hook_result_attributes()
+
     class Profile(Unit.Profile):
         """Represents a profile in context of a roll pass."""
 
