@@ -30,6 +30,9 @@ def height(roll_pass: RollPass) -> float:
 def tip_width(roll_pass: RollPass) -> float:
     """Tip width of the pass contour."""
 
+@RollPass.hookspec
+def mean_flow_stress(roll_pass: RollPass) -> float:
+    """Mean flow stress of the material for the respected roll pass."""
 
 @RollPass.hookspec
 def roll_force(roll_pass: RollPass) -> float:

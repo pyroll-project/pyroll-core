@@ -3,11 +3,14 @@ import sys
 from ...roll import Roll
 from ..roll_pass import RollPass
 
+@RollPass.hookimpl
+def mean_flow_stress(roll_pass: RollPass):
+    return (roll_pass.in_profile.flow_stress + 2 * roll_pass.out_profile.flow_stress) / 3
+
 
 @RollPass.hookimpl
 def roll_force(roll_pass: RollPass):
-    mean_flow_stress = (roll_pass.in_profile.flow_stress + 2 * roll_pass.out_profile.flow_stress) / 3
-    return mean_flow_stress * roll_pass.roll.contact_area
+    return roll_pass.mean_flow_stress * roll_pass.roll.contact_area
 
 
 @RollPass.Roll.hookimpl
