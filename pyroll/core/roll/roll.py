@@ -8,7 +8,6 @@ class Roll(PluginHost):
             self,
             groove: GrooveBase,
             **kwargs):
-
         self.__dict__.update(kwargs)
 
         super().__init__(dict(

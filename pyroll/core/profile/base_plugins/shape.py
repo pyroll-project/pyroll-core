@@ -1,10 +1,10 @@
 import math
 
 import numpy as np
-from shapely.geometry import Polygon
 from shapely.ops import clip_by_rect
 
 from ..profile import Profile
+from ...shapes import Polygon
 
 
 @Profile.hookimpl

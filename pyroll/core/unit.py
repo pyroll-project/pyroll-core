@@ -104,3 +104,6 @@ class Unit(PluginHost):
 
         def __init__(self, unit: 'Unit'):
             super().__init__(unit, unit.in_profile)
+
+    def _repr_pretty_(self, p, cycle):
+        return super()._repr_pretty_(p, cycle)

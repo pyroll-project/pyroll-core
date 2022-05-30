@@ -121,12 +121,12 @@ class PluginHost(metaclass=PluginHostMeta):
         """
         self_type = type(self)
 
-        def enumerate_hooks():
+        def enumerate_hooks_with_key():
             for t in self_type.__mro__:
                 if hasattr(t, "plugin_manager") and hasattr(t.plugin_manager.hook, key):
                     yield getattr(t.plugin_manager.hook, key)
 
-        hooks = list(enumerate_hooks())
+        hooks = list(enumerate_hooks_with_key())
 
         if not hooks:
             raise AttributeError(f"No hook '{key}' available on '{self_type.__name__}'.")
@@ -182,3 +182,43 @@ class PluginHost(metaclass=PluginHostMeta):
         for hook in self.hook_result_attributes:
             if hook in self.__dict__ and hook not in self.root_hooks:
                 del self.__dict__[hook]
+
+    def _enumerate_hooks(self):
+        for t in type(self).__mro__:
+            if hasattr(t, "plugin_manager"):
+                yield from t.plugin_manager.hook.__dict__
+
+    def __dir__(self):
+        return list(
+            set(self.__dict__).union(self._enumerate_hooks())
+        )
+
+    def _get_repr_attrs(self):
+        return sorted(filter(
+            lambda a: not a.startswith("_"),
+            set(self.__dict__) - {"hook_args", "hook_result_attributes"} - set(PluginHost.__dict__)
+        ))
+
+    def __repr__(self):
+        return (
+                type(self).__qualname__
+                + "("
+                + ", ".join(f"{attr}={getattr(self, attr)}" for attr in self._get_repr_attrs())
+                + ")"
+        )
+
+    def _repr_pretty_(self, p, cycle):
+        if cycle:
+            p.text(
+                type(self).__qualname__ + "(...)"
+            )
+            return
+
+        with p.group(4, type(self).__qualname__ + "(", ")"):
+            p.break_()
+            for attr in self._get_repr_attrs():
+                p.text(attr)
+                p.text("=")
+                p.pretty(getattr(self, attr))
+                p.text(",")
+                p.breakable()

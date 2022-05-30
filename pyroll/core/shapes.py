@@ -28,6 +28,15 @@ class Polygon(geo.Polygon):
         """Computes the width of the bounding box."""
         return self.bounds[2] - self.bounds[0]
 
+    _repr_attrs = ["height", "width", "area", "length"]
+
+    def __repr__(self):
+        return (
+                "Polygon("
+                + ", ".join(f"{attr}={getattr(self, attr)}" for attr in self._repr_attrs)
+                + ")"
+        )
+
 
 def rectangle(width: float, height: float):
     """
@@ -64,6 +73,15 @@ class ContourLine(geo.LineString):
     def width(self) -> float:
         """Computes the width of the bounding box."""
         return self.bounds[2] - self.bounds[0]
+
+    _repr_attrs = ["depth", "width", "length"]
+
+    def __repr__(self):
+        return (
+                "ContourLine("
+                + ", ".join(f"{attr}={getattr(self, attr)}" for attr in self._repr_attrs)
+                + ")"
+        )
 
 
 def linemerge_if_multi(lines):

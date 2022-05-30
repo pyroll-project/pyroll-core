@@ -1,10 +1,7 @@
-import logging
-import sys
-
 import numpy as np
 
 from ..profile import Profile
-from ...shapes import rectangle
+from ...shapes import rectangle, Polygon
 
 
 @Profile.hookimpl
@@ -18,4 +15,11 @@ def equivalent_rectangle(profile: Profile):
     return rectangle(eq_width, eq_height)
 
 
-Profile.plugin_manager.register(sys.modules[__name__])
+@Profile.hookimpl(
+    specname="equivalent_rectangle",
+    hookwrapper=True
+)
+def equivalent_rectangle_enforce_polygon_type():
+    result = yield
+
+    result.force_result(Polygon(result.get_result()))

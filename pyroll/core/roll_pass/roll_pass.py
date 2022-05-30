@@ -32,12 +32,6 @@ class RollPass(Unit):
 
         self._log = logging.getLogger(__name__)
 
-    def __str__(self):
-        return "RollPass {label}with {roll}".format(
-            label=f"'{self.label}' " if self.label else "",
-            roll=self.roll
-        )
-
     def local_height(self, z: float) -> float:
         coords = np.array([(1, -1), (1, 1)]) * (z, self.height)
 
@@ -54,15 +48,18 @@ class RollPass(Unit):
 
         return intersection.length
 
+    def __str__(self):
+        return f"RollPass '{self.label}'"
+
     @property
     def upper_contour_line(self) -> ContourLine:
         """Contour line object of the upper working roll."""
-        return translate(self.roll.contour_line, yoff=self.gap / 2)
+        return ContourLine(translate(self.roll.contour_line, yoff=self.gap / 2))
 
     @property
     def lower_contour_line(self) -> ContourLine:
         """Contour line object of the lower working roll."""
-        return rotate(self.upper_contour_line, angle=180, origin=(0, 0))
+        return ContourLine(rotate(self.upper_contour_line, angle=180, origin=(0, 0)))
 
     @property
     def types(self):
@@ -76,13 +73,13 @@ class RollPass(Unit):
 
         rotated_cross_section = rotate(in_profile.cross_section, angle=self.in_profile_rotation, origin=(0, 0))
 
-        self.in_profile.upper_contour_line = linemerge_if_multi(
+        self.in_profile.upper_contour_line = ContourLine(linemerge_if_multi(
             clip_by_rect(rotated_cross_section.exterior, -math.inf, 0, math.inf, math.inf)
-        )
+        ))
 
-        self.in_profile.lower_contour_line = linemerge_if_multi(
+        self.in_profile.lower_contour_line = ContourLine(linemerge_if_multi(
             clip_by_rect(rotated_cross_section.exterior, -math.inf, -math.inf, math.inf, 0)
-        )
+        ))
 
         self.in_profile.width = rotated_cross_section.bounds[2] - rotated_cross_section.bounds[0]
         self.in_profile.height = rotated_cross_section.bounds[3] - rotated_cross_section.bounds[1]

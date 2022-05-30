@@ -1,5 +1,11 @@
 from .roll import Roll
+from ..grooves import GrooveBase
 from ..shapes import ContourLine
+
+
+@Roll.hookspec
+def groove(roll: Roll) -> GrooveBase:
+    """Object representing the groove shape carved into the roll."""
 
 
 @Roll.hookspec

@@ -9,6 +9,7 @@ from shapely.ops import clip_by_rect
 
 from pyroll.core.grooves import GrooveBase
 from pyroll.core.plugin_host import PluginHost
+from pyroll.core.shapes import ContourLine
 
 _log = logging.getLogger(__name__)
 
@@ -21,9 +22,6 @@ class Profile(PluginHost):
         super().__init__(dict(
             profile=self
         ))
-
-    def __str__(self):
-        return f"Profile {self.width:.4g} x {self.height:.4g} of types [{', '.join(self.types)}]"
 
     @classmethod
     def from_groove(
@@ -81,8 +79,8 @@ class Profile(PluginHost):
         lower_contour_line = translate(groove.contour_line, yoff=-gap / 2)
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
+            upper_contour_line=ContourLine(upper_contour_line),
+            lower_contour_line=ContourLine(lower_contour_line),
             height=height,
             width=width,
             types=groove.types,
@@ -124,8 +122,8 @@ class Profile(PluginHost):
         lower_contour_line = clip_by_rect(circle.boundary, -math.inf, -math.inf, math.inf, 0)
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
+            upper_contour_line=ContourLine(upper_contour_line),
+            lower_contour_line=ContourLine(lower_contour_line),
             height=diameter,
             width=diameter,
             types=["round"],
@@ -179,8 +177,8 @@ class Profile(PluginHost):
         lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
+            upper_contour_line=ContourLine(upper_contour_line),
+            lower_contour_line=ContourLine(lower_contour_line),
             height=diagonal,
             width=diagonal,
             types=["square", "diamond"],
@@ -227,8 +225,8 @@ class Profile(PluginHost):
         lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
+            upper_contour_line=ContourLine(upper_contour_line),
+            lower_contour_line=ContourLine(lower_contour_line),
             height=height,
             width=width,
             types=["box"],
@@ -275,8 +273,8 @@ class Profile(PluginHost):
         lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
+            upper_contour_line=ContourLine(upper_contour_line),
+            lower_contour_line=ContourLine(lower_contour_line),
             height=height,
             width=width,
             types=["diamond"],

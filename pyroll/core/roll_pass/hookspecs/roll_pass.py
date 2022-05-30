@@ -2,6 +2,11 @@ from ..roll_pass import RollPass
 
 
 @RollPass.hookspec
+def roll(roll_pass: RollPass) -> float:
+    """Object representing the working rolls of the roll pass."""
+
+
+@RollPass.hookspec
 def in_profile_rotation(roll_pass: RollPass) -> float:
     """Rotation of the in profile for the specified roll pass."""
 
