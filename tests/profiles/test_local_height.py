@@ -8,7 +8,7 @@ def test_local_height():
 
     fun = np.vectorize(p.local_height)
 
-    h: np.ndarray = fun(np.linspace(-11, 11, 20))
+    h: np.ndarray = fun(np.linspace(-10, 10, 20))
 
     print()
     print(h)
@@ -23,7 +23,7 @@ def test_local_width():
 
     fun = np.vectorize(p.local_width)
 
-    w: np.ndarray = fun(np.linspace(-6, 6, 20))
+    w: np.ndarray = fun(np.linspace(-5, 5, 20))
 
     print()
     print(w)
