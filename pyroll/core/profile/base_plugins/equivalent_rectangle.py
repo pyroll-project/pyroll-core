@@ -13,13 +13,3 @@ def equivalent_rectangle(profile: Profile):
     eq_height = np.sqrt(profile.cross_section.area * height / width)
 
     return rectangle(eq_width, eq_height)
-
-
-@Profile.hookimpl(
-    specname="equivalent_rectangle",
-    hookwrapper=True
-)
-def equivalent_rectangle_enforce_polygon_type():
-    result = yield
-
-    result.force_result(Polygon(result.get_result()))

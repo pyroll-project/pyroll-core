@@ -3,9 +3,9 @@ from typing import Union, Tuple
 
 import numpy as np
 from numpy import tan, sin, cos, pi, sqrt
+from shapely.geometry import LineString, Polygon
 
 from pyroll.core.grooves import GrooveBase
-from pyroll.core.shapes import ContourLine, Polygon
 
 
 class GenericElongationGroove(GrooveBase):
@@ -91,7 +91,7 @@ class GenericElongationGroove(GrooveBase):
         left_side = np.flip(right_side, axis=0).copy()
         left_side[:, 0] *= -1
 
-        self._contour_line = ContourLine(np.concatenate([left_side, right_side]))
+        self._contour_line = LineString(np.concatenate([left_side, right_side]))
         self._cross_section = Polygon(self._contour_line)
 
         self.test_plausibility()
@@ -138,7 +138,7 @@ class GenericElongationGroove(GrooveBase):
         yield self.z9, self.y9
 
     @property
-    def contour_line(self) -> ContourLine:
+    def contour_line(self) -> LineString:
         return self._contour_line
 
     @property

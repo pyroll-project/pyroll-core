@@ -1,16 +1,17 @@
 import sys
 
+from shapely.geometry import Polygon, LineString
+
 from .profile import Profile
-from ..shapes import ContourLine, Polygon
 
 
 @Profile.hookspec
-def upper_contour_line(profile: Profile) -> ContourLine:
+def upper_contour_line(profile: Profile) -> LineString:
     """Upper bounding contour line of the profile."""
 
 
 @Profile.hookspec
-def lower_contour_line(profile: Profile) -> ContourLine:
+def lower_contour_line(profile: Profile) -> LineString:
     """Lower bounding contour line of the profile."""
 
 

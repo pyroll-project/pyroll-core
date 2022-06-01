@@ -3,12 +3,12 @@ import math
 
 import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Polygon
 from shapely.ops import clip_by_rect
 
 from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
-from ..shapes import linemerge_if_multi, ContourLine, Polygon
+from ..shapes import linemerge_if_multi
 from ..unit import Unit
 
 
@@ -52,14 +52,14 @@ class RollPass(Unit):
         return f"RollPass '{self.label}'"
 
     @property
-    def upper_contour_line(self) -> ContourLine:
+    def upper_contour_line(self) -> LineString:
         """Contour line object of the upper working roll."""
-        return ContourLine(translate(self.roll.contour_line, yoff=self.gap / 2))
+        return translate(self.roll.contour_line, yoff=self.gap / 2)
 
     @property
-    def lower_contour_line(self) -> ContourLine:
+    def lower_contour_line(self) -> LineString:
         """Contour line object of the lower working roll."""
-        return ContourLine(rotate(self.upper_contour_line, angle=180, origin=(0, 0)))
+        return rotate(self.upper_contour_line, angle=180, origin=(0, 0))
 
     @property
     def types(self):
@@ -73,13 +73,13 @@ class RollPass(Unit):
 
         rotated_cross_section = rotate(in_profile.cross_section, angle=self.in_profile_rotation, origin=(0, 0))
 
-        self.in_profile.upper_contour_line = ContourLine(linemerge_if_multi(
+        self.in_profile.upper_contour_line = linemerge_if_multi(
             clip_by_rect(rotated_cross_section.exterior, -math.inf, 0, math.inf, math.inf)
-        ))
+        )
 
-        self.in_profile.lower_contour_line = ContourLine(linemerge_if_multi(
+        self.in_profile.lower_contour_line = linemerge_if_multi(
             clip_by_rect(rotated_cross_section.exterior, -math.inf, -math.inf, math.inf, 0)
-        ))
+        )
 
         self.in_profile.width = rotated_cross_section.bounds[2] - rotated_cross_section.bounds[0]
         self.in_profile.height = rotated_cross_section.bounds[3] - rotated_cross_section.bounds[1]
