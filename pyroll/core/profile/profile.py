@@ -175,14 +175,17 @@ class Profile(PluginHost):
         upper_contour_line = clip_by_rect(polygon.exterior, -math.inf, 0, math.inf, math.inf)
         lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
 
+        actual_diagonal = upper_contour_line.bounds[2] - upper_contour_line.bounds[0]
+
         return cls(
             upper_contour_line=upper_contour_line,
             lower_contour_line=lower_contour_line,
-            height=diagonal,
-            width=diagonal,
+            height=actual_diagonal,
+            width=actual_diagonal,
             types=["square", "diamond"],
             **kwargs
         )
+
 
     @classmethod
     def box(
