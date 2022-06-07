@@ -5,10 +5,7 @@ from ..roll_pass import RollPass
 
 @RollPass.OutProfile.hookimpl
 def width(roll_pass: RollPass):
-    eq_out_width = roll_pass.in_profile.equivalent_rectangle.width * roll_pass.spread
-    diff = eq_out_width - roll_pass.out_profile.equivalent_rectangle.width
-
-    return roll_pass.out_profile.width + diff
+    return roll_pass.in_profile.width + roll_pass.spread
 
 
 @RollPass.OutProfile.hookimpl
