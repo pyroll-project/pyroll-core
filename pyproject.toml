@@ -3,19 +3,26 @@ name = "pyroll"
 version = "1.0.0"
 description = "PyRoll rolling simulation framework - core library."
 authors = [
-    "Matthias Schmidtchen <matthias.schmidtchen@imf.tu-freiberg.de>",
     "Max Weiner <max.weiner@imf.tu-freiberg.de>",
     "Christoph Renzing <christoph.renzing@imf.tu-freiberg.de>",
+    "Matthias Schmidtchen <matthias.schmidtchen@imf.tu-freiberg.de>",
     "Max Stirl <max.stirl@imf.tu-freiberg.de>"
 ]
 license = "BSD-3-Clause"
-homepage = "https://pyroll-project.github.io/"
+homepage = "https://pyroll-project.github.io"
 repository = "https://github.com/pyroll-project/pyroll-core"
-documentation = "https://pyroll-project.github.io/modules/pyroll-core/docs/"
+documentation = "https://pyroll.readthedocs.io/en/latest"
 packages = [
     { include = "pyroll/core" },
     { include = "pyroll/ui" },
     { include = "pyroll/utils" }
+]
+readme = "README.md"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering"
 ]
 
 [tool.poetry.dependencies]
@@ -35,7 +42,7 @@ Shapely = "^1.8.1"
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.0"
 Sphinx = "^4.5.0"
-myst-parser = "^0.17.0"
+myst-parser = "^0.18.0"
 ipython = "^8.3.0"
 
 [tool.poetry.scripts]
