@@ -5,7 +5,7 @@ from ..roll_pass import RollPass
 
 @RollPass.OutProfile.hookimpl
 def width(roll_pass: RollPass):
-    return roll_pass.in_profile.width + roll_pass.spread
+    return roll_pass.in_profile.width * roll_pass.spread
 
 
 @RollPass.OutProfile.hookimpl
