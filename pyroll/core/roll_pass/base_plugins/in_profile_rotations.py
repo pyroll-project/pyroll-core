@@ -60,4 +60,11 @@ def box_oval(roll_pass):
     return 90
 
 
+@RollPass.hookimpl(specname="in_profile_rotation")
+@for_in_profile_types("round")
+@for_roll_pass_types("flat")
+def round_flat(roll_pass):
+    return 0
+
+
 RollPass.plugin_manager.register(sys.modules[__name__])
