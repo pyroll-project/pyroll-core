@@ -88,8 +88,11 @@ class Unit(PluginHost):
         """Represents a profile in context of a unit."""
 
         def __init__(self, unit: 'Unit', template: BaseProfile):
-            kwargs = template.__dict__.copy()
-            kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
+            kwargs = dict(
+                e for e in template.__dict__.items()
+                if not e[0].startswith("_") and
+                (e[0] not in template.hook_result_attributes or e[0] in template.root_hooks)
+            )
             super().__init__(**kwargs)
             self.hook_args["unit"] = unit
 

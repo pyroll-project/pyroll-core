@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyroll"
-version = "1.0.0"
+version = "1.0.1"
 description = "PyRoll rolling simulation framework - core library."
 authors = [
     "Max Weiner <max.weiner@imf.tu-freiberg.de>",
