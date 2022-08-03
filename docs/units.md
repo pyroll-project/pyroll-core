@@ -8,50 +8,40 @@ date: 2022-03-16
 
 Think of a rolling process as of a sequence of roll passes and intermediate times, called transports. Both are subsumed
 under the term *unit*. The `Unit` class is the base class representing this concept.
+A unit can most abstractly be considered as a black box transforming the state of a profile,
+thus taking an incoming profile instance, simulation its evolution within the unit and yielding an outgoing profile instance.
 
 It defines three attributes:
 
 | Attribute     | Description                                                               |
 |---------------|---------------------------------------------------------------------------|
 | `label`       | A label string for human identification, used in log messages and output. |
-| `in_profile`  | The profile that represents the incoming workpiece state into the unit.   |
-| `out_profile` | The profile that represents the outgoing workpiece state out of the unit. |
+| `in_profile`  | The profile that represents the incoming workpiece state of the unit.     |
+| `out_profile` | The profile that represents the outgoing workpiece state of the unit.     |
 
 Currently, two derived classes exist in the core library: [`RollPass`](units.md#roll-passes)
 and [`Transport`](units.md#transports).
 
-The unit class defines an abstract method `solve(in_profile: Profile)`, which triggers the solution procedure an accepts
-a profile object that has to be treated as the incoming profile. This object in copied and modified and made available
+The unit class defines an abstract method `solve(in_profile: Profile)`, which triggers the solution procedure and accepts
+a profile object that has to be treated as the incoming profile. This object is copied and modified and made available
 in the `in_profile` attribute by the implementations of this method.
 
-Also, it maintains hooks that should be applicable to all types of units.
+Also, the `Unit` class maintains hooks that should be applicable to all types of units.
 
 > To read about the basics of hooks and plugins, see [here](plugins.md).
 
 ## Roll Passes
 
-The roll pass is the most important unit, since deformation is happening here. It is represented by the `RollPass`
-class.
+The roll pass is the most important unit, since forming of the workpiece is happening here.
+It is represented by the `RollPass` class.
+The `RollPass` constructor takes a `Roll` object, which is defining the properties of the working rolls including the groove.
 
-The constructor takes the basic attributes of the roll pass and additional keyword arguments.
+### Rolls
 
-| Argument      | Description                                                                   |
-|---------------|-------------------------------------------------------------------------------|
-| `groove`      | The groove object defining the shape of the roll gap, see [here](grooves.md). |
-| `roll_radius` | The mean roll radius of both rolls, measured at their flat surface.           |
-| `velocity`    | Workpiece velocity in the roll pass.                                          |
-| `gap`         | The gap between the flat surfaces of the rolls.                               |
-| `label`       | A label string for human identification, used in log messages and output.     |
-
-The class provides several basics geometric attributes calculated from this information:
-
-| Attribute              | Description                                            |
-|------------------------|--------------------------------------------------------|
-| `height`               | Maximum heigth of the roll gap.                        |
-| `tip_width`            | $b_\mathrm{ks}$                                        |
-| `usable_cross_section` | Cross-section of the roll gap bounded by usable width. |
-| `tip_cross_section`    | Cross-section of the roll gap bounded by tip width.    |
-| `minimal_roll_radius`  | Roll radius minus groove depth.                        |
+Roll objects represent a working roll implemented in a rolling stand.
+The main properties are about the geometry and rotational movement of the roll.
+Rolls define the basic hooks specified below.
+With appropriate plugins, elastic deformation of the rolls during the process can be modelled.
 
 ### Hooks
 
@@ -64,6 +54,13 @@ also specify new ones. The following are defined by default.
 
 ```{eval-rst} 
 .. automodule:: pyroll.core.roll_pass.hookspecs.roll_pass
+    :members:
+```
+
+#### `Roll`
+
+```{eval-rst} 
+.. automodule:: pyroll.core.roll.hookspecs
     :members:
 ```
 
@@ -105,8 +102,6 @@ conflicts when providing more than one implementation in one file.
 def diamonds(roll_pass):
     return 90
 ```
-
-
 
 ## Transports
 

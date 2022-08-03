@@ -35,6 +35,17 @@ specified by the `-f`/`--file` option, which defaults to `./input.py`. This file
 desired. It represents the conditions of the 3-high experimental rolling stand at
 the [Institute of Metals Forming](https://tu-freiberg.de/en/fakult5/imf).
 
+### `new`
+
+Creates a new PyRoll simulation project in the directory specified by `-d/--dir`. 
+The directory will be created if not already existing.
+Creates a `config.yaml` and an `input.py` in the specified directory.
+This command is basically a shortcut for 
+
+    pyroll -c <dir>/config.yaml create-config -p -f <dir>/config.yaml create-input-py -k min -f <dir>/input.py 
+
+in a fresh or existing directory.
+
 ### `input-py`
 
 Reads input data from the file specified by the `-f`/`--file` option, which defaults to `./input.py`. Use
