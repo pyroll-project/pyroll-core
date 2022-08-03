@@ -1,5 +1,5 @@
 ---
-title: The concept of grooves in PyRoll  
+title: The concept of grooves in PyRolL  
 author: Max Weiner  
 date: 2022-08-03  
 toc: true  

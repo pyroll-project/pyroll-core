@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'PyRoll'
+project = 'PyRolL'
 copyright = '2022, Max Weiner'
 author = 'Max Weiner'
 

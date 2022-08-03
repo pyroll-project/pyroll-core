@@ -1,5 +1,5 @@
 ---
-title: Pass Sequence Units in PyRoll  
+title: Pass Sequence Units in PyRolL  
 author: Max Weiner  
 date: 2022-03-16
 ---
