@@ -81,7 +81,7 @@ For a more advanced example, representing a pass sequence at the 3-high mill at 
 pyroll create-input-py -k trio -f input.py
 ```
 
-The PyRoll command line interface resides additionally on a YAML configuration file |config.yaml|.
+The PyRoll command line interface resides additionally on a YAML configuration file `config.yaml`.
 The default file can be created using the following command:
 
 ```shell
