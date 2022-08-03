@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'PyRolL'
-copyright = '2022, Max Weiner'
+copyright = '2022, The PyRolL Project'
 author = 'Max Weiner'
 
 # The full version, including alpha/beta/rc tags
@@ -51,6 +51,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'alabaster'
+html_logo = "img/pyroll-bird.svg"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

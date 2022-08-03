@@ -1,4 +1,4 @@
-# PyRolL Documentation
+![PyRolL Logo](img/pyroll-logo.svg)
 
 PyRolL is an OpenSource rolling framework, aimed to provide a fast and extensible base for rolling simulation. The
 current focus lies on groove rolling in elongation grooves. The core packages comes with a basic set of models to allow
