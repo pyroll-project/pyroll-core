@@ -230,7 +230,7 @@ sequence = [
                 r2=4.08e-3,
                 depth=3.25e-3
             ),
-            nominal_radius=90e-3,
+            nominal_radius=85e-3,
         ),
         velocity=4.4,
         gap=1.4e-3,
