@@ -1,6 +1,6 @@
 # Data Export
 
-PyRoll includes a class capable of converting the simulation results to
+PyRolL includes a class capable of converting the simulation results to
 a [pandas](https://pandas.pydata.org/) `DataFrame` and save this to different file formats. The feature can be accessed
 by use of the CLI through the [`export`](cli.md#export) command.
 

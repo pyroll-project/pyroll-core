@@ -1,4 +1,4 @@
-# Usage of the PyRoll Command Line Interface
+# Usage of the PyRolL Command Line Interface
 
 If the `pyroll` package is installed via `pip`, a command line tool name `pyroll` is installed alongside in the system.
 
@@ -34,6 +34,17 @@ Creates a sample input script for use with the [`input-py`](#input-py) command. 
 specified by the `-f`/`--file` option, which defaults to `./input.py`. This file can be used as is and modified as
 desired. It represents the conditions of the 3-high experimental rolling stand at
 the [Institute of Metals Forming](https://tu-freiberg.de/en/fakult5/imf).
+
+### `new`
+
+Creates a new PyRolL simulation project in the directory specified by `-d/--dir`. 
+The directory will be created if not already existing.
+Creates a `config.yaml` and an `input.py` in the specified directory.
+This command is basically a shortcut for 
+
+    pyroll -c <dir>/config.yaml create-config -p -f <dir>/config.yaml create-input-py -k min -f <dir>/input.py 
+
+in a fresh or existing directory.
 
 ### `input-py`
 
@@ -124,7 +135,7 @@ the `INFO` specifiers with `DEBUG`. To avoid log pollution by the `matplotlib` p
 
 ## Python Input Format
 
-The most flexible way of defining input for PyRoll is the direct use of a python script. A script loadable by
+The most flexible way of defining input for PyRolL is the direct use of a python script. A script loadable by
 the [`input-py`](#input-py) command must define at least two variables:
 
 | Variable     | Description                                                                                                                                        |
