@@ -12,6 +12,7 @@ build:
     python: "3.9"
   jobs:
     post_create_environment:
+      - pip install poetry
       - poetry config virtualenvs.create false
       - poetry install
 
@@ -22,8 +23,3 @@ sphinx:
 # If using Sphinx, optionally build your docs in additional formats such as PDF
 formats:
   - pdf
-
-# Optionally declare the Python requirements required to build your docs
-python:
-  install:
-    - path: poetry
