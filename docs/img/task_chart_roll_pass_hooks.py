@@ -42,7 +42,7 @@ class Block(ElementCompound):
         self.drop("S")
 
 
-@pytask.mark.produces("chart_influence" + e for e in [".pdf", ".png", ".svg"])
+@pytask.mark.produces("chart_influence.svg")
 def task_chart_influence(produces: dict[Any, Path]):
     d = Drawing()
 
@@ -92,5 +92,4 @@ def task_chart_influence(produces: dict[Any, Path]):
     d += Arrow().at(force.N).to(stand.S)
     d += Arrow().at(material_flow.SW).to(temperature.NE)
 
-    for p in produces.values():
-        d.save((str(p)))
+    d.save((str(produces)))
