@@ -48,7 +48,13 @@ With appropriate plugins, elastic deformation of the rolls during the process ca
 > To read about the basics of hooks and plugins, see [here](plugins.md).
 
 On roll passes, several basic hooks are specified and implemented. You can provide your own implementations of them and
-also specify new ones. The following are defined by default.
+also specify new ones. 
+
+The figure below shows an overview over the respective classes and their hook function signature.
+
+![Classes Connected to Roll Passes and Their Hook Signatures](img/uml_roll_pass.svg)
+
+The following are defined by default.
 
 #### `RollPass`
 
@@ -110,7 +116,13 @@ def diamonds(roll_pass):
 > To read about the basics of hooks and plugins, see [here](plugins.md).
 
 On transports, several basic hooks are specified and implemented. You can provide your own implementations of them and
-also specify new ones. The following are defined by default.
+also specify new ones. 
+
+The figure below shows an overview over the respective classes and their hook function signature.
+
+![Classes Connected to Transports and Their Hook Signatures](img/uml_transport.svg)
+
+The following hooks are defined by default.
 
 #### `Transport`
 

@@ -107,5 +107,3 @@ A basic input and config file can be created in the current directory using
 ```shell
 pyroll new
 ```
-
-![](img/chart_influence.svg)
