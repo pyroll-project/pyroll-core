@@ -1,4 +1,4 @@
-For discussion regarding the roadmap see [#13](../issues/13).
+For discussion regarding the roadmap see [#13](../../issues/13).
 
 # PyRolL Core
 
