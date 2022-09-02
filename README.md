@@ -117,3 +117,7 @@ Since the project is currently in initial state, we would ask you to contact us 
 This helps to avoid unnecessary effort by you and us. Use the issue system
 or [mail us](mailto:kalibrierzentrum@imf.tu-freiberg.de). If you want to create your own plugin package, please use
 the [plugin template](https://github.com/pyroll-project/pyroll-plugin-template) and follow the instructions there.
+
+## Roadmap
+
+See the [roadmap](ROADMAP.md) for information about ongoing development and future plans.
