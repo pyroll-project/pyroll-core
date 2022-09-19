@@ -16,8 +16,24 @@ For discussion regarding the roadmap see [#13](../../issues/13).
   - distinct working rolls
   - drop symmetry assumptions in current code
 
-## Not Scheduled
-
-- 3-roll passes for wire and tubes
-
 # Plugin Packages
+
+## Rounded Sides
+
+- approximate consideration of free forming on sides of the profile
+- circular arc geometry
+- mainly by implementation of `Profile.cross_section`
+
+## Microstructure
+
+- microstructure evolution by JMAK-approaches
+- mean microstructure composition
+- recrystallization, relaxation, phase transformation
+
+## Interstand Tension
+
+- approximate consideration of interstand tensions on filling and roll force
+
+## `pyroll-integral-thermal`
+
+- introduce surface temperature estimation to existing plugin
