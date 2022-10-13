@@ -12,7 +12,7 @@ def for_materials(*keys: str):
     This decorator can be applied multiple times.
 
     :param keys: one or more string keys that represent materials this hook implementation should apply to
-    :returns: the hook result, if the value of ``profile.material`` is in ``keys``, else ``None``
+    :returns: the hook result, if one item of ``profile.material`` is in ``keys``, else ``None``
     """
 
     def decorator(func):
@@ -24,7 +24,11 @@ def for_materials(*keys: str):
         def wrapper(**kwargs):
             profile: Profile = kwargs["profile"]
             if hasattr(profile, "material"):
-                if profile.material.lower() in wrapper.for_materials:
+                if isinstance(profile.material, str):
+                    material = {profile.material.lower()}
+                else:
+                    material = {m.lower() for m in profile.material}
+                if wrapper.for_materials.intersection(material):
                     return func(**kwargs)
             return None
 
