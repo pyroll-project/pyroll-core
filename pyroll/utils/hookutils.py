@@ -50,7 +50,7 @@ def for_in_profile_types(*keys: str):
 
     def decorator(func):
         if hasattr(func, "for_in_profile_types"):
-            func.for_in_profile_types = func.for_in_profile_types.union(keys)
+            func.for_in_profile_types = func.for_in_profile_types.union(k.lower() for k in keys)
             return func
 
         @makefun.wraps(func)
@@ -60,7 +60,7 @@ def for_in_profile_types(*keys: str):
                 return func(**kwargs)
             return None
 
-        setattr(wrapper, "for_in_profile_types", set(keys))
+        setattr(wrapper, "for_in_profile_types", {k.lower() for k in keys})
 
         return wrapper
 
@@ -87,7 +87,7 @@ def for_out_profile_types(*keys: str):
 
     def decorator(func):
         if hasattr(func, "for_out_profile_types"):
-            func.for_out_profile_types = func.for_out_profile_types.union(keys)
+            func.for_out_profile_types = func.for_out_profile_types.union(k.lower() for k in keys)
             return func
 
         @makefun.wraps(func)
@@ -97,7 +97,7 @@ def for_out_profile_types(*keys: str):
                 return func(**kwargs)
             return None
 
-        setattr(wrapper, "for_out_profile_types", set(keys))
+        setattr(wrapper, "for_out_profile_types", {k.lower() for k in keys})
 
         return wrapper
 
@@ -124,7 +124,7 @@ def for_roll_pass_types(*keys: str):
 
     def decorator(func):
         if hasattr(func, "for_roll_pass_types"):
-            func.for_roll_pass_types = func.for_roll_pass_types.union(keys)
+            func.for_roll_pass_types = func.for_roll_pass_types.union(k.lower() for k in keys)
             return func
 
         @makefun.wraps(func)
@@ -134,7 +134,7 @@ def for_roll_pass_types(*keys: str):
                 return func(**kwargs)
             return None
 
-        setattr(wrapper, "for_roll_pass_types", set(keys))
+        setattr(wrapper, "for_roll_pass_types", {k.lower() for k in keys})
 
         return wrapper
 
