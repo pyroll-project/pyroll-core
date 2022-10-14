@@ -107,28 +107,22 @@ def linemerge_if_multi(lines):
     if isinstance(lines, MultiLineString) or isinstance(lines, Iterable):
         merged_line = linemerge(lines)
 
-        if isinstance(merged_line, MultiLineString) or isinstance(merged_line, Iterable):
+        if isinstance(merged_line, MultiLineString):
             logging.getLogger(__name__).warning(
                 "Discontinuous LineStrings for profile separation. Doing point wise comparison to resolve."
             )
 
-            line_lengths = [line.length for line in lines.geoms]
+            line_lengths = [line.length for line in merged_line.geoms]
             index_of_continuous_line = np.argmax(line_lengths)
-            continuous_linestring = lines[index_of_continuous_line]
+            continuous_linestring = merged_line[index_of_continuous_line]
 
-            discontinuous_lines = []
-            for i in range(len(lines)):
-                if i != index_of_continuous_line:
-                    discontinuous_lines.append(np.asarray(lines[i]))
+            discontinuous_lines = list(lines)
+            discontinuous_lines.pop(index_of_continuous_line)
 
-            points_representation_of_discontinuous_lines = []
-            for discontinuous_line in discontinuous_lines:
-                for point_coordinates in discontinuous_line:
-                    points_representation_of_discontinuous_lines.append(Point(point_coordinates))
+            points_representation_of_discontinuous_lines = [Point(p) for l in discontinuous_lines for p in l]
 
-            distances_of_points_to_continuous_line = []
-            for point in points_representation_of_discontinuous_lines:
-                distances_of_points_to_continuous_line.append(continuous_linestring.distance(point))
+            distances_of_points_to_continuous_line = [continuous_linestring.distance(p) for p in
+                                                      points_representation_of_discontinuous_lines]
 
             if max(distances_of_points_to_continuous_line) <= 10 ** -4:
                 return continuous_linestring
