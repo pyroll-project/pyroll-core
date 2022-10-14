@@ -12,7 +12,7 @@ def for_materials(*keys: str):
     This decorator can be applied multiple times.
 
     :param keys: one or more string keys that represent materials this hook implementation should apply to
-    :returns: the hook result, if the value of ``profile.material`` is in ``keys``, else ``None``
+    :returns: the hook result, if one item of ``profile.material`` is in ``keys``, else ``None``
     """
 
     def decorator(func):
@@ -24,7 +24,11 @@ def for_materials(*keys: str):
         def wrapper(**kwargs):
             profile: Profile = kwargs["profile"]
             if hasattr(profile, "material"):
-                if profile.material.lower() in wrapper.for_materials:
+                if isinstance(profile.material, str):
+                    material = {profile.material.lower()}
+                else:
+                    material = {m.lower() for m in profile.material}
+                if wrapper.for_materials.intersection(material):
                     return func(**kwargs)
             return None
 
@@ -50,7 +54,7 @@ def for_in_profile_types(*keys: str):
 
     def decorator(func):
         if hasattr(func, "for_in_profile_types"):
-            func.for_in_profile_types = func.for_in_profile_types.union(keys)
+            func.for_in_profile_types = func.for_in_profile_types.union(k.lower() for k in keys)
             return func
 
         @makefun.wraps(func)
@@ -60,7 +64,7 @@ def for_in_profile_types(*keys: str):
                 return func(**kwargs)
             return None
 
-        setattr(wrapper, "for_in_profile_types", set(keys))
+        setattr(wrapper, "for_in_profile_types", {k.lower() for k in keys})
 
         return wrapper
 
@@ -87,7 +91,7 @@ def for_out_profile_types(*keys: str):
 
     def decorator(func):
         if hasattr(func, "for_out_profile_types"):
-            func.for_out_profile_types = func.for_out_profile_types.union(keys)
+            func.for_out_profile_types = func.for_out_profile_types.union(k.lower() for k in keys)
             return func
 
         @makefun.wraps(func)
@@ -97,7 +101,7 @@ def for_out_profile_types(*keys: str):
                 return func(**kwargs)
             return None
 
-        setattr(wrapper, "for_out_profile_types", set(keys))
+        setattr(wrapper, "for_out_profile_types", {k.lower() for k in keys})
 
         return wrapper
 
@@ -124,7 +128,7 @@ def for_roll_pass_types(*keys: str):
 
     def decorator(func):
         if hasattr(func, "for_roll_pass_types"):
-            func.for_roll_pass_types = func.for_roll_pass_types.union(keys)
+            func.for_roll_pass_types = func.for_roll_pass_types.union(k.lower() for k in keys)
             return func
 
         @makefun.wraps(func)
@@ -134,7 +138,7 @@ def for_roll_pass_types(*keys: str):
                 return func(**kwargs)
             return None
 
-        setattr(wrapper, "for_roll_pass_types", set(keys))
+        setattr(wrapper, "for_roll_pass_types", {k.lower() for k in keys})
 
         return wrapper
 

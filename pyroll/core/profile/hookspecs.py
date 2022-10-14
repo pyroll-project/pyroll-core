@@ -1,4 +1,5 @@
 import sys
+from typing import Iterable, Union
 
 from shapely.geometry import Polygon, LineString
 
@@ -51,7 +52,7 @@ def temperature(profile: Profile) -> float:
 
 
 @Profile.hookspec
-def material(profile: Profile) -> str:
+def material(profile: Profile) -> Union[str, Iterable[str]]:
     """Material identifier string for use in several other hooks to get material properties."""
 
 
