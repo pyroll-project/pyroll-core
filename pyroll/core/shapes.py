@@ -120,7 +120,7 @@ def linemerge_if_multi(lines):
             discontinuous_lines = list(lines)
             discontinuous_lines.pop(index_of_continuous_line)
 
-            points_representation_of_discontinuous_lines = [Point(p) for l in discontinuous_lines for p in l]
+            points_representation_of_discontinuous_lines = [Point(p) for l in discontinuous_lines for p in l.coords]
 
             distances_of_points_to_continuous_line = [continuous_linestring.distance(p) for p in
                                                       points_representation_of_discontinuous_lines]
