@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Make a suggestion for a new feature for pyroll-core
+about: Make a suggestion for a new feature for PyRolL
 title: ''
 labels: enhancement
 assignees: ''
