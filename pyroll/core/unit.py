@@ -1,8 +1,9 @@
+import logging
 from typing import Optional, Set, Any, Dict
 
 import numpy as np
 
-from .plugin_host import PluginHost
+from .plugin_host import PluginHost, HookCaller, evaluate_and_pin_hooks
 from .profile import Profile as BaseProfile
 from .exceptions import MaxIterationCountExceededError
 
@@ -16,6 +17,8 @@ class Unit(PluginHost):
     iteration_precision = 1e-2
     """Precision of iteration break in solution loop."""
 
+    root_hooks: Set[HookCaller] = set()
+
     def __init__(self, label: str):
         super().__init__(dict(unit=self))
 
@@ -27,6 +30,8 @@ class Unit(PluginHost):
 
         self.label = label
         """Label for human identification."""
+
+        self._log = logging.getLogger(__name__)
 
     def __repr__(self):
         sep = ",\n\t"
@@ -43,16 +48,16 @@ class Unit(PluginHost):
         raise NotImplementedError
 
     def get_root_hook_results(self):
-        in_profile_results = self.in_profile.get_root_hook_results()
-        self_results = super().get_root_hook_results()
-        out_profile_results = self.out_profile.get_root_hook_results()
+        in_profile_results = evaluate_and_pin_hooks(self.in_profile, self.root_hooks)
+        self_results = evaluate_and_pin_hooks(self, self.root_hooks)
+        out_profile_results = evaluate_and_pin_hooks(self.out_profile, self.root_hooks)
 
         return np.concatenate([in_profile_results, self_results, out_profile_results], axis=0)
 
-    def delete_hook_result_attributes(self):
-        self.in_profile.delete_hook_result_attributes()
-        super().delete_hook_result_attributes()
-        self.out_profile.delete_hook_result_attributes()
+    def clear_hook_cache(self):
+        self.in_profile.clear_hook_cache()
+        super().clear_hook_cache()
+        self.out_profile.clear_hook_cache()
 
     def solve(self, in_profile: BaseProfile) -> BaseProfile:
         """
@@ -67,7 +72,7 @@ class Unit(PluginHost):
         old_values = np.nan
 
         for i in range(1, self.max_iteration_count):
-            self.delete_hook_result_attributes()
+            self.clear_hook_cache()
             current_values = self.get_root_hook_results()
 
             if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
@@ -75,8 +80,7 @@ class Unit(PluginHost):
 
                 result = BaseProfile(**dict(
                     e for e in self.out_profile.__dict__.items()
-                    if not e[0].startswith("_") and
-                    (e[0] not in self.out_profile.hook_result_attributes or e[0] in self.out_profile.root_hooks)
+                    if not e[0].startswith("_")
                 ))
                 return result
 
@@ -90,11 +94,10 @@ class Unit(PluginHost):
         def __init__(self, unit: 'Unit', template: BaseProfile):
             kwargs = dict(
                 e for e in template.__dict__.items()
-                if not e[0].startswith("_") and
-                (e[0] not in template.hook_result_attributes or e[0] in template.root_hooks)
+                if not e[0].startswith("_")
             )
             super().__init__(**kwargs)
-            self.hook_args["unit"] = unit
+            self.unit = unit
 
     class InProfile(Profile):
         """Represents an incoming profile of a unit."""
@@ -107,6 +110,3 @@ class Unit(PluginHost):
 
         def __init__(self, unit: 'Unit'):
             super().__init__(unit, unit.in_profile)
-
-    def _repr_pretty_(self, p, cycle):
-        return super()._repr_pretty_(p, cycle)

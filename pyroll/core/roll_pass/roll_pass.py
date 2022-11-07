@@ -6,6 +6,7 @@ from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 from shapely.ops import clip_by_rect
 
+from ..plugin_host import evaluate_and_pin_hooks
 from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
 from ..shapes import linemerge_if_multi
@@ -14,6 +15,10 @@ from ..unit import Unit
 
 class RollPass(Unit):
     """Represents a roll pass."""
+
+    root_hooks = {
+
+    }
 
     def __init__(
             self,
@@ -25,10 +30,8 @@ class RollPass(Unit):
 
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (equal upper and lower)."""
-        self.roll.roll_pass = self
 
         self.__dict__.update(kwargs)
-        self.hook_args["roll_pass"] = self
 
         self._log = logging.getLogger(__name__)
 
@@ -83,24 +86,24 @@ class RollPass(Unit):
 
         self.in_profile.width = rotated_cross_section.bounds[2] - rotated_cross_section.bounds[0]
         self.in_profile.height = rotated_cross_section.bounds[3] - rotated_cross_section.bounds[1]
-        self.in_profile.delete_hook_result_attributes()
+        self.in_profile.clear_hook_cache()
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
-        roll_results = self.roll.get_root_hook_results()
+        roll_results = evaluate_and_pin_hooks(self.roll, self.root_hooks)
 
         return np.concatenate([super_results, roll_results], axis=0)
 
-    def delete_hook_result_attributes(self):
-        super().delete_hook_result_attributes()
-        self.roll.delete_hook_result_attributes()
+    def clear_hook_cache(self):
+        super().clear_hook_cache()
+        self.roll.clear_hook_cache()
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a roll pass."""
 
         def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
             super().__init__(roll_pass, template)
-            self.hook_args["roll_pass"] = roll_pass
+            self.roll_pass = roll_pass
 
     class InProfile(Profile):
         """Represents an incoming profile of a roll pass."""
@@ -127,10 +130,4 @@ class RollPass(Unit):
             kwargs = template.__dict__.copy()
             kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
             super().__init__(**kwargs)
-            self.hook_args["roll_pass"] = roll_pass
-
-
-RollPass.OutProfile.root_hooks.add("width")
-RollPass.OutProfile.root_hooks.add("strain")
-RollPass.root_hooks.add("roll_force")
-RollPass.Roll.root_hooks.add("roll_torque")
+            self.roll_pass = roll_pass

@@ -7,6 +7,10 @@ from ..unit import Unit
 class Transport(Unit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
 
+    root_hooks = {
+
+    }
+
     def __init__(
             self,
             label: str = "",
@@ -15,7 +19,6 @@ class Transport(Unit):
         super().__init__(label)
 
         self.__dict__.update(kwargs)
-        self.hook_args["transport"] = self
 
         self._log = logging.getLogger(__name__)
 
@@ -33,7 +36,7 @@ class Transport(Unit):
 
         def __init__(self, transport: 'Transport', template: BaseProfile):
             super().__init__(transport, template)
-            self.hook_args["transport"] = transport
+            self.transport = transport
 
     class InProfile(Profile):
         """Represents an incoming profile of a transport unit."""
@@ -46,6 +49,3 @@ class Transport(Unit):
 
         def __init__(self, transport: 'Transport'):
             super().__init__(transport, transport.in_profile)
-
-
-Transport.OutProfile.root_hooks.add("strain")
