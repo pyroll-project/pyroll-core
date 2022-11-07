@@ -3,10 +3,10 @@ import logging
 from shapely.geometry import LineString
 
 from ..grooves import GrooveBase
-from ..plugin_host import PluginHost, Hook
+from ..hooks import HookHost, Hook
 
 
-class Roll(PluginHost):
+class Roll(HookHost):
     groove: GrooveBase = Hook()
     nominal_radius = Hook[float]()
     working_radius = Hook[float]()

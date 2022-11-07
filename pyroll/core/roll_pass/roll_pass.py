@@ -6,7 +6,7 @@ from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 from shapely.ops import clip_by_rect
 
-from ..plugin_host import evaluate_and_pin_hooks, Hook
+from ..hooks import evaluate_and_pin_hooks, Hook
 from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
 from ..shapes import linemerge_if_multi

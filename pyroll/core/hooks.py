@@ -115,7 +115,8 @@ class Hook(Generic[T]):
         del instance.__dict__[self.name]
 
 
-class PluginHostMeta(type):
+
+class HookHostMeta(type):
     """
     Metaclass that provides plugin functionality to a class.
 
@@ -131,7 +132,7 @@ class PluginHostMeta(type):
         super().__setattr__(key, value)
 
 
-class PluginHost(metaclass=PluginHostMeta):
+class HookHost(metaclass=HookHostMeta):
     """
     A base class providing plugin functionality using the :py:class:`PluginHostMeta` metaclass.
 

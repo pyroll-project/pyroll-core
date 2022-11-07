@@ -3,12 +3,12 @@ from typing import Optional, Set, Any, Dict
 
 import numpy as np
 
-from .plugin_host import PluginHost, HookCaller, evaluate_and_pin_hooks
+from .hooks import HookHost, HookCaller, evaluate_and_pin_hooks
 from .profile import Profile as BaseProfile
 from .exceptions import MaxIterationCountExceededError
 
 
-class Unit(PluginHost):
+class Unit(HookHost):
     """Base class for units in a pass sequence."""
 
     max_iteration_count = 100

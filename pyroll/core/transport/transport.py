@@ -1,6 +1,6 @@
 import logging
 
-from ..plugin_host import Hook
+from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 from ..unit import Unit
 

@@ -7,13 +7,13 @@ from shapely.affinity import translate, rotate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
 from shapely.ops import clip_by_rect
 
-from pyroll.core.grooves import GrooveBase
-from pyroll.core.plugin_host import PluginHost, Hook
+from ..grooves import GrooveBase
+from ..hooks import HookHost, Hook
 
 _log = logging.getLogger(__name__)
 
 
-class Profile(PluginHost):
+class Profile(HookHost):
     upper_contour_line = Hook[LineString]()
     lower_contour_line = Hook[LineString]()
     cross_section = Hook[Polygon]()

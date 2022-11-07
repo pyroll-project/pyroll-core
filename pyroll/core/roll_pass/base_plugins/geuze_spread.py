@@ -1,7 +1,7 @@
 import logging
 
 from ..roll_pass import RollPass
-from ...plugin_host import Hook
+from ...hooks import Hook
 
 RollPass.geuze_coefficient = Hook[float]()
 
