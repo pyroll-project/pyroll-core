@@ -10,7 +10,7 @@ def profile_props(prefix, profile: Profile):
     return {
         prefix + "height": "{:.4g}".format(profile.height),
         prefix + "width": "{:.4g}".format(profile.width),
-        prefix + "strain": "{:.4g}".format(profile.strain),
+        prefix + "strain": "{:.4g}".format(profile.equivalent_strain),
         prefix + "temperature": "{:.4g}".format(profile.temperature),
         prefix + "cross section": "{:.4g}".format(profile.cross_section.area),
         prefix + "flow stress": "{:.4g}".format(profile.flow_stress),

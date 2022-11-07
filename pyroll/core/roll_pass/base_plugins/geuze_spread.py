@@ -1,48 +1,38 @@
 import logging
 
 from ..roll_pass import RollPass
+from ...plugin_host import Hook
+
+RollPass.geuze_coefficient = Hook[float]()
 
 
-class Specs:
-    @staticmethod
-    @RollPass.hookspec
-    def geuze_coefficient(roll_pass: RollPass):
-        """Geuze spreading coefficient."""
+@RollPass.geuze_coefficient
+def geuze_coefficient(self: RollPass):
+    """Backup coefficient = 0.3"""
+    return 0.3
 
 
-class Impls:
-    @staticmethod
-    @RollPass.hookimpl
-    def geuze_coefficient(roll_pass: RollPass):
-        """Backup coefficient = 0.3"""
-        return 0.3
+@RollPass.spread
+def spread(self: RollPass):
+    """
+    Geuze spreading model: Δb = c * Δh
 
-    @staticmethod
-    @RollPass.hookimpl
-    def spread(roll_pass: RollPass):
-        """
-        Geuze spreading model: Δb = c * Δh
+    :param self: roll setup
+    :type self: Unit
+    :return: spread of the material
+    :rtype: float
+    """
+    log = logging.getLogger(__name__)
 
-        :param roll_pass: roll setup
-        :type roll_pass: Unit
-        :return: spread of the material
-        :rtype: float
-        """
-        log = logging.getLogger(__name__)
+    if not hasattr(self, "geuze_coefficient"):
+        log.warning(f"No Geuze coefficient available for {self.label}.")
+        return None
 
-        if not hasattr(roll_pass, "geuze_coefficient"):
-            log.warning(f"No Geuze coefficient available for {roll_pass.label}.")
-            return None
+    equivalent_height_change = (self.in_profile.equivalent_rectangle.height
+                                - self.out_profile.equivalent_rectangle.height)
 
-        equivalent_height_change = (roll_pass.in_profile.equivalent_rectangle.height
-                                    - roll_pass.out_profile.equivalent_rectangle.height)
+    spread = (1 + self.geuze_coefficient * equivalent_height_change
+              / self.in_profile.equivalent_rectangle.width)
 
-        spread = (1 + roll_pass.geuze_coefficient * equivalent_height_change
-                  / roll_pass.in_profile.equivalent_rectangle.width)
-
-        log.debug(f"Spread after Geuze: {spread}.")
-        return spread
-
-
-RollPass.plugin_manager.add_hookspecs(Specs())
-RollPass.plugin_manager.register(Impls())
+    log.debug(f"Spread after Geuze: {spread}.")
+    return spread

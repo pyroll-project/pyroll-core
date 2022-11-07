@@ -1,12 +1,7 @@
-import sys
-
 from ..transport import Transport
 
 
-@Transport.OutProfile.hookimpl
-def strain(transport: Transport):
+@Transport.OutProfile.equivalent_strain
+def strain(self: Transport.OutProfile):
     """Assume total recrystallization during transport."""
     return 0
-
-
-Transport.OutProfile.plugin_manager.register(sys.modules[__name__])

@@ -1,5 +1,6 @@
 import logging
 
+from ..plugin_host import Hook
 from ..profile import Profile as BaseProfile
 from ..unit import Unit
 
@@ -7,9 +8,7 @@ from ..unit import Unit
 class Transport(Unit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
 
-    root_hooks = {
-
-    }
+    duration = Hook[float]
 
     def __init__(
             self,
@@ -49,3 +48,8 @@ class Transport(Unit):
 
         def __init__(self, transport: 'Transport'):
             super().__init__(transport, transport.in_profile)
+
+
+Transport.root_hooks = {
+    Transport.OutProfile.equivalent_strain
+}

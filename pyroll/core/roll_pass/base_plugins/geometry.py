@@ -1,22 +1,18 @@
-import sys
 import numpy as np
 from ..roll_pass import RollPass
 
 
-@RollPass.hookimpl
-def tip_width(roll_pass):
-    return roll_pass.roll.groove.usable_width + roll_pass.gap / 2 / np.tan(roll_pass.roll.groove.alpha1)
+@RollPass.tip_width
+def tip_width(self):
+    return self.roll.groove.usable_width + self.gap / 2 / np.tan(self.roll.groove.alpha1)
 
 
-@RollPass.hookimpl
-def height(roll_pass):
-    return roll_pass.gap + 2 * roll_pass.roll.groove.depth
+@RollPass.height
+def height(self):
+    return self.gap + 2 * self.roll.groove.depth
 
 
-@RollPass.hookimpl
-def volume(roll_pass: RollPass):
-    return (roll_pass.in_profile.cross_section.area + 2 * roll_pass.out_profile.cross_section.area
-            ) / 3 * roll_pass.roll.contact_length
-
-
-RollPass.plugin_manager.register(sys.modules[__name__])
+@RollPass.volume
+def volume(self: RollPass):
+    return (self.in_profile.cross_section.area + 2 * self.out_profile.cross_section.area
+            ) / 3 * self.roll.contact_length

@@ -1,9 +1,11 @@
-from typing import Any, overload, Iterable
+from typing import Any, overload, Iterable, TypeVar, Generic
 
 import numpy as np
 
+T = TypeVar("T")
 
-class HookCaller:
+
+class HookCaller(Generic[T]):
     """
     Class able to retrieve a value from subsequent function results, where the first not ``None`` value is returned.
     """
@@ -27,9 +29,9 @@ class HookCaller:
             if hasattr(h, "functions"):
                 yield from h.functions
 
-    def get_result(self, instance):
+    def get_result(self, instance) -> T:
         """
-        Get the first not ``None`` result of the functions in ``self.functions`` or the cached value..
+        Get the first not ``None`` result of the functions in ``self.functions`` or the cached value.
         """
 
         for f in self.functions:
@@ -53,7 +55,7 @@ class HookCaller:
         self.add_function(func)
 
 
-class HookDescriptor:
+class Hook(Generic[T]):
     """
     Descriptor yielding the value of a hook attribute if called on instance,
     or the respective HookCaller if called on class.
@@ -65,14 +67,14 @@ class HookDescriptor:
         self._cache_name = f"_{name}_hook_cache"
 
     @overload
-    def __get__(self, instance: None, owner: type) -> HookCaller:
+    def __get__(self, instance: None, owner: type) -> HookCaller[T]:
         ...
 
     @overload
-    def __get__(self, instance: object, owner: type) -> Any:
+    def __get__(self, instance: object, owner: type) -> T:
         ...
 
-    def __get__(self, instance, owner) -> HookCaller | Any:
+    def __get__(self, instance: object, owner: type) -> HookCaller[T] | T:
         caller = owner.__dict__.get(self._caller_name, None)
 
         if caller is None:
@@ -106,10 +108,10 @@ class HookDescriptor:
 
         return result
 
-    def __set__(self, instance, value):
+    def __set__(self, instance: object, value: T) -> None:
         instance.__dict__[self.name] = value
 
-    def __delete__(self, instance):
+    def __delete__(self, instance: object) -> None:
         del instance.__dict__[self.name]
 
 
@@ -124,7 +126,7 @@ class PluginHostMeta(type):
         super().__init__(name, bases, dct)
 
     def __setattr__(self, key, value):
-        if isinstance(value, HookDescriptor):
+        if isinstance(value, Hook):
             value.__set_name__(self, key)
         super().__setattr__(key, value)
 
@@ -142,7 +144,7 @@ class PluginHost(metaclass=PluginHostMeta):
         Clears the cache of hook function results.
         """
 
-        for key in self.__dict__:
+        for key in list(self.__dict__.keys()):
             if key.endswith("_hook_cache"):
                 del self.__dict__[key]
 

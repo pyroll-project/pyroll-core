@@ -6,7 +6,7 @@ from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 from shapely.ops import clip_by_rect
 
-from ..plugin_host import evaluate_and_pin_hooks
+from ..plugin_host import evaluate_and_pin_hooks, Hook
 from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
 from ..shapes import linemerge_if_multi
@@ -16,9 +16,18 @@ from ..unit import Unit
 class RollPass(Unit):
     """Represents a roll pass."""
 
-    root_hooks = {
+    in_profile_rotation = Hook[float]()
+    gap = Hook[float]()
+    velocity = Hook[float]()
+    height = Hook[float]()
+    tip_width = Hook[float]()
+    roll_force = Hook[float]()
+    strain_rate = Hook[float]()
+    spread = Hook[float]()
+    strain_change = Hook[float]()
+    volume = Hook[float]()
 
-    }
+    mean_flow_stress = Hook[float]()
 
     def __init__(
             self,
@@ -114,6 +123,8 @@ class RollPass(Unit):
     class OutProfile(Profile):
         """Represents an outgoing profile of a roll pass."""
 
+        filling_ratio = Hook[float]()
+
         def __init__(self, roll_pass: 'RollPass', filling_ratio: float):
             super().__init__(roll_pass, roll_pass.in_profile)
             self.width = roll_pass.roll.groove.usable_width * filling_ratio
@@ -131,3 +142,11 @@ class RollPass(Unit):
             kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
             super().__init__(**kwargs)
             self.roll_pass = roll_pass
+
+
+RollPass.root_hooks = {
+    RollPass.roll_force,
+    RollPass.Roll.roll_torque,
+    RollPass.OutProfile.width,
+    RollPass.OutProfile.equivalent_strain,
+}

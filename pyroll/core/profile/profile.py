@@ -1,6 +1,6 @@
 import logging
 import math
-from typing import Optional
+from typing import Optional, Tuple, Iterable
 
 import numpy as np
 from shapely.affinity import translate, rotate
@@ -8,19 +8,28 @@ from shapely.geometry import Point, LinearRing, Polygon, LineString
 from shapely.ops import clip_by_rect
 
 from pyroll.core.grooves import GrooveBase
-from pyroll.core.plugin_host import PluginHost
+from pyroll.core.plugin_host import PluginHost, Hook
 
 _log = logging.getLogger(__name__)
 
 
 class Profile(PluginHost):
+    upper_contour_line = Hook[LineString]()
+    lower_contour_line = Hook[LineString]()
+    cross_section = Hook[Polygon]()
+    height = Hook[float]()
+    width = Hook[float]()
+    types = Hook[Tuple[str, ...]]()
+    equivalent_rectangle = Hook[Polygon]()
+    equivalent_strain = Hook[float]()
+    temperature = Hook[float]()
+    material = Hook[str | Iterable[str]]()
+    flow_stress = Hook[float]()
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
-        super().__init__(dict(
-            profile=self
-        ))
+        super().__init__()
 
     @classmethod
     def from_groove(
@@ -185,7 +194,6 @@ class Profile(PluginHost):
             types=["square", "diamond"],
             **kwargs
         )
-
 
     @classmethod
     def box(

@@ -18,9 +18,9 @@ def sequence_plot(units: Sequence[Unit]):
     units = list(units)
     if len(units) > 0:
         def gen_seq():
-            yield -0.5, units[0].in_profile.strain
+            yield -0.5, units[0].in_profile.equivalent_strain
             for i, u in enumerate(units):
-                yield i + 0.5, u.out_profile.strain
+                yield i + 0.5, u.out_profile.equivalent_strain
 
         x, y = np.transpose(
             list(gen_seq())

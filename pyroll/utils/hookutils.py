@@ -59,7 +59,7 @@ def for_in_profile_types(*keys: str):
 
         @makefun.wraps(func)
         def wrapper(**kwargs):
-            roll_pass: RollPass = kwargs["roll_pass"]
+            roll_pass: RollPass = kwargs["self"]
             if wrapper.for_in_profile_types.intersection(roll_pass.in_profile.types):
                 return func(**kwargs)
             return None
@@ -96,7 +96,7 @@ def for_out_profile_types(*keys: str):
 
         @makefun.wraps(func)
         def wrapper(**kwargs):
-            roll_pass: RollPass = kwargs["roll_pass"]
+            roll_pass: RollPass = kwargs["self"]
             if wrapper.for_out_profile_types.intersection(roll_pass.out_profile.types):
                 return func(**kwargs)
             return None
@@ -133,7 +133,7 @@ def for_roll_pass_types(*keys: str):
 
         @makefun.wraps(func)
         def wrapper(**kwargs):
-            roll_pass: RollPass = kwargs["roll_pass"]
+            roll_pass: RollPass = kwargs["self"]
             if wrapper.for_roll_pass_types.intersection(roll_pass.types):
                 return func(**kwargs)
             return None

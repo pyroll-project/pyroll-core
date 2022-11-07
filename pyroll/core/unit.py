@@ -20,7 +20,7 @@ class Unit(PluginHost):
     root_hooks: Set[HookCaller] = set()
 
     def __init__(self, label: str):
-        super().__init__(dict(unit=self))
+        super().__init__()
 
         self.in_profile: Optional[BaseProfile] = None
         """Incoming workpiece state profile."""

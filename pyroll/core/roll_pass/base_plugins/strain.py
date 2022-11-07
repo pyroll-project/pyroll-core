@@ -1,14 +1,12 @@
 import logging
-import sys
-
 import numpy as np
 
 from ..roll_pass import RollPass
 
 
-@RollPass.hookimpl
-def strain_change(roll_pass: RollPass):
-    strain_change = np.log(roll_pass.in_profile.cross_section.area / roll_pass.out_profile.cross_section.area)
+@RollPass.strain_change
+def strain_change(self: RollPass):
+    strain_change = np.log(self.in_profile.cross_section.area / self.out_profile.cross_section.area)
 
     if strain_change < 0:
         logging.getLogger(__name__).warning(
@@ -19,10 +17,6 @@ def strain_change(roll_pass: RollPass):
     return strain_change
 
 
-@RollPass.OutProfile.hookimpl
-def strain(roll_pass: RollPass):
-    return roll_pass.in_profile.strain + roll_pass.strain_change
-
-
-RollPass.plugin_manager.register(sys.modules[__name__])
-RollPass.OutProfile.plugin_manager.register(sys.modules[__name__])
+@RollPass.OutProfile.equivalent_strain
+def strain(self: RollPass.OutProfile):
+    return self.roll_pass.in_profile.equivalent_strain + self.roll_pass.strain_change
