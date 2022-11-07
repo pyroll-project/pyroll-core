@@ -29,7 +29,7 @@ class HookCaller(Generic[T]):
             if hasattr(h, "functions"):
                 yield from h.functions
 
-    def get_result(self, instance) -> T:
+    def get_result(self, instance) -> T | None:
         """
         Get the first not ``None`` result of the functions in ``self.functions`` or the cached value.
         """
@@ -38,8 +38,6 @@ class HookCaller(Generic[T]):
             result = f(instance)
             if result is not None:
                 return result
-
-        raise ValueError(f"Hook call for '{self.name}' on '{instance}' resulted in None.")
 
     def add_function(self, func):
         """
@@ -97,6 +95,8 @@ class Hook(Generic[T]):
 
         # try to get value from hook caller
         result = caller.get_result(instance)
+        if result is None:
+            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' could not provide a value.")
 
         try:
             if not np.isfinite(result).all():
@@ -114,6 +114,12 @@ class Hook(Generic[T]):
     def __delete__(self, instance: object) -> None:
         del instance.__dict__[self.name]
 
+    def __call__(self, func):
+        # Dummy method to avoid misleading "Object not callable" warnings in decorator usage.
+        # This method should not be called anyway.
+        # Actual calls will be dispatched to HookCaller.__call__() by self.__get__(),
+        # which is although not always correctly recognized by type checkers.
+        raise NotImplementedError()
 
 
 class HookHostMeta(type):

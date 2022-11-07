@@ -24,15 +24,12 @@ def spread(self: RollPass):
     """
     log = logging.getLogger(__name__)
 
-    if not hasattr(self, "geuze_coefficient"):
-        log.warning(f"No Geuze coefficient available for {self.label}.")
-        return None
+    if hasattr(self, "geuze_coefficient"):
+        equivalent_height_change = (self.in_profile.equivalent_rectangle.height
+                                    - self.out_profile.equivalent_rectangle.height)
 
-    equivalent_height_change = (self.in_profile.equivalent_rectangle.height
-                                - self.out_profile.equivalent_rectangle.height)
+        spread = (1 + self.geuze_coefficient * equivalent_height_change
+                  / self.in_profile.equivalent_rectangle.width)
 
-    spread = (1 + self.geuze_coefficient * equivalent_height_change
-              / self.in_profile.equivalent_rectangle.width)
-
-    log.debug(f"Spread after Geuze: {spread}.")
-    return spread
+        log.debug(f"Spread after Geuze: {spread}.")
+        return spread
