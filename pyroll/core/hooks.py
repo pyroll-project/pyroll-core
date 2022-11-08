@@ -1,8 +1,11 @@
+import logging
 from typing import Any, overload, Iterable, TypeVar, Generic
 
 import numpy as np
 
 T = TypeVar("T")
+
+_log = logging.getLogger(__name__)
 
 
 class HookCaller(Generic[T]):
@@ -33,7 +36,6 @@ class HookCaller(Generic[T]):
         """
         Get the first not ``None`` result of the functions in ``self.functions`` or the cached value.
         """
-
         for f in self.functions:
             result = f(instance)
             if result is not None:
@@ -94,7 +96,13 @@ class Hook(Generic[T]):
             return result
 
         # try to get value from hook caller
-        result = caller.get_result(instance)
+        try:
+            result = caller.get_result(instance)
+        except RecursionError as e:
+            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' resulted in a RecursionError. "
+                                 f"This may have one of the following reasons: missing data, interference of plugins. "
+                                 f"Double check if you have provided all necessary input data.") from e
+
         if result is None:
             raise AttributeError(f"Hook call for '{self.name}' on '{instance}' could not provide a value.")
 
