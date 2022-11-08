@@ -16,3 +16,13 @@ def height(self):
 def volume(self: RollPass):
     return (self.in_profile.cross_section.area + 2 * self.out_profile.cross_section.area
             ) / 3 * self.roll.contact_length
+
+
+@RollPass.InProfile.x
+def entry_point(self: RollPass.InProfile):
+    return -self.roll_pass.roll.contact_length
+
+
+@RollPass.OutProfile.x
+def exit_point(self: RollPass.OutProfile):
+    return 0

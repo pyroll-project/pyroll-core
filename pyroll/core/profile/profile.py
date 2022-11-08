@@ -17,14 +17,27 @@ class Profile(HookHost):
     upper_contour_line = Hook[LineString]()
     lower_contour_line = Hook[LineString]()
     cross_section = Hook[Polygon]()
-    height = Hook[float]()
-    width = Hook[float]()
     types = Hook[Tuple[str, ...]]()
     equivalent_rectangle = Hook[Polygon]()
     equivalent_strain = Hook[float]()
     temperature = Hook[float]()
     material = Hook[str | Iterable[str]]()
     flow_stress = Hook[float]()
+
+    x = Hook[float]()
+    """Spacial coordinate in rolling direction."""
+
+    t: Hook[float]()
+    """Temporal coordinate."""
+
+    velocity: Hook[float]()
+    """Mean material flow velocity."""
+
+    height = Hook[float]()
+    """Maximum height (y-direction)."""
+
+    width = Hook[float]()
+    """Maximum width (z-direction)."""
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)

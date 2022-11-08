@@ -1,15 +1,17 @@
 import logging
-from typing import Optional, Set, Any, Dict
+from typing import Optional, Set, List
 
 import numpy as np
 
-from .hooks import HookHost, HookCaller, evaluate_and_pin_hooks
-from .profile import Profile as BaseProfile
-from .exceptions import MaxIterationCountExceededError
+from ..exceptions import MaxIterationCountExceededError
+from ..hooks import HookHost, HookCaller, evaluate_and_pin_hooks, Hook
+from ..profile import Profile as BaseProfile
 
 
 class Unit(HookHost):
     """Base class for units in a pass sequence."""
+
+    profiles = Hook[List[BaseProfile]]()
 
     max_iteration_count = 100
     """Count of maximum solution loop iterations before aborting."""
@@ -110,3 +112,4 @@ class Unit(HookHost):
 
         def __init__(self, unit: 'Unit'):
             super().__init__(unit, unit.in_profile)
+
