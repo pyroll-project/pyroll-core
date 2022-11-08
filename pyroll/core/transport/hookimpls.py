@@ -10,3 +10,13 @@ def strain(self: Transport.OutProfile):
 @Transport.label
 def label(self: Transport):
     return "Transport"
+
+
+@Transport.velocity
+def velocity(self: Transport):
+    return self.in_profile.velocity
+
+
+@Transport.duration
+def duration(self: Transport):
+    return self.length / self.velocity

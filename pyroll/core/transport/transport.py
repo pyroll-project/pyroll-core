@@ -8,14 +8,20 @@ from ..unit import Unit
 class Transport(Unit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
 
-    duration = Hook[float]
+    duration = Hook[float]()
+    """Time needed to pass the transport."""
+
+    length = Hook[float]()
+    """Spacial length of the transport."""
+
+    velocity = Hook[float]()
+    """Mean velocity of material flow."""
 
     def __init__(
             self,
             **kwargs
     ):
         super().__init__()
-
         self.__dict__.update(kwargs)
         self._log = logging.getLogger(__name__)
 
