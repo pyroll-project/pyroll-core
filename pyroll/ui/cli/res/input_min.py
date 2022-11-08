@@ -4,7 +4,7 @@ from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, Circula
 in_profile = Profile.round(
     diameter=30e-3,
     temperature=1200 + 273.15,
-    equivalent_strain=0,
+    strain=0,
     material="C45",
     flow_stress=100e6
 )

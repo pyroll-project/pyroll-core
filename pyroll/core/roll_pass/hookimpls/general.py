@@ -48,8 +48,7 @@ def exit_point(self: RollPass.OutProfile):
 
 @RollPass.velocity
 def velocity(self: RollPass):
-    if hasattr(self.roll, "rotational_frequency"):
-        return self.roll.working_radius * self.roll.rotational_frequency
+    return self.roll.working_radius * self.roll.rotational_frequency
 
 
 @RollPass.Roll.contact_length
@@ -69,32 +68,54 @@ def contact_area(self: RollPass.Roll):
     return (self.roll_pass.in_profile.width + self.roll_pass.out_profile.width) / 2 * self.contact_length
 
 
-@RollPass.strain_change
-def strain_change(self: RollPass):
-    strain_change = np.log(self.in_profile.cross_section.area / self.out_profile.cross_section.area)
-
-    if strain_change < 0:
-        logging.getLogger("RollPass").warning(
-            "Negative strain change occurred. Assuming it to be zero to be able to continue iteration."
-        )
-        return 0
-
-    return strain_change
+@RollPass.Roll.center
+def center(self: RollPass.Roll):
+    return np.array([0, self.roll_pass.gap / 2 + self.nominal_radius])
 
 
-@RollPass.OutProfile.equivalent_strain
+@RollPass.draught
+def draught(self: RollPass):
+    return self.in_profile.equivalent_rectangle.height / self.out_profile.equivalent_rectangle.height
+
+
+@RollPass.spread
+def spread(self: RollPass):
+    return self.in_profile.equivalent_rectangle.height / self.out_profile.equivalent_rectangle.height
+
+
+@RollPass.elongation
+def elongation(self: RollPass):
+    return self.in_profile.cross_section.area / self.out_profile.cross_section.area
+
+
+@RollPass.log_draught
+def log_draught(self: RollPass):
+    return np.log(self.draught)
+
+
+@RollPass.log_spread
+def log_spread(self: RollPass):
+    return np.log(self.spread)
+
+
+@RollPass.log_elongation
+def log_elongation(self: RollPass):
+    return np.log(self.elongation)
+
+
+@RollPass.OutProfile.strain
 def strain(self: RollPass.OutProfile):
-    return self.roll_pass.in_profile.equivalent_strain + self.roll_pass.strain_change
+    return self.roll_pass.in_profile.strain + self.roll_pass.log_elongation
 
 
 @RollPass.strain_rate
 def strain_rate(self: RollPass):
-    return self.velocity / self.roll.contact_length * self.strain_change
+    return self.velocity / self.roll.contact_length * self.draught
 
 
 @RollPass.OutProfile.width
 def width(self: RollPass.OutProfile):
-    return self.roll_pass.in_profile.width * self.roll_pass.spread
+    return self.roll_pass.roll.groove.usable_width
 
 
 @RollPass.OutProfile.filling_ratio

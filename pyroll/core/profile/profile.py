@@ -19,11 +19,6 @@ class Profile(HookHost):
     cross_section = Hook[Polygon]()
     types = Hook[Tuple[str, ...]]()
     equivalent_rectangle = Hook[Polygon]()
-    equivalent_strain = Hook[float]()
-    temperature = Hook[float]()
-    material = Hook[str | Iterable[str]]()
-    flow_stress = Hook[float]()
-
     x = Hook[float]()
     """Spacial coordinate in rolling direction."""
 
@@ -38,6 +33,34 @@ class Profile(HookHost):
 
     width = Hook[float]()
     """Maximum width (z-direction)."""
+
+    temperature = Hook[float]()
+    """Mean temperature of the profile cross-section."""
+
+    strain = Hook[float]()
+    """Mean equivalent strain of the profile cross-section."""
+
+    flow_stress = Hook[float]()
+    """Mean flow stress of the profile material."""
+
+    elastic_modulus = Hook[float]()
+    """Mean elastic modulus of the profile material."""
+
+    poissons_ratio = Hook[float]()
+    """Mean Poisson's ratio of the profile material."""
+
+    thermal_conductivity = Hook[float]()
+    """Mean thermal conductivity of the profile material."""
+
+    thermal_capacity = Hook[float]()
+    """Mean thermal capacity of the profile material."""
+
+    density = Hook[float]()
+    """Mean density (specific weight) of the profile material."""
+
+    material = Hook[str | Iterable[str]]()
+    """String or sequence of strings classifying the material of the profile.
+    Can be used by material databases to retrieve respective data."""
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)

@@ -9,9 +9,9 @@ def profile_props(prefix, profile: Profile):
     return {
         prefix + "height": "{:.4g}".format(profile.height),
         prefix + "width": "{:.4g}".format(profile.width),
-        prefix + "strain": "{:.4g}".format(profile.equivalent_strain),
+        prefix + "strain": "{:.4g}".format(profile.strain),
         prefix + "temperature": "{:.4g}".format(profile.temperature),
-        prefix + "cross section": "{:.4g}".format(profile.cross_section.area),
+        prefix + "cross-section": "{:.4g}".format(profile.cross_section.area),
         prefix + "flow stress": "{:.4g}".format(profile.flow_stress),
     }
 
@@ -22,8 +22,9 @@ def unit_properties(unit):
         d = {
             "roll force": "{:.4g}".format(unit.roll_force),
             "roll torque": "{:.4g}".format(unit.roll.roll_torque),
-            "strain change": "{:.4g}".format(unit.strain_change),
+            "elongation": "{:.4g}".format(unit.elongation),
             "spread": "{:.4g}".format(unit.spread),
+            "draught": "{:.4g}".format(unit.draught),
             "filling ratio": "{:.3f}".format(unit.out_profile.filling_ratio),
             "strain rate": "{:.4g}".format(unit.strain_rate),
             "contact area": "{:.4g}".format(unit.roll.contact_area),

@@ -49,5 +49,5 @@ class Transport(Unit):
 
 
 Transport.root_hooks = {
-    Transport.OutProfile.equivalent_strain
+    Transport.OutProfile.strain
 }

@@ -17,17 +17,49 @@ class RollPass(Unit):
     """Represents a roll pass."""
 
     in_profile_rotation = Hook[float]()
+    """Rotation applied to the incoming profile in ° (degree)."""
+
     gap = Hook[float]()
+    """Gap between the rolls (outer surface)."""
+
     velocity = Hook[float]()
+    """Mean rolling velocity."""
+
     height = Hook[float]()
+    """Maximum height of the roll pass."""
+
     tip_width = Hook[float]()
+    """Width of the intersection of the extended groove flanks (theoretical maximum filling width)."""
+
     roll_force = Hook[float]()
-    strain_rate = Hook[float]()
-    spread = Hook[float]()
-    strain_change = Hook[float]()
-    volume = Hook[float]()
+    """Vertical roll force."""
 
     mean_flow_stress = Hook[float]()
+    """Mean value of the workpiece's flow stress within the pass."""
+
+    spread = Hook[float]()
+    """Coefficient of spread (change in width)."""
+
+    elongation = Hook[float]()
+    """Coefficient of elongation (change in length)."""
+
+    draught = Hook[float]()
+    """Coefficient of draught (change in height)."""
+
+    log_spread = Hook[float]()
+    """Log. coefficient of spread (change in width)."""
+
+    log_elongation = Hook[float]()
+    """Log. coefficient of elongation (change in length)."""
+
+    log_draught = Hook[float]()
+    """Log. coefficient of draught (change in height)."""
+
+    strain_rate = Hook[float]()
+    """Mean equivalent strain rate within the roll pass."""
+
+    volume = Hook[float]()
+    """Volume of workpiece material within the roll pass."""
 
     def __init__(
             self,
@@ -146,5 +178,5 @@ RollPass.root_hooks = {
     RollPass.roll_force,
     RollPass.Roll.roll_torque,
     RollPass.OutProfile.width,
-    RollPass.OutProfile.equivalent_strain,
+    RollPass.OutProfile.strain,
 }

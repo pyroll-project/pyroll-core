@@ -33,3 +33,8 @@ def spread(self: RollPass):
 
         log.debug(f"Spread after Geuze: {spread}.")
         return spread
+
+
+@RollPass.OutProfile.width
+def width(self: RollPass.OutProfile):
+    return self.roll_pass.in_profile.width * self.roll_pass.spread

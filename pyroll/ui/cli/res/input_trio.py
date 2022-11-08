@@ -5,7 +5,7 @@ in_profile = Profile.square(
     side=45e-3,
     corner_radius=3e-3,
     temperature=1200 + 273.15,
-    equivalent_strain=0,
+    strain=0,
     material="C45",
     flow_stress=100e6
 )
