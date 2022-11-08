@@ -12,13 +12,11 @@ class Transport(Unit):
 
     def __init__(
             self,
-            label: str = "",
             **kwargs
     ):
-        super().__init__(label)
+        super().__init__()
 
         self.__dict__.update(kwargs)
-
         self._log = logging.getLogger(__name__)
 
     def __str__(self):

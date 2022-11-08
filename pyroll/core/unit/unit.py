@@ -12,6 +12,16 @@ class Unit(HookHost):
     """Base class for units in a pass sequence."""
 
     profiles = Hook[List[BaseProfile]]()
+    """List of all profile states within the unit."""
+
+    in_profile = Hook[BaseProfile]()
+    """The state of the incoming profile."""
+
+    out_profile = Hook[BaseProfile]()
+    """The state of the outgoing profile."""
+
+    label = Hook[str]()
+    """Label for human identification."""
 
     max_iteration_count = 100
     """Count of maximum solution loop iterations before aborting."""
@@ -21,18 +31,8 @@ class Unit(HookHost):
 
     root_hooks: Set[HookCaller] = set()
 
-    def __init__(self, label: str):
+    def __init__(self):
         super().__init__()
-
-        self.in_profile: Optional[BaseProfile] = None
-        """Incoming workpiece state profile."""
-
-        self.out_profile: Optional[BaseProfile] = None
-        """Outgoing workpiece state profile."""
-
-        self.label = label
-        """Label for human identification."""
-
         self._log = logging.getLogger(__name__)
 
     def __repr__(self):
@@ -112,4 +112,3 @@ class Unit(HookHost):
 
         def __init__(self, unit: 'Unit'):
             super().__init__(unit, unit.in_profile)
-

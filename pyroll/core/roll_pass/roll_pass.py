@@ -32,16 +32,14 @@ class RollPass(Unit):
     def __init__(
             self,
             roll: BaseRoll,
-            label: str = "Roll Pass",
             **kwargs
     ):
-        super().__init__(label)
+        super().__init__()
 
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (equal upper and lower)."""
 
         self.__dict__.update(kwargs)
-
         self._log = logging.getLogger(__name__)
 
     def local_height(self, z: float) -> float:
