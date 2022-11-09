@@ -14,8 +14,7 @@ repository = "https://github.com/pyroll-project/pyroll-core"
 documentation = "https://pyroll.readthedocs.io/en/latest"
 packages = [
     { include = "pyroll/core" },
-    { include = "pyroll/ui" },
-    { include = "pyroll/utils" }
+    { include = "pyroll/ui" }
 ]
 readme = "README.md"
 classifiers = [
