@@ -16,6 +16,11 @@ def width(self: Profile):
         return np.abs(self.cross_section.bounds[2] - self.cross_section.bounds[0])
 
 
+@Profile.length
+def length(self: Profile):
+    return 0
+
+
 @Profile.equivalent_rectangle
 def equivalent_rectangle(self: Profile):
     width = self.width

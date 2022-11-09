@@ -27,6 +27,11 @@ def width(self: RollPass.OutProfile):
     return self.roll_pass.roll.groove.usable_width
 
 
+@RollPass.OutProfile.length
+def length(self: RollPass.OutProfile):
+    return self.roll_pass.elongation * self.roll_pass.in_profile.length
+
+
 @RollPass.OutProfile.filling_ratio
 def filling_ratio(self: RollPass.OutProfile):
     return self.width / self.roll_pass.roll.groove.usable_width

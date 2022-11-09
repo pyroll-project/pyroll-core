@@ -32,6 +32,9 @@ class Profile(HookHost):
     width = Hook[float]()
     """Maximum width (z-direction)."""
 
+    length = Hook[float]()
+    """Length of the workpiece (x-direction)."""
+
     temperature = Hook[float]()
     """Mean temperature of the profile cross-section."""
 

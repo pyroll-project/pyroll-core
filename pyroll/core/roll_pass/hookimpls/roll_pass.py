@@ -69,6 +69,36 @@ def log_elongation(self: RollPass):
     return np.log(self.elongation)
 
 
+@RollPass.abs_draught
+def abs_draught(self: RollPass):
+    return self.out_profile.equivalent_rectangle.height - self.in_profile.equivalent_rectangle.height
+
+
+@RollPass.abs_spread
+def abs_spread(self: RollPass):
+    return self.out_profile.equivalent_rectangle.width - self.in_profile.equivalent_rectangle.width
+
+
+@RollPass.abs_elongation
+def abs_elongation(self: RollPass):
+    return self.out_profile.length - self.in_profile.length
+
+
+@RollPass.rel_draught
+def rel_draught(self: RollPass):
+    return self.abs_draught / self.in_profile.equivalent_rectangle.heigth
+
+
+@RollPass.rel_spread
+def rel_spread(self: RollPass):
+    return self.abs_spread / self.in_profile.equivalent_rectangle.width
+
+
+@RollPass.rel_elongation
+def rel_elongation(self: RollPass):
+    return self.abs_elongation / self.in_profile.length
+
+
 @RollPass.strain_rate
 def strain_rate(self: RollPass):
     return self.velocity / self.roll.contact_length * self.draught

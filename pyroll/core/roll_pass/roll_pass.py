@@ -55,6 +55,24 @@ class RollPass(Unit):
     log_draught = Hook[float]()
     """Log. coefficient of draught (change in height)."""
 
+    abs_spread = Hook[float]()
+    """Absolute spread (change in width)."""
+
+    abs_elongation = Hook[float]()
+    """Absolute elongation (change in length)."""
+
+    abs_draught = Hook[float]()
+    """Absolute draught (change in height)."""
+
+    rel_spread = Hook[float]()
+    """Relative spread (change in width)."""
+
+    rel_elongation = Hook[float]()
+    """Relative elongation (change in length)."""
+
+    rel_draught = Hook[float]()
+    """Relative draught (change in height)."""
+
     strain_rate = Hook[float]()
     """Mean equivalent strain rate within the roll pass."""
 
@@ -167,4 +185,5 @@ RollPass.root_hooks = {
     RollPass.Roll.roll_torque,
     RollPass.OutProfile.cross_section,
     RollPass.OutProfile.strain,
+    RollPass.OutProfile.length,
 }
