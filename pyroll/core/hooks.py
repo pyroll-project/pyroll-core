@@ -120,7 +120,7 @@ class Hook(Generic[T]):
         instance.__dict__[self.name] = value
 
     def __delete__(self, instance: object) -> None:
-        del instance.__dict__[self.name]
+        instance.__dict__.pop(self.name, None)
 
     def __call__(self, func):
         # Dummy method to avoid misleading "Object not callable" warnings in decorator usage.
@@ -170,6 +170,11 @@ def evaluate_and_pin_hooks(instance: object, hooks: Iterable[HookCaller]):
             if issubclass(type(instance), h.owner):
                 result = h.get_result(instance)
                 setattr(instance, h.name, result)
-                yield result
+
+                try:
+                    if np.isfinite(result).all():
+                        yield result  # yield only numeric values
+                except TypeError:
+                    continue
 
     return list(_gen())

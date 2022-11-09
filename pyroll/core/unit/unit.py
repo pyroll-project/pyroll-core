@@ -80,10 +80,10 @@ class Unit(HookHost):
             if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
                 self._log.info(f"Finished solving of {self} after {i} iterations.")
 
-                result = BaseProfile(**dict(
-                    e for e in self.out_profile.__dict__.items()
-                    if not e[0].startswith("_")
-                ))
+                result = BaseProfile(**{
+                    k: v for k, v in self.out_profile.__dict__.items()
+                    if not k.startswith("_")
+                })
                 return result
 
             old_values = current_values

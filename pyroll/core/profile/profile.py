@@ -3,9 +3,9 @@ import math
 from typing import Optional, Tuple, Iterable
 
 import numpy as np
-from shapely.affinity import translate, rotate
+from shapely.affinity import translate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
-from shapely.ops import clip_by_rect
+from shapely.ops import clip_by_rect, unary_union
 
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
@@ -14,8 +14,6 @@ _log = logging.getLogger(__name__)
 
 
 class Profile(HookHost):
-    upper_contour_line = Hook[LineString]()
-    lower_contour_line = Hook[LineString]()
     cross_section = Hook[Polygon]()
     types = Hook[Tuple[str, ...]]()
     equivalent_rectangle = Hook[Polygon]()
@@ -64,7 +62,6 @@ class Profile(HookHost):
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
-
         super().__init__()
 
     @classmethod
@@ -122,11 +119,23 @@ class Profile(HookHost):
         upper_contour_line = translate(groove.contour_line, yoff=gap / 2)
         lower_contour_line = translate(groove.contour_line, yoff=-gap / 2)
 
+        poly = Polygon(np.concatenate([
+            upper_contour_line.coords,
+            lower_contour_line.coords
+        ]))
+
+        if (
+                # one percent tolerance to bypass discretization issues
+                - width / 2 < poly.bounds[0] * 1.01
+                or width / 2 > poly.bounds[2] * 1.01
+        ):
+            raise ValueError("Profile's width can not be larger than its contour lines."
+                             "May be caused by critical overfilling.")
+
+        polygon = clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
+
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=height,
-            width=width,
+            cross_section=polygon,
             types=groove.types,
             **kwargs
         )
@@ -149,9 +158,7 @@ class Profile(HookHost):
         :raises ValueError: if arguments are out of range
         """
 
-        if radius is not None and diameter is None:
-            diameter = 2 * radius
-        elif diameter is not None and radius is None:
+        if diameter is not None and radius is None:
             radius = diameter / 2
         else:
             raise TypeError("either 'radius' or 'diameter' must be given")
@@ -162,14 +169,8 @@ class Profile(HookHost):
         center = Point((0, 0))
         circle = center.buffer(radius)
 
-        upper_contour_line = clip_by_rect(circle.boundary, -math.inf, 0, math.inf, math.inf)
-        lower_contour_line = clip_by_rect(circle.boundary, -math.inf, -math.inf, math.inf, 0)
-
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=diameter,
-            width=diameter,
+            cross_section=circle,
             types=["round"],
             **kwargs
         )
@@ -212,21 +213,11 @@ class Profile(HookHost):
             raise ValueError("argument value(s) out of range")
 
         line = LinearRing(np.array([(1, 0), (0, 1), (-1, 0), (0, -1)]) * (diagonal / 2 - corner_radius * np.sqrt(2)))
-        if corner_radius != 0:
-            polygon = line.buffer(corner_radius)
-        else:
-            polygon = Polygon(line)
-
-        upper_contour_line = clip_by_rect(polygon.exterior, -math.inf, 0, math.inf, math.inf)
-        lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
-
-        actual_diagonal = upper_contour_line.bounds[2] - upper_contour_line.bounds[0]
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=actual_diagonal,
-            width=actual_diagonal,
+            cross_section=polygon,
             types=["square", "diamond"],
             **kwargs
         )
@@ -262,19 +253,11 @@ class Profile(HookHost):
 
         line = LinearRing(np.array([(1, -1), (1, 1), (-1, 1), (-1, -1)])
                           * (width / 2 - corner_radius, height / 2 - corner_radius))
-        if corner_radius != 0:
-            polygon = line.buffer(corner_radius)
-        else:
-            polygon = Polygon(line)
-
-        upper_contour_line = clip_by_rect(polygon.exterior, -math.inf, 0, math.inf, math.inf)
-        lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=height,
-            width=width,
+            cross_section=polygon,
             types=["box"],
             **kwargs
         )
@@ -310,19 +293,11 @@ class Profile(HookHost):
 
         line = LinearRing(np.array([(1, 0), (0, 1), (-1, 0), (0, -1)])
                           * (width / 2 - corner_radius, height / 2 - corner_radius))
-        if corner_radius != 0:
-            polygon = line.buffer(corner_radius)
-        else:
-            polygon = Polygon(line)
-
-        upper_contour_line = clip_by_rect(polygon.exterior, -math.inf, 0, math.inf, math.inf)
-        lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=height,
-            width=width,
+            cross_section=polygon,
             types=["diamond"],
             **kwargs
         )

@@ -113,18 +113,10 @@ class RollPass(Unit):
         self.in_profile = self.InProfile(self, in_profile)
         self.out_profile = self.OutProfile(self, 0.95)
 
-        rotated_cross_section = rotate(in_profile.cross_section, angle=self.in_profile_rotation, origin=(0, 0))
+        self.in_profile.cross_section = rotate(in_profile.cross_section, angle=self.in_profile_rotation, origin=(0, 0))
+        del self.in_profile.height
+        del self.in_profile.width
 
-        self.in_profile.upper_contour_line = linemerge_if_multi(
-            clip_by_rect(rotated_cross_section.exterior, -math.inf, 0, math.inf, math.inf)
-        )
-
-        self.in_profile.lower_contour_line = linemerge_if_multi(
-            clip_by_rect(rotated_cross_section.exterior, -math.inf, -math.inf, math.inf, 0)
-        )
-
-        self.in_profile.width = rotated_cross_section.bounds[2] - rotated_cross_section.bounds[0]
-        self.in_profile.height = rotated_cross_section.bounds[3] - rotated_cross_section.bounds[1]
         self.in_profile.clear_hook_cache()
 
     def get_root_hook_results(self):
@@ -157,11 +149,7 @@ class RollPass(Unit):
 
         def __init__(self, roll_pass: 'RollPass', filling_ratio: float):
             super().__init__(roll_pass, roll_pass.in_profile)
-            self.width = roll_pass.roll.groove.usable_width * filling_ratio
-            self.height = roll_pass.height
-            self.upper_contour_line = roll_pass.upper_contour_line
-            self.lower_contour_line = roll_pass.lower_contour_line
-            self.rotation = 0
+            del self.cross_section
             self.types = roll_pass.types
 
     class Roll(BaseRoll):
@@ -177,6 +165,6 @@ class RollPass(Unit):
 RollPass.root_hooks = {
     RollPass.roll_force,
     RollPass.Roll.roll_torque,
-    RollPass.OutProfile.width,
+    RollPass.OutProfile.cross_section,
     RollPass.OutProfile.strain,
 }
