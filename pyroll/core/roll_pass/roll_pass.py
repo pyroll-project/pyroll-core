@@ -111,13 +111,13 @@ class RollPass(Unit):
 
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
-        self.out_profile = self.OutProfile(self, 0.95)
 
         self.in_profile.cross_section = rotate(in_profile.cross_section, angle=self.in_profile_rotation, origin=(0, 0))
         del self.in_profile.height
         del self.in_profile.width
-
         self.in_profile.clear_hook_cache()
+
+        self.out_profile = self.OutProfile(self, 0.95)
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
