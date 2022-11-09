@@ -1,4 +1,5 @@
 import logging
+from typing import Iterable
 
 import numpy as np
 from shapely.geometry import LineString
@@ -45,6 +46,31 @@ class Roll(HookHost):
 
     center = Hook[np.ndarray]()
     """Center point of the roll as 1D array."""
+
+    temperature = Hook[float]()
+    """Mean temperature."""
+
+    yield_strength = Hook[float]()
+    """Yield strength of the roll material."""
+
+    elastic_modulus = Hook[float]()
+    """Elastic modulus of the roll material."""
+
+    poissons_ratio = Hook[float]()
+    """Poisson's ratio of the roll material."""
+
+    thermal_conductivity = Hook[float]()
+    """Thermal conductivity of the roll material."""
+
+    thermal_capacity = Hook[float]()
+    """Thermal capacity of the roll material."""
+
+    density = Hook[float]()
+    """Density (specific weight) of the roll material."""
+
+    material = Hook[str | Iterable[str]]()
+    """String or sequence of strings classifying the material of the roll.
+    Can be used by material databases to retrieve respective data."""
 
     def __init__(
             self,

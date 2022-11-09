@@ -17,6 +17,9 @@ class Transport(Unit):
     velocity = Hook[float]()
     """Mean velocity of material flow."""
 
+    environment_temperature = Hook[float]()
+    """Temperature of the surrounding atmosphere."""
+
     def __init__(
             self,
             **kwargs
@@ -55,5 +58,5 @@ class Transport(Unit):
 
 
 Transport.root_hooks = {
-    Transport.OutProfile.strain
+    Transport.OutProfile.strain,
 }

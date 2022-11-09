@@ -20,10 +20,10 @@ class Profile(HookHost):
     x = Hook[float]()
     """Spacial coordinate in rolling direction."""
 
-    t: Hook[float]()
+    t = Hook[float]()
     """Temporal coordinate."""
 
-    velocity: Hook[float]()
+    velocity = Hook[float]()
     """Mean material flow velocity."""
 
     height = Hook[float]()
