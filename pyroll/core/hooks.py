@@ -1,6 +1,7 @@
 import logging
 from abc import ABCMeta
-from typing import overload, Iterable, TypeVar, Generic, List, Generator, Any
+from typing import overload, Iterable, TypeVar, Generic, List, Generator
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -189,6 +190,9 @@ class HookHost(metaclass=HookHostMeta):
     def __attrs__(self):
         return self.__dict__ | self.__cache__
 
+    def __str__(self):
+        return type(self).__qualname__
+
     def __repr__(self):
         sep = ",\n\t"
         kwattrs = sorted(f"{name}={repr(value)}" for name, value in self.__attrs__.items() if not name.startswith("_"))
@@ -206,6 +210,21 @@ class HookHost(metaclass=HookHostMeta):
                         p.pretty(value)
                         p.text(",")
                         p.breakable()
+
+    # noinspection PyProtectedMember
+    def _repr_html_(self):
+        buf = [f"<table><tr><th colspan=2 style='text-align:center'>{str(self)}</th></tr>"]
+
+        for name, value in sorted(self.__attrs__.items()):
+            if not name.startswith("_"):
+                if hasattr(value, "_repr_html_"):
+                    r = value._repr_html_()
+                else:
+                    r = repr(value)
+                buf.append(f"<tr><td style='text-align:left'>{name}</td><td>{r}</td></tr>")
+
+        buf.append("</table>")
+        return ''.join(buf)
 
 
 def evaluate_and_pin_hooks(instance: object, hooks: Iterable[Hook]):

@@ -12,11 +12,6 @@ def out_velocity(self: Transport.OutProfile):
     return self.transport().velocity
 
 
-@Transport.label
-def label(self: Transport):
-    return "Transport"
-
-
 @Transport.velocity
 def velocity(self: Transport):
     return self.in_profile.velocity

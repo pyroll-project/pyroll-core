@@ -3,11 +3,6 @@ import numpy as np
 from ..roll_pass import RollPass
 
 
-@RollPass.label
-def label(self: RollPass):
-    return "RollPass"
-
-
 @RollPass.mean_flow_stress
 def mean_flow_stress(self: RollPass):
     return (self.in_profile.flow_stress + 2 * self.out_profile.flow_stress) / 3

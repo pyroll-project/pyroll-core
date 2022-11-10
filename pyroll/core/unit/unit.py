@@ -37,6 +37,12 @@ class Unit(HookHost):
         super().__init__()
         self._log = logging.getLogger(__name__)
 
+    def __str__(self):
+        try:
+            return type(self).__qualname__ + f" '{self.label}'"
+        except (AttributeError, RecursionError):
+            return type(self).__qualname__
+
     @abstractmethod
     def init_solve(self, in_profile: BaseProfile):
         """

@@ -14,7 +14,7 @@ class PassSequence(Unit, Sequence[Unit]):
     def __init__(self, units: Sequence[Unit]):
         super().__init__()
 
-        self.units = units
+        self.units = self.UnitsList(units)
 
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
@@ -75,3 +75,8 @@ class PassSequence(Unit, Sequence[Unit]):
 
     def __getitem__(self, index: int) -> Unit:
         return self.units.__getitem__(index)
+
+    class UnitsList(list):
+        # noinspection PyProtectedMember
+        def _repr_html_(self):
+            return "<br/>".join(v._repr_html_() for v in self)
