@@ -11,7 +11,7 @@ groove = SquareGroove(0, 3, tip_depth=20, tip_angle=91 / 180 * np.pi)
 
 
 def test_from_groove():
-    Profile.from_groove(groove, width=45, height=50)
+    Profile.from_groove(groove, width=40, height=50)
     Profile.from_groove(groove, filling=0.9, gap=3)
 
 
@@ -38,15 +38,19 @@ def test_from_groove_errors():
         Profile.from_groove(groove, width=-1, height=50)
     with pytest.raises(ValueError):
         Profile.from_groove(groove, filling=0, height=50)
+    with pytest.raises(ValueError):
+        Profile.from_groove(groove, width=55, height=50)
+
 
 def test_from_groove_warnings(caplog):
     logging.getLogger("pyroll").error("Marker Error")
 
-    Profile.from_groove(groove, width=55, height=50)
-    Profile.from_groove(groove, filling=1.1, gap=3)
+    Profile.from_groove(groove, width=45, height=50)
+    Profile.from_groove(groove, filling=1.05, gap=3)
 
     if not caplog.records:
-        pytest.xfail("Expected to fail if ran together with CLI tests, since CLI is modifying logging, so pytest does not capture.")
+        pytest.xfail(
+            "Expected to fail if ran together with CLI tests, since CLI is modifying logging, so pytest does not capture.")
 
     assert len([r for r in caplog.records if r.levelname == "WARNING" and r.msg.startswith("Encountered")]) > 1
 

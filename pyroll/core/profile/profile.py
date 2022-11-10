@@ -161,7 +161,9 @@ class Profile(HookHost):
         :raises ValueError: if arguments are out of range
         """
 
-        if diameter is not None and radius is None:
+        if radius is not None and diameter is None:
+            diameter = 2 * radius
+        elif diameter is not None and radius is None:
             radius = diameter / 2
         else:
             raise TypeError("either 'radius' or 'diameter' must be given")

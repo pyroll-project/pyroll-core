@@ -12,6 +12,4 @@ def test_dummy_plugin():
 
     solve(sequence, input_py.in_profile)
 
-    RollPass.plugin_manager.unregister(pyroll.dummy_plugin)
-
     assert sequence[0].roll_force == 42
