@@ -29,11 +29,6 @@ class Transport(Unit):
         self.__dict__.update(kwargs)
         self._log = logging.getLogger(__name__)
 
-    def __str__(self):
-        return "Transport {label}".format(
-            label=f"'{self.label}' " if self.label else ""
-        )
-
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
         self.out_profile = self.OutProfile(self)
