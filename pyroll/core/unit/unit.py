@@ -1,4 +1,5 @@
 import logging
+import weakref
 from abc import abstractmethod
 from typing import Optional, Set, List
 
@@ -35,11 +36,6 @@ class Unit(HookHost):
     def __init__(self):
         super().__init__()
         self._log = logging.getLogger(__name__)
-
-    def __repr__(self):
-        sep = ",\n\t"
-        kwattrs = sorted(f"{name}={value}" for name, value in self.__dict__.items() if not name.startswith("_"))
-        return f"{self.__class__.__name__}(\n\t{sep.join(kwattrs)}\n)"
 
     @abstractmethod
     def init_solve(self, in_profile: BaseProfile):
@@ -101,7 +97,7 @@ class Unit(HookHost):
                 if not e[0].startswith("_")
             )
             super().__init__(**kwargs)
-            self.unit = unit
+            self.unit = weakref.ref(unit)
 
     class InProfile(Profile):
         """Represents an incoming profile of a unit."""

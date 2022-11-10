@@ -1,3 +1,4 @@
+import weakref
 from collections.abc import Sequence
 from typing import overload
 
@@ -44,7 +45,7 @@ class PassSequence(Unit, Sequence[Unit]):
 
         def __init__(self, pass_sequence: 'PassSequence', template: BaseProfile):
             super().__init__(pass_sequence, template)
-            self.pass_sequence = pass_sequence
+            self.pass_sequence = weakref.ref(pass_sequence)
 
     class InProfile(Profile):
         """Represents an incoming profile of a pass sequence unit."""

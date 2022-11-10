@@ -1,6 +1,6 @@
 import logging
 from abc import ABCMeta
-from typing import overload, Iterable, TypeVar, Generic, List, Generator
+from typing import overload, Iterable, TypeVar, Generic, List, Generator, Any
 
 import numpy as np
 
@@ -42,7 +42,6 @@ class Hook(Generic[T]):
     def __set_name__(self, owner, name):
         self.name = name
         self.owner = owner
-        self._cache_name = f"_{name}_hook_cache"
         self._functions = []
 
     @overload
@@ -50,10 +49,10 @@ class Hook(Generic[T]):
         ...
 
     @overload
-    def __get__(self, instance: object, owner: type) -> T:
+    def __get__(self, instance: 'HookHost', owner: type) -> T:
         ...
 
-    def __get__(self, instance: object, owner: type) -> T | 'Hook[T]':
+    def __get__(self, instance: 'HookHost', owner: type) -> T | 'Hook[T]':
 
         if self.owner != owner:
             # create distinct instance on subclass
@@ -70,7 +69,7 @@ class Hook(Generic[T]):
             return result
 
         # try to get cached value
-        result = instance.__dict__.get(self._cache_name, None)
+        result = instance.__cache__.get(self.name, None)
         if result is not None:
             return result
 
@@ -91,7 +90,7 @@ class Hook(Generic[T]):
         except TypeError:
             pass  # only numeric types can be tested for finiteness, for others it is meaningless
 
-        instance.__dict__[self._cache_name] = result
+        instance.__cache__[self.name] = result
 
         return result
 
@@ -177,10 +176,18 @@ class HookHost(metaclass=HookHostMeta):
     where the key equals the attributes name.
     """
 
+    def __init__(self):
+        self.__cache__ = dict()
+
     def clear_hook_cache(self):
         """
         Clears the cache of hook function results.
         """
+        self.__cache__.clear()
+
+    @property
+    def __attrs__(self):
+        return self.__dict__ | self.__cache__
 
         for key in list(self.__dict__.keys()):
             if key.endswith("_hook_cache"):

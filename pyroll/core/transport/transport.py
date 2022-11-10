@@ -1,4 +1,5 @@
 import logging
+import weakref
 
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
@@ -42,7 +43,7 @@ class Transport(Unit):
 
         def __init__(self, transport: 'Transport', template: BaseProfile):
             super().__init__(transport, template)
-            self.transport = transport
+            self.transport = weakref.ref(transport)
 
     class InProfile(Profile):
         """Represents an incoming profile of a transport unit."""

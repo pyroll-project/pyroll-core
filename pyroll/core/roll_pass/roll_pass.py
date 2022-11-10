@@ -1,5 +1,5 @@
 import logging
-import math
+import weakref
 
 import numpy as np
 from shapely.affinity import translate, rotate
@@ -152,7 +152,7 @@ class RollPass(Unit):
 
         def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
             super().__init__(roll_pass, template)
-            self.roll_pass = roll_pass
+            self.roll_pass = weakref.ref(roll_pass)
 
     class InProfile(Profile):
         """Represents an incoming profile of a roll pass."""
@@ -177,7 +177,7 @@ class RollPass(Unit):
             kwargs = template.__dict__.copy()
             kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
             super().__init__(**kwargs)
-            self.roll_pass = roll_pass
+            self.roll_pass = weakref.ref(roll_pass)
 
 
 RollPass.root_hooks = {
