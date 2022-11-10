@@ -1,4 +1,5 @@
 import logging
+from abc import abstractmethod
 from typing import Optional, Set, List
 
 import numpy as np
@@ -40,6 +41,7 @@ class Unit(HookHost):
         kwattrs = sorted(f"{name}={value}" for name, value in self.__dict__.items() if not name.startswith("_"))
         return f"{self.__class__.__name__}(\n\t{sep.join(kwattrs)}\n)"
 
+    @abstractmethod
     def init_solve(self, in_profile: BaseProfile):
         """
         Method called by the standard :py:meth:`solve` implementation to init

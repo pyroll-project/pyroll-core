@@ -1,4 +1,4 @@
-from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove
+from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence
 
 # initial profile
 in_profile = Profile.round(
@@ -10,7 +10,7 @@ in_profile = Profile.round(
 )
 
 # pass sequence
-sequence = [
+sequence = PassSequence([
     RollPass(
         label="Oval I",
         roll=Roll(
@@ -41,4 +41,4 @@ sequence = [
         ),
         gap=2e-3,
     ),
-]
+])

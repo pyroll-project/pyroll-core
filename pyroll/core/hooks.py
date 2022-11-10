@@ -1,4 +1,5 @@
 import logging
+from abc import ABCMeta
 from typing import overload, Iterable, TypeVar, Generic, List, Generator
 
 import numpy as np
@@ -152,7 +153,7 @@ class Hook(Generic[T]):
         return f"Hook {self.owner.__qualname__}.{self.name}"
 
 
-class HookHostMeta(type):
+class HookHostMeta(ABCMeta):
     """
     Metaclass that provides plugin functionality to a class.
 
