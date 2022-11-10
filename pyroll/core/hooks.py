@@ -1,11 +1,29 @@
 import logging
-from typing import Any, overload, Iterable, TypeVar, Generic
+from typing import Any, overload, Iterable, TypeVar, Generic, List, Generator, Callable
 
 import numpy as np
 
 T = TypeVar("T")
 
 _log = logging.getLogger(__name__)
+
+
+class HookFunction:
+    def __init__(self, func, hook):
+        self._func = func
+        self.module = func.__module__
+        self.qualname = func.__qualname__
+        self.name = func.__name__
+        self.hook = hook
+
+    def __call__(self, instance):
+        return self._func(instance)
+
+    def __repr__(self):
+        return f"<{self.__str__()}>"
+
+    def __str__(self):
+        return f"HookFunction {self.module}.{self.qualname}"
 
 
 class Hook(Generic[T]):
@@ -77,7 +95,7 @@ class Hook(Generic[T]):
         instance.__dict__.pop(self.name, None)
 
     @property
-    def functions(self):
+    def functions_gen(self) -> Generator[HookFunction, None, None]:
         """
         Generator listing functions stored in this instance and equally named instances in superclasses of its owner.
         """
@@ -89,11 +107,18 @@ class Hook(Generic[T]):
             if hasattr(h, "functions"):
                 yield from h.functions
 
+    @property
+    def functions(self) -> List[HookFunction]:
+        """
+        List of functions stored in this instance and equally named instances in superclasses of its owner.
+        """
+        return list(self.functions_gen)
+
     def get_result(self, instance) -> T | None:
         """
         Get the first not ``None`` result of the functions in ``self.functions`` or the cached value.
         """
-        for f in self.functions:
+        for f in self.functions_gen:
             result = f(instance)
             if result is not None:
                 return result
@@ -102,14 +127,22 @@ class Hook(Generic[T]):
         """
         Add the given function to the internal function store.
         """
-        self._functions.append(func)
+        self._functions.append(HookFunction(func, self))
         return func
 
     def __call__(self, func):
         """
         Add the given function to the internal function store.
         """
-        self.add_function(func)
+        hf = HookFunction(func, self)
+        self._functions.append(hf)
+        return hf
+
+    def __repr__(self):
+        return f"<{self.__str__()}>"
+
+    def __str__(self):
+        return f"Hook {self.owner}.{self.name}"
 
 
 class HookHostMeta(type):
