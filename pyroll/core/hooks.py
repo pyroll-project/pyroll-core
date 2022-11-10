@@ -189,9 +189,23 @@ class HookHost(metaclass=HookHostMeta):
     def __attrs__(self):
         return self.__dict__ | self.__cache__
 
-        for key in list(self.__dict__.keys()):
-            if key.endswith("_hook_cache"):
-                del self.__dict__[key]
+    def __repr__(self):
+        sep = ",\n\t"
+        kwattrs = sorted(f"{name}={repr(value)}" for name, value in self.__attrs__.items() if not name.startswith("_"))
+        return f"{self.__class__.__name__}(\n\t{sep.join(kwattrs)}\n)"
+
+    def _repr_pretty_(self, p, cycle):
+        if cycle:
+            p.text(f"{type(self).__name__}(...)")
+        else:
+            with p.group(4, f"{type(self).__name__}(", ")"):
+                p.break_()
+                for name, value in sorted(self.__attrs__.items()):
+                    if not name.startswith("_"):
+                        p.text(name + "=")
+                        p.pretty(value)
+                        p.text(",")
+                        p.breakable()
 
 
 def evaluate_and_pin_hooks(instance: object, hooks: Iterable[Hook]):
