@@ -8,16 +8,73 @@ T = TypeVar("T")
 _log = logging.getLogger(__name__)
 
 
-class HookCaller(Generic[T]):
+class Hook(Generic[T]):
     """
-    Class able to retrieve a value from subsequent function results, where the first not ``None`` value is returned.
+    Descriptor yielding the value of a hook attribute if called on instance,
+    or the respective HookCaller if called on class.
     """
 
-    def __init__(self, name: str, owner: type):
-        self._functions = []
+    def __set_name__(self, owner, name):
         self.name = name
-        self._caller_name = f"_{name}_hook_caller"
         self.owner = owner
+        self._cache_name = f"_{name}_hook_cache"
+        self._functions = []
+
+    @overload
+    def __get__(self, instance: None, owner: type) -> 'Hook[T]':
+        ...
+
+    @overload
+    def __get__(self, instance: object, owner: type) -> T:
+        ...
+
+    def __get__(self, instance: object, owner: type) -> T | 'Hook[T]':
+
+        if self.owner != owner:
+            # create distinct instance on subclass
+            hook = Hook()
+            setattr(owner, self.name, hook)
+            return hook.__get__(instance, owner)
+
+        if instance is None:
+            return self
+
+        # try to get value explicitly set by user
+        result = instance.__dict__.get(self.name, None)
+        if result is not None:
+            return result
+
+        # try to get cached value
+        result = instance.__dict__.get(self._cache_name, None)
+        if result is not None:
+            return result
+
+        # try to get value from hook caller
+        try:
+            result = self.get_result(instance)
+        except RecursionError as e:
+            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' resulted in a RecursionError. "
+                                 f"This may have one of the following reasons: missing data, interference of plugins. "
+                                 f"Double check if you have provided all necessary input data.") from e
+
+        if result is None:
+            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' could not provide a value.")
+
+        try:
+            if not np.isfinite(result).all():
+                raise ValueError(f"Hook call for '{self.name}' on '{instance}' resulted in an infinite value.")
+        except TypeError:
+            pass  # only numeric types can be tested for finiteness, for others it is meaningless
+
+        instance.__dict__[self._cache_name] = result
+
+        return result
+
+    def __set__(self, instance: object, value: T) -> None:
+        instance.__dict__[self.name] = value
+
+    def __delete__(self, instance: object) -> None:
+        instance.__dict__.pop(self.name, None)
 
     @property
     def functions(self):
@@ -27,7 +84,7 @@ class HookCaller(Generic[T]):
         yield from reversed(self._functions)
 
         for s in self.owner.__mro__[1:]:
-            h = getattr(s, self._caller_name, None)
+            h = getattr(s, self.name, None)
 
             if hasattr(h, "functions"):
                 yield from h.functions
@@ -53,81 +110,6 @@ class HookCaller(Generic[T]):
         Add the given function to the internal function store.
         """
         self.add_function(func)
-
-
-class Hook(Generic[T]):
-    """
-    Descriptor yielding the value of a hook attribute if called on instance,
-    or the respective HookCaller if called on class.
-    """
-
-    def __set_name__(self, owner, name):
-        self.name = name
-        self._caller_name = f"_{name}_hook_caller"
-        self._cache_name = f"_{name}_hook_cache"
-
-    @overload
-    def __get__(self, instance: None, owner: type) -> HookCaller[T]:
-        ...
-
-    @overload
-    def __get__(self, instance: object, owner: type) -> T:
-        ...
-
-    def __get__(self, instance: object, owner: type) -> HookCaller[T] | T:
-        caller = owner.__dict__.get(self._caller_name, None)
-
-        if caller is None:
-            # create associated HookCaller on first get
-            caller = HookCaller(self.name, owner)
-            setattr(owner, self._caller_name, caller)
-
-        if instance is None:
-            return caller
-
-        # try to get value explicitly set by user
-        result = instance.__dict__.get(self.name, None)
-        if result is not None:
-            return result
-
-        # try to get cached value
-        result = instance.__dict__.get(self._cache_name, None)
-        if result is not None:
-            return result
-
-        # try to get value from hook caller
-        try:
-            result = caller.get_result(instance)
-        except RecursionError as e:
-            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' resulted in a RecursionError. "
-                                 f"This may have one of the following reasons: missing data, interference of plugins. "
-                                 f"Double check if you have provided all necessary input data.") from e
-
-        if result is None:
-            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' could not provide a value.")
-
-        try:
-            if not np.isfinite(result).all():
-                raise ValueError(f"Hook call for '{self.name}' on '{instance}' resulted in an infinite value.")
-        except TypeError:
-            pass  # only numeric types can be tested for finiteness, for others it is meaningless
-
-        instance.__dict__[self._cache_name] = result
-
-        return result
-
-    def __set__(self, instance: object, value: T) -> None:
-        instance.__dict__[self.name] = value
-
-    def __delete__(self, instance: object) -> None:
-        instance.__dict__.pop(self.name, None)
-
-    def __call__(self, func):
-        # Dummy method to avoid misleading "Object not callable" warnings in decorator usage.
-        # This method should not be called anyway.
-        # Actual calls will be dispatched to HookCaller.__call__() by self.__get__(),
-        # which is although not always correctly recognized by type checkers.
-        raise NotImplementedError()
 
 
 class HookHostMeta(type):
@@ -164,7 +146,7 @@ class HookHost(metaclass=HookHostMeta):
                 del self.__dict__[key]
 
 
-def evaluate_and_pin_hooks(instance: object, hooks: Iterable[HookCaller]):
+def evaluate_and_pin_hooks(instance: object, hooks: Iterable[Hook]):
     def _gen():
         for h in hooks:
             if issubclass(type(instance), h.owner):

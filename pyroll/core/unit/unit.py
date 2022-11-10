@@ -4,7 +4,7 @@ from typing import Optional, Set, List
 import numpy as np
 
 from ..exceptions import MaxIterationCountExceededError
-from ..hooks import HookHost, HookCaller, evaluate_and_pin_hooks, Hook
+from ..hooks import HookHost, evaluate_and_pin_hooks, Hook
 from ..profile import Profile as BaseProfile
 
 
@@ -29,7 +29,7 @@ class Unit(HookHost):
     iteration_precision = 1e-2
     """Precision of iteration break in solution loop."""
 
-    root_hooks: Set[HookCaller] = set()
+    root_hooks: Set[Hook] = set()
 
     def __init__(self):
         super().__init__()
