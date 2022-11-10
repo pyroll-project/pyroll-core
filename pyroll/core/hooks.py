@@ -1,5 +1,5 @@
 import logging
-from typing import Any, overload, Iterable, TypeVar, Generic, List, Generator, Callable
+from typing import overload, Iterable, TypeVar, Generic, List, Generator
 
 import numpy as np
 
@@ -9,6 +9,12 @@ _log = logging.getLogger(__name__)
 
 
 class HookFunction:
+    """
+    Class wrapping a function used to yield the value of hooks.
+    Instantiated commonly by use of a `Hook` instance as decorator on a function.
+    You should not instantiate it yourself.
+    """
+
     def __init__(self, func, hook):
         self._func = func
         self.module = func.__module__
@@ -104,8 +110,9 @@ class Hook(Generic[T]):
         for s in self.owner.__mro__[1:]:
             h = getattr(s, self.name, None)
 
-            if hasattr(h, "functions"):
-                yield from h.functions
+            if hasattr(h, "_functions"):
+                # noinspection PyProtectedMember
+                yield from h._functions
 
     @property
     def functions(self) -> List[HookFunction]:
@@ -142,7 +149,7 @@ class Hook(Generic[T]):
         return f"<{self.__str__()}>"
 
     def __str__(self):
-        return f"Hook {self.owner}.{self.name}"
+        return f"Hook {self.owner.__qualname__}.{self.name}"
 
 
 class HookHostMeta(type):
