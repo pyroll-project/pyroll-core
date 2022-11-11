@@ -6,7 +6,7 @@ from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 from shapely.ops import clip_by_rect
 
-from ..hooks import evaluate_and_pin_hooks, Hook
+from ..hooks import Hook
 from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
 from ..shapes import linemerge_if_multi
@@ -139,7 +139,7 @@ class RollPass(Unit):
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
-        roll_results = evaluate_and_pin_hooks(self.roll, self.root_hooks)
+        roll_results = self.roll.evaluate_and_set_hooks(self.root_hooks)
 
         return np.concatenate([super_results, roll_results], axis=0)
 

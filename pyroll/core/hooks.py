@@ -196,18 +196,18 @@ class HookHost(ReprMixin, metaclass=HookHostMeta):
             if not n.startswith("_") and not isinstance(v, weakref.ref)
         }
 
+    def evaluate_and_set_hooks(self, hooks: Iterable[Hook]):
+        """Evaluate functions of root hooks and set the results explicitly as attributes."""
+        def _gen():
+            for h in hooks:
+                if issubclass(type(self), h.owner):
+                    result = h.get_result(self)
+                    setattr(self, h.name, result)
 
-def evaluate_and_pin_hooks(instance: object, hooks: Iterable[Hook]):
-    def _gen():
-        for h in hooks:
-            if issubclass(type(instance), h.owner):
-                result = h.get_result(instance)
-                setattr(instance, h.name, result)
+                    try:
+                        if np.isfinite(result).all():
+                            yield result  # yield only numeric values
+                    except TypeError:
+                        continue
 
-                try:
-                    if np.isfinite(result).all():
-                        yield result  # yield only numeric values
-                except TypeError:
-                    continue
-
-    return list(_gen())
+        return list(_gen())

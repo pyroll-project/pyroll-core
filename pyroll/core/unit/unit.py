@@ -6,7 +6,7 @@ from typing import Optional, Set, List
 import numpy as np
 
 from ..exceptions import MaxIterationCountExceededError
-from ..hooks import HookHost, evaluate_and_pin_hooks, Hook
+from ..hooks import HookHost, Hook
 from ..profile import Profile as BaseProfile
 
 
@@ -54,9 +54,9 @@ class Unit(HookHost):
         raise NotImplementedError
 
     def get_root_hook_results(self):
-        in_profile_results = evaluate_and_pin_hooks(self.in_profile, self.root_hooks)
-        self_results = evaluate_and_pin_hooks(self, self.root_hooks)
-        out_profile_results = evaluate_and_pin_hooks(self.out_profile, self.root_hooks)
+        in_profile_results = self.in_profile.evaluate_and_set_hooks(self.root_hooks)
+        self_results = self.evaluate_and_set_hooks(self.root_hooks)
+        out_profile_results = self.out_profile.evaluate_and_set_hooks(self.root_hooks)
 
         return np.concatenate([in_profile_results, self_results, out_profile_results], axis=0)
 
