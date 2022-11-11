@@ -1,9 +1,41 @@
 from typing import Iterable
 
 import numpy as np
-from shapely.geometry import Polygon, LineString, MultiLineString, Point
+import shapely.geometry
 from shapely.ops import linemerge
 import logging
+
+from pyroll.core.repr import ReprMixin
+from shapely.geometry import MultiLineString, Point
+
+
+# noinspection PyAbstractClass
+class Polygon(shapely.geometry.Polygon, ReprMixin):
+    @property
+    def height(self) -> float:
+        """Computes the height of the bounding box."""
+        return self.bounds[3] - self.bounds[1]
+
+    @property
+    def width(self) -> float:
+        """Computes the width of the bounding box."""
+        return self.bounds[2] - self.bounds[0]
+
+    @property
+    def perimeter(self) -> float:
+        """Get the perimeter of the Polygon (alias of ``Polygon.length``)."""
+        return self.length
+
+    @property
+    def __attrs__(self):
+        return {
+            "width": self.width,
+            "height": self.height,
+            "perimeter": self.perimeter,
+        }
+
+    __str__ = ReprMixin.__str__
+
 
 _RECTANGLE_CORNERS = np.asarray([
     (-0.5, -0.5),
@@ -34,73 +66,32 @@ def rectangle(width: float, height: float):
     return rect
 
 
-def height(self) -> float:
-    return self.bounds[3] - self.bounds[1]
+shapely.geometry.Polygon = Polygon
 
 
-def width(self) -> float:
-    return self.bounds[2] - self.bounds[0]
+class LineString(shapely.geometry.LineString, ReprMixin):
+    @property
+    def depth(self) -> float:
+        """Computes the height of the bounding box."""
+        return self.bounds[3] - self.bounds[1]
+
+    @property
+    def width(self) -> float:
+        """Computes the width of the bounding box."""
+        return self.bounds[2] - self.bounds[0]
+
+    @property
+    def __attrs__(self):
+        return {
+            "width": self.width,
+            "depth": self.depth,
+            "length": self.length,
+        }
+
+    __str__ = ReprMixin.__str__
 
 
-def perimeter(self) -> float:
-    return self.length
-
-
-Polygon.height = property(height)
-"""Computes the height of the bounding box."""
-Polygon.width = property(width)
-"""Computes the width of the bounding box."""
-Polygon.perimeter = property(perimeter)
-"""Get the perimeter of the Polygon (alias of ``Polygon.length``)."""
-
-LineString.height = property(height)
-"""Computes the height of the bounding box."""
-LineString.width = property(width)
-"""Computes the width of the bounding box."""
-
-polygon_repr_attrs = ["height", "width", "area", "length"]
-
-
-def polygon_repr_pretty(self, p, cycle):
-    if cycle:
-        p.text(
-            type(self).__qualname__ + "(...)"
-        )
-        return
-
-    with p.group(4, "Polygon(", ")"):
-        p.break_()
-        for attr in polygon_repr_attrs:
-            p.text(attr)
-            p.text("=")
-            p.pretty(getattr(self, attr))
-            p.text(",")
-            p.breakable()
-
-
-Polygon._repr_pretty_ = polygon_repr_pretty
-
-line_repr_attrs = ["depth", "width", "length"]
-
-
-def line_repr_pretty(self, p, cycle):
-    if cycle:
-        p.text(
-            type(self).__qualname__ + "(...)"
-        )
-        return
-
-    with p.group(4, "LineString(", ")"):
-        p.break_()
-        for attr in line_repr_attrs:
-            p.text(attr)
-            p.text("=")
-            p.pretty(getattr(self, attr))
-            p.text(",")
-            p.breakable()
-
-
-LineString._repr_pretty_ = polygon_repr_pretty
+shapely.geometry.LineString = LineString
 
 
 def linemerge_if_multi(lines):

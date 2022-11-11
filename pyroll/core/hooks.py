@@ -1,11 +1,11 @@
-import html
 import logging
 import weakref
 from abc import ABCMeta
 from typing import overload, Iterable, TypeVar, Generic, List, Generator
-from collections.abc import Sequence
 
 import numpy as np
+
+from pyroll.core.repr import ReprMixin
 
 T = TypeVar("T")
 
@@ -171,7 +171,7 @@ class HookHostMeta(ABCMeta):
         super().__setattr__(key, value)
 
 
-class HookHost(metaclass=HookHostMeta):
+class HookHost(ReprMixin, metaclass=HookHostMeta):
     """
     A base class providing plugin functionality using the :py:class:`PluginHostMeta` metaclass.
 
@@ -193,43 +193,8 @@ class HookHost(metaclass=HookHostMeta):
         return {
             n: v
             for n, v in (self.__dict__ | self.__cache__).items()
-            if not n.startswith("_")
-            and not isinstance(v, weakref.ref)
+            if not n.startswith("_") and not isinstance(v, weakref.ref)
         }
-
-    def __str__(self):
-        return type(self).__qualname__
-
-    def __repr__(self):
-        sep = ",\n\t"
-        kwattrs = sorted(f"{name}={repr(value)}" for name, value in self.__attrs__.items())
-        return f"{self.__class__.__name__}(\n\t{sep.join(kwattrs)}\n)"
-
-    def _repr_pretty_(self, p, cycle):
-        if cycle:
-            p.text(f"{type(self).__name__}(...)")
-        else:
-            with p.group(4, f"{type(self).__name__}(", ")"):
-                p.break_()
-                for name, value in sorted(self.__attrs__.items()):
-                    p.text(name + "=")
-                    p.pretty(value)
-                    p.text(",")
-                    p.breakable()
-
-    # noinspection PyProtectedMember
-    def _repr_html_(self):
-        buf = [f"<table><tr><th colspan=2 style='text-align:center'>{html.escape(str(self), True)}</th></tr>"]
-
-        for name, value in sorted(self.__attrs__.items()):
-            if hasattr(value, "_repr_html_"):
-                r = value._repr_html_()
-            else:
-                r = html.escape(repr(value), True)
-            buf.append(f"<tr><td style='text-align:left'>{html.escape(name, True)}</td><td>{r}</td></tr>")
-
-        buf.append("</table>")
-        return ''.join(buf)
 
 
 def evaluate_and_pin_hooks(instance: object, hooks: Iterable[Hook]):
