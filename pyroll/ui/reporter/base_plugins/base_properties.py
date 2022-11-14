@@ -2,7 +2,6 @@ import sys
 from typing import List
 
 from pyroll.core import RollPass, Profile, Unit
-from pyroll.utils import for_units
 from ..reporter import Reporter
 
 
@@ -12,27 +11,28 @@ def profile_props(prefix, profile: Profile):
         prefix + "width": "{:.4g}".format(profile.width),
         prefix + "strain": "{:.4g}".format(profile.strain),
         prefix + "temperature": "{:.4g}".format(profile.temperature),
-        prefix + "cross section": "{:.4g}".format(profile.cross_section.area),
+        prefix + "cross-section": "{:.4g}".format(profile.cross_section.area),
         prefix + "flow stress": "{:.4g}".format(profile.flow_stress),
     }
 
 
 @Reporter.hookimpl
-@for_units(RollPass)
-def unit_properties(unit: RollPass):
-    d = {
-        "roll force": "{:.4g}".format(unit.roll_force),
-        "roll torque": "{:.4g}".format(unit.roll.roll_torque),
-        "strain change": "{:.4g}".format(unit.strain_change),
-        "spread": "{:.4g}".format(unit.spread),
-        "filling ratio": "{:.3f}".format(unit.out_profile.filling_ratio),
-        "strain rate": "{:.4g}".format(unit.strain_rate),
-        "contact area": "{:.4g}".format(unit.roll.contact_area),
-        "contact length": "{:.4g}".format(unit.roll.contact_length),
-    }
-    d.update(profile_props("in ", unit.in_profile))
-    d.update(profile_props("out ", unit.out_profile))
-    return d
+def unit_properties(unit):
+    if isinstance(unit, RollPass):
+        d = {
+            "roll force": "{:.4g}".format(unit.roll_force),
+            "roll torque": "{:.4g}".format(unit.roll.roll_torque),
+            "elongation": "{:.4g}".format(unit.elongation),
+            "spread": "{:.4g}".format(unit.spread),
+            "draught": "{:.4g}".format(unit.draught),
+            "filling ratio": "{:.3f}".format(unit.out_profile.filling_ratio),
+            "strain rate": "{:.4g}".format(unit.strain_rate),
+            "contact area": "{:.4g}".format(unit.roll.contact_area),
+            "contact length": "{:.4g}".format(unit.roll.contact_length),
+        }
+        d.update(profile_props("in ", unit.in_profile))
+        d.update(profile_props("out ", unit.out_profile))
+        return d
 
 
 @Reporter.hookimpl

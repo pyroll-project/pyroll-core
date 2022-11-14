@@ -1,5 +1,7 @@
 import logging
+import weakref
 
+from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 from ..unit import Unit
 
@@ -7,22 +9,25 @@ from ..unit import Unit
 class Transport(Unit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
 
+    duration = Hook[float]()
+    """Time needed to pass the transport."""
+
+    length = Hook[float]()
+    """Spacial length of the transport."""
+
+    velocity = Hook[float]()
+    """Mean velocity of material flow."""
+
+    environment_temperature = Hook[float]()
+    """Temperature of the surrounding atmosphere."""
+
     def __init__(
             self,
-            label: str = "",
             **kwargs
     ):
-        super().__init__(label)
-
+        super().__init__()
         self.__dict__.update(kwargs)
-        self.hook_args["transport"] = self
-
         self._log = logging.getLogger(__name__)
-
-    def __str__(self):
-        return "Transport {label}".format(
-            label=f"'{self.label}' " if self.label else ""
-        )
 
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
@@ -33,7 +38,7 @@ class Transport(Unit):
 
         def __init__(self, transport: 'Transport', template: BaseProfile):
             super().__init__(transport, template)
-            self.hook_args["transport"] = transport
+            self.transport = weakref.ref(transport)
 
     class InProfile(Profile):
         """Represents an incoming profile of a transport unit."""
@@ -48,4 +53,6 @@ class Transport(Unit):
             super().__init__(transport, transport.in_profile)
 
 
-Transport.OutProfile.root_hooks.add("strain")
+Transport.root_hooks = {
+    Transport.OutProfile.strain,
+}

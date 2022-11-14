@@ -18,7 +18,7 @@ def create_sequence_plot(units: Sequence[Unit]):
     indices = np.arange(len(units))
     ax.xaxis.set_major_locator(FixedLocator(indices))
     ax.xaxis.set_major_formatter(
-        FixedFormatter([(f"{i}: {p.label}" if p.label else str(i)) for i, p in zip(indices, units)]))
+        FixedFormatter([f"{i}: {p}" for i, p in zip(indices, units)]))
     plt.setp(ax.xaxis.get_majorticklabels(), rotation=90)
     ax.grid()
 

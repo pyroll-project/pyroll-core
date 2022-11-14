@@ -1,14 +1,29 @@
-from typing import Optional, Set, Any, Dict
+import logging
+import weakref
+from abc import abstractmethod
+from typing import Optional, Set, List
 
 import numpy as np
 
-from .plugin_host import PluginHost
-from .profile import Profile as BaseProfile
-from .exceptions import MaxIterationCountExceededError
+from ..exceptions import MaxIterationCountExceededError
+from ..hooks import HookHost, Hook
+from ..profile import Profile as BaseProfile
 
 
-class Unit(PluginHost):
+class Unit(HookHost):
     """Base class for units in a pass sequence."""
+
+    profiles = Hook[List[BaseProfile]]()
+    """List of all profile states within the unit."""
+
+    in_profile = Hook[BaseProfile]()
+    """The state of the incoming profile."""
+
+    out_profile = Hook[BaseProfile]()
+    """The state of the outgoing profile."""
+
+    label = Hook[str]()
+    """Label for human identification."""
 
     max_iteration_count = 100
     """Count of maximum solution loop iterations before aborting."""
@@ -16,23 +31,19 @@ class Unit(PluginHost):
     iteration_precision = 1e-2
     """Precision of iteration break in solution loop."""
 
-    def __init__(self, label: str):
-        super().__init__(dict(unit=self))
+    root_hooks: Set[Hook] = set()
 
-        self.in_profile: Optional[BaseProfile] = None
-        """Incoming workpiece state profile."""
+    def __init__(self):
+        super().__init__()
+        self._log = logging.getLogger(__name__)
 
-        self.out_profile: Optional[BaseProfile] = None
-        """Outgoing workpiece state profile."""
+    def __str__(self):
+        try:
+            return type(self).__qualname__ + f" '{self.label}'"
+        except (AttributeError, RecursionError):
+            return type(self).__qualname__
 
-        self.label = label
-        """Label for human identification."""
-
-    def __repr__(self):
-        sep = ",\n\t"
-        kwattrs = sorted(f"{name}={value}" for name, value in self.__dict__.items() if not name.startswith("_"))
-        return f"{self.__class__.__name__}(\n\t{sep.join(kwattrs)}\n)"
-
+    @abstractmethod
     def init_solve(self, in_profile: BaseProfile):
         """
         Method called by the standard :py:meth:`solve` implementation to init
@@ -43,16 +54,16 @@ class Unit(PluginHost):
         raise NotImplementedError
 
     def get_root_hook_results(self):
-        in_profile_results = self.in_profile.get_root_hook_results()
-        self_results = super().get_root_hook_results()
-        out_profile_results = self.out_profile.get_root_hook_results()
+        in_profile_results = self.in_profile.evaluate_and_set_hooks(self.root_hooks)
+        self_results = self.evaluate_and_set_hooks(self.root_hooks)
+        out_profile_results = self.out_profile.evaluate_and_set_hooks(self.root_hooks)
 
         return np.concatenate([in_profile_results, self_results, out_profile_results], axis=0)
 
-    def delete_hook_result_attributes(self):
-        self.in_profile.delete_hook_result_attributes()
-        super().delete_hook_result_attributes()
-        self.out_profile.delete_hook_result_attributes()
+    def clear_hook_cache(self):
+        self.in_profile.clear_hook_cache()
+        super().clear_hook_cache()
+        self.out_profile.clear_hook_cache()
 
     def solve(self, in_profile: BaseProfile) -> BaseProfile:
         """
@@ -67,17 +78,16 @@ class Unit(PluginHost):
         old_values = np.nan
 
         for i in range(1, self.max_iteration_count):
-            self.delete_hook_result_attributes()
+            self.clear_hook_cache()
             current_values = self.get_root_hook_results()
 
             if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
                 self._log.info(f"Finished solving of {self} after {i} iterations.")
 
-                result = BaseProfile(**dict(
-                    e for e in self.out_profile.__dict__.items()
-                    if not e[0].startswith("_") and
-                    (e[0] not in self.out_profile.hook_result_attributes or e[0] in self.out_profile.root_hooks)
-                ))
+                result = BaseProfile(**{
+                    k: v for k, v in self.out_profile.__dict__.items()
+                    if not k.startswith("_")
+                })
                 return result
 
             old_values = current_values
@@ -90,11 +100,10 @@ class Unit(PluginHost):
         def __init__(self, unit: 'Unit', template: BaseProfile):
             kwargs = dict(
                 e for e in template.__dict__.items()
-                if not e[0].startswith("_") and
-                (e[0] not in template.hook_result_attributes or e[0] in template.root_hooks)
+                if not e[0].startswith("_")
             )
             super().__init__(**kwargs)
-            self.hook_args["unit"] = unit
+            self.unit = weakref.ref(unit)
 
     class InProfile(Profile):
         """Represents an incoming profile of a unit."""
@@ -107,6 +116,3 @@ class Unit(PluginHost):
 
         def __init__(self, unit: 'Unit'):
             super().__init__(unit, unit.in_profile)
-
-    def _repr_pretty_(self, p, cycle):
-        return super()._repr_pretty_(p, cycle)

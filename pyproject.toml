@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyroll"
-version = "1.0.5"
+version = "2.0.0"
 description = "PyRoll rolling simulation framework - core library."
 authors = [
     "Max Weiner <max.weiner@imf.tu-freiberg.de>",
@@ -14,8 +14,7 @@ repository = "https://github.com/pyroll-project/pyroll-core"
 documentation = "https://pyroll.readthedocs.io/en/latest"
 packages = [
     { include = "pyroll/core" },
-    { include = "pyroll/ui" },
-    { include = "pyroll/utils" }
+    { include = "pyroll/ui" }
 ]
 readme = "README.md"
 classifiers = [

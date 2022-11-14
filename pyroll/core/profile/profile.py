@@ -1,26 +1,71 @@
 import logging
 import math
-from typing import Optional
+from typing import Optional, Tuple, Iterable
 
 import numpy as np
-from shapely.affinity import translate, rotate
+from shapely.affinity import translate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
-from shapely.ops import clip_by_rect
+from shapely.ops import clip_by_rect, unary_union
 
-from pyroll.core.grooves import GrooveBase
-from pyroll.core.plugin_host import PluginHost
+from ..grooves import GrooveBase
+from ..hooks import HookHost, Hook
 
 _log = logging.getLogger(__name__)
 
 
-class Profile(PluginHost):
+class Profile(HookHost):
+    cross_section = Hook[Polygon]()
+    types = Hook[Tuple[str, ...]]()
+    equivalent_rectangle = Hook[Polygon]()
+    x = Hook[float]()
+    """Spacial coordinate in rolling direction."""
+
+    t = Hook[float]()
+    """Temporal coordinate."""
+
+    velocity = Hook[float]()
+    """Mean material flow velocity."""
+
+    height = Hook[float]()
+    """Maximum height (y-direction)."""
+
+    width = Hook[float]()
+    """Maximum width (z-direction)."""
+
+    length = Hook[float]()
+    """Length of the workpiece (x-direction)."""
+
+    temperature = Hook[float]()
+    """Mean temperature of the profile cross-section."""
+
+    strain = Hook[float]()
+    """Mean equivalent strain of the profile cross-section."""
+
+    flow_stress = Hook[float]()
+    """Mean flow stress of the profile material."""
+
+    elastic_modulus = Hook[float]()
+    """Mean elastic modulus of the profile material."""
+
+    poissons_ratio = Hook[float]()
+    """Mean Poisson's ratio of the profile material."""
+
+    thermal_conductivity = Hook[float]()
+    """Mean thermal conductivity of the profile material."""
+
+    thermal_capacity = Hook[float]()
+    """Mean thermal capacity of the profile material."""
+
+    density = Hook[float]()
+    """Mean density (specific weight) of the profile material."""
+
+    material = Hook[str | Iterable[str]]()
+    """String or sequence of strings classifying the material of the profile.
+    Can be used by material databases to retrieve respective data."""
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
-
-        super().__init__(dict(
-            profile=self
-        ))
+        super().__init__()
 
     @classmethod
     def from_groove(
@@ -77,11 +122,23 @@ class Profile(PluginHost):
         upper_contour_line = translate(groove.contour_line, yoff=gap / 2)
         lower_contour_line = translate(groove.contour_line, yoff=-gap / 2)
 
+        poly = Polygon(np.concatenate([
+            upper_contour_line.coords,
+            lower_contour_line.coords
+        ]))
+
+        if (
+                # one percent tolerance to bypass discretization issues
+                - width / 2 < poly.bounds[0] * 1.01
+                or width / 2 > poly.bounds[2] * 1.01
+        ):
+            raise ValueError("Profile's width can not be larger than its contour lines."
+                             "May be caused by critical overfilling.")
+
+        polygon = clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
+
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=height,
-            width=width,
+            cross_section=polygon,
             types=groove.types,
             **kwargs
         )
@@ -117,14 +174,8 @@ class Profile(PluginHost):
         center = Point((0, 0))
         circle = center.buffer(radius)
 
-        upper_contour_line = clip_by_rect(circle.boundary, -math.inf, 0, math.inf, math.inf)
-        lower_contour_line = clip_by_rect(circle.boundary, -math.inf, -math.inf, math.inf, 0)
-
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=diameter,
-            width=diameter,
+            cross_section=circle,
             types=["round"],
             **kwargs
         )
@@ -167,25 +218,14 @@ class Profile(PluginHost):
             raise ValueError("argument value(s) out of range")
 
         line = LinearRing(np.array([(1, 0), (0, 1), (-1, 0), (0, -1)]) * (diagonal / 2 - corner_radius * np.sqrt(2)))
-        if corner_radius != 0:
-            polygon = line.buffer(corner_radius)
-        else:
-            polygon = Polygon(line)
-
-        upper_contour_line = clip_by_rect(polygon.exterior, -math.inf, 0, math.inf, math.inf)
-        lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
-
-        actual_diagonal = upper_contour_line.bounds[2] - upper_contour_line.bounds[0]
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=actual_diagonal,
-            width=actual_diagonal,
+            cross_section=polygon,
             types=["square", "diamond"],
             **kwargs
         )
-
 
     @classmethod
     def box(
@@ -218,19 +258,11 @@ class Profile(PluginHost):
 
         line = LinearRing(np.array([(1, -1), (1, 1), (-1, 1), (-1, -1)])
                           * (width / 2 - corner_radius, height / 2 - corner_radius))
-        if corner_radius != 0:
-            polygon = line.buffer(corner_radius)
-        else:
-            polygon = Polygon(line)
-
-        upper_contour_line = clip_by_rect(polygon.exterior, -math.inf, 0, math.inf, math.inf)
-        lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=height,
-            width=width,
+            cross_section=polygon,
             types=["box"],
             **kwargs
         )
@@ -266,19 +298,11 @@ class Profile(PluginHost):
 
         line = LinearRing(np.array([(1, 0), (0, 1), (-1, 0), (0, -1)])
                           * (width / 2 - corner_radius, height / 2 - corner_radius))
-        if corner_radius != 0:
-            polygon = line.buffer(corner_radius)
-        else:
-            polygon = Polygon(line)
-
-        upper_contour_line = clip_by_rect(polygon.exterior, -math.inf, 0, math.inf, math.inf)
-        lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
 
         return cls(
-            upper_contour_line=upper_contour_line,
-            lower_contour_line=lower_contour_line,
-            height=height,
-            width=width,
+            cross_section=polygon,
             types=["diamond"],
             **kwargs
         )

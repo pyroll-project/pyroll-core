@@ -6,9 +6,10 @@ from numpy import tan, sin, cos, pi, sqrt
 from shapely.geometry import LineString, Polygon
 
 from pyroll.core.grooves import GrooveBase
+from pyroll.core.repr import ReprMixin
 
 
-class GenericElongationGroove(GrooveBase):
+class GenericElongationGroove(GrooveBase, ReprMixin):
     """Represents a groove defined by the generic elongation groove geometry."""
 
     def __init__(
@@ -176,31 +177,10 @@ class GenericElongationGroove(GrooveBase):
             print(self.y4 - self._flank_contour_line(self.z4), 0.1 * self.y4)
             raise ValueError("under given conditions a step appears in z4")
 
-    def _get_repr_attrs(self):
-        return sorted(filter(
-            lambda a: bool(getattr(self, a)),
-            ["r1", "r2", "r3", "r4", "alpha1", "alpha2", "alpha3", "alpha4", "depth", "indent",
-             "even_ground_width", "usable_width", "types"]
-        ))
-
-    def __repr__(self):
-        return (
-                type(self).__name__
-                + "("
-                + ", ".join(f"{attr}={getattr(self, attr)}" for attr in self._get_repr_attrs())
-                + ")"
-        )
-
-    def _repr_pretty_(self, p, cycle):
-        if cycle:
-            p.text(type(self).__name__ + "(...)")
-            return
-
-        with p.group(4, type(self).__name__ + "(", ")"):
-            p.break_()
-            for attr in self._get_repr_attrs():
-                p.text(attr)
-                p.text("=")
-                p.pretty(getattr(self, attr))
-                p.text(",")
-                p.breakable()
+    @property
+    def __attrs__(self):
+        return {
+            n: v for n in ["r1", "r2", "r3", "r4", "alpha1", "alpha2", "alpha3", "alpha4", "depth", "indent",
+                           "even_ground_width", "usable_width", "types"]
+            if (v := getattr(self, n))
+        }
