@@ -135,7 +135,7 @@ class RollPass(Unit):
         del self.in_profile.width
         self.in_profile.clear_hook_cache()
 
-        self.out_profile = self.OutProfile(self, 0.95)
+        self.out_profile = self.OutProfile(self)
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
