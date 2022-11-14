@@ -165,7 +165,7 @@ class RollPass(Unit):
 
         filling_ratio = Hook[float]()
 
-        def __init__(self, roll_pass: 'RollPass', filling_ratio: float):
+        def __init__(self, roll_pass: 'RollPass'):
             super().__init__(roll_pass, roll_pass.in_profile)
             del self.cross_section
             self.types = roll_pass.types
