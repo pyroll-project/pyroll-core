@@ -3,7 +3,7 @@ from importlib import reload
 from pathlib import Path
 
 from pyroll.core import solve
-from pyroll.ui import Reporter
+from pyroll.ui import report
 
 
 def test_solve_min(tmp_path: Path, caplog):
@@ -16,9 +16,7 @@ def test_solve_min(tmp_path: Path, caplog):
 
     solve(sequence, input_py.in_profile)
 
-    report = Reporter()
-
-    rendered = report.render(sequence)
+    rendered = report(sequence)
     print()
 
     report_file = tmp_path / "report.html"
@@ -38,9 +36,7 @@ def test_solve_three_high_rolling_plant(tmp_path: Path, caplog):
 
     solve(sequence, input_py.in_profile)
 
-    report = Reporter()
-
-    rendered = report.render(sequence)
+    rendered = report(sequence)
     print()
 
     report_file = tmp_path / "report.html"
