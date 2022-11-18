@@ -1,11 +1,10 @@
+import datetime
+
 import jinja2
 from pathlib import Path
-from typing import List
+import platform
 
-import pluggy
-
-from . import utils
-from pyroll.core import Unit, PassSequence
+from pyroll.core import PassSequence
 from ..pluggy import plugin_manager
 
 _env = jinja2.Environment(
@@ -26,5 +25,7 @@ def report(pass_sequence: PassSequence) -> str:
     displays = plugin_manager.hook.report_unit_display(unit=pass_sequence, level=1)
 
     return template.render(
+        timestamp=datetime.datetime.now().isoformat(timespec="seconds"),
+        platform=f"{platform.node()} ({platform.platform()}, {platform.python_implementation()} {platform.python_version()})",
         displays=displays,
     )

@@ -41,6 +41,6 @@ def render_properties_table(instance: ReprMixin):
 #         return render_properties_table(unit)
 
 
-@hookimpl(specname="report_unit_display", tryfirst=True)
+@hookimpl(specname="report_unit_display")
 def unit_property_display(unit: Unit, level: int):
     return render_properties_table(unit)
