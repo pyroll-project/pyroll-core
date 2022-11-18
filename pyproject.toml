@@ -37,6 +37,9 @@ pluggy = "^1.0.0"
 pandas = "^1.4.1"
 lxml = "^4.7.1"
 Shapely = "^1.8.1"
+dicttoxml = "^1.7.4"
+dict2xml = "^1.7.2"
+xmlschema = "^2.1.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.0"

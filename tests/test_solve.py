@@ -3,7 +3,7 @@ from importlib import reload
 from pathlib import Path
 
 from pyroll.core import solve
-from pyroll.ui import report, to_dict
+from pyroll.ui import report, export
 
 
 def test_solve_min(tmp_path: Path, caplog):
@@ -23,7 +23,11 @@ def test_solve_min(tmp_path: Path, caplog):
     report_file.write_text(rendered)
     print(report_file)
 
-    to_dict(sequence)
+    print(export.to_dict(sequence))
+    print(export.to_pandas(sequence))
+    print(export.to_pandas(sequence).to_csv())
+    print(export.to_pandas(sequence).to_xml())
+    print(export.to_json(sequence))
 
     print("\nLog:")
     print(caplog.text)

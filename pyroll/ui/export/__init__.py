@@ -1,4 +1,4 @@
-from .export import to_dict
+from .export import to_dict, to_pandas, to_json
 from ..pluggy import plugin_manager
 
 from . import hookspecs
