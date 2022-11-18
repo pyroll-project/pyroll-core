@@ -1,7 +1,7 @@
 from matplotlib.figure import Figure
 
 from ..pluggy import hookspec
-from pyroll.core import Unit, PassSequence
+from pyroll.core import Unit
 
 
 @hookspec

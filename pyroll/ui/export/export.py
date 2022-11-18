@@ -3,8 +3,7 @@ from typing import Any, Sequence
 import pandas as pd
 
 from .convert import _to_dict, _flatten_dict
-from pyroll.core import Unit, PassSequence
-import xmlschema
+from pyroll.core import Unit
 import json
 
 
