@@ -1,5 +1,5 @@
 from .report import report
-from .exporter import Exporter
+from .export import to_dict
 from .pluggy import hookimpl, hookspec, plugin_manager
 
 

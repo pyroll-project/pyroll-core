@@ -3,7 +3,7 @@ from importlib import reload
 from pathlib import Path
 
 from pyroll.core import solve
-from pyroll.ui import report
+from pyroll.ui import report, to_dict
 
 
 def test_solve_min(tmp_path: Path, caplog):
@@ -22,6 +22,8 @@ def test_solve_min(tmp_path: Path, caplog):
     report_file = tmp_path / "report.html"
     report_file.write_text(rendered)
     print(report_file)
+
+    to_dict(sequence)
 
     print("\nLog:")
     print(caplog.text)
