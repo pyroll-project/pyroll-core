@@ -12,7 +12,7 @@ from pyroll.core import Unit
 def create_sequence_plot(units: Sequence[Unit]):
     """Creates a styled base figure for use in sequence plots.
     The x-axis ticks will be labeled with the unit labels and indices."""
-    fig: plt.Figure = plt.figure(constrained_layout=True, figsize=(6, 4))
+    fig: plt.Figure = plt.figure(constrained_layout=True, figsize=(7, 4))
     ax: plt.Axes = fig.subplots()
 
     indices = np.arange(len(units))

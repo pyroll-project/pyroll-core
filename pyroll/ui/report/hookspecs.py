@@ -18,5 +18,5 @@ def report_unit_plot(unit: Unit) -> Figure | str:
 
 
 @hookspec(firstresult=True)
-def report_property_format(value: object) -> str:
+def report_property_format(name: str, value: object) -> str:
     """Format the value of a property as string for display in the report. This hook is first result."""

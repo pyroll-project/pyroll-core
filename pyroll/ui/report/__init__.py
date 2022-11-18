@@ -5,6 +5,4 @@ from . import hookspecs
 
 plugin_manager.add_hookspecs(hookspecs)
 
-from . import property_display
-
-plugin_manager.register(property_display)
+from . import unit_display

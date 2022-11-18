@@ -4,18 +4,30 @@ import jinja2
 
 from pyroll.core import Unit
 from pyroll.core.repr import ReprMixin
-from ...pluggy import hookimpl, plugin_manager
+from pyroll.ui.pluggy import hookimpl, plugin_manager
 
 _env = jinja2.Environment(
     loader=jinja2.FileSystemLoader(Path(__file__).parent, encoding="utf-8")
 )
 
 
+class DoNotPrint(Exception):
+    pass
+
+
+def try_format_property(name: str, value: object):
+    try:
+        return plugin_manager.hook.report_property_format(name=name, value=value)
+    except (TypeError, ValueError, DoNotPrint):
+        return None
+
+
 def render_properties_table(instance: ReprMixin):
     template = _env.get_template("properties.html")
 
     properties = [
-        (n, plugin_manager.hook.report_property_format(value=v)) for n, v in instance.__attrs__.items()
+        (n, s) for n, v in instance.__attrs__.items()
+        if (s := try_format_property(n, v)) is not None
     ]
 
     return template.render(
