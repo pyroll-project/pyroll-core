@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyroll"
-version = "1.0.5"
+version = "1.0.5-1"
 description = "PyRoll rolling simulation framework - core library."
 authors = [
     "Max Weiner <max.weiner@imf.tu-freiberg.de>",
@@ -26,7 +26,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
+python = ">=3.9, <4.0"
 matplotlib = "^3.5.0"
 numpy = "^1.21.4"
 scipy = "^1.8.0"
