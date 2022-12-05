@@ -36,12 +36,12 @@ def velocity(self: RollPass):
 
 @RollPass.draught
 def draught(self: RollPass):
-    return self.in_profile.equivalent_rectangle.height / self.out_profile.equivalent_rectangle.height
+    return self.out_profile.equivalent_rectangle.height / self.in_profile.equivalent_rectangle.height
 
 
 @RollPass.spread
 def spread(self: RollPass):
-    return self.in_profile.equivalent_rectangle.height / self.out_profile.equivalent_rectangle.height
+    return self.out_profile.equivalent_rectangle.height / self.in_profile.equivalent_rectangle.height
 
 
 @RollPass.elongation
