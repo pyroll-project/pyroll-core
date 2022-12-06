@@ -93,7 +93,7 @@ Here one can specify a list of plugins that will be loaded in each simulation ru
 Another way of loading plugins is to directly import them in the input Python script.
 
 It is recommended to create a fresh directory for each simulation project to avoid the need to specify the filenames explicitly.
-A basic input and config file can be created in the current directory using 
+A basic input and config file can be created in the current directory using
 
 ```shell
 pyroll new
@@ -117,6 +117,31 @@ Since the project is currently in initial state, we would ask you to contact us 
 This helps to avoid unnecessary effort by you and us. Use the issue system
 or [mail us](mailto:kalibrierzentrum@imf.tu-freiberg.de). If you want to create your own plugin package, please use
 the [plugin template](https://github.com/pyroll-project/pyroll-plugin-template) and follow the instructions there.
+
+### Policy for Inclusion of Hooks in the Core
+
+Since version 2.0 we try to include as many hooks as possible into the core, to tie down the nomenclature.
+This seems necessary, since for the same concepts, often different terms exist in literature.
+To avoid collisions and redundancies, it is better to include these hooks in the core, although some of them may come without implementation.
+This improves the exchangeability of plugins.
+If you like a hook to be included in the core, open an issue, or preferably, a pull request with the respective changes.
+Supply your pull request with fallback implementations of the hook, if any meaningful exist.
+
+From this policy we explicitly exclude hooks, that are solely of use for one model approach, namely "coefficients".
+They are large in number across the whole plugin landscape, but usually named after the model and of no further use to other plugins.
+So the benefit from including them in the core is small, while the pollution of the core would be exzessive.
+If another plugin has to make use of them, just add a dependency for the respective source plugin.
+
+A few examples for clarification:
+
+- The hooks `Profile.surface_temperature` and `Profile.core_temperature` may be of interests to many plugins.
+  The core provides fallbacks which just return `self.temperature`, which is a good first estimate of those.
+  So plugins modelling surface and thermal effects can easily refer to the respective temperatures, without worrying, if there is a model describing the temperature gradient or not.
+- The hook `Profile.freiberg_flow_stress_coefficients` from the `pyroll-freiberg-flow-stress` plugin makes no sense without the Freiberg flow stress model, so it is not included in the core.
+- The hook `Profile.thermal_conductivity` is a material property useful to many plugins, but no meaningful fallback exists, since there is no default material.
+  So the provision of values or implementations is deferred to the user or developers of material databases.
+
+So the core includes several hooks, that are not used by other core functionality, but provide a save ground for plugins.
 
 ## Roadmap
 
