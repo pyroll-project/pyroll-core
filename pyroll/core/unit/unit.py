@@ -22,9 +22,6 @@ class Unit(HookHost):
     out_profile = Hook[BaseProfile]()
     """The state of the outgoing profile."""
 
-    label = Hook[str]()
-    """Label for human identification."""
-
     max_iteration_count = 100
     """Count of maximum solution loop iterations before aborting."""
 
@@ -33,15 +30,16 @@ class Unit(HookHost):
 
     root_hooks: Set[Hook] = set()
 
-    def __init__(self):
+    def __init__(self, label: str):
         super().__init__()
         self._log = logging.getLogger(__name__)
+        self.label = label
+        """Label for human identification."""
 
     def __str__(self):
-        try:
+        if self.label:
             return type(self).__qualname__ + f" '{self.label}'"
-        except (AttributeError, RecursionError):
-            return type(self).__qualname__
+        return type(self).__qualname__
 
     @abstractmethod
     def init_solve(self, in_profile: BaseProfile):

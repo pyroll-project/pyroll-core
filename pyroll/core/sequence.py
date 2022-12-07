@@ -11,8 +11,8 @@ class PassSequence(Unit, Sequence[Unit]):
     total_elongation = Hook[float]()
     """Total elongation of the workpiece within the sequence."""
 
-    def __init__(self, units: Sequence[Unit]):
-        super().__init__()
+    def __init__(self, units: Sequence[Unit], label: str = ""):
+        super().__init__(label=label)
 
         self.units = self.UnitsList(units)
 

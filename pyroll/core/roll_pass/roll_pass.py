@@ -82,9 +82,10 @@ class RollPass(Unit):
     def __init__(
             self,
             roll: BaseRoll,
+            label: str = "",
             **kwargs
     ):
-        super().__init__()
+        super().__init__(label)
 
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (equal upper and lower)."""
@@ -107,9 +108,6 @@ class RollPass(Unit):
         intersection = vline.intersection(poly)
 
         return intersection.length
-
-    def __str__(self):
-        return f"RollPass '{self.label}'"
 
     @property
     def upper_contour_line(self) -> LineString:

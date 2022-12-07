@@ -23,9 +23,10 @@ class Transport(Unit):
 
     def __init__(
             self,
+            label: str = "",
             **kwargs
     ):
-        super().__init__()
+        super().__init__(label)
         self.__dict__.update(kwargs)
         self._log = logging.getLogger(__name__)
 
