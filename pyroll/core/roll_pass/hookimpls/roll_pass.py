@@ -41,7 +41,7 @@ def draught(self: RollPass):
 
 @RollPass.spread
 def spread(self: RollPass):
-    return self.out_profile.equivalent_rectangle.height / self.in_profile.equivalent_rectangle.height
+    return self.out_profile.equivalent_rectangle.width / self.in_profile.equivalent_rectangle.width
 
 
 @RollPass.elongation
