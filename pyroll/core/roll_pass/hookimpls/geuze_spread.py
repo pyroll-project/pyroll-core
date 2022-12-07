@@ -37,7 +37,7 @@ def spread(self: RollPass):
 
 @RollPass.OutProfile.width
 def width(self: RollPass.OutProfile):
-    if "width" in self.__dict__:
+    if self.has_set_or_cached("width"):
         return self.roll_pass().in_profile.width * self.roll_pass().spread
 
 

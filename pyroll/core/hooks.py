@@ -188,6 +188,22 @@ class HookHost(ReprMixin, metaclass=HookHostMeta):
         """
         self.__cache__.clear()
 
+    def has_set(self, name: str):
+        """Checks whether a value is explicitly set for the hook `name`."""
+        return name in self.__dict__
+
+    def has_cached(self, name: str):
+        """Checks whether a value is cached for the hook `name`."""
+        return name in self.__cache__
+
+    def has_set_or_cached(self, name: str):
+        """Checks whether a value is explicitly set or cached for the hook `name`."""
+        return self.has_set(name) or self.has_cached(name)
+
+    def has_value(self, name: str):
+        """Checks whether a value is available for the hook `name`."""
+        return hasattr(self, name)
+
     @property
     def __attrs__(self):
         return {
@@ -198,6 +214,7 @@ class HookHost(ReprMixin, metaclass=HookHostMeta):
 
     def evaluate_and_set_hooks(self, hooks: Iterable[Hook]):
         """Evaluate functions of root hooks and set the results explicitly as attributes."""
+
         def _gen():
             for h in hooks:
                 if issubclass(type(self), h.owner):
