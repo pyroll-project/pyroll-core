@@ -25,9 +25,15 @@ class HookFunction:
         self.qualname = func.__qualname__
         self.name = func.__name__
         self.hook = hook
+        self._cycle = False
 
     def __call__(self, instance):
-        return self._func(instance)
+        if self._cycle:
+            return None
+        self._cycle = True
+        result = self._func(instance)
+        self._cycle = False
+        return result
 
     def __repr__(self):
         return f"<{self.__str__()}>"
@@ -77,12 +83,7 @@ class Hook(Generic[T]):
             return result
 
         # try to get value from hook caller
-        try:
-            result = self.get_result(instance)
-        except RecursionError as e:
-            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' resulted in a RecursionError. "
-                                 f"This may have one of the following reasons: missing data, interference of plugins. "
-                                 f"Double check if you have provided all necessary input data.") from e
+        result = self.get_result(instance)
 
         if result is None:
             raise AttributeError(f"Hook call for '{self.name}' on '{instance}' could not provide a value.")
