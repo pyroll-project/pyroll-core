@@ -1,3 +1,4 @@
+import inspect
 import logging
 import weakref
 from abc import ABCMeta
@@ -25,14 +26,15 @@ class HookFunction:
         self.qualname = func.__qualname__
         self.name = func.__name__
         self.hook = hook
-        self._cycle = False
+        self.cycle = False
 
     def __call__(self, instance):
-        if self._cycle:
-            return None
-        self._cycle = True
-        result = self._func(instance)
-        self._cycle = False
+        extra_args = self._determine_extra_args()
+        self.cycle = True
+        try:
+            result = self._func(instance, **extra_args)
+        finally:
+            self.cycle = False
         return result
 
     def __repr__(self):
@@ -40,6 +42,14 @@ class HookFunction:
 
     def __str__(self):
         return f"HookFunction {self.module}.{self.qualname}"
+
+    def _determine_extra_args(self):
+        extra_args = {}
+        pars = inspect.signature(self._func).parameters
+        if "cycle" in pars:
+            extra_args["cycle"] = self.cycle
+
+        return extra_args
 
 
 class Hook(Generic[T]):
