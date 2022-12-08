@@ -9,4 +9,5 @@ from .roll_pass import RollPass
 from .unit import Unit
 from .roll import Roll
 from .profile import Profile
+from .rotator import Rotator
 from .sequence import PassSequence
