@@ -2,9 +2,9 @@ import weakref
 from collections.abc import Sequence
 from typing import overload
 
-from .unit import Unit
-from .profile import Profile as BaseProfile
-from .hooks import Hook
+from ..unit import Unit
+from ..profile import Profile as BaseProfile
+from ..hooks import Hook
 
 
 class PassSequence(Unit, Sequence[Unit]):
@@ -80,3 +80,8 @@ class PassSequence(Unit, Sequence[Unit]):
         # noinspection PyProtectedMember
         def _repr_html_(self):
             return "<br/>".join(v._repr_html_() for v in self)
+
+
+PassSequence.root_hooks = {
+    PassSequence.total_elongation
+}
