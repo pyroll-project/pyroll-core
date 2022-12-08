@@ -93,7 +93,12 @@ class Hook(Generic[T]):
             return result
 
         # try to get value from hook caller
-        result = self.get_result(instance)
+        try:
+            result = self.get_result(instance)
+        except RecursionError as e:
+            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' resulted in a RecursionError. "
+                                 f"This may have one of the following reasons: missing data, interference of plugins. "
+                                 f"Double check if you have provided all necessary input data.") from e
 
         if result is None:
             raise AttributeError(f"Hook call for '{self.name}' on '{instance}' could not provide a value.")
