@@ -1,0 +1,16 @@
+<table class="table table-sm table-light">
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for name, value in properties|sort %}
+        <tr>
+            <td>{{ name }}</td>
+            <td>{{ value }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

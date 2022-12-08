@@ -5,7 +5,7 @@ in_profile = Profile.round(
     diameter=30e-3,
     temperature=1200 + 273.15,
     strain=0,
-    material="C45",
+    material=["C45", "steel"],
     flow_stress=100e6
 )
 
