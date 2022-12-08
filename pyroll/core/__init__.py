@@ -10,4 +10,3 @@ from .unit import Unit
 from .roll import Roll
 from .profile import Profile
 from .sequence import PassSequence
-from .exceptions import MaxIterationCountExceededError

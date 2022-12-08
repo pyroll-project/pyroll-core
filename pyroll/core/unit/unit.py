@@ -5,7 +5,6 @@ from typing import Optional, Set, List
 
 import numpy as np
 
-from ..exceptions import MaxIterationCountExceededError
 from ..hooks import HookHost, Hook
 from ..profile import Profile as BaseProfile
 
@@ -81,16 +80,20 @@ class Unit(HookHost):
 
             if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
                 self._log.info(f"Finished solving of {self} after {i} iterations.")
-
-                result = BaseProfile(**{
-                    k: v for k, v in self.out_profile.__dict__.items()
-                    if not k.startswith("_")
-                })
-                return result
+                break
 
             old_values = current_values
 
-        raise MaxIterationCountExceededError
+        else:
+            self._log.warning(
+                f"Solution iteration of {self} exceed the maximum iteration count of {self.max_iteration_count}."
+                f" Continuing anyway.")
+
+        result = BaseProfile(**{
+            k: v for k, v in self.out_profile.__dict__.items()
+            if not k.startswith("_")
+        })
+        return result
 
     class Profile(BaseProfile):
         """Represents a profile in context of a unit."""
