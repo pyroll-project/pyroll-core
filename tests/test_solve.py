@@ -1,53 +1,54 @@
 import logging
-from importlib import reload
 from pathlib import Path
-
-from pyroll.core import solve
-from pyroll.ui import report, export
+from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence
 
 
 def test_solve_min(tmp_path: Path, caplog):
     caplog.set_level(logging.DEBUG, logger="pyroll")
 
-    import pyroll.ui.cli.res.input_min as input_py
-    reload(input_py)
+    in_profile = Profile.round(
+        diameter=30e-3,
+        temperature=1200 + 273.15,
+        strain=0,
+        material=["C45", "steel"],
+        flow_stress=100e6
+    )
 
-    sequence = input_py.sequence
+    sequence = PassSequence([
+        RollPass(
+            label="Oval I",
+            roll=Roll(
+                groove=CircularOvalGroove(
+                    depth=8e-3,
+                    r1=6e-3,
+                    r2=40e-3
+                ),
+                nominal_radius=160e-3,
+                rotational_frequency=1
+            ),
+            gap=2e-3,
+        ),
+        Transport(
+            label="I => II",
+            duration=1
+        ),
+        RollPass(
+            label="Round II",
+            roll=Roll(
+                groove=RoundGroove(
+                    r1=1e-3,
+                    r2=12.5e-3,
+                    depth=11.5e-3
+                ),
+                nominal_radius=160e-3,
+                rotational_frequency=1
+            ),
+            gap=2e-3,
+        ),
+    ])
 
-    solve(sequence, input_py.in_profile)
-
-    rendered = report(sequence)
-    print()
-
-    report_file = tmp_path / "report.html"
-    report_file.write_text(rendered)
-    print(report_file)
-
-    print(export.to_dict(sequence))
-    print(export.to_pandas(sequence))
-    print(export.to_pandas(sequence).to_csv())
-    print(export.to_pandas(sequence).to_xml())
-    print(export.to_json(sequence))
-
-    print("\nLog:")
-    print(caplog.text)
-
-
-def test_solve_three_high_rolling_plant(tmp_path: Path, caplog):
-    caplog.set_level(logging.DEBUG, logger="pyroll")
-
-    import pyroll.ui.cli.res.input_trio as input_py
-
-    sequence = input_py.sequence
-
-    solve(sequence, input_py.in_profile)
-
-    rendered = report(sequence)
-    print()
-
-    report_file = tmp_path / "report.html"
-    report_file.write_text(rendered)
-    print(report_file)
-
-    print("\nLog:")
-    print(caplog.text)
+    try:
+        sequence.solve(in_profile)
+    finally:
+        print("\nLog:")
+        print(caplog.text)

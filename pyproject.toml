@@ -14,7 +14,6 @@ repository = "https://github.com/pyroll-project/pyroll-core"
 documentation = "https://pyroll.readthedocs.io/en/latest"
 packages = [
     { include = "pyroll/core" },
-    { include = "pyroll/ui" }
 ]
 readme = "README.md"
 classifiers = [
@@ -26,16 +25,8 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9, <4.0"
-matplotlib = "^3.5.0"
 numpy = "^1.21.4"
 scipy = "^1.8.0"
-Jinja2 = "^3.0.3"
-click = "^8.0.0"
-PyYAML = "^6.0"
-makefun = "^1.13.1"
-pluggy = "^1.0.0"
-pandas = "^1.4.1"
-lxml = "^4.7.1"
 Shapely = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
