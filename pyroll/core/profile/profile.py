@@ -16,7 +16,7 @@ _log = logging.getLogger(__name__)
 class Profile(HookHost):
     cross_section = Hook[Polygon]()
     types = Hook[Tuple[str, ...]]()
-    equivalent_rectangle = Hook[Polygon]()
+
     x = Hook[float]()
     """Spacial coordinate in rolling direction."""
 
@@ -34,6 +34,15 @@ class Profile(HookHost):
 
     length = Hook[float]()
     """Length of the workpiece (x-direction)."""
+
+    equivalent_rectangle = Hook[Polygon]()
+    """Equivalent rectangle geometry for use with equivalent flat pass models."""
+
+    equivalent_height = Hook[float]()
+    """Height of the equivalent rectangle."""
+
+    equivalent_width = Hook[float]()
+    """Width of the equivalent rectangle."""
 
     temperature = Hook[float]()
     """Mean temperature of the profile cross-section."""

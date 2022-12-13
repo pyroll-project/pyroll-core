@@ -4,12 +4,11 @@ import weakref
 import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
-from shapely.ops import clip_by_rect
 
 from ..hooks import Hook
 from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
-from ..shapes import linemerge_if_multi
+from ..rotator import Rotator
 from ..unit import Unit
 
 
@@ -128,11 +127,10 @@ class RollPass(Unit):
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
 
-        self.in_profile.cross_section = rotate(in_profile.cross_section, angle=self.in_profile_rotation, origin=(0, 0))
-        del self.in_profile.height
-        del self.in_profile.width
-        self.in_profile.clear_hook_cache()
+        rotator = Rotator(rotation=self.in_profile_rotation)
+        rotator.solve(in_profile)
 
+        self.in_profile = self.InProfile(self, rotator.out_profile)
         self.out_profile = self.OutProfile(self)
 
     def get_root_hook_results(self):

@@ -1,3 +1,4 @@
+import inspect
 import logging
 import weakref
 from abc import ABCMeta
@@ -25,15 +26,30 @@ class HookFunction:
         self.qualname = func.__qualname__
         self.name = func.__name__
         self.hook = hook
+        self.cycle = False
 
     def __call__(self, instance):
-        return self._func(instance)
+        extra_args = self._determine_extra_args()
+        self.cycle = True
+        try:
+            result = self._func(instance, **extra_args)
+        finally:
+            self.cycle = False
+        return result
 
     def __repr__(self):
         return f"<{self.__str__()}>"
 
     def __str__(self):
         return f"HookFunction {self.module}.{self.qualname}"
+
+    def _determine_extra_args(self):
+        extra_args = {}
+        pars = inspect.signature(self._func).parameters
+        if "cycle" in pars:
+            extra_args["cycle"] = self.cycle
+
+        return extra_args
 
 
 class Hook(Generic[T]):
@@ -188,6 +204,22 @@ class HookHost(ReprMixin, metaclass=HookHostMeta):
         """
         self.__cache__.clear()
 
+    def has_set(self, name: str):
+        """Checks whether a value is explicitly set for the hook `name`."""
+        return name in self.__dict__
+
+    def has_cached(self, name: str):
+        """Checks whether a value is cached for the hook `name`."""
+        return name in self.__cache__
+
+    def has_set_or_cached(self, name: str):
+        """Checks whether a value is explicitly set or cached for the hook `name`."""
+        return self.has_set(name) or self.has_cached(name)
+
+    def has_value(self, name: str):
+        """Checks whether a value is available for the hook `name`."""
+        return hasattr(self, name)
+
     @property
     def __attrs__(self):
         return {
@@ -198,6 +230,7 @@ class HookHost(ReprMixin, metaclass=HookHostMeta):
 
     def evaluate_and_set_hooks(self, hooks: Iterable[Hook]):
         """Evaluate functions of root hooks and set the results explicitly as attributes."""
+
         def _gen():
             for h in hooks:
                 if issubclass(type(self), h.owner):

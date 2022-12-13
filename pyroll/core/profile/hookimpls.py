@@ -21,12 +21,28 @@ def length(self: Profile):
     return 0
 
 
+@Profile.equivalent_height
+def equivalent_height(self: Profile):
+    return np.sqrt(self.cross_section.area * self.height / self.width)
+
+
+@Profile.equivalent_height
+def equivalent_height(self: Profile):
+    if self.has_set_or_cached("equivalent_rectangle"):
+        return self.equivalent_rectangle.height
+
+
+@Profile.equivalent_width
+def equivalent_width(self: Profile):
+    return np.sqrt(self.cross_section.area * self.width / self.height)
+
+
+@Profile.equivalent_width
+def equivalent_width(self: Profile):
+    if self.has_set_or_cached("equivalent_rectangle"):
+        return self.equivalent_rectangle.width
+
+
 @Profile.equivalent_rectangle
 def equivalent_rectangle(self: Profile):
-    width = self.width
-    height = self.height
-
-    eq_width = np.sqrt(self.cross_section.area * width / height)
-    eq_height = np.sqrt(self.cross_section.area * height / width)
-
-    return rectangle(eq_width, eq_height)
+    return rectangle(self.equivalent_width, self.equivalent_height)
