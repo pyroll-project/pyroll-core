@@ -47,6 +47,12 @@ class Profile(HookHost):
     temperature = Hook[float]()
     """Mean temperature of the profile cross-section."""
 
+    surface_temperature = Hook[float]()
+    """Mean temperature of the profile surface."""
+
+    core_temperature = Hook[float]()
+    """Temperature of the profile core."""
+
     strain = Hook[float]()
     """Mean equivalent strain of the profile cross-section."""
 

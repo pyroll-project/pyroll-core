@@ -46,3 +46,13 @@ def equivalent_width(self: Profile):
 @Profile.equivalent_rectangle
 def equivalent_rectangle(self: Profile):
     return rectangle(self.equivalent_width, self.equivalent_height)
+
+
+@Profile.surface_temperature
+def surface_temperature(self: Profile):
+    return self.temperature
+
+
+@Profile.core_temperature
+def core_temperature(self: Profile):
+    return self.temperature
