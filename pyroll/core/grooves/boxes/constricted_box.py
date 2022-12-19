@@ -22,7 +22,7 @@ class ConstrictedBoxGroove(GenericElongationGroove):
         """
         Exactly two of ground_width, usable_width and flank_angle must be given.
 
-       :param r1: radius of the first edge
+        :param r1: radius of the first edge
         :type r1: float
         :param r2: radius of the second edge
         :type r2: float
