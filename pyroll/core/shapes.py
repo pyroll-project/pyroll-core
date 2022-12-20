@@ -32,6 +32,7 @@ class Polygon(shapely.geometry.Polygon, ReprMixin):
             "width": self.width,
             "height": self.height,
             "perimeter": self.perimeter,
+            "area": self.area,
         }
 
     __str__ = ReprMixin.__str__

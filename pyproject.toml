@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "pyroll"
-version = "2.0.0a1"
+name = "pyroll-core"
+version = "2.0.0a2"
 description = "PyRoll rolling simulation framework - core library."
 authors = [
     "Max Weiner <max.weiner@imf.tu-freiberg.de>",
@@ -14,7 +14,6 @@ repository = "https://github.com/pyroll-project/pyroll-core"
 documentation = "https://pyroll.readthedocs.io/en/latest"
 packages = [
     { include = "pyroll/core" },
-    { include = "pyroll/ui" }
 ]
 readme = "README.md"
 classifiers = [
@@ -26,28 +25,13 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9, <4.0"
-matplotlib = "^3.5.0"
 numpy = "^1.21.4"
 scipy = "^1.8.0"
-Jinja2 = "^3.0.3"
-click = "^8.0.0"
-PyYAML = "^6.0"
-makefun = "^1.13.1"
-pluggy = "^1.0.0"
-pandas = "^1.4.1"
-lxml = "^4.7.1"
 Shapely = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.0"
-Sphinx = "^4.5.0"
-myst-parser = "^0.18.0"
 ipython = "^8.3.0"
-schemdraw = "^0.15"
-pytask = "^0.2.5"
-
-[tool.poetry.scripts]
-pyroll = 'pyroll.ui.cli:main'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
