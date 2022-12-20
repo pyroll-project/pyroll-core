@@ -15,7 +15,10 @@ _log = logging.getLogger(__name__)
 
 class Profile(HookHost):
     cross_section = Hook[Polygon]()
+    """Shape of the profile's cross-section."""
+
     types = Hook[Tuple[str, ...]]()
+    """Classifiers of the profile's shape's type."""
 
     x = Hook[float]()
     """Spacial coordinate in rolling direction."""
