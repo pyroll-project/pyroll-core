@@ -10,4 +10,4 @@ from .roll import Roll
 from .profile import Profile
 from .rotator import Rotator
 from .sequence import PassSequence
-from .hooks import Hook, HookHost, HookFunction, HookHostMeta
+from .hooks import Hook, HookHost, HookFunction

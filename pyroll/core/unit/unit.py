@@ -1,7 +1,7 @@
 import logging
 import weakref
 from abc import abstractmethod
-from typing import Optional, Set, List
+from typing import Set, List
 
 import numpy as np
 
@@ -10,7 +10,7 @@ from ..profile import Profile as BaseProfile
 
 
 class Unit(HookHost):
-    """Base class for units in a pass sequence."""
+    """Base class for units."""
 
     profiles = Hook[List[BaseProfile]]()
     """List of all profile states within the unit."""
@@ -28,6 +28,12 @@ class Unit(HookHost):
     """Precision of iteration break in solution loop."""
 
     root_hooks: Set[Hook] = set()
+    """
+    Set of hooks to call explicitly in each solution iteration.
+    Their values will be treated as explicitly set but reevaluated in every iteration.
+    They will not be deleted during cache clearing.
+    They serve as root for the calling tree and persistent iterational variables.
+    """
 
     def __init__(self, label: str):
         super().__init__()

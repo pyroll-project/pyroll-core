@@ -3,6 +3,9 @@ from abc import ABC, abstractmethod
 
 
 class ReprMixin(ABC):
+    """Mixin class providing common functionality for ``__repr__``, ``__str__``,
+    ``_repr_pretty_`` and ``_repr_html_``."""
+
     @property
     @abstractmethod
     def __attrs__(self):
@@ -16,6 +19,8 @@ class ReprMixin(ABC):
         return f"{self.__class__.__name__}({', '.join(kwattrs)})"
 
     def _repr_pretty_(self, p, cycle):
+        """Pretty printing for IPython."""
+
         if cycle:
             p.text(f"{type(self).__name__}(...)")
         else:
@@ -29,6 +34,8 @@ class ReprMixin(ABC):
 
     # noinspection PyProtectedMember
     def _repr_html_(self):
+        """HTML repr for IPython."""
+
         buf = [f"<table><tr><th colspan=2 style='text-align:center'>{html.escape(str(self), True)}</th></tr>"]
 
         for name, value in sorted(self.__attrs__.items()):

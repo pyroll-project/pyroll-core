@@ -7,13 +7,21 @@ from ..profile import Profile as BaseProfile
 
 
 class Rotator(Unit):
+    """Represents a unit rotating a profile around the rolling axis (mostly for feeding into next roll pass)."""
+
     rotation = Hook[float]()
+    """Rotation applied to the profile in ° (degree)."""
 
     def __init__(
             self,
             label: str = "",
             **kwargs
     ):
+        """
+        :param label: label for human identification
+        :param kwargs: additional hook values as keyword arguments to set explicitly
+        """
+
         super().__init__(label)
         self.__dict__.update(kwargs)
         self._log = logging.getLogger(__name__)
@@ -23,7 +31,7 @@ class Rotator(Unit):
         self.out_profile = self.OutProfile(self)
 
     class Profile(BaseProfile):
-        """Represents a profile in context of a unit."""
+        """Represents a profile in context of a rotator."""
 
         def __init__(self, rotator: 'Rotator', template: BaseProfile):
             kwargs = dict(
@@ -34,13 +42,13 @@ class Rotator(Unit):
             self.rotator = weakref.ref(rotator)
 
     class InProfile(Profile):
-        """Represents an incoming profile of a unit."""
+        """Represents an incoming profile of a rotator."""
 
         def __init__(self, rotator: 'Rotator', template: BaseProfile):
             super().__init__(rotator, template)
 
     class OutProfile(Profile):
-        """Represents an outgoing profile of a unit."""
+        """Represents an outgoing profile of a rotator."""
 
         def __init__(self, rotator: 'Rotator'):
             super().__init__(rotator, rotator.in_profile)

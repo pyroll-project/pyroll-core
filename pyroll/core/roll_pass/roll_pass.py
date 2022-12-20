@@ -84,6 +84,12 @@ class RollPass(Unit):
             label: str = "",
             **kwargs
     ):
+        """
+        :param roll: the roll object representing the equal working rolls of the pass
+        :param label: label for human identification
+        :param kwargs: additional hook values as keyword arguments to set explicitly
+        """
+
         super().__init__(label)
 
         self.roll = self.Roll(roll, self)

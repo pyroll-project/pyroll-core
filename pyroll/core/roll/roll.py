@@ -9,7 +9,7 @@ from ..hooks import HookHost, Hook
 
 
 class Roll(HookHost):
-    groove: GrooveBase = Hook()
+    """Represents a roll."""
 
     nominal_radius = Hook[float]()
     """Nominal radius."""
@@ -76,9 +76,15 @@ class Roll(HookHost):
             self,
             groove: GrooveBase,
             **kwargs):
+        """
+        :param groove: the groove object defining the shape of the roll's surface
+        :param kwargs: additional hook values as keyword arguments to set explicitly
+        """
         self.__dict__.update(kwargs)
 
         super().__init__()
 
         self.groove = groove
+        """The groove object defining the shape of the roll's surface."""
+
         self._log = logging.getLogger(__name__)

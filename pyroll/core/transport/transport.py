@@ -26,6 +26,11 @@ class Transport(Unit):
             label: str = "",
             **kwargs
     ):
+        """
+        :param label: label for human identification
+        :param kwargs: additional hook values as keyword arguments to set explicitly
+        """
+
         super().__init__(label)
         self.__dict__.update(kwargs)
         self._log = logging.getLogger(__name__)

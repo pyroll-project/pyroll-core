@@ -14,6 +14,8 @@ _log = logging.getLogger(__name__)
 
 
 class Profile(HookHost):
+    """Represents a profile aka a workpiece state."""
+
     cross_section = Hook[Polygon]()
     """Shape of the profile's cross-section."""
 
@@ -82,6 +84,7 @@ class Profile(HookHost):
     Can be used by material databases to retrieve respective data."""
 
     def __init__(self, **kwargs):
+        """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
         self.__dict__.update(kwargs)
         super().__init__()
 

@@ -23,12 +23,23 @@ class HookFunction:
     def __init__(self, func, hook):
         self._func = func
         self.module = func.__module__
+        """The module the function originates from."""
+
         self.qualname = func.__qualname__
+        """The qualified name of the function."""
+
         self.name = func.__name__
+        """The name of the function."""
+
         self.hook = hook
+        """The hook the function is defined for."""
+
         self.cycle = False
+        """Cycle detection."""
 
     def __call__(self, instance):
+        """Call the function as it were a method the provided instance."""
+
         extra_args = self._determine_extra_args()
         self.cycle = True
         try:
@@ -55,13 +66,18 @@ class HookFunction:
 class Hook(Generic[T]):
     """
     Descriptor yielding the value of a hook attribute if called on instance,
-    or the respective HookCaller if called on class.
+    or itself if called on class.
     """
 
     def __set_name__(self, owner, name):
         self.name = name
+        """The name of the hook."""
+
         self.owner = owner
+        """The owner class of the hook instance."""
+
         self._functions = []
+        """The functions connected to this hook and owner."""
 
     @overload
     def __get__(self, instance: None, owner: type) -> 'Hook[T]':
@@ -72,6 +88,19 @@ class Hook(Generic[T]):
         ...
 
     def __get__(self, instance: 'HookHost', owner: type) -> T | 'Hook[T]':
+        """
+        Get the value of the hook if called on instance or the descriptor itself if called on class.
+
+        Hook value resolution is done in the following order:
+        1. explicit values (in ``__dict__``)
+        2. cached values (in ``__cache__``)
+        3. from hook functions.
+
+        Saves the value in ``__cache__`` if the value was determined from functions.
+
+        :raises AttributeError: if no value could be provided or if a RecursionError occurred during hook function calling
+        :raises ValueError: if the resulting value was infinite (only for numeric values)
+        """
 
         if self.owner != owner:
             # create distinct instance on subclass
@@ -114,9 +143,14 @@ class Hook(Generic[T]):
         return result
 
     def __set__(self, instance: object, value: T) -> None:
+        """Saves a value to the ``__dict__`` of the instance."""
         instance.__dict__[self.name] = value
 
     def __delete__(self, instance: object) -> None:
+        """
+        Deletes the value from the ``__dict__`` of the instance.
+        Does not raise, if the value is not in the ``__dict__``.
+        """
         instance.__dict__.pop(self.name, None)
 
     @property
@@ -152,6 +186,8 @@ class Hook(Generic[T]):
     def add_function(self, func):
         """
         Add the given function to the internal function store.
+
+        :return: the given function
         """
         self._functions.append(HookFunction(func, self))
         return func
@@ -159,6 +195,8 @@ class Hook(Generic[T]):
     def __call__(self, func):
         """
         Add the given function to the internal function store.
+
+        :return: the created HookFunction object
         """
         hf = HookFunction(func, self)
         self._functions.append(hf)
@@ -171,11 +209,11 @@ class Hook(Generic[T]):
         return f"Hook {self.owner.__qualname__}.{self.name}"
 
 
-class HookHostMeta(ABCMeta):
+class _HookHostMeta(ABCMeta):
     """
     Metaclass that provides plugin functionality to a class.
 
-    Not for direct uses but through :py:class:`PluginHost` base class.
+    Not for direct use but through :py:class:`PluginHost` base class.
     """
 
     def __init__(cls, name, bases, dct):
@@ -187,12 +225,9 @@ class HookHostMeta(ABCMeta):
         super().__setattr__(key, value)
 
 
-class HookHost(ReprMixin, metaclass=HookHostMeta):
+class HookHost(ReprMixin, metaclass=_HookHostMeta):
     """
-    A base class providing plugin functionality using the :py:class:`PluginHostMeta` metaclass.
-
-    The :py:meth:`get_from_hook` method is also callable through the attribute syntax (``.`` notation),
-    where the key equals the attributes name.
+    A base class providing plugin functionality and some related convenience methods to a derived class.
     """
 
     def __init__(self):

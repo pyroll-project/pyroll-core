@@ -1,3 +1,4 @@
+import logging
 import weakref
 from collections.abc import Sequence
 from typing import overload
@@ -8,13 +9,26 @@ from ..hooks import Hook
 
 
 class PassSequence(Unit, Sequence[Unit]):
+    """
+    Represents a sequence of other units.
+    Main container for defining rolling processes.
+    Can be nested to define distinct rolling lines or similar.
+    """
+
     total_elongation = Hook[float]()
     """Total elongation of the workpiece within the sequence."""
 
-    def __init__(self, units: Sequence[Unit], label: str = ""):
-        super().__init__(label=label)
+    def __init__(self, units: Sequence[Unit], label: str = "", **kwargs):
+        """
+        :param units: sequence of unit objects
+        :param label: label for human identification
+        :param kwargs: additional hook values as keyword arguments to set explicitly
+        """
 
+        super().__init__(label=label)
+        self.__dict__.update(kwargs)
         self.units = self.UnitsList(units)
+        self._log = logging.getLogger(__name__)
 
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
@@ -77,6 +91,7 @@ class PassSequence(Unit, Sequence[Unit]):
         return self.units.__getitem__(index)
 
     class UnitsList(list):
+        """Specialized list for holding the units of a pass sequence."""
         # noinspection PyProtectedMember
         def _repr_html_(self):
             return "<br/>".join(v._repr_html_() for v in self)
