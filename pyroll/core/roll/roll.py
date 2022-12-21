@@ -1,5 +1,5 @@
 import logging
-from typing import Iterable
+from typing import Iterable, Union
 
 import numpy as np
 from shapely.geometry import LineString
@@ -68,7 +68,7 @@ class Roll(HookHost):
     density = Hook[float]()
     """Density (specific weight) of the roll material."""
 
-    material = Hook[str | Iterable[str]]()
+    material = Hook[Union[str, Iterable[str]]]()
     """String or sequence of strings classifying the material of the roll.
     Can be used by material databases to retrieve respective data."""
 

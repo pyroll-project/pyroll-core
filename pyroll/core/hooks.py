@@ -2,7 +2,7 @@ import inspect
 import logging
 import weakref
 from abc import ABCMeta
-from typing import overload, Iterable, TypeVar, Generic, List, Generator
+from typing import overload, Iterable, TypeVar, Generic, List, Generator, Union
 
 import numpy as np
 
@@ -87,7 +87,7 @@ class Hook(Generic[T]):
     def __get__(self, instance: 'HookHost', owner: type) -> T:
         ...
 
-    def __get__(self, instance: 'HookHost', owner: type) -> T | 'Hook[T]':
+    def __get__(self, instance: 'HookHost', owner: type) -> Union[T, 'Hook[T]']:
         """
         Get the value of the hook if called on instance or the descriptor itself if called on class.
 
@@ -174,7 +174,7 @@ class Hook(Generic[T]):
         """
         return list(self.functions_gen)
 
-    def get_result(self, instance) -> T | None:
+    def get_result(self, instance) -> Union[T, None]:
         """
         Get the first not ``None`` result of the functions in ``self.functions`` or the cached value.
         """
