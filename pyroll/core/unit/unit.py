@@ -92,7 +92,7 @@ class Unit(HookHost):
 
         else:
             self._log.warning(
-                f"Solution iteration of {self} exceed the maximum iteration count of {self.max_iteration_count}."
+                f"Solution iteration of {self} exceeded the maximum iteration count of {self.max_iteration_count}."
                 f" Continuing anyway.")
 
         result = BaseProfile(**{
