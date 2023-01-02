@@ -1,0 +1,14 @@
+[build]
+include = [
+    "pyroll/*"
+]
+
+[envs.default]
+
+[envs.test]
+dependencies = [
+    "pytest ~= 7.0"
+]
+
+[[envs.test.matrix]]
+python = ["3.9", "3.10", "3.11"]
