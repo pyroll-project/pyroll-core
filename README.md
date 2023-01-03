@@ -7,10 +7,19 @@ The current focus lies on groove rolling in elongation grooves.
 The core package includes the basic data structures and algorithms.
 Further functionality is provided via [extension packages](https://pyroll.readthedocs.io/en/latest/extensions/index.html) and model approaches are provided via [plugin packages](https://pyroll.readthedocs.io/en/latest/plugins/index.html).
 
+## Versions
+
+The main branch of this repository contains the code of the version 2.0 of PyRolL, which is under ongoing development and currently in alpha state.
+See the [backport branch](https://github.com/pyroll-project/pyroll-core/tree/v1.0_backport) for the code of version 1.0.
+Version 1.0 will be out of support, as version 2.0 is released.
+Consider to start development targeting version 2.0 as soon as possible.
+The API of version 2.0 is mostly fixed, but there may be minor but breaking changes until release.
+
 ## Documentation
 
 See the [documentation](https://pyroll.readthedocs.io/en/latest) to learn about basic concepts and
 usage.
+The documentation of version 1.0 can be found [here](https://pyroll.readthedocs.io/en/stable).
 
 ## License
 
