@@ -12,3 +12,6 @@ dependencies = [
 
 [[envs.test.matrix]]
 python = ["3.9", "3.10", "3.11"]
+
+[envs.test.scripts]
+run = "pytest"
