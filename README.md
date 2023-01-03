@@ -1,4 +1,4 @@
-# PyRoll Rolling Simulation Framework
+# PyRoll Rolling Simulation Framework v1.0
 
 Welcome to The PyRoll Project!
 
@@ -7,6 +7,14 @@ The current focus lies on groove rolling in elongation grooves.
 The core package comes with a basic set of models to allow a first estimation of forces and torques occurring in a pass
 sequence.
 There is a flexible plugin system, able to modify and extend the model set available to describe the process.
+
+## Versions
+
+The main branch of this repository contains the code of the version 2.0 of PyRolL, which is under ongoing development and currently in alpha state.
+This is the backport branch for the code of version 1.0.
+Version 1.0 will be out of support, as version 2.0 is released.
+Consider to start development targeting version 2.0 as soon as possible.
+The API of version 2.0 is mostly fixed, but there may be minor but breaking changes until release.
 
 ## Installation
 
