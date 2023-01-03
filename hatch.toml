@@ -3,6 +3,9 @@ include = [
     "pyroll/*"
 ]
 
+[version]
+path = "pyroll/core/__init__.py"
+
 [envs.default]
 
 [envs.test]
