@@ -1,12 +1,15 @@
 [build]
-include = [
-    "pyroll/*"
+packages = [
+    "pyroll"
 ]
 
 [version]
 path = "pyroll/core/__init__.py"
 
 [envs.default]
+dependencies = [
+    "ipython ~= 8.0"
+]
 
 [envs.test]
 dependencies = [
