@@ -20,4 +20,5 @@ path = ""
 python = ["3.9", "3.10", "3.11"]
 
 [envs.test.scripts]
-run = "pytest"
+all = "pytest tests"
+solve = "pytest tests/test_solve.py"
