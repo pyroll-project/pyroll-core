@@ -7,14 +7,14 @@ packages = [
 path = "pyroll/core/__init__.py"
 
 [envs.default]
+path = ".venv"
 dependencies = [
-    "ipython ~= 8.0"
+    "ipython ~= 8.0",
+    "pytest ~= 7.0",
 ]
 
 [envs.test]
-dependencies = [
-    "pytest ~= 7.0"
-]
+path = ""
 
 [[envs.test.matrix]]
 python = ["3.9", "3.10", "3.11"]
