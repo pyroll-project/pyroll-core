@@ -67,5 +67,8 @@ class PassSequence(Unit, Sequence[Unit]):
 
 PassSequence.root_hooks = {
     PassSequence.total_elongation,
-    PassSequence.OutProfile.cross_section
+    PassSequence.OutProfile.cross_section,
+    PassSequence.OutProfile.strain,
+    PassSequence.OutProfile.length,
+    PassSequence.OutProfile.types,
 }

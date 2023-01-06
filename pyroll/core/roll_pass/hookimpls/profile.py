@@ -59,3 +59,8 @@ def cross_section(self: RollPass.OutProfile) -> Polygon:
                          "May be caused by critical overfilling.")
 
     return clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
+
+
+@RollPass.OutProfile.types
+def types(self: RollPass.OutProfile):
+    return self.roll_pass().types

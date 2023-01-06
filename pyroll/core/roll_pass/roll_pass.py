@@ -164,11 +164,6 @@ class RollPass(Unit):
 
         filling_ratio = Hook[float]()
 
-        def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
-            super().__init__(roll_pass, template)
-            del self.cross_section
-            self.types = roll_pass.types
-
     class Roll(BaseRoll):
         """Represents a roll applied in a :py:class:`RollPass`."""
 
@@ -185,4 +180,5 @@ RollPass.root_hooks = {
     RollPass.OutProfile.cross_section,
     RollPass.OutProfile.strain,
     RollPass.OutProfile.length,
+    RollPass.OutProfile.types,
 }
