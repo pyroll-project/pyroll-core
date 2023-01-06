@@ -35,10 +35,6 @@ class Transport(Unit):
         self.__dict__.update(kwargs)
         self._log = logging.getLogger(__name__)
 
-    def init_solve(self, in_profile: BaseProfile):
-        self.in_profile = self.InProfile(self, in_profile)
-        self.out_profile = self.OutProfile(self)
-
     class Profile(Unit.Profile):
         """Represents a profile in context of a transport unit."""
 
@@ -46,17 +42,11 @@ class Transport(Unit):
             super().__init__(transport, template)
             self.transport = weakref.ref(transport)
 
-    class InProfile(Profile):
+    class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a transport unit."""
 
-        def __init__(self, transport: 'Transport', template: BaseProfile):
-            super().__init__(transport, template)
-
-    class OutProfile(Profile):
+    class OutProfile(Profile, Unit.OutProfile):
         """Represents an outgoing profile of a transport unit."""
-
-        def __init__(self, transport: 'Transport'):
-            super().__init__(transport, transport.in_profile)
 
 
 Transport.root_hooks = {

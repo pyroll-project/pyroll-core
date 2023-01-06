@@ -1,7 +1,6 @@
 import logging
 import weakref
-from abc import abstractmethod
-from typing import Set, List
+from typing import Set, List, Optional, Sequence
 
 import numpy as np
 
@@ -27,6 +26,9 @@ class Unit(HookHost):
     iteration_precision = 1e-2
     """Precision of iteration break in solution loop."""
 
+    intermediate_profile_count = Hook[int]()
+    """Number of intermediate profiles to create during unit solution (in and out profiles are not counted within)."""
+
     root_hooks: Set[Hook] = set()
     """
     Set of hooks to call explicitly in each solution iteration.
@@ -41,12 +43,14 @@ class Unit(HookHost):
         self.label = label
         """Label for human identification."""
 
+        self._subunits: Optional[Unit._SubUnitsList] = self._SubUnitsList(self, [])
+        self.parent = None
+
     def __str__(self):
         if self.label:
             return type(self).__qualname__ + f" '{self.label}'"
         return type(self).__qualname__
 
-    @abstractmethod
     def init_solve(self, in_profile: BaseProfile):
         """
         Method called by the standard :py:meth:`solve` implementation to init
@@ -54,7 +58,8 @@ class Unit(HookHost):
 
         :param in_profile: the incoming state passed to :py:meth:`solve`
         """
-        raise NotImplementedError
+        self.in_profile = self.InProfile(self, in_profile)
+        self.out_profile = self.OutProfile(self, in_profile)
 
     def get_root_hook_results(self):
         in_profile_results = self.in_profile.evaluate_and_set_hooks(self.root_hooks)
@@ -67,6 +72,14 @@ class Unit(HookHost):
         self.in_profile.clear_hook_cache()
         super().clear_hook_cache()
         self.out_profile.clear_hook_cache()
+
+    def _solve_subunits(self):
+        last_profile = self.in_profile
+        for u in self._subunits:
+            try:
+                last_profile = u.solve(last_profile)
+            except Exception as e:
+                raise RuntimeError(f"Solution of sub units failed at unit {u}.") from e
 
     def solve(self, in_profile: BaseProfile) -> BaseProfile:
         """
@@ -82,6 +95,7 @@ class Unit(HookHost):
 
         for i in range(1, self.max_iteration_count):
             self.clear_hook_cache()
+            self._solve_subunits()
             current_values = self.get_root_hook_results()
 
             if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
@@ -115,11 +129,22 @@ class Unit(HookHost):
     class InProfile(Profile):
         """Represents an incoming profile of a unit."""
 
-        def __init__(self, unit: 'Unit', template: BaseProfile):
-            super().__init__(unit, template)
-
     class OutProfile(Profile):
         """Represents an outgoing profile of a unit."""
 
-        def __init__(self, unit: 'Unit'):
-            super().__init__(unit, unit.in_profile)
+    class _SubUnitsList(list):
+        """Specialized list for holding the units of a pass sequence."""
+
+        def __init__(self, owner: 'Unit', units: Sequence['Unit']):
+            super().__init__(units)
+            self.owner = weakref.ref(owner)
+            for u in self:
+                u.parent = weakref.ref(owner)
+
+        # noinspection PyProtectedMember
+        def _repr_html_(self):
+            return "<br/>".join(v._repr_html_() for v in self)
+
+    @property
+    def subunits(self):
+        return list(self._subunits)

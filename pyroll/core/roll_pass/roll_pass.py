@@ -137,7 +137,7 @@ class RollPass(Unit):
         rotator.solve(in_profile)
 
         self.in_profile = self.InProfile(self, rotator.out_profile)
-        self.out_profile = self.OutProfile(self)
+        self.out_profile = self.OutProfile(self, rotator.out_profile)
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
@@ -156,19 +156,16 @@ class RollPass(Unit):
             super().__init__(roll_pass, template)
             self.roll_pass = weakref.ref(roll_pass)
 
-    class InProfile(Profile):
+    class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a roll pass."""
 
-        def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
-            super().__init__(roll_pass, template)
-
-    class OutProfile(Profile):
+    class OutProfile(Profile, Unit.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
         filling_ratio = Hook[float]()
 
-        def __init__(self, roll_pass: 'RollPass'):
-            super().__init__(roll_pass, roll_pass.in_profile)
+        def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
+            super().__init__(roll_pass, template)
             del self.cross_section
             self.types = roll_pass.types
 

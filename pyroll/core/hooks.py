@@ -255,6 +255,20 @@ class HookHost(ReprMixin, metaclass=_HookHostMeta):
         """Checks whether a value is available for the hook `name`."""
         return hasattr(self, name)
 
+    @classmethod
+    @property
+    def __hooks__(cls):
+        """Return a set of all hook names defined on this class and all superclasses."""
+
+        hooks = set()
+        for s in cls.__mro__:
+            hooks = hooks.union([
+                name for name, value in s.__dict__.items()
+                if not name.startswith("_")
+                if isinstance(value, Hook)
+            ])
+        return hooks
+
     @property
     def __attrs__(self):
         return {
