@@ -38,8 +38,3 @@ class Rotator(Unit):
 
     class OutProfile(Profile, Unit.OutProfile):
         """Represents an outgoing profile of a rotator."""
-
-
-Rotator.root_hooks = {
-    Rotator.OutProfile.cross_section,
-}

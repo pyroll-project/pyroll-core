@@ -63,12 +63,3 @@ class PassSequence(Unit, Sequence[Unit]):
     @property
     def units(self) -> List[Unit]:
         return self._subunits
-
-
-PassSequence.root_hooks = {
-    PassSequence.total_elongation,
-    PassSequence.OutProfile.cross_section,
-    PassSequence.OutProfile.strain,
-    PassSequence.OutProfile.length,
-    PassSequence.OutProfile.types,
-}

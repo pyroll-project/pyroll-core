@@ -149,7 +149,7 @@ class RollPass(DiskedUnit):
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
-        roll_results = self.roll.evaluate_and_set_hooks(self.root_hooks)
+        roll_results = self.roll.evaluate_and_set_hooks()
 
         return np.concatenate([super_results, roll_results], axis=0)
 
@@ -189,13 +189,3 @@ class RollPass(DiskedUnit):
 
         def roll_pass(self) -> 'RollPass':
             return self.parent()
-
-
-RollPass.root_hooks = {
-    RollPass.roll_force,
-    RollPass.Roll.roll_torque,
-    RollPass.OutProfile.cross_section,
-    RollPass.OutProfile.strain,
-    RollPass.OutProfile.length,
-    RollPass.OutProfile.types,
-}

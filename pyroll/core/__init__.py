@@ -12,4 +12,14 @@ from .roll import Roll
 from .profile import Profile
 from .rotator import Rotator
 from .sequence import PassSequence
-from .hooks import Hook, HookHost, HookFunction
+from .hooks import Hook, HookHost, HookFunction, root_hooks
+
+root_hooks.update({
+    RollPass.roll_force,
+    RollPass.Roll.roll_torque,
+    Unit.OutProfile.cross_section,
+    Unit.OutProfile.strain,
+    Unit.OutProfile.length,
+    Unit.OutProfile.types,
+    PassSequence.total_elongation,
+})

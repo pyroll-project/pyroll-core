@@ -23,14 +23,6 @@ class Unit(HookHost):
     iteration_precision = 1e-2
     """Precision of iteration break in solution loop."""
 
-    root_hooks: Set[Hook] = set()
-    """
-    Set of hooks to call explicitly in each solution iteration.
-    Their values will be treated as explicitly set but reevaluated in every iteration.
-    They will not be deleted during cache clearing.
-    They serve as root for the calling tree and persistent iterational variables.
-    """
-
     def __init__(self, label: str):
         super().__init__()
         self._log = logging.getLogger(__name__)
@@ -56,9 +48,9 @@ class Unit(HookHost):
         self.out_profile = self.OutProfile(self, in_profile)
 
     def get_root_hook_results(self):
-        in_profile_results = self.in_profile.evaluate_and_set_hooks(self.root_hooks)
-        self_results = self.evaluate_and_set_hooks(self.root_hooks)
-        out_profile_results = self.out_profile.evaluate_and_set_hooks(self.root_hooks)
+        in_profile_results = self.in_profile.evaluate_and_set_hooks()
+        self_results = self.evaluate_and_set_hooks()
+        out_profile_results = self.out_profile.evaluate_and_set_hooks()
 
         return np.concatenate([in_profile_results, self_results, out_profile_results], axis=0)
 

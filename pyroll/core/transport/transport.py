@@ -62,8 +62,3 @@ class Transport(DiskedUnit):
 
         def transport(self) -> 'Transport':
             return self.parent()
-
-
-Transport.root_hooks = {
-    Transport.OutProfile.strain,
-}

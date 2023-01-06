@@ -32,7 +32,6 @@ def test_solve_min(tmp_path: Path, caplog):
                 rotational_frequency=1
             ),
             gap=2e-3,
-            disk_element_count=2,
         ),
         Transport(
             label="I => II",

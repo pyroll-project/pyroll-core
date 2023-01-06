@@ -277,12 +277,13 @@ class HookHost(ReprMixin, metaclass=_HookHostMeta):
             if not n.startswith("_") and not isinstance(v, weakref.ref)
         }
 
-    def evaluate_and_set_hooks(self, hooks: Iterable[Hook]):
+    def evaluate_and_set_hooks(self):
         """Evaluate functions of root hooks and set the results explicitly as attributes."""
 
         def _gen():
-            for h in hooks:
+            for h in root_hooks:
                 if issubclass(type(self), h.owner):
+                    h = getattr(type(self), h.name)
                     result = h.get_result(self)
                     setattr(self, h.name, result)
 
@@ -293,3 +294,12 @@ class HookHost(ReprMixin, metaclass=_HookHostMeta):
                         continue
 
         return list(_gen())
+
+
+root_hooks = set()  # filled in __init__.py due to circular imports
+"""
+Set of hooks to call explicitly in each solution iteration.
+Their values will be treated as explicitly set but reevaluated in every iteration.
+They will not be deleted during cache clearing.
+They serve as root for the calling tree and persistent iterational variables.
+"""
