@@ -1,12 +1,13 @@
 import logging
 import weakref
+from typing import List
 
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
-from ..unit import Unit
+from ..disk_element import DiskedUnit
 
 
-class Transport(Unit):
+class Transport(DiskedUnit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
 
     duration = Hook[float]()
@@ -35,18 +36,32 @@ class Transport(Unit):
         self.__dict__.update(kwargs)
         self._log = logging.getLogger(__name__)
 
-    class Profile(Unit.Profile):
+    @property
+    def disk_elements(self) -> List['Transport.DiskElement']:
+        """A list of disk elements used to subdivide this unit."""
+        return list(self._subunits)
+
+    class Profile(DiskedUnit.Profile):
         """Represents a profile in context of a transport unit."""
 
         def __init__(self, transport: 'Transport', template: BaseProfile):
             super().__init__(transport, template)
             self.transport = weakref.ref(transport)
 
-    class InProfile(Profile, Unit.InProfile):
+    class InProfile(Profile, DiskedUnit.InProfile):
         """Represents an incoming profile of a transport unit."""
 
-    class OutProfile(Profile, Unit.OutProfile):
+    class OutProfile(Profile, DiskedUnit.OutProfile):
         """Represents an outgoing profile of a transport unit."""
+
+    class DiskElement(DiskedUnit.DiskElement):
+        """Represents a disk element in a roll pass."""
+
+        surface_area = Hook[float]()
+        """Surface area of the disk element."""
+
+        def transport(self) -> 'Transport':
+            return self.parent()
 
 
 Transport.root_hooks = {

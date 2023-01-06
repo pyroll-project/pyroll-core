@@ -62,7 +62,7 @@ class PassSequence(Unit, Sequence[Unit]):
 
     @property
     def units(self) -> List[Unit]:
-        return list(self._subunits)
+        return self._subunits
 
 
 PassSequence.root_hooks = {

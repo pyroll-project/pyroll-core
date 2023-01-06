@@ -11,9 +11,6 @@ from ..profile import Profile as BaseProfile
 class Unit(HookHost):
     """Base class for units."""
 
-    profiles = Hook[List[BaseProfile]]()
-    """List of all profile states within the unit."""
-
     in_profile = Hook[BaseProfile]()
     """The state of the incoming profile."""
 
@@ -25,9 +22,6 @@ class Unit(HookHost):
 
     iteration_precision = 1e-2
     """Precision of iteration break in solution loop."""
-
-    intermediate_profile_count = Hook[int]()
-    """Number of intermediate profiles to create during unit solution (in and out profiles are not counted within)."""
 
     root_hooks: Set[Hook] = set()
     """
@@ -147,4 +141,4 @@ class Unit(HookHost):
 
     @property
     def subunits(self):
-        return list(self._subunits)
+        return self._subunits

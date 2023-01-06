@@ -165,7 +165,7 @@ class Hook(Generic[T]):
 
             if hasattr(h, "_functions"):
                 # noinspection PyProtectedMember
-                yield from h._functions
+                yield from reversed(h._functions)
 
     @property
     def functions(self) -> List[HookFunction]:
