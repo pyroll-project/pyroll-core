@@ -2,6 +2,7 @@ import inspect
 import logging
 import weakref
 from abc import ABCMeta
+from functools import partial
 from typing import overload, Iterable, TypeVar, Generic, List, Generator, Union
 
 import numpy as np
@@ -20,7 +21,7 @@ class HookFunction:
     You should not instantiate it yourself.
     """
 
-    def __init__(self, func, hook):
+    def __init__(self, func, hook, trylast=False):
         self._func = func
         self.module = func.__module__
         """The module the function originates from."""
@@ -36,6 +37,9 @@ class HookFunction:
 
         self.cycle = False
         """Cycle detection."""
+
+        self.trylast = trylast
+        """Whether to use this function with the lowest priority."""
 
     def __call__(self, instance):
         """Call the function as it were a method the provided instance."""
@@ -76,7 +80,7 @@ class Hook(Generic[T]):
         self.owner = owner
         """The owner class of the hook instance."""
 
-        self._functions = []
+        self._functions: List[HookFunction] = []
         """The functions connected to this hook and owner."""
 
     @overload
@@ -158,14 +162,26 @@ class Hook(Generic[T]):
         """
         Generator listing functions stored in this instance and equally named instances in superclasses of its owner.
         """
-        yield from reversed(self._functions)
+        trylast_functions = []
+
+        for f in reversed(self._functions):
+            if not f.trylast:
+                yield f
+            else:
+                trylast_functions.append(f)
 
         for s in self.owner.__mro__[1:]:
             h = getattr(s, self.name, None)
 
             if hasattr(h, "_functions"):
                 # noinspection PyProtectedMember
-                yield from reversed(h._functions)
+                for f in reversed(h._functions):
+                    if not f.trylast:
+                        yield f
+                    else:
+                        trylast_functions.append(f)
+
+        yield from trylast_functions
 
     @property
     def functions(self) -> List[HookFunction]:
@@ -183,22 +199,25 @@ class Hook(Generic[T]):
             if result is not None:
                 return result
 
-    def add_function(self, func):
+    def add_function(self, func, trylast=False):
         """
         Add the given function to the internal function store.
 
         :return: the given function
         """
-        self._functions.append(HookFunction(func, self))
+        self._functions.append(HookFunction(func, self, trylast=trylast))
         return func
 
-    def __call__(self, func):
+    def __call__(self, func=None, trylast=False):
         """
         Add the given function to the internal function store.
 
         :return: the created HookFunction object
         """
-        hf = HookFunction(func, self)
+        if func is None:
+            return partial(self.__call__, trylast=trylast)
+
+        hf = HookFunction(func, self, trylast=trylast)
         self._functions.append(hf)
         return hf
 
@@ -285,6 +304,10 @@ class HookHost(ReprMixin, metaclass=_HookHostMeta):
                 if issubclass(type(self), h.owner):
                     h = getattr(type(self), h.name)
                     result = h.get_result(self)
+
+                    if result is None:
+                        continue
+
                     setattr(self, h.name, result)
 
                     try:

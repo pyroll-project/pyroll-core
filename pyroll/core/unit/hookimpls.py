@@ -1,7 +1,7 @@
 from .unit import Unit
 
 for h in Unit.OutProfile.__hooks__:
-    @getattr(Unit.OutProfile, h)
+    @getattr(Unit.OutProfile, h)(trylast=True)
     def copy_from_in_profile(self: Unit.OutProfile, hook=h):
         return getattr(self.unit().in_profile, hook, None)
 
