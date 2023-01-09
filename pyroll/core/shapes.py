@@ -1,16 +1,15 @@
 from typing import Iterable
 
 import numpy as np
-import shapely.geometry
 from shapely.ops import linemerge
 import logging
 
 from pyroll.core.repr import ReprMixin
-from shapely.geometry import MultiLineString, Point
+from shapely import MultiLineString, Point, Polygon, LineString
 
 
 # noinspection PyAbstractClass
-class Polygon(shapely.geometry.Polygon, ReprMixin):
+class PatchedPolygon(Polygon):
     @property
     def height(self) -> float:
         """Computes the height of the bounding box."""
@@ -35,8 +34,15 @@ class Polygon(shapely.geometry.Polygon, ReprMixin):
             "area": self.area,
         }
 
-    __str__ = ReprMixin.__str__
 
+Polygon.height = PatchedPolygon.height
+Polygon.width = PatchedPolygon.width
+Polygon.perimeter = PatchedPolygon.perimeter
+Polygon.__attrs__ = PatchedPolygon.__attrs__
+Polygon.__str__ = ReprMixin.__str__
+Polygon.__repr__ = ReprMixin.__repr__
+Polygon._repr_html_ = ReprMixin._repr_html_
+Polygon._repr_pretty_ = ReprMixin._repr_pretty_
 
 _RECTANGLE_CORNERS = np.asarray([
     (-0.5, -0.5),
@@ -67,10 +73,7 @@ def rectangle(width: float, height: float):
     return rect
 
 
-shapely.geometry.Polygon = Polygon
-
-
-class LineString(shapely.geometry.LineString, ReprMixin):
+class PatchedLineString(LineString):
     @property
     def depth(self) -> float:
         """Computes the height of the bounding box."""
@@ -89,10 +92,14 @@ class LineString(shapely.geometry.LineString, ReprMixin):
             "length": self.length,
         }
 
-    __str__ = ReprMixin.__str__
 
-
-shapely.geometry.LineString = LineString
+LineString.depth = PatchedLineString.depth
+LineString.width = PatchedLineString.width
+LineString.__attrs__ = PatchedLineString.__attrs__
+LineString.__str__ = ReprMixin.__str__
+LineString.__repr__ = ReprMixin.__repr__
+LineString._repr_html_ = ReprMixin._repr_html_
+LineString._repr_pretty_ = ReprMixin._repr_pretty_
 
 
 def linemerge_if_multi(lines):
