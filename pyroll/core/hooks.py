@@ -22,7 +22,9 @@ class HookFunction:
     """
 
     def __init__(self, func, hook, trylast=False):
-        self._func = func
+        self.function = func
+        """The underlying function."""
+
         self.module = func.__module__
         """The module the function originates from."""
 
@@ -47,7 +49,7 @@ class HookFunction:
         extra_args = self._determine_extra_args()
         self.cycle = True
         try:
-            result = self._func(instance, **extra_args)
+            result = self.function(instance, **extra_args)
         finally:
             self.cycle = False
         return result
@@ -60,7 +62,7 @@ class HookFunction:
 
     def _determine_extra_args(self):
         extra_args = {}
-        pars = inspect.signature(self._func).parameters
+        pars = inspect.signature(self.function).parameters
         if "cycle" in pars:
             extra_args["cycle"] = self.cycle
 
@@ -73,7 +75,7 @@ class Hook(Generic[T]):
     or itself if called on class.
     """
 
-    def __set_name__(self, owner, name):
+    def __init__(self, name=None, owner=None):
         self.name = name
         """The name of the hook."""
 
@@ -82,6 +84,10 @@ class Hook(Generic[T]):
 
         self._functions: List[HookFunction] = []
         """The functions connected to this hook and owner."""
+
+    def __set_name__(self, owner, name):
+        self.name = name
+        self.owner = owner
 
     @overload
     def __get__(self, instance: None, owner: type) -> 'Hook[T]':
@@ -203,10 +209,14 @@ class Hook(Generic[T]):
         """
         Add the given function to the internal function store.
 
-        :return: the given function
+        :return: the created HookFunction object
         """
-        self._functions.append(HookFunction(func, self, trylast=trylast))
-        return func
+        if isinstance(func, HookFunction):
+            func = func.function
+
+        hf = HookFunction(func, self, trylast=trylast)
+        self._functions.append(hf)
+        return hf
 
     def __call__(self, func=None, trylast=False):
         """
@@ -220,6 +230,17 @@ class Hook(Generic[T]):
         hf = HookFunction(func, self, trylast=trylast)
         self._functions.append(hf)
         return hf
+
+    __call__ = add_function
+
+    def remove_function(self, func: HookFunction):
+        """
+        Remove a function from the internal function store.
+
+        :return: the underlying function object
+        """
+        self._functions.remove(func)
+        return func.function
 
     def __repr__(self):
         return f"<{self.__str__()}>"

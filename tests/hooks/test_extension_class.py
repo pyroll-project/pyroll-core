@@ -37,6 +37,11 @@ def test_extension_class(caplog):
 
     print(caplog.text)
 
+    del ProfileExtension.ext_hook
+    Profile.width.remove_function(call_test_impl)
+
+    pass
+
 
 def test_extension_class_derived(caplog):
     caplog.set_level(logging.INFO)
@@ -68,3 +73,6 @@ def test_extension_class_derived(caplog):
     assert [r for r in caplog.records if r.message == "42"]
 
     print(caplog.text)
+
+    del ProfileExtension.ext_hook
+    Profile.width.remove_function(call_test_impl)
