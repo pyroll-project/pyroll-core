@@ -1,3 +1,5 @@
+VERSION = "2.0.0a3-2"
+
 from . import shapes as _
 
 from .grooves import BoxGroove, ConstrictedBoxGroove, SquareGroove, DiamondGroove, RoundGroove, FalseRoundGroove, \

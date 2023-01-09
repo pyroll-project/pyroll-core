@@ -1,0 +1,24 @@
+[build]
+packages = [
+    "pyroll"
+]
+
+[version]
+path = "pyroll/core/__init__.py"
+
+[envs.default]
+path = ".venv"
+dependencies = [
+    "ipython ~= 8.0",
+    "pytest ~= 7.0",
+]
+
+[envs.test]
+path = ""
+
+[[envs.test.matrix]]
+python = ["3.9", "3.10", "3.11"]
+
+[envs.test.scripts]
+all = "pytest tests"
+solve = "pytest tests/test_solve.py"
