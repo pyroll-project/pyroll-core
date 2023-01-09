@@ -297,10 +297,6 @@ class HookHost(ReprMixin, metaclass=_HookHostMeta):
         :raises TypeError: if the source class is itself derived from HookHost (error-prone)
         """
 
-        if issubclass(source, HookHost):
-            raise TypeError("The extension class must not be derived from HookHost, as may be error-prone. "
-                            "Use a plain class instead.")
-
         for name, value in source.__dict__.items():
             if isinstance(value, Hook) and name not in cls.__dict__:
                 setattr(cls, name, value)
