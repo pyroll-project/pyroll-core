@@ -21,7 +21,7 @@ class HookFunction:
     You should not instantiate it yourself.
     """
 
-    def __init__(self, func, hook, trylast=False):
+    def __init__(self, func, hook, tryfirst=False, trylast=False):
         self.function = func
         """The underlying function."""
 
@@ -39,6 +39,9 @@ class HookFunction:
 
         self.cycle = False
         """Cycle detection."""
+
+        self.tryfirst = tryfirst
+        """Whether to use this function with the highest priority."""
 
         self.trylast = trylast
         """Whether to use this function with the lowest priority."""
@@ -82,8 +85,11 @@ class Hook(Generic[T]):
         self.owner = owner
         """The owner class of the hook instance."""
 
+        self._first_functions: List[HookFunction] = []
+
+        self._last_functions: List[HookFunction] = []
+
         self._functions: List[HookFunction] = []
-        """The functions connected to this hook and owner."""
 
     def __set_name__(self, owner, name):
         self.name = name
@@ -163,31 +169,22 @@ class Hook(Generic[T]):
         """
         instance.__dict__.pop(self.name, None)
 
+    def _yield_functions_from(self, attr: str):
+        for s in self.owner.__mro__:
+            h = getattr(s, self.name, None)
+            funcs = getattr(h, attr, None)
+            if funcs:
+                yield from funcs
+
     @property
     def functions_gen(self) -> Generator[HookFunction, None, None]:
         """
         Generator listing functions stored in this instance and equally named instances in superclasses of its owner.
         """
-        trylast_functions = []
 
-        for f in reversed(self._functions):
-            if not f.trylast:
-                yield f
-            else:
-                trylast_functions.append(f)
-
-        for s in self.owner.__mro__[1:]:
-            h = getattr(s, self.name, None)
-
-            if hasattr(h, "_functions"):
-                # noinspection PyProtectedMember
-                for f in reversed(h._functions):
-                    if not f.trylast:
-                        yield f
-                    else:
-                        trylast_functions.append(f)
-
-        yield from trylast_functions
+        yield from self._yield_functions_from("_first_functions")
+        yield from self._yield_functions_from("_functions")
+        yield from self._yield_functions_from("_last_functions")
 
     @property
     def functions(self) -> List[HookFunction]:
@@ -205,7 +202,7 @@ class Hook(Generic[T]):
             if result is not None:
                 return result
 
-    def add_function(self, func, trylast=False):
+    def add_function(self, func, tryfirst=False, trylast=False):
         """
         Add the given function to the internal function store.
 
@@ -214,22 +211,21 @@ class Hook(Generic[T]):
         if isinstance(func, HookFunction):
             func = func.function
 
-        hf = HookFunction(func, self, trylast=trylast)
-        self._functions.append(hf)
+        hf = HookFunction(func, self, trylast=trylast, tryfirst=tryfirst)
+
+        if tryfirst:
+            self._first_functions.append(hf)
+        elif trylast:
+            self._last_functions.append(hf)
+        else:
+            self._functions.append(hf)
+
         return hf
 
-    def __call__(self, func=None, trylast=False):
-        """
-        Add the given function to the internal function store.
-
-        :return: the created HookFunction object
-        """
+    def __call__(self, func=None, tryfirst=False, trylast=False):
         if func is None:
-            return partial(self.__call__, trylast=trylast)
-
-        hf = HookFunction(func, self, trylast=trylast)
-        self._functions.append(hf)
-        return hf
+            return partial(self.add_function, tryfirst=tryfirst, trylast=trylast)
+        return self.add_function(func, tryfirst=tryfirst, trylast=trylast)
 
     def remove_function(self, func: HookFunction):
         """
