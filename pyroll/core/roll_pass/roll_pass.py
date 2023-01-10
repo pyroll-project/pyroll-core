@@ -22,9 +22,6 @@ class RollPass(DiskedUnit):
     gap = Hook[float]()
     """Gap between the rolls (outer surface)."""
 
-    velocity = Hook[float]()
-    """Mean rolling velocity."""
-
     height = Hook[float]()
     """Maximum height of the roll pass."""
 
@@ -73,11 +70,11 @@ class RollPass(DiskedUnit):
     rel_draught = Hook[float]()
     """Relative draught (change in height)."""
 
+    strain = Hook[float]()
+    """Mean equivalent strain applied to the workpiece within the roll pass."""
+
     strain_rate = Hook[float]()
     """Mean equivalent strain rate within the roll pass."""
-
-    volume = Hook[float]()
-    """Volume of workpiece material within the roll pass."""
 
     def __init__(
             self,

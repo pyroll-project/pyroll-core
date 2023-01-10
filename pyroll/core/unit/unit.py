@@ -11,17 +11,23 @@ from ..profile import Profile as BaseProfile
 class Unit(HookHost):
     """Base class for units."""
 
-    in_profile = Hook[BaseProfile]()
-    """The state of the incoming profile."""
-
-    out_profile = Hook[BaseProfile]()
-    """The state of the outgoing profile."""
-
-    max_iteration_count = 100
+    max_iteration_count = Hook[int]()
     """Count of maximum solution loop iterations before aborting."""
 
-    iteration_precision = 1e-2
+    iteration_precision = Hook[float]()
     """Precision of iteration break in solution loop."""
+
+    length = Hook[float]()
+    """The length of the unit (spacial extent in rolling direction)."""
+
+    duration = Hook[float]()
+    """Time needed to pass the unit (temporal extent)."""
+
+    velocity = Hook[float]()
+    """Mean velocity of material flow."""
+
+    volume = Hook[float]()
+    """Volume of workpiece material within the unit."""
 
     def __init__(self, label: str):
         super().__init__()
@@ -30,7 +36,15 @@ class Unit(HookHost):
         """Label for human identification."""
 
         self._subunits: Optional[Unit._SubUnitsList] = self._SubUnitsList(self, [])
+
         self.parent = None
+        """Weak reference to the parent unit, if applicable."""
+
+        self.in_profile = None
+        """The state of the incoming profile."""
+
+        self.out_profile = None
+        """The state of the outgoing profile."""
 
     def __str__(self):
         if self.label:

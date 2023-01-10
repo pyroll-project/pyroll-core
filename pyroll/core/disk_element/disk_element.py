@@ -13,12 +13,6 @@ class DiskElement(Unit):
     Use the specialized disk elements of the respective parent unit instead.
     """
 
-    length = Hook[float]()
-    """The length of the disk element."""
-
-    duration = Hook[float]()
-    """Time needed to pass the disk element."""
-
     def __init__(
             self,
             parent: 'Unit',

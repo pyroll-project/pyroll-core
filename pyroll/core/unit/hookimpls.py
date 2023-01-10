@@ -10,3 +10,36 @@ for h in Unit.OutProfile.__hooks__:
     def copy_from_last_subunit(self: Unit.OutProfile, hook=h):
         if self.unit().subunits:
             return getattr(self.unit().subunits[-1].out_profile, hook, None)
+
+
+@Unit.iteration_precision
+def iteration_precision(self: Unit):
+    return 1e-2
+
+
+@Unit.max_iteration_count
+def max_iteration_count(self: Unit):
+    return 100
+
+
+@Unit.volume
+def volume(self: Unit):
+    return (self.in_profile.cross_section.area + self.out_profile.cross_section.area) / 2 * self.length
+
+
+@Unit.length
+def length(self: Unit):
+    if self.has_set_or_cached("duration"):
+        return self.velocity * self.duration
+
+
+@Unit.duration
+def duration(self: Unit):
+    if self.has_set_or_cached("length"):
+        return self.length / self.velocity
+
+
+@Unit.velocity
+def velocity(self: Unit):
+    if self.in_profile.has_set_or_cached("velocity"):
+        return self.in_profile.velocity

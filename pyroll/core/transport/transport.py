@@ -10,15 +10,6 @@ from ..disk_element import DiskedUnit
 class Transport(DiskedUnit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
 
-    duration = Hook[float]()
-    """Time needed to pass the transport."""
-
-    length = Hook[float]()
-    """Spacial length of the transport."""
-
-    velocity = Hook[float]()
-    """Mean velocity of material flow."""
-
     environment_temperature = Hook[float]()
     """Temperature of the surrounding atmosphere."""
 

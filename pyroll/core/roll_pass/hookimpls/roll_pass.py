@@ -1,6 +1,7 @@
 import numpy as np
 
 from ..roll_pass import RollPass
+from ...grooves import GenericElongationGroove
 
 
 @RollPass.mean_flow_stress
@@ -15,7 +16,8 @@ def roll_force(self: RollPass):
 
 @RollPass.tip_width
 def tip_width(self):
-    return self.roll.groove.usable_width + self.gap / 2 / np.tan(self.roll.groove.alpha1)
+    if isinstance(self.roll.groove, GenericElongationGroove):
+        return self.roll.groove.usable_width + self.gap / 2 / np.tan(self.roll.groove.alpha1)
 
 
 @RollPass.height
@@ -92,6 +94,11 @@ def rel_spread(self: RollPass):
 @RollPass.rel_elongation
 def rel_elongation(self: RollPass):
     return self.abs_elongation / self.in_profile.length
+
+
+@RollPass.strain
+def strain(self: RollPass):
+    return self.log_elongation
 
 
 @RollPass.strain_rate

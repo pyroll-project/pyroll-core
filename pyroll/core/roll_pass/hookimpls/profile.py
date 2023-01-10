@@ -19,7 +19,7 @@ def exit_point(self: RollPass.OutProfile):
 
 @RollPass.OutProfile.strain
 def strain(self: RollPass.OutProfile):
-    return self.roll_pass().in_profile.strain + self.roll_pass().log_elongation
+    return self.roll_pass().in_profile.strain + self.roll_pass().strain
 
 
 @RollPass.OutProfile.width
