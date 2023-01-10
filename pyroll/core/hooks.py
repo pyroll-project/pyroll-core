@@ -3,7 +3,7 @@ import logging
 import weakref
 from abc import ABCMeta
 from functools import partial
-from typing import overload, Iterable, TypeVar, Generic, List, Generator, Union
+from typing import overload, TypeVar, Generic, List, Generator, Union
 
 import numpy as np
 

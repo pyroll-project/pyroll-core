@@ -1,8 +1,4 @@
 import logging
-import weakref
-
-from ..hooks import Hook
-from ..profile import Profile as BaseProfile
 from ..unit import Unit
 
 

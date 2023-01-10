@@ -1,6 +1,6 @@
 import logging
 import weakref
-from typing import Set, List, Optional, Sequence
+from typing import Optional, Sequence
 
 import numpy as np
 

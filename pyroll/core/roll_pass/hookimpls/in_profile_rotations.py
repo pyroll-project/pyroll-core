@@ -28,7 +28,7 @@ def oval_square(self: RollPass):
 @RollPass.in_profile_rotation
 def square_oval(self: RollPass):
     if "square" in self.in_profile.types and "oval" in self.types:
-     return 45
+        return 45
 
 
 @RollPass.in_profile_rotation

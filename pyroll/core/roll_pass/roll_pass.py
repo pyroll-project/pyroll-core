@@ -136,7 +136,7 @@ class RollPass(DiskedUnit):
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
 
-        rotator = Rotator(rotation=self.in_profile_rotation)
+        rotator = Rotator(rotation=self.in_profile_rotation, duration=0, length=0)
         rotator.solve(in_profile)
 
         self.in_profile = self.InProfile(self, rotator.out_profile)
