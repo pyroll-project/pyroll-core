@@ -231,8 +231,6 @@ class Hook(Generic[T]):
         self._functions.append(hf)
         return hf
 
-    __call__ = add_function
-
     def remove_function(self, func: HookFunction):
         """
         Remove a function from the internal function store.
