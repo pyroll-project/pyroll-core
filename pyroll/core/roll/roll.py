@@ -50,6 +50,9 @@ class Roll(HookHost):
     temperature = Hook[float]()
     """Mean temperature."""
 
+    surface_temperature = Hook[float]()
+    """Effective surface temperature."""
+
     yield_strength = Hook[float]()
     """Yield strength of the roll material."""
 

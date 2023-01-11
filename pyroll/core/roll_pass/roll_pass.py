@@ -1,18 +1,19 @@
 import logging
 import weakref
+from typing import List
 
 import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 
+from ..disk_element import DiskedUnit
 from ..hooks import Hook
-from ..roll import Roll as BaseRoll
 from ..profile import Profile as BaseProfile
+from ..roll import Roll as BaseRoll
 from ..rotator import Rotator
-from ..unit import Unit
 
 
-class RollPass(Unit):
+class RollPass(DiskedUnit):
     """Represents a roll pass."""
 
     in_profile_rotation = Hook[float]()
@@ -20,9 +21,6 @@ class RollPass(Unit):
 
     gap = Hook[float]()
     """Gap between the rolls (outer surface)."""
-
-    velocity = Hook[float]()
-    """Mean rolling velocity."""
 
     height = Hook[float]()
     """Maximum height of the roll pass."""
@@ -72,11 +70,11 @@ class RollPass(Unit):
     rel_draught = Hook[float]()
     """Relative draught (change in height)."""
 
+    strain = Hook[float]()
+    """Mean equivalent strain applied to the workpiece within the roll pass."""
+
     strain_rate = Hook[float]()
     """Mean equivalent strain rate within the roll pass."""
-
-    volume = Hook[float]()
-    """Volume of workpiece material within the roll pass."""
 
     def __init__(
             self,
@@ -130,18 +128,25 @@ class RollPass(Unit):
         Shortcut to ``self.groove.types``."""
         return self.roll.groove.types
 
+    @property
+    def disk_elements(self) -> List['RollPass.DiskElement']:
+        """A list of disk elements used to subdivide this unit."""
+        return list(self._subunits)
+
     def init_solve(self, in_profile: BaseProfile):
         self.in_profile = self.InProfile(self, in_profile)
 
-        rotator = Rotator(rotation=self.in_profile_rotation)
+        rotator = Rotator(rotation=self.in_profile_rotation, duration=0, length=0)
         rotator.solve(in_profile)
 
         self.in_profile = self.InProfile(self, rotator.out_profile)
-        self.out_profile = self.OutProfile(self)
+        self.out_profile = self.OutProfile(self, rotator.out_profile)
+
+        self._subunits = self._SubUnitsList(self, [self.DiskElement(self, i) for i in range(self.disk_element_count)])
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
-        roll_results = self.roll.evaluate_and_set_hooks(self.root_hooks)
+        roll_results = self.roll.evaluate_and_set_hooks()
 
         return np.concatenate([super_results, roll_results], axis=0)
 
@@ -149,28 +154,20 @@ class RollPass(Unit):
         super().clear_hook_cache()
         self.roll.clear_hook_cache()
 
-    class Profile(Unit.Profile):
+    class Profile(DiskedUnit.Profile):
         """Represents a profile in context of a roll pass."""
 
         def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
             super().__init__(roll_pass, template)
             self.roll_pass = weakref.ref(roll_pass)
 
-    class InProfile(Profile):
+    class InProfile(Profile, DiskedUnit.InProfile):
         """Represents an incoming profile of a roll pass."""
 
-        def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
-            super().__init__(roll_pass, template)
-
-    class OutProfile(Profile):
+    class OutProfile(Profile, DiskedUnit.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
         filling_ratio = Hook[float]()
-
-        def __init__(self, roll_pass: 'RollPass'):
-            super().__init__(roll_pass, roll_pass.in_profile)
-            del self.cross_section
-            self.types = roll_pass.types
 
     class Roll(BaseRoll):
         """Represents a roll applied in a :py:class:`RollPass`."""
@@ -181,11 +178,11 @@ class RollPass(Unit):
             super().__init__(**kwargs)
             self.roll_pass = weakref.ref(roll_pass)
 
+    class DiskElement(DiskedUnit.DiskElement):
+        """Represents a disk element in a roll pass."""
 
-RollPass.root_hooks = {
-    RollPass.roll_force,
-    RollPass.Roll.roll_torque,
-    RollPass.OutProfile.cross_section,
-    RollPass.OutProfile.strain,
-    RollPass.OutProfile.length,
-}
+        contact_area = Hook[float]()
+        """Area of contact of the disk element to the rolls."""
+
+        def roll_pass(self) -> 'RollPass':
+            return self.parent()

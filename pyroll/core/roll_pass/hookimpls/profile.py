@@ -19,7 +19,7 @@ def exit_point(self: RollPass.OutProfile):
 
 @RollPass.OutProfile.strain
 def strain(self: RollPass.OutProfile):
-    return self.roll_pass().in_profile.strain + self.roll_pass().log_elongation
+    return self.roll_pass().in_profile.strain + self.roll_pass().strain
 
 
 @RollPass.OutProfile.width
@@ -59,3 +59,8 @@ def cross_section(self: RollPass.OutProfile) -> Polygon:
                          "May be caused by critical overfilling.")
 
     return clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
+
+
+@RollPass.OutProfile.types
+def types(self: RollPass.OutProfile):
+    return self.roll_pass().types
