@@ -21,8 +21,16 @@ class HookFunction:
     You should not instantiate it yourself.
     """
 
-    def __init__(self, func, hook, trylast=False):
-        self._func = func
+    def __init__(self, func, hook, tryfirst=False, trylast=False):
+        """
+        :param func: the function
+        :param hook: the associated hook
+        :param tryfirst: whether to use this function with the highest priority
+        :param trylast: whether to use this function with the lowest priority
+        """
+        self.function = func
+        """The underlying function."""
+
         self.module = func.__module__
         """The module the function originates from."""
 
@@ -38,8 +46,18 @@ class HookFunction:
         self.cycle = False
         """Cycle detection."""
 
-        self.trylast = trylast
+        self._tryfirst = tryfirst
+        self._trylast = trylast
+
+    @property
+    def tryfirst(self):
+        """Whether to use this function with the highest priority."""
+        return self._tryfirst
+
+    @property
+    def trylast(self):
         """Whether to use this function with the lowest priority."""
+        return self._trylast
 
     def __call__(self, instance):
         """Call the function as it were a method the provided instance."""
@@ -47,7 +65,7 @@ class HookFunction:
         extra_args = self._determine_extra_args()
         self.cycle = True
         try:
-            result = self._func(instance, **extra_args)
+            result = self.function(instance, **extra_args)
         finally:
             self.cycle = False
         return result
@@ -60,7 +78,7 @@ class HookFunction:
 
     def _determine_extra_args(self):
         extra_args = {}
-        pars = inspect.signature(self._func).parameters
+        pars = inspect.signature(self.function).parameters
         if "cycle" in pars:
             extra_args["cycle"] = self.cycle
 
@@ -73,15 +91,22 @@ class Hook(Generic[T]):
     or itself if called on class.
     """
 
-    def __set_name__(self, owner, name):
+    def __init__(self, name=None, owner=None):
         self.name = name
         """The name of the hook."""
 
         self.owner = owner
         """The owner class of the hook instance."""
 
+        self._first_functions: List[HookFunction] = []
+
+        self._last_functions: List[HookFunction] = []
+
         self._functions: List[HookFunction] = []
-        """The functions connected to this hook and owner."""
+
+    def __set_name__(self, owner, name):
+        self.name = name
+        self.owner = owner
 
     @overload
     def __get__(self, instance: None, owner: type) -> 'Hook[T]':
@@ -157,31 +182,22 @@ class Hook(Generic[T]):
         """
         instance.__dict__.pop(self.name, None)
 
+    def _yield_functions_from(self, attr: str):
+        for s in self.owner.__mro__:
+            h = getattr(s, self.name, None)
+            funcs = getattr(h, attr, None)
+            if funcs:
+                yield from reversed(funcs)
+
     @property
     def functions_gen(self) -> Generator[HookFunction, None, None]:
         """
         Generator listing functions stored in this instance and equally named instances in superclasses of its owner.
         """
-        trylast_functions = []
 
-        for f in reversed(self._functions):
-            if not f.trylast:
-                yield f
-            else:
-                trylast_functions.append(f)
-
-        for s in self.owner.__mro__[1:]:
-            h = getattr(s, self.name, None)
-
-            if hasattr(h, "_functions"):
-                # noinspection PyProtectedMember
-                for f in reversed(h._functions):
-                    if not f.trylast:
-                        yield f
-                    else:
-                        trylast_functions.append(f)
-
-        yield from trylast_functions
+        yield from self._yield_functions_from("_first_functions")
+        yield from self._yield_functions_from("_functions")
+        yield from self._yield_functions_from("_last_functions")
 
     @property
     def functions(self) -> List[HookFunction]:
@@ -199,27 +215,39 @@ class Hook(Generic[T]):
             if result is not None:
                 return result
 
-    def add_function(self, func, trylast=False):
-        """
-        Add the given function to the internal function store.
-
-        :return: the given function
-        """
-        self._functions.append(HookFunction(func, self, trylast=trylast))
-        return func
-
-    def __call__(self, func=None, trylast=False):
+    def add_function(self, func, tryfirst=False, trylast=False):
         """
         Add the given function to the internal function store.
 
         :return: the created HookFunction object
         """
-        if func is None:
-            return partial(self.__call__, trylast=trylast)
+        if isinstance(func, HookFunction):
+            func = func.function
 
-        hf = HookFunction(func, self, trylast=trylast)
-        self._functions.append(hf)
+        hf = HookFunction(func, self, trylast=trylast, tryfirst=tryfirst)
+
+        if tryfirst:
+            self._first_functions.append(hf)
+        elif trylast:
+            self._last_functions.append(hf)
+        else:
+            self._functions.append(hf)
+
         return hf
+
+    def __call__(self, func=None, tryfirst=False, trylast=False):
+        if func is None:
+            return partial(self.add_function, tryfirst=tryfirst, trylast=trylast)
+        return self.add_function(func, tryfirst=tryfirst, trylast=trylast)
+
+    def remove_function(self, func: HookFunction):
+        """
+        Remove a function from the internal function store.
+
+        :return: the underlying function object
+        """
+        self._functions.remove(func)
+        return func.function
 
     def __repr__(self):
         return f"<{self.__str__()}>"
@@ -287,6 +315,20 @@ class HookHost(ReprMixin, metaclass=_HookHostMeta):
                 if isinstance(value, Hook)
             ])
         return hooks
+
+    @classmethod
+    def extension_class(cls, source: type):
+        """
+        Class decorator for adding new hook definitions to an existing HookHost.
+
+        :return: the extended class (the reference to the source class is discarded)
+        :raises TypeError: if the source class is itself derived from HookHost (error-prone)
+        """
+
+        for name, value in source.__dict__.items():
+            if isinstance(value, Hook) and name not in cls.__dict__:
+                setattr(cls, name, value)
+        return cls
 
     @property
     def __attrs__(self):
