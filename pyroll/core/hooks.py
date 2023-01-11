@@ -22,6 +22,12 @@ class HookFunction:
     """
 
     def __init__(self, func, hook, tryfirst=False, trylast=False):
+        """
+        :param func: the function
+        :param hook: the associated hook
+        :param tryfirst: whether to use this function with the highest priority
+        :param trylast: whether to use this function with the lowest priority
+        """
         self.function = func
         """The underlying function."""
 
@@ -40,11 +46,18 @@ class HookFunction:
         self.cycle = False
         """Cycle detection."""
 
-        self.tryfirst = tryfirst
-        """Whether to use this function with the highest priority."""
+        self._tryfirst = tryfirst
+        self._trylast = trylast
 
-        self.trylast = trylast
+    @property
+    def tryfirst(self):
+        """Whether to use this function with the highest priority."""
+        return self._tryfirst
+
+    @property
+    def trylast(self):
         """Whether to use this function with the lowest priority."""
+        return self._trylast
 
     def __call__(self, instance):
         """Call the function as it were a method the provided instance."""
