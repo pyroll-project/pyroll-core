@@ -174,7 +174,7 @@ class Hook(Generic[T]):
             h = getattr(s, self.name, None)
             funcs = getattr(h, attr, None)
             if funcs:
-                yield from funcs
+                yield from reversed(funcs)
 
     @property
     def functions_gen(self) -> Generator[HookFunction, None, None]:
