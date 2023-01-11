@@ -1,6 +1,10 @@
 import logging
+import webbrowser
 from pathlib import Path
-from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence
+
+import numpy as np
+
+from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, SquareGroove
 
 
 def test_solve_min(tmp_path: Path, caplog):
@@ -11,7 +15,8 @@ def test_solve_min(tmp_path: Path, caplog):
         temperature=1200 + 273.15,
         strain=0,
         material=["C45", "steel"],
-        flow_stress=100e6
+        flow_stress=100e6,
+        length=1,
     )
 
     sequence = PassSequence([
@@ -45,6 +50,23 @@ def test_solve_min(tmp_path: Path, caplog):
             ),
             gap=2e-3,
         ),
+        Transport(
+            label="II => III",
+            duration=1
+        ),
+        RollPass(
+            label="Oval III",
+            roll=Roll(
+                groove=CircularOvalGroove(
+                    depth=6e-3,
+                    r1=6e-3,
+                    r2=35e-3
+                ),
+                nominal_radius=160e-3,
+                rotational_frequency=1
+            ),
+            gap=2e-3,
+        ),
     ])
 
     try:
@@ -52,3 +74,16 @@ def test_solve_min(tmp_path: Path, caplog):
     finally:
         print("\nLog:")
         print(caplog.text)
+
+    try:
+        import pyroll.report
+
+        report = pyroll.report.report(sequence)
+
+        report_file = tmp_path / "report.html"
+        report_file.write_text(report)
+        print(report_file)
+        webbrowser.open(report_file.as_uri())
+
+    except ImportError:
+        pass
