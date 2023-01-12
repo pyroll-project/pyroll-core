@@ -3,6 +3,7 @@ from typing import List
 from ..unit import Unit
 from ..hooks import Hook
 from .disk_element import DiskElement as BaseDiskElement
+from ..profile import Profile as BaseProfile
 
 
 class DiskedUnit(Unit):
@@ -33,3 +34,7 @@ class DiskedUnit(Unit):
         return super().__attrs__ | {
             "disk_elements": self.disk_elements
         }
+
+    def init_solve(self, in_profile: BaseProfile):
+        super().init_solve(in_profile)
+        self._subunits = self._SubUnitsList(self, [self.DiskElement(self, i) for i in range(self.disk_element_count)])

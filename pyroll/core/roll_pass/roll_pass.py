@@ -134,15 +134,13 @@ class RollPass(DiskedUnit):
         return list(self._subunits)
 
     def init_solve(self, in_profile: BaseProfile):
-        self.in_profile = self.InProfile(self, in_profile)
+        super().init_solve(in_profile)
 
         rotator = Rotator(rotation=self.in_profile_rotation, duration=0, length=0)
         rotator.solve(in_profile)
 
         self.in_profile = self.InProfile(self, rotator.out_profile)
         self.out_profile = self.OutProfile(self, rotator.out_profile)
-
-        self._subunits = self._SubUnitsList(self, [self.DiskElement(self, i) for i in range(self.disk_element_count)])
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
