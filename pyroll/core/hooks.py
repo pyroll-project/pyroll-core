@@ -353,9 +353,9 @@ class HookHost(ReprMixin, metaclass=_HookHostMeta):
                     setattr(self, h.name, result)
 
                     try:
-                        if np.isfinite(result).all():
-                            yield result  # yield only numeric values
-                    except TypeError:
+                        arr = np.array(result)
+                        yield from arr[np.isfinite(arr)].flat
+                    except TypeError:  # yield only numeric values
                         continue
 
         return list(_gen())
