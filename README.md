@@ -9,7 +9,7 @@ Further functionality is provided via [extension packages](https://pyroll.readth
 
 ## Versions
 
-The main branch of this repository contains the code of the version 2.0 of PyRolL, which is under ongoing development and currently in alpha state.
+The main branch of this repository contains the code of the version 2.0 of PyRolL, which is under ongoing development and currently in beta state.
 See the [backport branch](https://github.com/pyroll-project/pyroll-core/tree/v1.0_backport) for the code of version 1.0.
 Version 1.0 will be out of support, as version 2.0 is released.
 Consider to start development targeting version 2.0 as soon as possible.

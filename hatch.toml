@@ -16,6 +16,9 @@ dependencies = [
 
 [envs.test]
 path = ""
+dependencies = [
+    "pytest ~= 7.0",
+]
 
 [[envs.test.matrix]]
 python = ["3.9", "3.10", "3.11"]

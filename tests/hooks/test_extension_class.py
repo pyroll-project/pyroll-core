@@ -1,5 +1,6 @@
 import logging
 from logging import getLogger
+from typing import Union
 
 from pyroll.core import Profile, Hook
 
@@ -26,7 +27,7 @@ def test_extension_class(caplog):
     assert impl in Profile.ext_hook._functions
 
     @Profile.width
-    def call_test_impl(self: Profile | ProfileExtension):
+    def call_test_impl(self: Union[ProfileExtension, Profile]):
         _log.info(self.types)
         _log.info(self.ext_hook)
         return 21
