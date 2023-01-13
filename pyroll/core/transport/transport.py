@@ -53,3 +53,12 @@ class Transport(DiskedUnit):
 
         def transport(self) -> 'Transport':
             return self.parent()
+
+        class Profile(DiskedUnit.DiskElement.Profile):
+            """Represents a profile in context of a disk element unit."""
+
+        class InProfile(Profile, DiskedUnit.DiskElement.InProfile):
+            """Represents an incoming profile of a disk element unit."""
+
+        class OutProfile(Profile, DiskedUnit.DiskElement.OutProfile):
+            """Represents an outgoing profile of a disk element unit."""

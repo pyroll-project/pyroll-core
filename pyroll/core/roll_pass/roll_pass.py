@@ -103,10 +103,14 @@ class RollPass(DiskedUnit):
             coords
         )
 
-        poly = Polygon(np.concatenate([
-            self.upper_contour_line.coords,
-            self.lower_contour_line.coords
-        ]))
+        poly = Polygon(
+            np.concatenate(
+                [
+                    self.upper_contour_line.coords,
+                    self.lower_contour_line.coords
+                ]
+            )
+        )
 
         intersection = vline.intersection(poly)
 
@@ -184,3 +188,12 @@ class RollPass(DiskedUnit):
 
         def roll_pass(self) -> 'RollPass':
             return self.parent()
+
+        class Profile(DiskedUnit.DiskElement.Profile):
+            """Represents a profile in context of a disk element unit."""
+
+        class InProfile(Profile, DiskedUnit.DiskElement.InProfile):
+            """Represents an incoming profile of a disk element unit."""
+
+        class OutProfile(Profile, DiskedUnit.DiskElement.OutProfile):
+            """Represents an outgoing profile of a disk element unit."""
