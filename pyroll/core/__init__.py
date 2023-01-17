@@ -1,4 +1,4 @@
-VERSION = "2.0.0b1-4"
+VERSION = "2.0.0b1-5"
 
 from . import shapes as _
 
@@ -13,6 +13,7 @@ from .profile import Profile
 from .rotator import Rotator
 from .sequence import PassSequence
 from .hooks import Hook, HookHost, HookFunction, root_hooks
+from .disk_element import DiskElement, DiskedUnit
 
 root_hooks.update({
     RollPass.roll_force,
