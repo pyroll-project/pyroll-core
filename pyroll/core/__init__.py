@@ -21,5 +21,6 @@ root_hooks.update({
     Unit.OutProfile.strain,
     Unit.OutProfile.length,
     Unit.OutProfile.types,
+    Unit.OutProfile.t,
     PassSequence.total_elongation,
 })
