@@ -43,3 +43,13 @@ def duration(self: Unit):
 def velocity(self: Unit):
     if self.in_profile.has_set_or_cached("velocity"):
         return self.in_profile.velocity
+
+
+@Unit.OutProfile.x
+def out_x(self: Unit.OutProfile):
+    return self.unit().in_profile.x + self.unit().length
+
+
+@Unit.OutProfile.t
+def out_t(self: Unit.OutProfile):
+    return self.unit().in_profile.t + self.unit().duration

@@ -89,6 +89,14 @@ class Profile(HookHost):
         super().__init__()
 
     @classmethod
+    def _base_factory(cls, **kwargs):
+        if "t" not in kwargs:
+            kwargs["t"] = 0
+        return cls(
+            **kwargs
+        )
+
+    @classmethod
     def from_groove(
             cls,
             groove: GrooveBase,
@@ -143,22 +151,28 @@ class Profile(HookHost):
         upper_contour_line = translate(groove.contour_line, yoff=gap / 2)
         lower_contour_line = translate(groove.contour_line, yoff=-gap / 2)
 
-        poly = Polygon(np.concatenate([
-            upper_contour_line.coords,
-            lower_contour_line.coords
-        ]))
+        poly = Polygon(
+            np.concatenate(
+                [
+                    upper_contour_line.coords,
+                    lower_contour_line.coords
+                ]
+            )
+        )
 
         if (
                 # one percent tolerance to bypass discretization issues
                 - width / 2 < poly.bounds[0] * 1.01
                 or width / 2 > poly.bounds[2] * 1.01
         ):
-            raise ValueError("Profile's width can not be larger than its contour lines."
-                             "May be caused by critical overfilling.")
+            raise ValueError(
+                "Profile's width can not be larger than its contour lines."
+                "May be caused by critical overfilling."
+            )
 
         polygon = clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
 
-        return cls(
+        return cls._base_factory(
             cross_section=polygon,
             types=groove.types,
             **kwargs
@@ -195,7 +209,7 @@ class Profile(HookHost):
         center = Point((0, 0))
         circle = center.buffer(radius)
 
-        return cls(
+        return cls._base_factory(
             cross_section=circle,
             types=["round"],
             **kwargs
@@ -242,7 +256,7 @@ class Profile(HookHost):
         polygon = Polygon(line)
         polygon = polygon.buffer(corner_radius)
 
-        return cls(
+        return cls._base_factory(
             cross_section=polygon,
             types=["square", "diamond"],
             **kwargs
@@ -277,12 +291,14 @@ class Profile(HookHost):
         ):
             raise ValueError("argument value(s) out of range")
 
-        line = LinearRing(np.array([(1, -1), (1, 1), (-1, 1), (-1, -1)])
-                          * (width / 2 - corner_radius, height / 2 - corner_radius))
+        line = LinearRing(
+            np.array([(1, -1), (1, 1), (-1, 1), (-1, -1)])
+            * (width / 2 - corner_radius, height / 2 - corner_radius)
+        )
         polygon = Polygon(line)
         polygon = polygon.buffer(corner_radius)
 
-        return cls(
+        return cls._base_factory(
             cross_section=polygon,
             types=["box"],
             **kwargs
@@ -317,12 +333,14 @@ class Profile(HookHost):
         ):
             raise ValueError("argument value(s) out of range")
 
-        line = LinearRing(np.array([(1, 0), (0, 1), (-1, 0), (0, -1)])
-                          * (width / 2 - corner_radius, height / 2 - corner_radius))
+        line = LinearRing(
+            np.array([(1, 0), (0, 1), (-1, 0), (0, -1)])
+            * (width / 2 - corner_radius, height / 2 - corner_radius)
+        )
         polygon = Polygon(line)
         polygon = polygon.buffer(corner_radius)
 
-        return cls(
+        return cls._base_factory(
             cross_section=polygon,
             types=["diamond"],
             **kwargs

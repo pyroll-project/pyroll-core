@@ -36,6 +36,16 @@ def velocity(self: RollPass):
     return self.roll.working_radius * self.roll.rotational_frequency
 
 
+@RollPass.duration
+def duration(self: RollPass):
+    return self.roll.contact_length / self.velocity
+
+
+@RollPass.length
+def length(self: RollPass):
+    return self.roll.contact_length
+
+
 @RollPass.draught
 def draught(self: RollPass):
     return self.out_profile.equivalent_rectangle.height / self.in_profile.equivalent_rectangle.height
