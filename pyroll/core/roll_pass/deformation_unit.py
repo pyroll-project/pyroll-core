@@ -50,3 +50,12 @@ class DeformationUnit(Unit):
 
     free_surface_area = Hook[float]()
     """Area of free surface."""
+
+    class Profile(Unit.Profile):
+        """Represents a profile in context of a deformation unit."""
+
+    class InProfile(Profile, Unit.InProfile):
+        """Represents an incoming profile of a deformation unit."""
+
+    class OutProfile(Profile, Unit.OutProfile):
+        """Represents an outgoing profile of a deformation unit."""

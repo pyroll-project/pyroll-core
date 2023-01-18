@@ -112,16 +112,16 @@ class RollPass(DiskedUnit, DeformationUnit):
         super().clear_hook_cache()
         self.roll.clear_hook_cache()
 
-    class Profile(DiskedUnit.Profile):
+    class Profile(DiskedUnit.Profile, DeformationUnit.Profile):
         """Represents a profile in context of a roll pass."""
 
         def roll_pass(self) -> 'RollPass':
             return self.unit()
 
-    class InProfile(Profile, DiskedUnit.InProfile):
+    class InProfile(Profile, DiskedUnit.InProfile, DeformationUnit.InProfile):
         """Represents an incoming profile of a roll pass."""
 
-    class OutProfile(Profile, DiskedUnit.OutProfile):
+    class OutProfile(Profile, DiskedUnit.OutProfile, DeformationUnit.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
         filling_ratio = Hook[float]()
@@ -141,11 +141,11 @@ class RollPass(DiskedUnit, DeformationUnit):
         def roll_pass(self) -> 'RollPass':
             return self.parent()
 
-        class Profile(DiskedUnit.DiskElement.Profile):
+        class Profile(DiskedUnit.DiskElement.Profile, DeformationUnit.Profile):
             """Represents a profile in context of a disk element unit."""
 
-        class InProfile(Profile, DiskedUnit.DiskElement.InProfile):
+        class InProfile(Profile, DiskedUnit.DiskElement.InProfile, DeformationUnit.InProfile):
             """Represents an incoming profile of a disk element unit."""
 
-        class OutProfile(Profile, DiskedUnit.DiskElement.OutProfile):
+        class OutProfile(Profile, DiskedUnit.DiskElement.OutProfile, DeformationUnit.OutProfile):
             """Represents an outgoing profile of a disk element unit."""
