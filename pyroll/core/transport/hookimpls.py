@@ -9,7 +9,7 @@ def out_strain(self: Transport.OutProfile):
 
 @Transport.OutProfile.velocity
 def out_velocity(self: Transport.OutProfile):
-    return self.transport().velocity
+    return self.transport.velocity
 
 
 @Transport.velocity
