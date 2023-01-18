@@ -13,7 +13,7 @@ from .profile import Profile
 from .rotator import Rotator
 from .sequence import PassSequence
 from .hooks import Hook, HookHost, HookFunction, root_hooks
-from .disk_element import DiskElement, DiskedUnit
+from .disk_element import DiskedUnit
 
 root_hooks.update({
     RollPass.roll_force,
