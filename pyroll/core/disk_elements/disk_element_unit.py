@@ -6,7 +6,7 @@ from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 
 
-class DiskedUnit(Unit):
+class DiskElementUnit(Unit):
     """Base class for units that can be divided in disk elements."""
 
     disk_element_count = Hook[int]()
@@ -44,17 +44,17 @@ class DiskedUnit(Unit):
             self._log = logging.getLogger(__name__)
 
         @property
-        def parent(self) -> 'DiskedUnit':
+        def parent(self) -> 'DiskElementUnit':
             """Reference to the roll pass. Alias for ``self.parent``."""
-            return cast(DiskedUnit, super().parent)
+            return cast(DiskElementUnit, super().parent)
 
         class Profile(Unit.Profile):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'DiskedUnit.DiskElement':
+            def disk_element(self) -> 'DiskElementUnit.DiskElement':
                 """Reference to the disk element. Alias for ``self.unit``"""
-                return cast(DiskedUnit.DiskElement, self.unit)
+                return cast(DiskElementUnit.DiskElement, self.unit)
 
         class InProfile(Profile, Unit.InProfile):
             """Represents an incoming profile of a disk element unit."""

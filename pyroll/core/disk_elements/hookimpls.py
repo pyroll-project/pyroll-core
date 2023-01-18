@@ -1,16 +1,16 @@
-from .disked_unit import DiskedUnit
+from .disk_element_unit import DiskElementUnit
 
 
-@DiskedUnit.disk_element_count
-def no_disks(self: DiskedUnit):
+@DiskElementUnit.disk_element_count
+def no_disks(self: DiskElementUnit):
     return 0
 
 
-@DiskedUnit.DiskElement.duration
-def disk_duration(self: DiskedUnit.DiskElement):
+@DiskElementUnit.DiskElement.duration
+def disk_duration(self: DiskElementUnit.DiskElement):
     return self.parent.duration / self.parent.disk_element_count
 
 
-@DiskedUnit.DiskElement.length
-def disk_length(self: DiskedUnit.DiskElement):
+@DiskElementUnit.DiskElement.length
+def disk_length(self: DiskElementUnit.DiskElement):
     return self.parent.length / self.parent.disk_element_count

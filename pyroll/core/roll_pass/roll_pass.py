@@ -6,7 +6,7 @@ import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 
-from ..disk_elements import DiskedUnit
+from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 from ..roll import Roll as BaseRoll
@@ -14,7 +14,7 @@ from ..rotator import Rotator
 from .deformation_unit import DeformationUnit
 
 
-class RollPass(DiskedUnit, DeformationUnit):
+class RollPass(DiskElementUnit, DeformationUnit):
     """Represents a roll pass."""
 
     in_profile_rotation = Hook[float]()
@@ -112,7 +112,7 @@ class RollPass(DiskedUnit, DeformationUnit):
         super().clear_hook_cache()
         self.roll.clear_hook_cache()
 
-    class Profile(DiskedUnit.Profile, DeformationUnit.Profile):
+    class Profile(DiskElementUnit.Profile, DeformationUnit.Profile):
         """Represents a profile in context of a roll pass."""
 
         @property
@@ -120,10 +120,10 @@ class RollPass(DiskedUnit, DeformationUnit):
             """Reference to the roll pass. Alias for ``self.unit``."""
             return cast(RollPass, self.unit)
 
-    class InProfile(Profile, DiskedUnit.InProfile, DeformationUnit.InProfile):
+    class InProfile(Profile, DiskElementUnit.InProfile, DeformationUnit.InProfile):
         """Represents an incoming profile of a roll pass."""
 
-    class OutProfile(Profile, DiskedUnit.OutProfile, DeformationUnit.OutProfile):
+    class OutProfile(Profile, DiskElementUnit.OutProfile, DeformationUnit.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
         filling_ratio = Hook[float]()
@@ -145,7 +145,7 @@ class RollPass(DiskedUnit, DeformationUnit):
             """Reference to the roll pass this roll is used in."""
             return self._roll_pass()
 
-    class DiskElement(DiskedUnit.DiskElement, DeformationUnit):
+    class DiskElement(DiskElementUnit.DiskElement, DeformationUnit):
         """Represents a disk element in a roll pass."""
 
         @property
@@ -153,7 +153,7 @@ class RollPass(DiskedUnit, DeformationUnit):
             """Reference to the roll pass. Alias for ``self.parent``."""
             return cast(RollPass, self.parent)
 
-        class Profile(DiskedUnit.DiskElement.Profile, DeformationUnit.Profile):
+        class Profile(DiskElementUnit.DiskElement.Profile, DeformationUnit.Profile):
             """Represents a profile in context of a disk element unit."""
 
             @property
@@ -161,8 +161,8 @@ class RollPass(DiskedUnit, DeformationUnit):
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(RollPass.DiskElement, self.unit)
 
-        class InProfile(Profile, DiskedUnit.DiskElement.InProfile, DeformationUnit.InProfile):
+        class InProfile(Profile, DiskElementUnit.DiskElement.InProfile, DeformationUnit.InProfile):
             """Represents an incoming profile of a disk element unit."""
 
-        class OutProfile(Profile, DiskedUnit.DiskElement.OutProfile, DeformationUnit.OutProfile):
+        class OutProfile(Profile, DiskElementUnit.DiskElement.OutProfile, DeformationUnit.OutProfile):
             """Represents an outgoing profile of a disk element unit."""

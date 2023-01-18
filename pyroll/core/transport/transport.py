@@ -2,10 +2,10 @@ import logging
 from typing import List, cast
 
 from ..hooks import Hook
-from ..disk_elements import DiskedUnit
+from ..disk_elements import DiskElementUnit
 
 
-class Transport(DiskedUnit):
+class Transport(DiskElementUnit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
 
     def __init__(
@@ -27,7 +27,7 @@ class Transport(DiskedUnit):
         """A list of disk elements used to subdivide this unit."""
         return self._subunits
 
-    class Profile(DiskedUnit.Profile):
+    class Profile(DiskElementUnit.Profile):
         """Represents a profile in context of a transport unit."""
 
         @property
@@ -35,13 +35,13 @@ class Transport(DiskedUnit):
             """Reference to the transport. Alias for ``self.unit``."""
             return cast(Transport, self.unit)
 
-    class InProfile(Profile, DiskedUnit.InProfile):
+    class InProfile(Profile, DiskElementUnit.InProfile):
         """Represents an incoming profile of a transport unit."""
 
-    class OutProfile(Profile, DiskedUnit.OutProfile):
+    class OutProfile(Profile, DiskElementUnit.OutProfile):
         """Represents an outgoing profile of a transport unit."""
 
-    class DiskElement(DiskedUnit.DiskElement):
+    class DiskElement(DiskElementUnit.DiskElement):
         """Represents a disk element in a roll pass."""
 
         @property
@@ -49,7 +49,7 @@ class Transport(DiskedUnit):
             """Reference to the transport. Alias for ``self.parent``."""
             return cast(Transport, self.parent)
 
-        class Profile(DiskedUnit.DiskElement.Profile):
+        class Profile(DiskElementUnit.DiskElement.Profile):
             """Represents a profile in context of a disk element unit."""
 
             @property
@@ -57,8 +57,8 @@ class Transport(DiskedUnit):
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(Transport.DiskElement, self.unit)
 
-        class InProfile(Profile, DiskedUnit.DiskElement.InProfile):
+        class InProfile(Profile, DiskElementUnit.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""
 
-        class OutProfile(Profile, DiskedUnit.DiskElement.OutProfile):
+        class OutProfile(Profile, DiskElementUnit.DiskElement.OutProfile):
             """Represents an outgoing profile of a disk element unit."""
