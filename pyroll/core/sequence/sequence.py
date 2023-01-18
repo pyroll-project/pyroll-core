@@ -1,10 +1,8 @@
 import logging
-import weakref
 from collections.abc import Sequence
 from typing import overload, List
 
 from ..unit import Unit
-from ..profile import Profile as BaseProfile
 from ..hooks import Hook
 
 
@@ -33,9 +31,8 @@ class PassSequence(Unit, Sequence[Unit]):
     class Profile(Unit.Profile):
         """Represents a profile in context of a pass sequence unit."""
 
-        def __init__(self, pass_sequence: 'PassSequence', template: BaseProfile):
-            super().__init__(pass_sequence, template)
-            self.pass_sequence = weakref.ref(pass_sequence)
+        def pass_sequence(self) -> 'PassSequence':
+            return self.unit()
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a pass sequence unit."""

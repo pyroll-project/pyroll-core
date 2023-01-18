@@ -115,9 +115,8 @@ class RollPass(DiskedUnit, DeformationUnit):
     class Profile(DiskedUnit.Profile):
         """Represents a profile in context of a roll pass."""
 
-        def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
-            super().__init__(roll_pass, template)
-            self.roll_pass = weakref.ref(roll_pass)
+        def roll_pass(self) -> 'RollPass':
+            return self.unit()
 
     class InProfile(Profile, DiskedUnit.InProfile):
         """Represents an incoming profile of a roll pass."""

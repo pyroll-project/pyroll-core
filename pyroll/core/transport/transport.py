@@ -32,9 +32,8 @@ class Transport(DiskedUnit):
     class Profile(DiskedUnit.Profile):
         """Represents a profile in context of a transport unit."""
 
-        def __init__(self, transport: 'Transport', template: BaseProfile):
-            super().__init__(transport, template)
-            self.transport = weakref.ref(transport)
+        def transport(self) -> 'Transport':
+            return self.unit()
 
     class InProfile(Profile, DiskedUnit.InProfile):
         """Represents an incoming profile of a transport unit."""

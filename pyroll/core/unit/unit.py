@@ -35,7 +35,7 @@ class Unit(HookHost):
     environment_temperature = Hook[float]()
     """Temperature of the surrounding atmosphere."""
 
-    def __init__(self, label: str):
+    def __init__(self, label: str, parent=None):
         super().__init__()
         self._log = logging.getLogger(__name__)
         self.label = label
@@ -43,7 +43,7 @@ class Unit(HookHost):
 
         self._subunits: Optional[Unit._SubUnitsList] = self._SubUnitsList(self, [])
 
-        self.parent = None
+        self.parent = weakref.ref(parent) if parent is not None else None
         """Weak reference to the parent unit, if applicable."""
 
         self.in_profile = None
