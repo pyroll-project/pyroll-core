@@ -2,7 +2,7 @@ import logging
 from typing import List, cast
 
 from ..hooks import Hook
-from ..disk_element import DiskedUnit
+from ..disk_elements import DiskedUnit
 
 
 class Transport(DiskedUnit):

@@ -6,7 +6,7 @@ import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 
-from ..disk_element import DiskedUnit
+from ..disk_elements import DiskedUnit
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 from ..roll import Roll as BaseRoll
