@@ -1,8 +1,7 @@
-import weakref
+from typing import cast
 
 from ..hooks import Hook
 from ..unit import Unit
-from ..profile import Profile as BaseProfile
 
 
 class Rotator(Unit):
@@ -67,9 +66,10 @@ class Rotator(Unit):
     class Profile(Unit.Profile):
         """Represents a profile in context of a rotator."""
 
-        def __init__(self, rotator: 'Rotator', template: BaseProfile):
-            super().__init__(rotator, template)
-            self.rotator = weakref.ref(rotator)
+        @property
+        def rotator(self) -> 'Rotator':
+            """Reference to the rotator. Alias for ``self.unit``."""
+            return cast(Rotator, self.unit)
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a rotator."""

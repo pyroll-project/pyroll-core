@@ -3,13 +3,13 @@ from .unit import Unit
 for h in Unit.OutProfile.__hooks__:
     @getattr(Unit.OutProfile, h)(trylast=True)
     def copy_from_in_profile(self: Unit.OutProfile, hook=h):
-        return getattr(self.unit().in_profile, hook, None)
+        return getattr(self.unit.in_profile, hook, None)
 
 
     @getattr(Unit.OutProfile, h)
     def copy_from_last_subunit(self: Unit.OutProfile, hook=h):
-        if self.unit().subunits:
-            return getattr(self.unit().subunits[-1].out_profile, hook, None)
+        if self.unit.subunits:
+            return getattr(self.unit.subunits[-1].out_profile, hook, None)
 
 
 @Unit.iteration_precision
@@ -25,6 +25,11 @@ def max_iteration_count(self: Unit):
 @Unit.volume
 def volume(self: Unit):
     return (self.in_profile.cross_section.area + self.out_profile.cross_section.area) / 2 * self.length
+
+
+@Unit.surface_area
+def surface_area(self: Unit):
+    return (self.in_profile.cross_section.perimeter + self.out_profile.cross_section.perimeter) / 2 * self.length
 
 
 @Unit.length
@@ -47,9 +52,14 @@ def velocity(self: Unit):
 
 @Unit.OutProfile.x
 def out_x(self: Unit.OutProfile):
-    return self.unit().in_profile.x + self.unit().length
+    return self.unit.in_profile.x + self.unit.length
 
 
 @Unit.OutProfile.t
 def out_t(self: Unit.OutProfile):
-    return self.unit().in_profile.t + self.unit().duration
+    return self.unit.in_profile.t + self.unit.duration
+
+
+@Unit.environment_temperature
+def environment_temperature(self):
+    return 293
