@@ -27,6 +27,11 @@ def volume(self: Unit):
     return (self.in_profile.cross_section.area + self.out_profile.cross_section.area) / 2 * self.length
 
 
+@Unit.surface_area
+def surface_area(self: Unit):
+    return (self.in_profile.cross_section.perimeter + self.out_profile.cross_section.perimeter) / 2 * self.length
+
+
 @Unit.length
 def length(self: Unit):
     if self.has_set_or_cached("duration"):
@@ -53,3 +58,8 @@ def out_x(self: Unit.OutProfile):
 @Unit.OutProfile.t
 def out_t(self: Unit.OutProfile):
     return self.unit().in_profile.t + self.unit().duration
+
+
+@Unit.environment_temperature
+def environment_temperature(self):
+    return 293

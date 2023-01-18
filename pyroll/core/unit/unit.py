@@ -29,6 +29,12 @@ class Unit(HookHost):
     volume = Hook[float]()
     """Volume of workpiece material within the unit."""
 
+    surface_area = Hook[float]()
+    """Surface area of workpiece within the unit."""
+
+    environment_temperature = Hook[float]()
+    """Temperature of the surrounding atmosphere."""
+
     def __init__(self, label: str):
         super().__init__()
         self._log = logging.getLogger(__name__)

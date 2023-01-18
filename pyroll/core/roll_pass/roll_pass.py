@@ -6,6 +6,7 @@ import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 
+from ..unit import Unit
 from ..disk_element import DiskedUnit
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
@@ -13,26 +14,12 @@ from ..roll import Roll as BaseRoll
 from ..rotator import Rotator
 
 
-class RollPass(DiskedUnit):
-    """Represents a roll pass."""
+class DeformationUnit(Unit):
+    strain = Hook[float]()
+    """Mean equivalent strain applied to the workpiece."""
 
-    in_profile_rotation = Hook[float]()
-    """Rotation applied to the incoming profile in ° (degree)."""
-
-    gap = Hook[float]()
-    """Gap between the rolls (outer surface)."""
-
-    height = Hook[float]()
-    """Maximum height of the roll pass."""
-
-    tip_width = Hook[float]()
-    """Width of the intersection of the extended groove flanks (theoretical maximum filling width)."""
-
-    roll_force = Hook[float]()
-    """Vertical roll force."""
-
-    mean_flow_stress = Hook[float]()
-    """Mean value of the workpiece's flow stress within the pass."""
+    strain_rate = Hook[float]()
+    """Mean equivalent strain rate."""
 
     spread = Hook[float]()
     """Coefficient of spread (change in width)."""
@@ -70,11 +57,30 @@ class RollPass(DiskedUnit):
     rel_draught = Hook[float]()
     """Relative draught (change in height)."""
 
-    strain = Hook[float]()
-    """Mean equivalent strain applied to the workpiece within the roll pass."""
+    contact_area = Hook[float]()
+    """Area of contact of the workpiece to the rolls."""
 
-    strain_rate = Hook[float]()
-    """Mean equivalent strain rate within the roll pass."""
+    free_surface_area = Hook[float]()
+    """Area of free surface."""
+
+
+class RollPass(DiskedUnit, DeformationUnit):
+    """Represents a roll pass."""
+
+    in_profile_rotation = Hook[float]()
+    """Rotation applied to the incoming profile in ° (degree)."""
+
+    gap = Hook[float]()
+    """Gap between the rolls (outer surface)."""
+
+    height = Hook[float]()
+    """Maximum height of the roll pass."""
+
+    tip_width = Hook[float]()
+    """Width of the intersection of the extended groove flanks (theoretical maximum filling width)."""
+
+    roll_force = Hook[float]()
+    """Vertical roll force."""
 
     def __init__(
             self,
@@ -180,11 +186,8 @@ class RollPass(DiskedUnit):
             super().__init__(**kwargs)
             self.roll_pass = weakref.ref(roll_pass)
 
-    class DiskElement(DiskedUnit.DiskElement):
+    class DiskElement(DiskedUnit.DiskElement, DeformationUnit):
         """Represents a disk element in a roll pass."""
-
-        contact_area = Hook[float]()
-        """Area of contact of the disk element to the rolls."""
 
         def roll_pass(self) -> 'RollPass':
             return self.parent()

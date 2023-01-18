@@ -10,9 +10,6 @@ from ..disk_element import DiskedUnit
 class Transport(DiskedUnit):
     """Represents a transport unit, e.g. an inter-rolling-stand gap, a furnace or cooling range."""
 
-    environment_temperature = Hook[float]()
-    """Temperature of the surrounding atmosphere."""
-
     def __init__(
             self,
             label: str = "",
@@ -47,9 +44,6 @@ class Transport(DiskedUnit):
 
     class DiskElement(DiskedUnit.DiskElement):
         """Represents a disk element in a roll pass."""
-
-        surface_area = Hook[float]()
-        """Surface area of the disk element."""
 
         def transport(self) -> 'Transport':
             return self.parent()
