@@ -1,6 +1,6 @@
 import logging
 import weakref
-from typing import Optional, Sequence, List
+from typing import Optional, Sequence, List, Iterable, SupportsIndex, Union
 
 import numpy as np
 
@@ -170,6 +170,50 @@ class Unit(HookHost):
             self._owner = weakref.ref(owner)
             for u in self:
                 u.parent = owner
+
+        def append(self, unit: 'Unit') -> None:
+            unit.parent = self._owner()
+            super().append(unit)
+
+        def extend(self, units: Iterable['Unit']) -> None:
+            for u in units:
+                u.parent = self._owner()
+            super().extend(units)
+
+        def insert(self, i: Union[SupportsIndex, slice], unit: 'Unit') -> None:
+            unit.parent = self._owner()
+            super().insert(i, unit)
+
+        def pop(self, i: Union[SupportsIndex, slice] = ...) -> 'Unit':
+            unit = super().pop(i)
+            unit.parent = None
+            return unit
+
+        def clear(self) -> None:
+            for u in self:
+                u.parent = None
+            super().clear()
+
+        def copy(self) -> 'Unit._SubUnitsList':
+            return self.__init__(self._owner(), self)
+
+        def __setitem__(self, i: Union[SupportsIndex, slice], value: 'Unit'):
+            current = self[i]
+            if isinstance(current, list):
+                for u in current:
+                    u.parent = None
+            else:
+                current.parent = None
+            return super().__setitem__(i, value)
+
+        def __delitem__(self, i: Union[SupportsIndex, slice]):
+            current = self[i]
+            if isinstance(current, list):
+                for u in current:
+                    u.parent = None
+            else:
+                current.parent = None
+            return super().__delitem__(i)
 
         # noinspection PyProtectedMember
         def _repr_html_(self):
