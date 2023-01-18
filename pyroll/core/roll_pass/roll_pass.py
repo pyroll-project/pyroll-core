@@ -1,6 +1,6 @@
 import logging
 import weakref
-from typing import List
+from typing import List, cast
 
 import numpy as np
 from shapely.affinity import translate, rotate
@@ -115,8 +115,10 @@ class RollPass(DiskedUnit, DeformationUnit):
     class Profile(DiskedUnit.Profile, DeformationUnit.Profile):
         """Represents a profile in context of a roll pass."""
 
+        @property
         def roll_pass(self) -> 'RollPass':
-            return self.unit()
+            """Reference to the roll pass. Alias for ``self.unit``."""
+            return cast(RollPass, self.unit)
 
     class InProfile(Profile, DiskedUnit.InProfile, DeformationUnit.InProfile):
         """Represents an incoming profile of a roll pass."""
@@ -130,19 +132,34 @@ class RollPass(DiskedUnit, DeformationUnit):
         """Represents a roll applied in a :py:class:`RollPass`."""
 
         def __init__(self, template: BaseRoll, roll_pass: 'RollPass'):
-            kwargs = template.__dict__.copy()
-            kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
+            kwargs = dict(
+                e for e in template.__dict__.items()
+                if not e[0].startswith("_")
+            )
             super().__init__(**kwargs)
-            self.roll_pass = weakref.ref(roll_pass)
+
+            self._roll_pass = weakref.ref(roll_pass)
+
+        @property
+        def roll_pass(self):
+            """Reference to the roll pass this roll is used in."""
+            return self._roll_pass()
 
     class DiskElement(DiskedUnit.DiskElement, DeformationUnit):
         """Represents a disk element in a roll pass."""
 
+        @property
         def roll_pass(self) -> 'RollPass':
-            return self.parent()
+            """Reference to the roll pass. Alias for ``self.parent``."""
+            return cast(RollPass, self.parent)
 
         class Profile(DiskedUnit.DiskElement.Profile, DeformationUnit.Profile):
             """Represents a profile in context of a disk element unit."""
+
+            @property
+            def disk_element(self) -> 'RollPass.DiskElement':
+                """Reference to the disk element. Alias for ``self.unit``"""
+                return cast(RollPass.DiskElement, self.unit)
 
         class InProfile(Profile, DiskedUnit.DiskElement.InProfile, DeformationUnit.InProfile):
             """Represents an incoming profile of a disk element unit."""

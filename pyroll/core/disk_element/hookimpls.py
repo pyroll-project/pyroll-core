@@ -9,9 +9,9 @@ def no_disks(self: DiskedUnit):
 
 @DiskElement.duration
 def disk_duration(self: DiskElement):
-    return self.parent().duration / self.parent().disk_element_count
+    return self.parent.duration / self.parent.disk_element_count
 
 
 @DiskElement.length
 def disk_length(self: DiskElement):
-    return self.parent().length / self.parent().disk_element_count
+    return self.parent.length / self.parent.disk_element_count

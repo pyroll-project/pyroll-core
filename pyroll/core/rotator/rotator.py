@@ -1,4 +1,5 @@
 import logging
+from typing import cast
 
 from ..hooks import Hook
 from ..unit import Unit
@@ -27,8 +28,10 @@ class Rotator(Unit):
     class Profile(Unit.Profile):
         """Represents a profile in context of a rotator."""
 
+        @property
         def rotator(self) -> 'Rotator':
-            return self.unit()
+            """Reference to the rotator. Alias for ``self.unit``."""
+            return cast(Rotator, self.unit)
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a rotator."""

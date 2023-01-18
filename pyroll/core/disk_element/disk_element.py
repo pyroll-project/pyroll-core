@@ -1,4 +1,6 @@
 import logging
+from typing import cast
+
 from ..unit import Unit
 
 
@@ -24,11 +26,18 @@ class DiskElement(Unit):
         self.__dict__.update(kwargs)
         self._log = logging.getLogger(__name__)
 
+    @property
+    def parent(self) -> 'Unit':
+        """Reference to the roll pass. Alias for ``self.parent``."""
+        return super().parent
+
     class Profile(Unit.Profile):
         """Represents a profile in context of a disk element unit."""
 
+        @property
         def disk_element(self) -> 'DiskElement':
-            return self.unit()
+            """Reference to the disk element. Alias for ``self.unit``"""
+            return cast(DiskElement, self.unit)
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a disk element unit."""

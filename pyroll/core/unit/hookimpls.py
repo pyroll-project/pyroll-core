@@ -3,13 +3,13 @@ from .unit import Unit
 for h in Unit.OutProfile.__hooks__:
     @getattr(Unit.OutProfile, h)(trylast=True)
     def copy_from_in_profile(self: Unit.OutProfile, hook=h):
-        return getattr(self.unit().in_profile, hook, None)
+        return getattr(self.unit.in_profile, hook, None)
 
 
     @getattr(Unit.OutProfile, h)
     def copy_from_last_subunit(self: Unit.OutProfile, hook=h):
-        if self.unit().subunits:
-            return getattr(self.unit().subunits[-1].out_profile, hook, None)
+        if self.unit.subunits:
+            return getattr(self.unit.subunits[-1].out_profile, hook, None)
 
 
 @Unit.iteration_precision
@@ -52,12 +52,12 @@ def velocity(self: Unit):
 
 @Unit.OutProfile.x
 def out_x(self: Unit.OutProfile):
-    return self.unit().in_profile.x + self.unit().length
+    return self.unit.in_profile.x + self.unit.length
 
 
 @Unit.OutProfile.t
 def out_t(self: Unit.OutProfile):
-    return self.unit().in_profile.t + self.unit().duration
+    return self.unit.in_profile.t + self.unit.duration
 
 
 @Unit.environment_temperature

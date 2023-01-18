@@ -1,9 +1,7 @@
 import logging
-import weakref
-from typing import List
+from typing import List, cast
 
 from ..hooks import Hook
-from ..profile import Profile as BaseProfile
 from ..disk_element import DiskedUnit
 
 
@@ -27,13 +25,15 @@ class Transport(DiskedUnit):
     @property
     def disk_elements(self) -> List['Transport.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
-        return list(self._subunits)
+        return self._subunits
 
     class Profile(DiskedUnit.Profile):
         """Represents a profile in context of a transport unit."""
 
+        @property
         def transport(self) -> 'Transport':
-            return self.unit()
+            """Reference to the transport. Alias for ``self.unit``."""
+            return cast(Transport, self.unit)
 
     class InProfile(Profile, DiskedUnit.InProfile):
         """Represents an incoming profile of a transport unit."""
@@ -44,11 +44,18 @@ class Transport(DiskedUnit):
     class DiskElement(DiskedUnit.DiskElement):
         """Represents a disk element in a roll pass."""
 
+        @property
         def transport(self) -> 'Transport':
-            return self.parent()
+            """Reference to the transport. Alias for ``self.parent``."""
+            return cast(Transport, self.parent)
 
         class Profile(DiskedUnit.DiskElement.Profile):
             """Represents a profile in context of a disk element unit."""
+
+            @property
+            def disk_element(self) -> 'Transport.DiskElement':
+                """Reference to the disk element. Alias for ``self.unit``"""
+                return cast(Transport.DiskElement, self.unit)
 
         class InProfile(Profile, DiskedUnit.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""

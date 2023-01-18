@@ -1,6 +1,6 @@
 import logging
 import weakref
-from typing import Optional, Sequence
+from typing import Optional, Sequence, List
 
 import numpy as np
 
@@ -43,8 +43,7 @@ class Unit(HookHost):
 
         self._subunits: Optional[Unit._SubUnitsList] = self._SubUnitsList(self, [])
 
-        self.parent = weakref.ref(parent) if parent is not None else None
-        """Weak reference to the parent unit, if applicable."""
+        self._parent = weakref.ref(parent) if parent is not None else None
 
         self.in_profile = None
         """The state of the incoming profile."""
@@ -121,6 +120,26 @@ class Unit(HookHost):
         })
         return result
 
+    @property
+    def parent(self) -> Optional['Unit']:
+        """Reference to the parent unit, if applicable, else None."""
+        if self._parent is None:
+            return None
+        return self._parent()
+
+    @parent.setter
+    def parent(self, value: 'Unit'):
+        """Sets Reference to the parent unit."""
+        if value is None:
+            self._parent = None
+        else:
+            self._parent = weakref.ref(value)
+
+    @property
+    def subunits(self) -> List['Unit']:
+        """List of the subunits."""
+        return self._subunits
+
     class Profile(BaseProfile):
         """Represents a profile in context of a unit."""
 
@@ -130,7 +149,12 @@ class Unit(HookHost):
                 if not e[0].startswith("_")
             )
             super().__init__(**kwargs)
-            self.unit = weakref.ref(unit)
+            self._unit = weakref.ref(unit)
+
+        @property
+        def unit(self) -> 'Unit':
+            """Reference to the parent unit, if applicable, else None."""
+            return self._unit()
 
     class InProfile(Profile):
         """Represents an incoming profile of a unit."""
@@ -143,14 +167,10 @@ class Unit(HookHost):
 
         def __init__(self, owner: 'Unit', units: Sequence['Unit']):
             super().__init__(units)
-            self.owner = weakref.ref(owner)
+            self._owner = weakref.ref(owner)
             for u in self:
-                u.parent = weakref.ref(owner)
+                u.parent = owner
 
         # noinspection PyProtectedMember
         def _repr_html_(self):
             return "<br/>".join(v._repr_html_() for v in self)
-
-    @property
-    def subunits(self):
-        return self._subunits

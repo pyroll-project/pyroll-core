@@ -1,6 +1,6 @@
 import logging
 from collections.abc import Sequence
-from typing import overload, List
+from typing import overload, List, cast
 
 from ..unit import Unit
 from ..hooks import Hook
@@ -31,8 +31,10 @@ class PassSequence(Unit, Sequence[Unit]):
     class Profile(Unit.Profile):
         """Represents a profile in context of a pass sequence unit."""
 
+        @property
         def pass_sequence(self) -> 'PassSequence':
-            return self.unit()
+            """Reference to the pass sequence. Alias for ``self.unit``."""
+            return cast(PassSequence, self.unit)
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a pass sequence unit."""
