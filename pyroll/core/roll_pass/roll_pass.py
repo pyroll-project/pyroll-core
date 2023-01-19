@@ -76,6 +76,12 @@ class RollPass(DiskedUnit):
     strain_rate = Hook[float]()
     """Mean equivalent strain rate within the roll pass."""
 
+    mean_neutral_plane_position = Hook[float]()
+    """Position of the neutral plane along the roll gap"""
+
+    mean_neutral_plane_angle = Hook[float]()
+    """Angle of the neutral plane along the roll gap"""
+
     def __init__(
             self,
             roll: BaseRoll,
