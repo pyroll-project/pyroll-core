@@ -5,7 +5,7 @@ from .transport import Transport
 
 
 class CoolingRange(Transport):
-    """Represents a cooling range."""
+    """Represents a cooling range. Specialized version of a transport."""
 
     def __init__(
             self,

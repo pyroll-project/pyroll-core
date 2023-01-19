@@ -4,8 +4,8 @@ from typing import List, cast
 from .transport import Transport
 
 
-class Furnace(Transport):
-    """Represents a furnace. Specialized version of a transport."""
+class Descaler(Transport):
+    """Represents a descaler. Specialized version of a transport."""
 
     def __init__(
             self,
@@ -22,7 +22,7 @@ class Furnace(Transport):
         self._log = logging.getLogger(__name__)
 
     @property
-    def disk_elements(self) -> List['Furnace.DiskElement']:
+    def disk_elements(self) -> List['Descaler.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -30,8 +30,8 @@ class Furnace(Transport):
         """Represents a profile in context of a transport unit."""
 
         @property
-        def furnace(self) -> 'Furnace':
-            return cast(Furnace, self.unit)
+        def furnace(self) -> 'Descaler':
+            return cast(Descaler, self.unit)
 
     class InProfile(Profile, Transport.InProfile):
         """Represents an incoming profile of a transport unit."""
@@ -43,8 +43,8 @@ class Furnace(Transport):
         """Represents a disk element in a roll pass."""
 
         @property
-        def furnace(self) -> 'Furnace':
-            return cast(Furnace, self.parent)
+        def furnace(self) -> 'Descaler':
+            return cast(Descaler, self.parent)
 
         class Profile(Transport.DiskElement.Profile):
             """Represents a profile in context of a disk element unit."""
