@@ -2,10 +2,23 @@ import logging
 from typing import List, cast
 
 from .transport import Transport
+from ..hooks import Hook
 
 
 class CoolingRange(Transport):
     """Represents a cooling range. Specialized version of a transport."""
+
+    water_temperature = Hook[float]()
+    """Temperature of the cooling water."""
+
+    water_air_factor = Hook[float]()
+    """Amount of air in the cooling water spray."""
+
+    water_pressure = Hook[float]()
+    """Pressure of the cooling water."""
+
+    water_flow = Hook[float]()
+    """Volume flow per time of cooling water."""
 
     def __init__(
             self,

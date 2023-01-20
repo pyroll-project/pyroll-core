@@ -2,10 +2,28 @@ import logging
 from typing import List, cast
 
 from .transport import Transport
+from ..hooks import Hook
 
 
 class Furnace(Transport):
     """Represents a furnace. Specialized version of a transport."""
+
+    atmosphere_composition = Hook[dict[str, float]]()
+    """Chemical composition of the furnace atmosphere. Dictionary of strings identifying the species mapped to floats representing their concentration."""
+
+    wall_surface_area = Hook[float]()
+    """Surface area of the inner wall surface (f.e. for radiation of the inner wall)."""
+
+    wall_surface_perimeter = Hook[float]()
+    """
+    Perimeter of the inner wall surface (surface area per unit length).
+    Replacement for ``wall_surface_area`` if the length scale is undefined.
+    """
+
+    wall_temperature = Hook[float]()
+    """Temperature of the inner wall (f.e. for radiation of the inner wall)."""
+
+
 
     def __init__(
             self,
