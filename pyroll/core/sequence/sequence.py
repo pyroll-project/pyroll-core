@@ -1,4 +1,3 @@
-import logging
 import weakref
 from collections.abc import Sequence
 from typing import overload, List
@@ -28,7 +27,6 @@ class PassSequence(Unit, Sequence[Unit]):
         super().__init__(label=label)
         self.__dict__.update(kwargs)
         self._subunits = self._SubUnitsList(self, units)
-        self._log = logging.getLogger(__name__)
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a pass sequence unit."""

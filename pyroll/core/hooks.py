@@ -1,5 +1,4 @@
 import inspect
-import logging
 import weakref
 from abc import ABCMeta
 from functools import partial
@@ -7,11 +6,10 @@ from typing import overload, TypeVar, Generic, List, Generator, Union
 
 import numpy as np
 
-from pyroll.core.repr import ReprMixin
+from .log import LogMixin
+from .repr import ReprMixin
 
 T = TypeVar("T")
-
-_log = logging.getLogger(__name__)
 
 
 class HookFunction:
@@ -140,23 +138,35 @@ class Hook(Generic[T]):
         if instance is None:
             return self
 
+        self.owner.logger.debug(f"Hook %s.%s on %s: called.", self.owner.__qualname__, self.owner.name, instance)
+
         # try to get value explicitly set by user
         result = instance.__dict__.get(self.name, None)
         if result is not None:
+            self.owner.logger.debug(
+                f"Hook %s.%s on %s: resolved with explicit value %s.",
+                self.owner.__qualname__, self.owner.name, instance, result
+            )
             return result
 
         # try to get cached value
         result = instance.__cache__.get(self.name, None)
         if result is not None:
+            self.owner.logger.debug(
+                f"Hook %s.%s on %s: resolved with cached value %s.",
+                self.owner.__qualname__, self.owner.name, instance, result
+            )
             return result
 
         # try to get value from hook caller
         try:
             result = self.get_result(instance)
         except RecursionError as e:
-            raise AttributeError(f"Hook call for '{self.name}' on '{instance}' resulted in a RecursionError. "
-                                 f"This may have one of the following reasons: missing data, interference of plugins. "
-                                 f"Double check if you have provided all necessary input data.") from e
+            raise AttributeError(
+                f"Hook call for '{self.name}' on '{instance}' resulted in a RecursionError. "
+                f"This may have one of the following reasons: missing data, interference of plugins. "
+                f"Double check if you have provided all necessary input data."
+            ) from e
 
         if result is None:
             raise AttributeError(f"Hook call for '{self.name}' on '{instance}' could not provide a value.")
@@ -213,7 +223,16 @@ class Hook(Generic[T]):
         for f in self.functions_gen:
             result = f(instance)
             if result is not None:
+                self.owner.logger.debug(
+                    f"Hook %s.%s on %s: resolved from function %s with value %s.",
+                    self.owner.__qualname__, self.name, instance, f.qualname, result
+                )
                 return result
+
+            self.owner.logger.debug(
+                f"Hook %s.%s on %s: function %s resulted in None.",
+                self.owner.__qualname__, self.name, instance, f.qualname
+            )
 
     def add_function(self, func, tryfirst=False, trylast=False):
         """
@@ -272,7 +291,7 @@ class _HookHostMeta(ABCMeta):
         super().__setattr__(key, value)
 
 
-class HookHost(ReprMixin, metaclass=_HookHostMeta):
+class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
     """
     A base class providing plugin functionality and some related convenience methods to a derived class.
     """
@@ -309,11 +328,13 @@ class HookHost(ReprMixin, metaclass=_HookHostMeta):
 
         hooks = set()
         for s in cls.__mro__:
-            hooks = hooks.union([
-                name for name, value in s.__dict__.items()
-                if not name.startswith("_")
-                if isinstance(value, Hook)
-            ])
+            hooks = hooks.union(
+                [
+                    name for name, value in s.__dict__.items()
+                    if not name.startswith("_")
+                    if isinstance(value, Hook)
+                ]
+            )
         return hooks
 
     @classmethod

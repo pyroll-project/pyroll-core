@@ -1,4 +1,3 @@
-import logging
 import weakref
 from typing import List
 
@@ -25,7 +24,6 @@ class Transport(DiskedUnit):
 
         super().__init__(label)
         self.__dict__.update(kwargs)
-        self._log = logging.getLogger(__name__)
 
     @property
     def disk_elements(self) -> List['Transport.DiskElement']:

@@ -1,4 +1,3 @@
-import logging
 import math
 from typing import Optional, Tuple, Iterable, Union, Set
 
@@ -9,8 +8,6 @@ from shapely.ops import clip_by_rect, unary_union
 
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
-
-_log = logging.getLogger(__name__)
 
 
 class Profile(HookHost):
@@ -146,7 +143,8 @@ class Profile(HookHost):
             raise ValueError("argument value(s) out of range")
 
         if filling > 1:
-            _log.warning("Encountered overfilled groove in profile construction.")
+            # noinspection PyUnresolvedReferences
+            cls.logger.warning("Encountered overfilled groove in profile construction.")
 
         upper_contour_line = translate(groove.contour_line, yoff=gap / 2)
         lower_contour_line = translate(groove.contour_line, yoff=-gap / 2)

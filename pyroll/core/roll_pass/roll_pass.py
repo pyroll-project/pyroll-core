@@ -1,4 +1,3 @@
-import logging
 import weakref
 from typing import List, Union
 
@@ -98,7 +97,6 @@ class RollPass(DiskedUnit):
         """The working roll of this pass (equal upper and lower)."""
 
         self.__dict__.update(kwargs)
-        self._log = logging.getLogger(__name__)
 
     def local_height(self, z: float) -> float:
         coords = np.array([(1, -1), (1, 1)]) * (z, self.height)

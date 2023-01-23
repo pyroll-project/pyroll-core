@@ -1,4 +1,3 @@
-import logging
 import weakref
 from typing import Optional, Sequence
 
@@ -31,7 +30,6 @@ class Unit(HookHost):
 
     def __init__(self, label: str):
         super().__init__()
-        self._log = logging.getLogger(__name__)
         self.label = label
         """Label for human identification."""
 
@@ -113,7 +111,7 @@ class Unit(HookHost):
         :param in_profile: The incoming state profile
         :return: The outgoing state profile.
         """
-        self._log.info(f"Started solving of {self}.")
+        self.logger.info(f"Started solving of {self}.")
         self.init_solve(in_profile)
         old_values = np.nan
 
@@ -123,13 +121,13 @@ class Unit(HookHost):
             current_values = self.get_root_hook_results()
 
             if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
-                self._log.info(f"Finished solving of {self} after {i} iterations.")
+                self.logger.info(f"Finished solving of {self} after {i} iterations.")
                 break
 
             old_values = current_values
 
         else:
-            self._log.warning(
+            self.logger.warning(
                 f"Solution iteration of {self} exceeded the maximum iteration count of {self.max_iteration_count}."
                 f" Continuing anyway."
             )
