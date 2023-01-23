@@ -1,4 +1,3 @@
-import logging
 from ..unit import Unit
 
 
@@ -22,7 +21,6 @@ class DiskElement(Unit):
 
         super().__init__(label=f"{parent}[{index}]")
         self.__dict__.update(kwargs)
-        self._log = logging.getLogger(__name__)
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a disk element unit."""

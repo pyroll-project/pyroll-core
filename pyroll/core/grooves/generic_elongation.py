@@ -1,4 +1,3 @@
-import logging
 from typing import Union, Tuple
 
 import numpy as np
@@ -45,8 +44,6 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self._usable_width = usable_width
         self._depth = depth
         self._types = types
-
-        self._log = logging.getLogger(__name__)
 
         self.z2 = usable_width / 2
         self.y2 = 0

@@ -1,4 +1,3 @@
-import logging
 import weakref
 
 from ..hooks import Hook
@@ -24,7 +23,6 @@ class Rotator(Unit):
 
         super().__init__(label)
         self.__dict__.update(kwargs)
-        self._log = logging.getLogger(__name__)
 
     @property
     def prev_roll_pass(self):

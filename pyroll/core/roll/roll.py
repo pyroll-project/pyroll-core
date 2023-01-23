@@ -1,4 +1,3 @@
-import logging
 from typing import Iterable, Union
 
 import numpy as np
@@ -78,7 +77,8 @@ class Roll(HookHost):
     def __init__(
             self,
             groove: GrooveBase,
-            **kwargs):
+            **kwargs
+    ):
         """
         :param groove: the groove object defining the shape of the roll's surface
         :param kwargs: additional hook values as keyword arguments to set explicitly
@@ -89,5 +89,3 @@ class Roll(HookHost):
 
         self.groove = groove
         """The groove object defining the shape of the roll's surface."""
-
-        self._log = logging.getLogger(__name__)
