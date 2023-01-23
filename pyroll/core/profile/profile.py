@@ -1,6 +1,6 @@
 import logging
 import math
-from typing import Optional, Tuple, Iterable, Union
+from typing import Optional, Tuple, Iterable, Union, Set
 
 import numpy as np
 from shapely.affinity import translate
@@ -19,7 +19,7 @@ class Profile(HookHost):
     cross_section = Hook[Polygon]()
     """Shape of the profile's cross-section."""
 
-    types = Hook[Tuple[str, ...]]()
+    types = Hook[Set[str]]()
     """Classifiers of the profile's shape's type."""
 
     x = Hook[float]()
@@ -174,7 +174,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=groove.types,
+            types=set(groove.types),
             **kwargs
         )
 
@@ -211,7 +211,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=circle,
-            types=["round"],
+            types={"round"},
             **kwargs
         )
 
@@ -258,7 +258,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=["square", "diamond"],
+            types={"square", "diamond"},
             **kwargs
         )
 
@@ -300,7 +300,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=["box"],
+            types={"box"},
             **kwargs
         )
 
@@ -342,7 +342,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=["diamond"],
+            types={"diamond"},
             **kwargs
         )
 

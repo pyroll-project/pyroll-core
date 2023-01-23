@@ -51,6 +51,30 @@ class Unit(HookHost):
             return type(self).__qualname__ + f" '{self.label}'"
         return type(self).__qualname__
 
+    @property
+    def prev(self):
+        """
+        Returns a reference to the predecessor of this unit in the sequence.
+
+        :raises ValueError: if this unit has no parent unit
+        """
+        if self.parent is None:
+            raise ValueError("This unit has no parent.")
+        i = self.parent.subunits.index(self)
+        return self.parent.subunits[i - 1]
+
+    @property
+    def next(self):
+        """
+        Returns a reference to the successor of this unit in the sequence.
+
+        :raises ValueError: if this unit has no parent unit
+        """
+        if self.parent is None:
+            raise ValueError("This unit has no parent.")
+        i = self.parent.subunits.index(self)
+        return self.parent.subunits[i + 1]
+
     def init_solve(self, in_profile: BaseProfile):
         """
         Method called by the standard :py:meth:`solve` implementation to init
@@ -107,12 +131,15 @@ class Unit(HookHost):
         else:
             self._log.warning(
                 f"Solution iteration of {self} exceeded the maximum iteration count of {self.max_iteration_count}."
-                f" Continuing anyway.")
+                f" Continuing anyway."
+            )
 
-        result = BaseProfile(**{
-            k: v for k, v in self.out_profile.__dict__.items()
-            if not k.startswith("_")
-        })
+        result = BaseProfile(
+            **{
+                k: v for k, v in self.out_profile.__dict__.items()
+                if not k.startswith("_")
+            }
+        )
         return result
 
     class Profile(BaseProfile):
