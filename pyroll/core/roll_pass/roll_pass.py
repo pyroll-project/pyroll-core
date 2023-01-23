@@ -1,6 +1,6 @@
 import logging
 import weakref
-from typing import List
+from typing import List, Union
 
 import numpy as np
 from shapely.affinity import translate, rotate
@@ -16,8 +16,12 @@ from ..rotator import Rotator
 class RollPass(DiskedUnit):
     """Represents a roll pass."""
 
-    in_profile_rotation = Hook[float]()
-    """Rotation applied to the incoming profile in ° (degree)."""
+    rotation = Hook[Union[bool, float]]()
+    """
+    Rotation applied to the incoming profile in ° (degree) before entry in this roll pass.
+    Alternatively, provide a boolean value: false equals 0, 
+    true means automatic determination from hook functions of ``Rotator.rotation``.
+    """
 
     gap = Hook[float]()
     """Gap between the rolls (outer surface)."""
@@ -150,13 +154,17 @@ class RollPass(DiskedUnit):
         return list(self._subunits)
 
     def init_solve(self, in_profile: BaseProfile):
+        if self.rotation:
+            rotator = Rotator(
+                # make True determining from hook functions
+                rotation=self.rotation if self.rotation is not True else None,
+                label=f"Auto-Rotator for {self}",
+                duration=0, length=0, parent=self
+            )
+            rotator.solve(in_profile)
+            in_profile = rotator.out_profile
+
         super().init_solve(in_profile)
-
-        rotator = Rotator(rotation=self.in_profile_rotation, duration=0, length=0)
-        rotator.solve(in_profile)
-
-        self.in_profile = self.InProfile(self, rotator.out_profile)
-        self.out_profile = self.OutProfile(self, rotator.out_profile)
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()

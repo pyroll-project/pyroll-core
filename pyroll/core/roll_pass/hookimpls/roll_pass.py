@@ -1,7 +1,27 @@
 import numpy as np
 
 from ..roll_pass import RollPass
+from ...rotator import Rotator
 from ...grooves import GenericElongationGroove
+
+from ...config import ROLL_PASS_AUTO_ROTATION
+
+
+@RollPass.rotation
+def auto_rotation(self: RollPass):
+    return ROLL_PASS_AUTO_ROTATION
+
+
+@RollPass.rotation
+def detect_already_rotated(self: RollPass):
+    if ROLL_PASS_AUTO_ROTATION and self.parent is not None:
+        prev = self.prev
+        while True:
+            if isinstance(prev, RollPass):
+                return True
+            if isinstance(prev, Rotator):
+                return False
+            prev = prev.prev
 
 
 @RollPass.mean_flow_stress
