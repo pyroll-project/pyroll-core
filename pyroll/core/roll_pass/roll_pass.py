@@ -77,10 +77,16 @@ class RollPass(DiskedUnit):
     """Mean equivalent strain rate within the roll pass."""
 
     mean_neutral_plane_position = Hook[float]()
-    """Position of the neutral plane along the roll gap"""
+    """Mean position of the neutral plane along the roll gap."""
 
     mean_neutral_plane_angle = Hook[float]()
-    """Angle of the neutral plane along the roll gap"""
+    """Mean angle of the neutral plane along the roll gap."""
+
+    mean_front_tension = Hook[float]()
+    """Front tension acting on the current roll pass."""
+
+    mean_back_tension = Hook[float]()
+    """Back tension acting on the current roll pass."""
 
     def __init__(
             self,
