@@ -28,6 +28,12 @@ class GrooveBase(ABC):
 
     @property
     @abstractmethod
+    def width(self) -> float:
+        """The maximum width of the groove representing the definition region in z-direction."""
+        raise NotImplemented
+
+    @property
+    @abstractmethod
     def depth(self) -> float:
         """The maximum depth of the groove."""
         raise NotImplemented
@@ -36,6 +42,12 @@ class GrooveBase(ABC):
     @abstractmethod
     def contour_line(self) -> LineString:
         """A line representing the geometry of the groove contour."""
+        raise NotImplemented
+
+    @property
+    @abstractmethod
+    def contour_points(self) -> np.ndarray:
+        """An array of the contour line's points of shape (n, 2)."""
         raise NotImplemented
 
     @abstractmethod

@@ -67,24 +67,8 @@ class RollPass(DiskElementUnit, DeformationUnit):
         self.__dict__.update(kwargs)
 
     def local_height(self, z: float) -> float:
-        coords = np.array([(1, -1), (1, 1)]) * (z, self.height)
-
-        vline = LineString(
-            coords
-        )
-
-        poly = Polygon(
-            np.concatenate(
-                [
-                    self.upper_contour_line.coords,
-                    self.lower_contour_line.coords
-                ]
-            )
-        )
-
-        intersection = vline.intersection(poly)
-
-        return intersection.length
+        """Returns the local height of the roll pass in the high point."""
+        return 2 * self.roll.groove.local_depth(z) + self.gap
 
     @property
     def upper_contour_line(self) -> LineString:
