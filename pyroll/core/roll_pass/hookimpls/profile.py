@@ -5,6 +5,7 @@ from shapely.geometry import Polygon
 from shapely.ops import clip_by_rect
 
 from ..roll_pass import RollPass
+from ..three_roll_pass import ThreeRollPass
 
 
 @RollPass.InProfile.x
@@ -20,6 +21,11 @@ def exit_point(self: RollPass.OutProfile):
 @RollPass.OutProfile.strain
 def strain(self: RollPass.OutProfile):
     return self.roll_pass.in_profile.strain + self.roll_pass.strain
+
+
+@ThreeRollPass.OutProfile.width
+def width(self: ThreeRollPass.OutProfile):
+    return self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 4
 
 
 @RollPass.OutProfile.width
@@ -43,6 +49,11 @@ def filling_ratio(self: RollPass.OutProfile):
     return self.width / self.roll_pass.roll.groove.usable_width
 
 
+@ThreeRollPass.OutProfile.filling_ratio
+def filling_ratio(self: ThreeRollPass.OutProfile):
+    return self.width / (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 4)
+
+
 @RollPass.OutProfile.cross_section
 def cross_section(self: RollPass.OutProfile) -> Polygon:
     poly = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines]))
@@ -55,7 +66,7 @@ def cross_section(self: RollPass.OutProfile) -> Polygon:
         raise ValueError(
             "Profile's width can not be larger than its contour lines."
             "May be caused by critical overfilling."
-            )
+        )
 
     return clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
 
