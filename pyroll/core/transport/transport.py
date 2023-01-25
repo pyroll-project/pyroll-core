@@ -10,19 +10,6 @@ class Transport(DiskElementUnit):
     environment_temperature = Hook[float]()
     """Temperature of the surrounding atmosphere."""
 
-    def __init__(
-            self,
-            label: str = "",
-            **kwargs
-    ):
-        """
-        :param label: label for human identification
-        :param kwargs: additional hook values as keyword arguments to set explicitly
-        """
-
-        super().__init__(label)
-        self.__dict__.update(kwargs)
-
     @property
     def disk_elements(self) -> List['Transport.DiskElement']:
         """A list of disk elements used to subdivide this unit."""

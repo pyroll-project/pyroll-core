@@ -31,7 +31,7 @@ class Unit(HookHost):
     surface_area = Hook[float]()
     """Surface area of workpiece within the unit."""
 
-    def __init__(self, label: str, parent=None):
+    def __init__(self, label: str, parent=None, **kwargs):
         super().__init__()
         self.label = label
         """Label for human identification."""
@@ -45,6 +45,8 @@ class Unit(HookHost):
 
         self.out_profile = None
         """The state of the outgoing profile."""
+
+        self.__dict__.update(kwargs)
 
     def __str__(self):
         if self.label:

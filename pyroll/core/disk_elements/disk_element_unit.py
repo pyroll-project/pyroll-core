@@ -1,4 +1,3 @@
-import logging
 from typing import List, cast
 
 from ..unit import Unit
@@ -39,9 +38,7 @@ class DiskElementUnit(Unit):
             :param kwargs: additional hook values as keyword arguments to set explicitly
             """
 
-            super().__init__(label=f"{parent}[{index}]", parent=parent)
-            self.__dict__.update(kwargs)
-            self._log = logging.getLogger(__name__)
+            super().__init__(label=f"{parent}[{index}]", parent=parent, **kwargs)
 
         @property
         def parent(self) -> 'DiskElementUnit':

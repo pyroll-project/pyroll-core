@@ -10,19 +10,6 @@ class Rotator(Unit):
     rotation = Hook[float]()
     """Rotation applied to the profile in ° (degree)."""
 
-    def __init__(
-            self,
-            label: str = "",
-            **kwargs
-    ):
-        """
-        :param label: label for human identification
-        :param kwargs: additional hook values as keyword arguments to set explicitly
-        """
-
-        super().__init__(label)
-        self.__dict__.update(kwargs)
-
     @property
     def prev_roll_pass(self):
         """

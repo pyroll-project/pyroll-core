@@ -59,12 +59,10 @@ class RollPass(DiskElementUnit, DeformationUnit):
         :param kwargs: additional hook values as keyword arguments to set explicitly
         """
 
-        super().__init__(label)
+        super().__init__(label=label, **kwargs)
 
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (equal upper and lower)."""
-
-        self.__dict__.update(kwargs)
 
     def local_height(self, z: float) -> float:
         """Returns the local height of the roll pass in the high point."""
