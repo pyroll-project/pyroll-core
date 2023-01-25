@@ -45,18 +45,17 @@ def filling_ratio(self: RollPass.OutProfile):
 
 @RollPass.OutProfile.cross_section
 def cross_section(self: RollPass.OutProfile) -> Polygon:
-    poly = Polygon(np.concatenate([
-        self.roll_pass.upper_contour_line.coords,
-        self.roll_pass.lower_contour_line.coords
-    ]))
+    poly = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines]))
 
     if (
             # one percent tolerance to bypass discretization issues
             - self.width / 2 < poly.bounds[0] * 1.01
             or self.width / 2 > poly.bounds[2] * 1.01
     ):
-        raise ValueError("Profile's width can not be larger than its contour lines."
-                         "May be caused by critical overfilling.")
+        raise ValueError(
+            "Profile's width can not be larger than its contour lines."
+            "May be caused by critical overfilling."
+            )
 
     return clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
 
