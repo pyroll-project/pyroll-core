@@ -1,6 +1,7 @@
 import numpy as np
 
 from ..roll_pass import RollPass
+from ..three_roll_pass import ThreeRollPass
 
 
 @RollPass.Roll.roll_torque
@@ -28,3 +29,18 @@ def contact_area(self: RollPass.Roll):
 @RollPass.Roll.center
 def center(self: RollPass.Roll):
     return np.array([0, self.roll_pass.gap / 2 + self.nominal_radius])
+
+
+@ThreeRollPass.Roll.contour_points
+def contour_points(self: ThreeRollPass.Roll):
+    """With flanks of 120°"""
+    points = np.zeros((len(self.groove.contour_points) + 2, 2), dtype=float)
+    points[1:-1] = self.groove.contour_points
+    points[0, 0] = -0.6 * self.groove.width
+    points[-1, 0] = 0.6 * self.groove.width
+
+    y = 0.1 * self.groove.width * np.sin(np.pi / 6)
+    points[0, 1] = y
+    points[-1, 1] = y
+
+    return points
