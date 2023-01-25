@@ -108,9 +108,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
 
         return np.concatenate([super_results, roll_results], axis=0)
 
-    def clear_hook_cache(self):
-        super().clear_hook_cache()
-        self.roll.clear_hook_cache()
+    def clear_cache(self):
+        super().clear_cache()
+        self.roll.clear_cache()
         self._contour_lines = None
 
     class Profile(DiskElementUnit.Profile, DeformationUnit.Profile):
