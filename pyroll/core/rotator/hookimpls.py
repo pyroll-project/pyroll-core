@@ -9,7 +9,7 @@ def rotated_cross_section(self: Rotator.OutProfile):
 
 @Rotator.OutProfile.types
 def types(self: Rotator.OutProfile):
-    r = self.rotator()
+    r = self.rotator
     return r.in_profile.types | {"rotated", f"rotated_by_{r.rotation:.2f}"}
 
 

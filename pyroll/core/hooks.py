@@ -138,14 +138,14 @@ class Hook(Generic[T]):
         if instance is None:
             return self
 
-        self.owner.logger.debug(f"Hook %s.%s on %s: called.", self.owner.__qualname__, self.owner.name, instance)
+        self.owner.logger.debug(f"Hook %s.%s on %s: called.", self.owner.__qualname__, self.name, instance)
 
         # try to get value explicitly set by user
         result = instance.__dict__.get(self.name, None)
         if result is not None:
             self.owner.logger.debug(
                 f"Hook %s.%s on %s: resolved with explicit value %s.",
-                self.owner.__qualname__, self.owner.name, instance, result
+                self.owner.__qualname__, self.name, instance, result
             )
             return result
 
@@ -154,7 +154,7 @@ class Hook(Generic[T]):
         if result is not None:
             self.owner.logger.debug(
                 f"Hook %s.%s on %s: resolved with cached value %s.",
-                self.owner.__qualname__, self.owner.name, instance, result
+                self.owner.__qualname__, self.name, instance, result
             )
             return result
 

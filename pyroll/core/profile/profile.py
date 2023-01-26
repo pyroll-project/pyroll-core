@@ -2,7 +2,7 @@ import math
 from typing import Optional, Tuple, Iterable, Union, Set
 
 import numpy as np
-from shapely.affinity import translate
+from shapely.affinity import translate, rotate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
 from shapely.ops import clip_by_rect, unary_union
 
@@ -147,7 +147,7 @@ class Profile(HookHost):
             cls.logger.warning("Encountered overfilled groove in profile construction.")
 
         upper_contour_line = translate(groove.contour_line, yoff=gap / 2)
-        lower_contour_line = translate(groove.contour_line, yoff=-gap / 2)
+        lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
 
         poly = Polygon(
             np.concatenate(
