@@ -59,7 +59,3 @@ def out_x(self: Unit.OutProfile):
 def out_t(self: Unit.OutProfile):
     return self.unit.in_profile.t + self.unit.duration
 
-
-@Unit.environment_temperature
-def environment_temperature(self):
-    return 293

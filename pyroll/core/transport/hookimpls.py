@@ -20,3 +20,8 @@ def velocity(self: Transport):
 @Transport.duration
 def duration(self: Transport):
     return self.length / self.velocity
+
+
+@Transport.environment_temperature
+def environment_temperature(self):
+    return 293
