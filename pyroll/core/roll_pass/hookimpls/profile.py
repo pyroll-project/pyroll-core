@@ -1,6 +1,7 @@
 import math
 
 import numpy as np
+from shapely.affinity import rotate
 from shapely.geometry import Polygon
 from shapely.ops import clip_by_rect
 
@@ -69,6 +70,23 @@ def cross_section(self: RollPass.OutProfile) -> Polygon:
         )
 
     return clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
+
+
+@ThreeRollPass.OutProfile.cross_section
+def cross_section(self: ThreeRollPass.OutProfile) -> Polygon:
+    poly = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines]))
+
+    if self.width > self.roll_pass.roll.width:
+        raise ValueError(
+            "Profile's width can not be larger than its contour lines."
+            "May be caused by critical overfilling."
+        )
+
+    for _ in range(3):
+        poly = clip_by_rect(poly, -math.inf, -math.inf, math.inf, self.width / 2)
+        poly = rotate(poly, angle=120, origin=(0, 0))
+
+    return poly
 
 
 @RollPass.OutProfile.types

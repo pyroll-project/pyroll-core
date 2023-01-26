@@ -2,6 +2,7 @@ import numpy as np
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
+from ... import GROOVE_PADDING
 
 
 @RollPass.Roll.roll_torque
@@ -36,10 +37,11 @@ def contour_points(self: ThreeRollPass.Roll):
     """With flanks of 120°"""
     points = np.zeros((len(self.groove.contour_points) + 2, 2), dtype=float)
     points[1:-1] = self.groove.contour_points
-    points[0, 0] = -0.6 * self.groove.width
-    points[-1, 0] = 0.6 * self.groove.width
+    z_max = self.groove.width * (0.5 + GROOVE_PADDING)
+    points[0, 0] = -z_max
+    points[-1, 0] = z_max
 
-    y = 0.1 * self.groove.width * np.sin(np.pi / 6)
+    y = GROOVE_PADDING * self.groove.width * np.tan(np.pi / 6)
     points[0, 1] = y
     points[-1, 1] = y
 

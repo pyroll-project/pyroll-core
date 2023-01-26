@@ -16,6 +16,7 @@ class ThreeRollPass(RollPass):
             return self._contour_lines
 
         lower = rotate(translate(self.roll.contour_line, yoff=self.gap / 2), angle=180, origin=(0, 0))
+        lower = LineString(lower.coords[::-1])  # get back coordinate order
         right = rotate(lower, angle=120, origin=(0, 0))
         left = rotate(lower, angle=-120, origin=(0, 0))
 

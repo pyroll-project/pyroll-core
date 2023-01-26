@@ -1,6 +1,7 @@
 import numpy as np
 
 from .roll import Roll
+from .. import GROOVE_PADDING
 
 
 @Roll.working_radius
@@ -35,15 +36,17 @@ def rotational_frequency(self: Roll):
 
 @Roll.width
 def width(self: Roll):
-    return self.groove.width
+    return self.groove.width * (1 + 2 * GROOVE_PADDING)
 
 
 @Roll.contour_points
 def contour_points(self: Roll):
     points = np.zeros((len(self.groove.contour_points) + 2, 2), dtype=float)
     points[1:-1] = self.groove.contour_points
-    points[0, 0] = - 0.6 * self.groove.width
-    points[-1, 0] = 0.6 * self.groove.width
+
+    z_max = self.groove.width * (0.5 + GROOVE_PADDING)
+    points[0, 0] = -z_max
+    points[-1, 0] = z_max
 
     return points
 
