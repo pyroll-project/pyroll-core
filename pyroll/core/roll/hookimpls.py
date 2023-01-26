@@ -1,7 +1,7 @@
 import numpy as np
 
 from .roll import Roll
-from .. import GROOVE_PADDING
+from ..config import GROOVE_PADDING
 
 
 @Roll.working_radius

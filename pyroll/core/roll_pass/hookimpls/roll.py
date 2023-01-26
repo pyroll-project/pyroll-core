@@ -2,7 +2,7 @@ import numpy as np
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
-from ... import GROOVE_PADDING
+from ...config import GROOVE_PADDING
 
 
 @RollPass.Roll.roll_torque
