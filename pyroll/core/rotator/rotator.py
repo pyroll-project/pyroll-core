@@ -1,9 +1,7 @@
-import logging
-import weakref
+from typing import cast
 
 from ..hooks import Hook
 from ..unit import Unit
-from ..profile import Profile as BaseProfile
 
 
 class Rotator(Unit):
@@ -12,26 +10,53 @@ class Rotator(Unit):
     rotation = Hook[float]()
     """Rotation applied to the profile in ° (degree)."""
 
-    def __init__(
-            self,
-            label: str = "",
-            **kwargs
-    ):
+    @property
+    def prev_roll_pass(self):
         """
-        :param label: label for human identification
-        :param kwargs: additional hook values as keyword arguments to set explicitly
-        """
+        Returns a reference to the first preceding roll pass of this unit in the sequence.
+        If the parent of this unit is a roll pass,
+        it is considered as the next roll pass, so the preceding of this is searched.
 
-        super().__init__(label)
-        self.__dict__.update(kwargs)
-        self._log = logging.getLogger(__name__)
+        :raises ValueError: if this unit has no parent unit
+        """
+        from ..roll_pass import RollPass
+
+        if isinstance(self.parent, RollPass):
+            prev = self.parent.prev
+        else:
+            prev = self.prev
+
+        while True:
+            if isinstance(prev, RollPass):
+                return prev
+            prev = prev.prev
+
+    @property
+    def next_roll_pass(self):
+        """
+        Returns a reference to the first succeeding roll pass of this unit in the sequence.
+        If the parent of this unit is a roll pass, it is considered as the next roll pass.
+
+        :raises ValueError: if this unit has no parent unit
+        """
+        from ..roll_pass import RollPass
+
+        if isinstance(self.parent, RollPass):
+            return self.parent
+
+        next_ = self.next
+        while True:
+            if isinstance(next_, RollPass):
+                return next_
+            next_ = next_.next
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a rotator."""
 
-        def __init__(self, rotator: 'Rotator', template: BaseProfile):
-            super().__init__(rotator, template)
-            self.rotator = weakref.ref(rotator)
+        @property
+        def rotator(self) -> 'Rotator':
+            """Reference to the rotator. Alias for ``self.unit``."""
+            return cast(Rotator, self.unit)
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a rotator."""

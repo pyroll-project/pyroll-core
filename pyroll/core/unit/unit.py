@@ -1,6 +1,5 @@
-import logging
 import weakref
-from typing import Optional, Sequence
+from typing import Optional, Sequence, List, Iterable, SupportsIndex, Union
 
 import numpy as np
 
@@ -29,16 +28,17 @@ class Unit(HookHost):
     volume = Hook[float]()
     """Volume of workpiece material within the unit."""
 
-    def __init__(self, label: str):
+    surface_area = Hook[float]()
+    """Surface area of workpiece within the unit."""
+
+    def __init__(self, label: str, parent=None, **kwargs):
         super().__init__()
-        self._log = logging.getLogger(__name__)
         self.label = label
         """Label for human identification."""
 
         self._subunits: Optional[Unit._SubUnitsList] = self._SubUnitsList(self, [])
 
-        self.parent = None
-        """Weak reference to the parent unit, if applicable."""
+        self._parent = weakref.ref(parent) if parent is not None else None
 
         self.in_profile = None
         """The state of the incoming profile."""
@@ -46,10 +46,36 @@ class Unit(HookHost):
         self.out_profile = None
         """The state of the outgoing profile."""
 
+        self.__dict__.update(kwargs)
+
     def __str__(self):
         if self.label:
             return type(self).__qualname__ + f" '{self.label}'"
         return type(self).__qualname__
+
+    @property
+    def prev(self):
+        """
+        Returns a reference to the predecessor of this unit in the sequence.
+
+        :raises ValueError: if this unit has no parent unit
+        """
+        if self.parent is None:
+            raise ValueError("This unit has no parent.")
+        i = self.parent.subunits.index(self)
+        return self.parent.subunits[i - 1]
+
+    @property
+    def next(self):
+        """
+        Returns a reference to the successor of this unit in the sequence.
+
+        :raises ValueError: if this unit has no parent unit
+        """
+        if self.parent is None:
+            raise ValueError("This unit has no parent.")
+        i = self.parent.subunits.index(self)
+        return self.parent.subunits[i + 1]
 
     def init_solve(self, in_profile: BaseProfile):
         """
@@ -89,7 +115,7 @@ class Unit(HookHost):
         :param in_profile: The incoming state profile
         :return: The outgoing state profile.
         """
-        self._log.info(f"Started solving of {self}.")
+        self.logger.info(f"Started solving of {self}.")
         self.init_solve(in_profile)
         old_values = np.nan
 
@@ -99,21 +125,44 @@ class Unit(HookHost):
             current_values = self.get_root_hook_results()
 
             if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
-                self._log.info(f"Finished solving of {self} after {i} iterations.")
+                self.logger.info(f"Finished solving of {self} after {i} iterations.")
                 break
 
             old_values = current_values
 
         else:
-            self._log.warning(
+            self.logger.warning(
                 f"Solution iteration of {self} exceeded the maximum iteration count of {self.max_iteration_count}."
-                f" Continuing anyway.")
+                f" Continuing anyway."
+            )
 
-        result = BaseProfile(**{
-            k: v for k, v in self.out_profile.__dict__.items()
-            if not k.startswith("_")
-        })
+        result = BaseProfile(
+            **{
+                k: v for k, v in self.out_profile.__dict__.items()
+                if not k.startswith("_")
+            }
+        )
         return result
+
+    @property
+    def parent(self) -> Optional['Unit']:
+        """Reference to the parent unit, if applicable, else None."""
+        if self._parent is None:
+            return None
+        return self._parent()
+
+    @parent.setter
+    def parent(self, value: 'Unit'):
+        """Sets Reference to the parent unit."""
+        if value is None:
+            self._parent = None
+        else:
+            self._parent = weakref.ref(value)
+
+    @property
+    def subunits(self) -> List['Unit']:
+        """List of the subunits."""
+        return self._subunits
 
     class Profile(BaseProfile):
         """Represents a profile in context of a unit."""
@@ -124,7 +173,12 @@ class Unit(HookHost):
                 if not e[0].startswith("_")
             )
             super().__init__(**kwargs)
-            self.unit = weakref.ref(unit)
+            self._unit = weakref.ref(unit)
+
+        @property
+        def unit(self) -> 'Unit':
+            """Reference to the parent unit, if applicable, else None."""
+            return self._unit()
 
     class InProfile(Profile):
         """Represents an incoming profile of a unit."""
@@ -137,14 +191,54 @@ class Unit(HookHost):
 
         def __init__(self, owner: 'Unit', units: Sequence['Unit']):
             super().__init__(units)
-            self.owner = weakref.ref(owner)
+            self._owner = weakref.ref(owner)
             for u in self:
-                u.parent = weakref.ref(owner)
+                u.parent = owner
+
+        def append(self, unit: 'Unit') -> None:
+            unit.parent = self._owner()
+            super().append(unit)
+
+        def extend(self, units: Iterable['Unit']) -> None:
+            for u in units:
+                u.parent = self._owner()
+            super().extend(units)
+
+        def insert(self, i: Union[SupportsIndex, slice], unit: 'Unit') -> None:
+            unit.parent = self._owner()
+            super().insert(i, unit)
+
+        def pop(self, i: Union[SupportsIndex, slice] = ...) -> 'Unit':
+            unit = super().pop(i)
+            unit.parent = None
+            return unit
+
+        def clear(self) -> None:
+            for u in self:
+                u.parent = None
+            super().clear()
+
+        def copy(self) -> 'Unit._SubUnitsList':
+            return self.__init__(self._owner(), self)
+
+        def __setitem__(self, i: Union[SupportsIndex, slice], value: 'Unit'):
+            current = self[i]
+            if isinstance(current, list):
+                for u in current:
+                    u.parent = None
+            else:
+                current.parent = None
+            return super().__setitem__(i, value)
+
+        def __delitem__(self, i: Union[SupportsIndex, slice]):
+            current = self[i]
+            if isinstance(current, list):
+                for u in current:
+                    u.parent = None
+            else:
+                current.parent = None
+            return super().__delitem__(i)
 
         # noinspection PyProtectedMember
         def _repr_html_(self):
             return "<br/>".join(v._repr_html_() for v in self)
-
-    @property
-    def subunits(self):
-        return self._subunits

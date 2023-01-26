@@ -1,16 +1,13 @@
-import logging
 import math
-from typing import Optional, Tuple, Iterable, Union
+from typing import Optional, Tuple, Iterable, Union, Set
 
 import numpy as np
-from shapely.affinity import translate
+from shapely.affinity import translate, rotate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
 from shapely.ops import clip_by_rect, unary_union
 
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
-
-_log = logging.getLogger(__name__)
 
 
 class Profile(HookHost):
@@ -19,7 +16,7 @@ class Profile(HookHost):
     cross_section = Hook[Polygon]()
     """Shape of the profile's cross-section."""
 
-    types = Hook[Tuple[str, ...]]()
+    types = Hook[Set[str]]()
     """Classifiers of the profile's shape's type."""
 
     x = Hook[float]()
@@ -146,10 +143,11 @@ class Profile(HookHost):
             raise ValueError("argument value(s) out of range")
 
         if filling > 1:
-            _log.warning("Encountered overfilled groove in profile construction.")
+            # noinspection PyUnresolvedReferences
+            cls.logger.warning("Encountered overfilled groove in profile construction.")
 
         upper_contour_line = translate(groove.contour_line, yoff=gap / 2)
-        lower_contour_line = translate(groove.contour_line, yoff=-gap / 2)
+        lower_contour_line = rotate(upper_contour_line, angle=180, origin=(0, 0))
 
         poly = Polygon(
             np.concatenate(
@@ -174,7 +172,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=groove.types,
+            types=set(groove.types),
             **kwargs
         )
 
@@ -211,7 +209,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=circle,
-            types=["round"],
+            types={"round"},
             **kwargs
         )
 
@@ -258,7 +256,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=["square", "diamond"],
+            types={"square", "diamond"},
             **kwargs
         )
 
@@ -300,7 +298,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=["box"],
+            types={"box"},
             **kwargs
         )
 
@@ -342,7 +340,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=["diamond"],
+            types={"diamond"},
             **kwargs
         )
 

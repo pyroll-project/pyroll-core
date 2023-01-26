@@ -10,11 +10,12 @@ from pyroll.core.grooves import GrooveBase
 class SplineGroove(GrooveBase):
     """Represents a groove defined by a linear spline contour."""
 
-    def __init__(self,
-                 contour_points: Union[Iterable[Tuple[float, float]], np.ndarray],
-                 types: Iterable[str],
-                 usable_width: Optional[float] = None,
-                 ):
+    def __init__(
+            self,
+            contour_points: Union[Iterable[Tuple[float, float]], np.ndarray],
+            types: Iterable[str],
+            usable_width: Optional[float] = None,
+    ):
         """
         :param contour_points: an iterable of contour points to be used for the spline
         :param types: an interable of string keys used as type classifiers
@@ -33,7 +34,8 @@ class SplineGroove(GrooveBase):
 
         # strip boundary
         contour_points = contour_points[np.logical_not(
-            (np.isclose(np.roll(contour_points[:, 1], 1), 0)) & (np.isclose(np.roll(contour_points[:, 1], -1), 0)))]
+            (np.isclose(np.roll(contour_points[:, 1], 1), 0)) & (np.isclose(np.roll(contour_points[:, 1], -1), 0))
+        )]
 
         # shift center to 0,0
         contour_points[:, 0] -= np.mean(contour_points[:, 0])
@@ -45,17 +47,17 @@ class SplineGroove(GrooveBase):
         else:
             self._usable_width = half_width * 2
 
-        # buffer boundaries
-        contour_points = np.insert(contour_points, 0, (-half_width * 1.1, 0), axis=0)
-        contour_points = np.append(contour_points, [(half_width * 1.1, 0)], axis=0)
-
+        self._contour_points = contour_points
         self._contour_line = LineString(contour_points)
         self._cross_section = Polygon(self._contour_line)
+        self._width = half_width * 1.1
 
         self._depth = np.max(contour_points[:, 1])
 
-        self._local_depth = scipy.interpolate.interp1d(contour_points[:, 0], contour_points[:, 1],
-                                                       fill_value="extrapolate")
+        self._local_depth = scipy.interpolate.interp1d(
+            contour_points[:, 0], contour_points[:, 1],
+            fill_value="extrapolate"
+        )
         self._types = tuple(types)
 
     @property
@@ -71,8 +73,16 @@ class SplineGroove(GrooveBase):
         return self._usable_width
 
     @property
+    def width(self) -> float:
+        return self._width
+
+    @property
     def depth(self) -> float:
         return self._depth
+
+    @property
+    def contour_points(self):
+        return self._contour_points
 
     @property
     def contour_line(self) -> LineString:

@@ -9,7 +9,7 @@ def out_strain(self: Transport.OutProfile):
 
 @Transport.OutProfile.velocity
 def out_velocity(self: Transport.OutProfile):
-    return self.transport().velocity
+    return self.transport.velocity
 
 
 @Transport.velocity
@@ -20,3 +20,8 @@ def velocity(self: Transport):
 @Transport.duration
 def duration(self: Transport):
     return self.length / self.velocity
+
+
+@Transport.environment_temperature
+def environment_temperature(self):
+    return 293

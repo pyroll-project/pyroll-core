@@ -1,23 +1,27 @@
-import logging
 import weakref
-from typing import List
+from typing import List, Union, cast
 
 import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString, Polygon
 
-from ..disk_element import DiskedUnit
+from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 from ..roll import Roll as BaseRoll
 from ..rotator import Rotator
+from .deformation_unit import DeformationUnit
 
 
-class RollPass(DiskedUnit):
+class RollPass(DiskElementUnit, DeformationUnit):
     """Represents a roll pass."""
 
-    in_profile_rotation = Hook[float]()
-    """Rotation applied to the incoming profile in ° (degree)."""
+    rotation = Hook[Union[bool, float]]()
+    """
+    Rotation applied to the incoming profile in ° (degree) before entry in this roll pass.
+    Alternatively, provide a boolean value: false equals 0, 
+    true means automatic determination from hook functions of ``Rotator.rotation``.
+    """
 
     gap = Hook[float]()
     """Gap between the rolls (outer surface)."""
@@ -30,51 +34,6 @@ class RollPass(DiskedUnit):
 
     roll_force = Hook[float]()
     """Vertical roll force."""
-
-    mean_flow_stress = Hook[float]()
-    """Mean value of the workpiece's flow stress within the pass."""
-
-    spread = Hook[float]()
-    """Coefficient of spread (change in width)."""
-
-    elongation = Hook[float]()
-    """Coefficient of elongation (change in length)."""
-
-    draught = Hook[float]()
-    """Coefficient of draught (change in height)."""
-
-    log_spread = Hook[float]()
-    """Log. coefficient of spread (change in width)."""
-
-    log_elongation = Hook[float]()
-    """Log. coefficient of elongation (change in length)."""
-
-    log_draught = Hook[float]()
-    """Log. coefficient of draught (change in height)."""
-
-    abs_spread = Hook[float]()
-    """Absolute spread (change in width)."""
-
-    abs_elongation = Hook[float]()
-    """Absolute elongation (change in length)."""
-
-    abs_draught = Hook[float]()
-    """Absolute draught (change in height)."""
-
-    rel_spread = Hook[float]()
-    """Relative spread (change in width)."""
-
-    rel_elongation = Hook[float]()
-    """Relative elongation (change in length)."""
-
-    rel_draught = Hook[float]()
-    """Relative draught (change in height)."""
-
-    strain = Hook[float]()
-    """Mean equivalent strain applied to the workpiece within the roll pass."""
-
-    strain_rate = Hook[float]()
-    """Mean equivalent strain rate within the roll pass."""
 
     mean_neutral_plane_position = Hook[float]()
     """Mean position of the neutral plane along the roll gap."""
@@ -100,33 +59,14 @@ class RollPass(DiskedUnit):
         :param kwargs: additional hook values as keyword arguments to set explicitly
         """
 
-        super().__init__(label)
+        super().__init__(label=label, **kwargs)
 
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (equal upper and lower)."""
 
-        self.__dict__.update(kwargs)
-        self._log = logging.getLogger(__name__)
-
     def local_height(self, z: float) -> float:
-        coords = np.array([(1, -1), (1, 1)]) * (z, self.height)
-
-        vline = LineString(
-            coords
-        )
-
-        poly = Polygon(
-            np.concatenate(
-                [
-                    self.upper_contour_line.coords,
-                    self.lower_contour_line.coords
-                ]
-            )
-        )
-
-        intersection = vline.intersection(poly)
-
-        return intersection.length
+        """Returns the local height of the roll pass in the high point."""
+        return 2 * self.roll.groove.local_depth(z) + self.gap
 
     @property
     def upper_contour_line(self) -> LineString:
@@ -150,13 +90,17 @@ class RollPass(DiskedUnit):
         return list(self._subunits)
 
     def init_solve(self, in_profile: BaseProfile):
+        if self.rotation:
+            rotator = Rotator(
+                # make True determining from hook functions
+                rotation=self.rotation if self.rotation is not True else None,
+                label=f"Auto-Rotator for {self}",
+                duration=0, length=0, parent=self
+            )
+            rotator.solve(in_profile)
+            in_profile = rotator.out_profile
+
         super().init_solve(in_profile)
-
-        rotator = Rotator(rotation=self.in_profile_rotation, duration=0, length=0)
-        rotator.solve(in_profile)
-
-        self.in_profile = self.InProfile(self, rotator.out_profile)
-        self.out_profile = self.OutProfile(self, rotator.out_profile)
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
@@ -168,17 +112,18 @@ class RollPass(DiskedUnit):
         super().clear_hook_cache()
         self.roll.clear_hook_cache()
 
-    class Profile(DiskedUnit.Profile):
+    class Profile(DiskElementUnit.Profile, DeformationUnit.Profile):
         """Represents a profile in context of a roll pass."""
 
-        def __init__(self, roll_pass: 'RollPass', template: BaseProfile):
-            super().__init__(roll_pass, template)
-            self.roll_pass = weakref.ref(roll_pass)
+        @property
+        def roll_pass(self) -> 'RollPass':
+            """Reference to the roll pass. Alias for ``self.unit``."""
+            return cast(RollPass, self.unit)
 
-    class InProfile(Profile, DiskedUnit.InProfile):
+    class InProfile(Profile, DiskElementUnit.InProfile, DeformationUnit.InProfile):
         """Represents an incoming profile of a roll pass."""
 
-    class OutProfile(Profile, DiskedUnit.OutProfile):
+    class OutProfile(Profile, DiskElementUnit.OutProfile, DeformationUnit.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
         filling_ratio = Hook[float]()
@@ -187,25 +132,37 @@ class RollPass(DiskedUnit):
         """Represents a roll applied in a :py:class:`RollPass`."""
 
         def __init__(self, template: BaseRoll, roll_pass: 'RollPass'):
-            kwargs = template.__dict__.copy()
-            kwargs = dict([item for item in kwargs.items() if not item[0].startswith("_")])
+            kwargs = dict(
+                e for e in template.__dict__.items()
+                if not e[0].startswith("_")
+            )
             super().__init__(**kwargs)
-            self.roll_pass = weakref.ref(roll_pass)
 
-    class DiskElement(DiskedUnit.DiskElement):
+            self._roll_pass = weakref.ref(roll_pass)
+
+        @property
+        def roll_pass(self):
+            """Reference to the roll pass this roll is used in."""
+            return self._roll_pass()
+
+    class DiskElement(DiskElementUnit.DiskElement, DeformationUnit):
         """Represents a disk element in a roll pass."""
 
-        contact_area = Hook[float]()
-        """Area of contact of the disk element to the rolls."""
-
+        @property
         def roll_pass(self) -> 'RollPass':
-            return self.parent()
+            """Reference to the roll pass. Alias for ``self.parent``."""
+            return cast(RollPass, self.parent)
 
-        class Profile(DiskedUnit.DiskElement.Profile):
+        class Profile(DiskElementUnit.DiskElement.Profile, DeformationUnit.Profile):
             """Represents a profile in context of a disk element unit."""
 
-        class InProfile(Profile, DiskedUnit.DiskElement.InProfile):
+            @property
+            def disk_element(self) -> 'RollPass.DiskElement':
+                """Reference to the disk element. Alias for ``self.unit``"""
+                return cast(RollPass.DiskElement, self.unit)
+
+        class InProfile(Profile, DiskElementUnit.DiskElement.InProfile, DeformationUnit.InProfile):
             """Represents an incoming profile of a disk element unit."""
 
-        class OutProfile(Profile, DiskedUnit.DiskElement.OutProfile):
+        class OutProfile(Profile, DiskElementUnit.DiskElement.OutProfile, DeformationUnit.OutProfile):
             """Represents an outgoing profile of a disk element unit."""

@@ -1,4 +1,3 @@
-import logging
 from typing import Union, Tuple
 
 import numpy as np
@@ -46,8 +45,6 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self._depth = depth
         self._types = types
 
-        self._log = logging.getLogger(__name__)
-
         self.z2 = usable_width / 2
         self.y2 = 0
 
@@ -92,7 +89,8 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         left_side = np.flip(right_side, axis=0).copy()
         left_side[:, 0] *= -1
 
-        self._contour_line = LineString(np.concatenate([left_side, right_side]))
+        self._contour_points = np.concatenate([left_side, right_side])
+        self._contour_line = LineString(self._contour_points)
         self._cross_section = Polygon(self._contour_line)
 
         self.test_plausibility()
@@ -120,8 +118,6 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return np.zeros_like(z)
 
     def _enumerate_contour_points(self):
-        yield 1.1 * self.z1, self.y1
-
         for z in np.linspace(self.z1, self.z3, 20):
             yield z, self._r1_contour_line(z)
 
@@ -137,6 +133,10 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
                 yield z, self._r4_contour_line(z)
 
         yield self.z9, self.y9
+
+    @property
+    def contour_points(self):
+        return self._contour_points
 
     @property
     def contour_line(self) -> LineString:
@@ -164,6 +164,10 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
     @property
     def usable_width(self) -> float:
         return self._usable_width
+
+    @property
+    def width(self) -> float:
+        return 2.2 * self.z1
 
     @property
     def depth(self) -> float:
