@@ -65,3 +65,9 @@ def box_oval(self: Rotator):
 def round_flat(self: Rotator):
     if "round" in self.in_profile.types and "flat" in self.next_roll_pass.types:
         return 90
+
+
+@Rotator.rotation
+def three_roll_pass(self: Rotator):
+    if "3fold" in self.next_roll_pass.types:
+        return 180

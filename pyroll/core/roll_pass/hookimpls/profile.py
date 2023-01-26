@@ -26,7 +26,7 @@ def strain(self: RollPass.OutProfile):
 
 @ThreeRollPass.OutProfile.width
 def width(self: ThreeRollPass.OutProfile):
-    return self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 4
+    return 2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2)
 
 
 @RollPass.OutProfile.width
@@ -52,7 +52,7 @@ def filling_ratio(self: RollPass.OutProfile):
 
 @ThreeRollPass.OutProfile.filling_ratio
 def filling_ratio(self: ThreeRollPass.OutProfile):
-    return self.width / (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 4)
+    return self.width / (2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2))
 
 
 @RollPass.OutProfile.cross_section

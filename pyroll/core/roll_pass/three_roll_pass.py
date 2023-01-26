@@ -1,5 +1,6 @@
 from typing import List, cast
 
+import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString
 
@@ -15,7 +16,8 @@ class ThreeRollPass(RollPass):
         if self._contour_lines:
             return self._contour_lines
 
-        lower = rotate(translate(self.roll.contour_line, yoff=self.gap / 2), angle=180, origin=(0, 0))
+        shift = self.roll.groove.width / 2 / np.sqrt(3) + self.gap / np.sqrt(3)
+        lower = rotate(translate(self.roll.contour_line, yoff=shift), angle=180, origin=(0, 0))
         lower = LineString(lower.coords[::-1])  # get back coordinate order
         right = rotate(lower, angle=120, origin=(0, 0))
         left = rotate(lower, angle=-120, origin=(0, 0))
@@ -56,7 +58,7 @@ class ThreeRollPass(RollPass):
         @property
         def roll_pass(self) -> 'ThreeRollPass':
             """Reference to the roll pass."""
-            return cast(ThreeRollPass, self._roll_pass)
+            return cast(ThreeRollPass, self._roll_pass())
 
     class DiskElement(RollPass.DiskElement):
         """Represents a disk element in a roll pass."""

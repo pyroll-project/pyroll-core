@@ -37,11 +37,12 @@ def contour_points(self: ThreeRollPass.Roll):
     """With flanks of 120°"""
     points = np.zeros((len(self.groove.contour_points) + 2, 2), dtype=float)
     points[1:-1] = self.groove.contour_points
-    z_max = self.groove.width * (0.5 + GROOVE_PADDING)
+    pad = self.groove.width * GROOVE_PADDING
+    z_max = 0.5 * self.groove.width + pad
     points[0, 0] = -z_max
     points[-1, 0] = z_max
 
-    y = GROOVE_PADDING * self.groove.width * np.tan(np.pi / 6)
+    y = pad * np.tan(np.pi / 6)
     points[0, 1] = y
     points[-1, 1] = y
 
