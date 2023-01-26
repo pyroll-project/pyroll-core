@@ -16,6 +16,18 @@ def width(self: Profile):
         return np.abs(self.cross_section.bounds[2] - self.cross_section.bounds[0])
 
 
+@Profile.height
+def height_3fold(self: Profile):
+    if "3fold" in self.types:
+        return self.cross_section.centroid.y - self.cross_section.bounds[1]
+
+
+@Profile.width
+def width_3fold(self: Profile):
+    if "3fold" in self.types:
+        return self.cross_section.bounds[3] - self.cross_section.centroid.y
+
+
 @Profile.length
 def length(self: Profile):
     return 0
