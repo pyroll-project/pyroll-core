@@ -48,6 +48,16 @@ def height(self):
         return self.gap + 2 * self.roll.groove.depth
 
 
+@ThreeRollPass.height
+def height3(self):
+    if self.has_set_or_cached("gap"):
+        return 2 * (
+                self.roll.groove.width / 2 / np.sqrt(3)
+                + self.gap / np.sqrt(3)
+                + self.roll.groove.depth
+        )
+
+
 @RollPass.volume
 def volume(self: RollPass):
     return (self.in_profile.cross_section.area + 2 * self.out_profile.cross_section.area
