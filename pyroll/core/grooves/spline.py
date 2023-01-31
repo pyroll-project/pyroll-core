@@ -50,7 +50,7 @@ class SplineGroove(GrooveBase):
         self._contour_points = contour_points
         self._contour_line = LineString(contour_points)
         self._cross_section = Polygon(self._contour_line)
-        self._width = half_width * 1.1
+        self._width = half_width * 2
 
         self._depth = np.max(contour_points[:, 1])
 

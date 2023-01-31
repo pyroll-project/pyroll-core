@@ -299,7 +299,7 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
     def __init__(self):
         self.__cache__ = dict()
 
-    def clear_hook_cache(self):
+    def clear_cache(self):
         """
         Clears the cache of hook function results.
         """

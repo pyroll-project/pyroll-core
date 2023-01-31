@@ -167,7 +167,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
 
     @property
     def width(self) -> float:
-        return 2.2 * self.z1
+        return 2 * self.z1
 
     @property
     def depth(self) -> float:

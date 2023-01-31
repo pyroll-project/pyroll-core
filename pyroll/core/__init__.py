@@ -6,7 +6,7 @@ from .grooves import BoxGroove, ConstrictedBoxGroove, SquareGroove, DiamondGroov
     CircularOvalGroove, FlatOvalGroove, SwedishOvalGroove, ConstrictedSwedishOvalGroove, Oval3RadiiGroove, \
     Oval3RadiiFlankedGroove, SplineGroove, GenericElongationGroove, FlatGroove
 from .transport import Transport
-from .roll_pass import RollPass, DeformationUnit
+from .roll_pass import RollPass, DeformationUnit, ThreeRollPass
 from .unit import Unit
 from .roll import Roll
 from .profile import Profile
@@ -25,5 +25,7 @@ root_hooks.update({
     Unit.OutProfile.length,
     Unit.OutProfile.types,
     Unit.OutProfile.t,
+    Unit.OutProfile.height,
+    Unit.OutProfile.width,
     PassSequence.total_elongation,
 })

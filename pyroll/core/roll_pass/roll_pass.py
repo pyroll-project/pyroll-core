@@ -64,25 +64,25 @@ class RollPass(DiskElementUnit, DeformationUnit):
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (equal upper and lower)."""
 
-    def local_height(self, z: float) -> float:
-        """Returns the local height of the roll pass in the high point."""
-        return 2 * self.roll.groove.local_depth(z) + self.gap
+        self._contour_lines = None
 
     @property
-    def upper_contour_line(self) -> LineString:
-        """Contour line object of the upper working roll."""
-        return translate(self.roll.contour_line, yoff=self.gap / 2)
+    def contour_lines(self) -> List[LineString]:
+        """List of line strings bounding the roll pass at the high point."""
+        if self._contour_lines:
+            return self._contour_lines
 
-    @property
-    def lower_contour_line(self) -> LineString:
-        """Contour line object of the lower working roll."""
-        return rotate(self.upper_contour_line, angle=180, origin=(0, 0))
+        upper = translate(self.roll.contour_line, yoff=self.gap / 2)
+        lower = rotate(upper, angle=180, origin=(0, 0))
+
+        self._contour_lines = [upper, lower]
+        return self._contour_lines
 
     @property
     def types(self):
         """A tuple of keywords to specify the shape types of this roll pass.
         Shortcut to ``self.groove.types``."""
-        return self.roll.groove.types
+        return set(self.roll.groove.types)
 
     @property
     def disk_elements(self) -> List['RollPass.DiskElement']:
@@ -108,9 +108,10 @@ class RollPass(DiskElementUnit, DeformationUnit):
 
         return np.concatenate([super_results, roll_results], axis=0)
 
-    def clear_hook_cache(self):
-        super().clear_hook_cache()
-        self.roll.clear_hook_cache()
+    def clear_cache(self):
+        super().clear_cache()
+        self.roll.clear_cache()
+        self._contour_lines = None
 
     class Profile(DiskElementUnit.Profile, DeformationUnit.Profile):
         """Represents a profile in context of a roll pass."""
