@@ -54,7 +54,7 @@ def contour_points(self: Roll):
 @Roll.surface_x
 def surface_x(self: Roll):
     half_pi = np.pi / 2
-    return -self.min_radius * np.sin(np.linspace(-half_pi, half_pi, 100))
+    return -self.min_radius * np.sin(np.linspace(-half_pi, half_pi, 101))
 
 
 @Roll.surface_z
@@ -65,4 +65,4 @@ def surface_z(self: Roll):
 @Roll.surface_y
 def surface_y(self: Roll):
     local_radii = self.max_radius - self.contour_points[:, 1]
-    return self.max_radius - np.sqrt(local_radii ** 2 - self.surface_x.reshape(-1, 1) ** 2)
+    return self.max_radius - np.sqrt(local_radii.reshape(-1, 1) ** 2 - self.surface_x ** 2)

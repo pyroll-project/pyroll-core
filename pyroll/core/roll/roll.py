@@ -134,6 +134,9 @@ class Roll(HookHost):
 
         :return: the interpolated values in an array of shape ``(len(x), len(z))``
         """
-        xz = np.column_stack(np.broadcast_arrays(x, z))
-        y = interpn((self.surface_x, self.surface_z), self.surface_y, xz)
-        return y.reshape(len(x), len(z))
+        x = np.asarray(x)
+        z = np.asarray(z)
+        g = np.meshgrid(x, z)
+        xz = np.column_stack([g[0].flat, g[1].flat])
+        y = interpn((self.surface_x, self.surface_z), self.surface_y.T, xz)
+        return y.reshape(z.size, x.size)

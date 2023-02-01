@@ -86,7 +86,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self.y4 = self.y11 + r2 * sin(self.gamma)
 
         right_side = np.unique(list(self._enumerate_contour_points()), axis=0)
-        left_side = np.flip(right_side, axis=0).copy()
+        left_side = right_side[1:][::-1].copy()
         left_side[:, 0] *= -1
 
         self._contour_points = np.concatenate([left_side, right_side])
