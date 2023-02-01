@@ -13,6 +13,8 @@ def test_box_usable_width_ground_width():
     assert isclose(g.alpha2, 75.101163 / 180 * pi)
     assert isclose(g.z1, 104.1759581)
 
+    assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
+
 
 def test_box_usable_width_flank_angle():
     g = BoxGroove(depth=52, r1=15, r2=18, usable_width=185.29, flank_angle=75.101163 / 180 * pi)
@@ -22,6 +24,8 @@ def test_box_usable_width_flank_angle():
     assert isclose(g.alpha2, 75.101163 / 180 * pi)
     assert isclose(g.z1, 104.1759581)
 
+    assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
+
 
 def test_box_ground_width_flank_angle():
     g = BoxGroove(depth=52, r1=15, r2=18, ground_width=157.62, flank_angle=75.101163 / 180 * pi)
@@ -30,6 +34,8 @@ def test_box_ground_width_flank_angle():
     assert isclose(g.alpha1, 75.101163 / 180 * pi)
     assert isclose(g.alpha2, 75.101163 / 180 * pi)
     assert isclose(g.z1, 104.1759581)
+
+    assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
 
 
 def test_box_ground_all():

@@ -118,18 +118,23 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return np.zeros_like(z)
 
     def _enumerate_contour_points(self):
-        for z in np.linspace(self.z1, self.z3, 20):
-            yield z, self._r1_contour_line(z)
+        if not np.isclose(self.z1, self.z3):
+            for z in np.linspace(self.z1, self.z3, 20, endpoint=False):
+                yield z, self._r1_contour_line(z)
 
-        for z in np.linspace(self.z4, self.z5, 20):
-            yield z, self._r2_contour_line(z)
+        if not np.isclose(self.z3, self.z4):
+            yield self.z3, self.y3
+
+        if not np.isclose(self.z4, self.z5):
+            for z in np.linspace(self.z4, self.z5, 20, endpoint=False):
+                yield z, self._r2_contour_line(z)
 
         if not np.isclose(self.z5, self.z6):
-            for z in np.linspace(self.z5, self.z6, 20):
+            for z in np.linspace(self.z5, self.z6, 20, endpoint=False):
                 yield z, self._r3_contour_line(z)
 
         if not np.isclose(self.z6, self.z7):
-            for z in np.linspace(self.z6, self.z7, 20):
+            for z in np.linspace(self.z6, self.z7, 20, endpoint=False):
                 yield z, self._r4_contour_line(z)
 
         yield self.z9, self.y9

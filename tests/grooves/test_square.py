@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from numpy import pi, isclose
 
@@ -12,6 +13,8 @@ def test_square_usable_width_tip_depth():
     assert isclose(g.z1, 17.04555401)
     assert isclose(g.depth, 13.53436275)
 
+    assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
+
 
 def test_square_usable_width_tip_angle():
     g = SquareGroove(r1=5, r2=3, usable_width=30, tip_angle=91 / 180 * pi)
@@ -20,6 +23,8 @@ def test_square_usable_width_tip_angle():
     assert isclose(g.alpha2, 44.5 / 180 * pi)
     assert isclose(g.z1, 17.04555401)
     assert isclose(g.depth, 13.53436275)
+
+    assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
 
 
 def test_square_tip_depth_tip_angle():
@@ -30,6 +35,8 @@ def test_square_tip_depth_tip_angle():
     assert isclose(g.alpha2, 44.5 / 180 * pi)
     assert isclose(g.z1, 17.04555401)
     assert isclose(g.depth, 13.53436275)
+
+    assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
 
 
 def test_square_tip_depth_tip_angle():
