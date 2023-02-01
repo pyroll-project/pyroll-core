@@ -40,11 +40,6 @@ class DiskElementUnit(Unit):
 
             super().__init__(label=f"{parent}[{index}]", parent=parent, **kwargs)
 
-        @property
-        def parent(self) -> 'DiskElementUnit':
-            """Reference to the roll pass. Alias for ``self.parent``."""
-            return cast(DiskElementUnit, super().parent)
-
         class Profile(Unit.Profile):
             """Represents a profile in context of a disk element unit."""
 
