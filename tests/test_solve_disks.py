@@ -7,7 +7,7 @@ import numpy as np
 from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, SquareGroove
 
 
-def test_solve(tmp_path: Path, caplog):
+def test_solve_disks(tmp_path: Path, caplog):
     caplog.set_level(logging.DEBUG, logger="pyroll")
 
     in_profile = Profile.round(
@@ -32,10 +32,12 @@ def test_solve(tmp_path: Path, caplog):
                 rotational_frequency=1
             ),
             gap=2e-3,
+            disk_element_count=10,
         ),
         Transport(
             label="I => II",
-            duration=1
+            duration=1,
+            disk_element_count=10,
         ),
         RollPass(
             label="Round II",
@@ -46,26 +48,10 @@ def test_solve(tmp_path: Path, caplog):
                     depth=11.5e-3
                 ),
                 nominal_radius=160e-3,
-                rotational_frequency=1
+                rotational_frequency=1,
             ),
             gap=2e-3,
-        ),
-        Transport(
-            label="II => III",
-            duration=1
-        ),
-        RollPass(
-            label="Oval III",
-            roll=Roll(
-                groove=CircularOvalGroove(
-                    depth=6e-3,
-                    r1=6e-3,
-                    r2=35e-3
-                ),
-                nominal_radius=160e-3,
-                rotational_frequency=1
-            ),
-            gap=2e-3,
+            disk_element_count=10,
         ),
     ])
 

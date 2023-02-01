@@ -20,6 +20,8 @@ from .config import *
 root_hooks.update({
     RollPass.roll_force,
     RollPass.Roll.roll_torque,
+    RollPass.Profile.x,
+    RollPass.DiskElement.Profile.x,
     Unit.OutProfile.cross_section,
     Unit.OutProfile.strain,
     Unit.OutProfile.length,
