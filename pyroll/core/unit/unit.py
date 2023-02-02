@@ -89,7 +89,8 @@ class Unit(HookHost):
         :param in_profile: the incoming state passed to :py:meth:`solve`
         """
         self.in_profile = self.InProfile(self, in_profile)
-        self.out_profile = self.OutProfile(self, in_profile)
+        if not self.out_profile:
+            self.out_profile = self.OutProfile(self, in_profile)
 
     def get_root_hook_results(self):
         in_profile_results = self.in_profile.evaluate_and_set_hooks()

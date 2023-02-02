@@ -67,4 +67,7 @@ class DiskElementUnit(Unit):
 
     def init_solve(self, in_profile: BaseProfile):
         super().init_solve(in_profile)
-        self._subunits = self._SubUnitsList(self, [self.DiskElement(self, i) for i in range(self.disk_element_count)])
+        if not self._subunits:
+            self._subunits = self._SubUnitsList(
+                self, [self.DiskElement(self, i) for i in range(self.disk_element_count)]
+                )
