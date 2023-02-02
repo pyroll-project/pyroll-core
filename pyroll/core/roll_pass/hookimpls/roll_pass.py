@@ -16,7 +16,11 @@ def auto_rotation(self: RollPass):
 @RollPass.rotation
 def detect_already_rotated(self: RollPass):
     if ROLL_PASS_AUTO_ROTATION and self.parent is not None:
-        prev = self.prev
+        try:
+            prev = self.prev
+        except IndexError:
+            return True
+
         while True:
             if isinstance(prev, RollPass):
                 return True

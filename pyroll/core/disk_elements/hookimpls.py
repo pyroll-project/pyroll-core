@@ -18,9 +18,9 @@ def disk_length(self: DiskElementUnit.DiskElement):
 
 @DiskElementUnit.DiskElement.InProfile.x
 def in_x(self: DiskElementUnit.DiskElement.InProfile):
-    # for first disk: get from parent in_profile
-    if self.disk_element is self.disk_element.parent.disk_elements[0]:
+    try:
+        # get from prev disk
+        return self.disk_element.prev.out_profile.x
+    except IndexError:
+        # is first disk: get from parent in_profile
         return self.disk_element.parent.in_profile.x
-
-    # else: get from prev disk
-    return self.disk_element.prev.out_profile.x

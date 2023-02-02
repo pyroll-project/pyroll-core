@@ -63,6 +63,8 @@ class Unit(HookHost):
         if self.parent is None:
             raise ValueError("This unit has no parent.")
         i = self.parent.subunits.index(self)
+        if i == 0:
+            raise IndexError("This unit has no previous, as it is the first one.")
         return self.parent.subunits[i - 1]
 
     @property
@@ -75,6 +77,8 @@ class Unit(HookHost):
         if self.parent is None:
             raise ValueError("This unit has no parent.")
         i = self.parent.subunits.index(self)
+        if i == len(self.parent.subunits) - 1:
+            raise IndexError("This unit has no next, as it is the last one.")
         return self.parent.subunits[i + 1]
 
     def init_solve(self, in_profile: BaseProfile):
