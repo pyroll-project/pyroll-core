@@ -48,6 +48,8 @@ class Unit(HookHost):
 
         self.__dict__.update(kwargs)
 
+        self._old_results = np.nan
+
     def __str__(self):
         if self.label:
             return type(self).__qualname__ + f" '{self.label}'"
@@ -122,18 +124,20 @@ class Unit(HookHost):
         """
         self.logger.info(f"Started solving of {self}.")
         self.init_solve(in_profile)
-        old_values = np.nan
 
         for i in range(1, self.max_iteration_count):
             self.clear_cache()
             self._solve_subunits()
-            current_values = self.get_root_hook_results()
+            current_results = self.get_root_hook_results()
 
-            if np.all(np.abs(current_values - old_values) <= np.abs(old_values) * self.iteration_precision):
+            if np.all(
+                    np.abs(current_results - self._old_results)
+                    <= np.abs(self._old_results) * self.iteration_precision
+            ):
                 self.logger.info(f"Finished solving of {self} after {i} iterations.")
                 break
 
-            old_values = current_values
+            self._old_results = current_results
 
         else:
             self.logger.warning(
