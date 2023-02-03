@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple, Iterable, Union, Set
+from typing import Optional, Tuple, Iterable, Union, Set, Callable
 
 import numpy as np
 from shapely.affinity import translate, rotate
@@ -60,6 +60,9 @@ class Profile(HookHost):
 
     flow_stress = Hook[float]()
     """Mean flow stress of the profile material."""
+
+    flow_stress_function = Hook[Callable[[float, float, float], float]]()
+    """Flow stress depended on strain, strain-rate and Temperature"""
 
     elastic_modulus = Hook[float]()
     """Mean elastic modulus of the profile material."""
