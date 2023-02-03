@@ -62,7 +62,7 @@ class Profile(HookHost):
     """Mean flow stress of the profile material."""
 
     flow_stress_function = Hook[Callable[[float, float, float], float]]()
-    """Flow stress depended on strain, strain-rate and Temperature"""
+    """Flow stress depended on strain, strain-rate and temperature"""
 
     elastic_modulus = Hook[float]()
     """Mean elastic modulus of the profile material."""
