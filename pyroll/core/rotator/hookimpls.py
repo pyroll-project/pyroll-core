@@ -44,6 +44,12 @@ def square_oval(self: Rotator):
 
 
 @Rotator.rotation
+def square_box(self: Rotator):
+    if "square" in self.in_profile.types and "box" in self.next_roll_pass.types:
+        return 45
+
+
+@Rotator.rotation
 def box_box(self: Rotator):
     if "box" in self.in_profile.types and "box" in self.next_roll_pass.types:
         return 90
