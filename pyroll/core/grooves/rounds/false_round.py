@@ -17,6 +17,7 @@ class FalseRoundGroove(GenericElongationGroove):
         :param flank_angle: angle of the flanks
         :type flank_angle: float
         """
+        flank_angle = np.deg2rad(flank_angle)
 
         tip_depth = depth + r2 / np.cos(flank_angle) - r2
         usable_width = tip_depth / np.tan(flank_angle) * 2

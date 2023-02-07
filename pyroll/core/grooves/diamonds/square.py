@@ -35,7 +35,7 @@ class SquareGroove(DiamondGroove):
 
         super().__init__(r1=r1, r2=r2, usable_width=usable_width, tip_depth=tip_depth, tip_angle=tip_angle)
 
-        tip_angle_deg = 180 - 2 * self.alpha1 / np.pi * 180
+        tip_angle_deg = 180 - 2 * np.rad2deg(self.alpha1)
         if tip_angle_deg > 95 or tip_angle_deg < 85:
             raise ValueError(
                 "The tip angle of this SquareGroove significantly deviates from 90°, "

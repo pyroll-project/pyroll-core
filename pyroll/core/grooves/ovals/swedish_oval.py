@@ -34,13 +34,15 @@ class SwedishOvalGroove(GenericElongationGroove):
         :type flank_angle: float
         :raises ValueError:  if not exactly two of ground_width, usable_width and flank_angle are given
         """
+        if flank_angle is not None:
+            flank_angle = np.deg2rad(flank_angle)
 
         if ground_width and usable_width and not flank_angle:
             flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
         elif usable_width and flank_angle and not ground_width:
-            ground_width = usable_width - 2 * depth / np.tan(flank_angle)
+            ground_width = usable_width - 2 * depth / np.tan(np.deg2rad(flank_angle))
         elif ground_width and flank_angle and not usable_width:
-            usable_width = ground_width + 2 * depth / np.tan(flank_angle)
+            usable_width = ground_width + 2 * depth / np.tan(np.deg2rad(flank_angle))
         else:
             raise ValueError(
                 "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle."

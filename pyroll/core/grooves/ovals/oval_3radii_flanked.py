@@ -1,4 +1,6 @@
 from typing import Optional
+
+import numpy as np
 from scipy.optimize import brentq
 from numpy import sin, cos, tan, pi
 
@@ -33,7 +35,7 @@ class Oval3RadiiFlankedGroove(GenericElongationGroove):
         :raises ValueError:  if not exactly two of ground_width, usable_width and flank_angle are given
         """
 
-        alpha1 = flank_angle
+        alpha1 = np.deg2rad(flank_angle)
         r32 = r3 - r2
         gamma = pi / 2 - alpha1
 

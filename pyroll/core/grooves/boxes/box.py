@@ -34,6 +34,9 @@ class BoxGroove(GenericElongationGroove):
         :type flank_angle: float
         :raises ValueError:  if not exactly two of ground_width, usable_width and flank_angle are given
         """
+        if flank_angle is not None:
+            flank_angle = np.deg2rad(flank_angle)
+
         if ground_width and usable_width and not flank_angle:
             flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
         elif usable_width and flank_angle and not ground_width:
@@ -47,8 +50,10 @@ class BoxGroove(GenericElongationGroove):
 
         even_ground_width = ground_width - 2 * r2 * np.tan(flank_angle / 2)
 
-        super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=flank_angle, alpha2=flank_angle,
-                         even_ground_width=even_ground_width)
+        super().__init__(
+            usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=flank_angle, alpha2=flank_angle,
+            even_ground_width=even_ground_width
+        )
 
     @property
     def types(self) -> '("box",)':

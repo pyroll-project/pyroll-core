@@ -38,6 +38,8 @@ class ConstrictedSwedishOvalGroove(GenericElongationGroove):
         :type flank_angle: float
         :raises ValueError:  if not exactly two of ground_width, usable_width and flank_angle are given
         """
+        if flank_angle is not None:
+            flank_angle = np.deg2rad(flank_angle)
 
         if ground_width and usable_width and not flank_angle:
             flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)

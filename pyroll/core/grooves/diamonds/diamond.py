@@ -31,6 +31,8 @@ class DiamondGroove(GenericElongationGroove):
         :type tip_angle: float
         :raises ValueError: if not exactly two of usable_width, tip_depth and tip_angle are given
         """
+        if tip_angle is not None:
+            tip_angle = np.deg2rad(tip_angle)
 
         if usable_width and tip_depth and not tip_angle:
             alpha = np.arctan(tip_depth / (usable_width / 2))
