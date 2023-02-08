@@ -56,7 +56,7 @@ class Oval3RadiiFlankedGroove(GenericElongationGroove):
         super().__init__(
             usable_width=usable_width, depth=depth,
             r1=r1, r2=r2, r3=r3,
-            alpha1=alpha1, alpha2=alpha2, alpha3=alpha3
+            flank_angle=alpha1, alpha3=alpha3
         )
 
     @property

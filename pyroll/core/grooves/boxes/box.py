@@ -47,7 +47,7 @@ class BoxGroove(GenericElongationGroove):
         even_ground_width = ground_width - 2 * r2 * np.tan(flank_angle / 2)
 
         super().__init__(
-            usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=flank_angle, alpha2=flank_angle,
+            usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=flank_angle,
             even_ground_width=even_ground_width
         )
 

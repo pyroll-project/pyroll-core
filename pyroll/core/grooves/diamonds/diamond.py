@@ -48,7 +48,7 @@ class DiamondGroove(GenericElongationGroove):
 
         depth = tip_depth - r2 / np.cos(alpha) + r2
 
-        super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=alpha, alpha2=alpha)
+        super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=alpha)
 
     @property
     def types(self) -> '("diamond",)':

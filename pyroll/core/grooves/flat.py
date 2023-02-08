@@ -1,3 +1,5 @@
+import numpy as np
+
 from .generic_elongation import GenericElongationGroove
 
 
@@ -13,7 +15,7 @@ class FlatGroove(GenericElongationGroove):
         :type width: float
         """
 
-        super().__init__(usable_width=usable_width)
+        super().__init__(usable_width=usable_width, r1=0, r2=0, depth=0, flank_angle=np.pi / 2)
 
     @property
     def types(self) -> '("flat",)':

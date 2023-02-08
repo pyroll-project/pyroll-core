@@ -15,7 +15,7 @@ class CircularOvalGroove(GenericElongationGroove):
         alpha = np.arccos(1 - depth / (r1 + r2))
         usable_width = 2 * (r1 * np.sin(alpha) + r2 * np.sin(alpha) - r1 * np.tan(alpha / 2))
 
-        super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, alpha1=alpha, alpha2=alpha)
+        super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=alpha)
 
     @property
     def types(self) -> '("oval", "circular_oval")':

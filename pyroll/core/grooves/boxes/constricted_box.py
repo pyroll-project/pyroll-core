@@ -55,7 +55,7 @@ class ConstrictedBoxGroove(GenericElongationGroove):
         super().__init__(
             usable_width=usable_width, depth=depth,
             r1=r1, r2=r2, r3=r2, r4=r4,
-            alpha1=flank_angle, alpha2=alpha2, alpha4=alpha4,
+            flank_angle=flank_angle, alpha4=alpha4,
             even_ground_width=even_ground_width, indent=indent
         )
 
