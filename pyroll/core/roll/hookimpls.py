@@ -41,14 +41,7 @@ def width(self: Roll):
 
 @Roll.contour_points
 def contour_points(self: Roll):
-    points = np.zeros((len(self.groove.contour_points) + 2, 2), dtype=float)
-    points[1:-1] = self.groove.contour_points
-
-    z_max = self.groove.width * (0.5 + GROOVE_PADDING)
-    points[0, 0] = -z_max
-    points[-1, 0] = z_max
-
-    return points
+    return self.groove.contour_points
 
 
 @Roll.surface_x

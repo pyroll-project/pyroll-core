@@ -1,4 +1,4 @@
-from typing import Union, Tuple, Sequence
+from typing import Union, Tuple, Sequence, Optional
 
 import numpy as np
 from shapely.geometry import LineString, Polygon
@@ -19,10 +19,10 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
             r1: float,
             r2: float,
 
-            flank_angle: Choice3[float] = None,
-            usable_width: Choice3[float] = None,
-            ground_width: Choice3[float] = None,
-            depth: Choice3[float] = None,
+            flank_angle: Optional[float] = None,
+            usable_width: Optional[float] = None,
+            ground_width: Optional[float] = None,
+            depth: Optional[float] = None,
 
             r3: float = 0,
             alpha3: float = 0,
@@ -70,13 +70,13 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
 
         try:
             if usable_width is None:
-                usable_width = ground_width + depth / np.tan(flank_angle)
+                usable_width = ground_width + 2 * depth / np.tan(flank_angle)
             elif ground_width is None:
-                ground_width = usable_width - depth / np.tan(flank_angle)
+                ground_width = usable_width - 2 * depth / np.tan(flank_angle)
             elif flank_angle is None:
-                flank_angle = np.arctan(depth / (usable_width - ground_width))
+                flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
             elif depth is None:
-                depth = (usable_width - ground_width) * np.tan(flank_angle)
+                depth = (usable_width - ground_width) / 2 * np.tan(flank_angle)
             else:
                 raise TypeError("Too many arguments given.")
 
@@ -91,7 +91,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self.alpha1 = alpha1 = flank_angle + pad_angle
         self.alpha3 = alpha3
         self.alpha4 = alpha4
-        self.alpha2 = alpha2 = self.alpha1 + self.alpha4 - self.alpha3
+        self.alpha2 = alpha2 = flank_angle + self.alpha4 - self.alpha3
 
         self.indent = indent
         self.even_ground_width = even_ground_width
@@ -100,18 +100,23 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self.flank_angle = flank_angle
         self._depth = depth
         self._types = types
+        pad = pad if pad else usable_width * rel_pad
 
         self.z2 = usable_width / 2
         self.y2 = 0
 
-        self.z1 = self.z2 + r1 * np.tan(alpha1 / 2)
-        self.y1 = 0
+        l12 = r1 * np.tan(alpha1 / 2)
+        self.z1 = self.z2 + l12 * np.cos(pad_angle)
+        self.y1 = l12 * np.sin(pad_angle)
 
-        self.z12 = self.z1
-        self.y12 = r1
+        self.z0 = self.z1 + pad * np.cos(pad_angle)
+        self.y0 = self.y1 + pad * np.sin(pad_angle)
 
-        self.z3 = self.z1 - r1 * np.sin(alpha1)
-        self.y3 = r1 * (1 - np.cos(alpha1))
+        self.z12 = self.z1 - r1 * np.sin(pad_angle)
+        self.y12 = self.y1 + r1 * np.cos(pad_angle)
+
+        self.z3 = self.z12 - r1 * np.sin(flank_angle)
+        self.y3 = (self.z2 - self.z3) * np.tan(flank_angle)
 
         self.z9 = 0
         self.y9 = depth - indent
@@ -164,7 +169,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return self.y8 - np.sqrt(self.r4 ** 2 - (z - self.z8) ** 2)
 
     def _flank_contour_line(self, z):
-        return self.y3 - np.tan(self.alpha1) * (z - self.z3)
+        return self.y3 - np.tan(self.flank_angle) * (z - self.z3)
 
     def _ground_contour_line(self, z):
         return np.ones_like(z) * (self.depth - self.indent)
@@ -174,6 +179,8 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return np.zeros_like(z)
 
     def _enumerate_contour_points(self):
+        yield self.z0, self.y0
+
         if not np.isclose(self.z1, self.z3):
             for z in np.linspace(self.z1, self.z3, 20, endpoint=False):
                 yield z, self._r1_contour_line(z)
@@ -235,7 +242,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return self._depth
 
     def test_plausibility(self):
-        if (self.alpha1 + self.alpha4 - self.alpha2 - self.alpha3) > 0.01:
+        if (self.flank_angle + self.alpha4 - self.alpha2 - self.alpha3) > 0.01:
             raise ValueError("given angles should fulfill α1 + α4 = α2 + α3 to be geometrically plausible")
 
         if self.y4 - self._flank_contour_line(self.z4) > 0.001 * self.y4:
