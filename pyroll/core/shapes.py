@@ -1,11 +1,7 @@
-from typing import Iterable
-
 import numpy as np
-from shapely.ops import linemerge
-import logging
 
 from pyroll.core.repr import ReprMixin
-from shapely import MultiLineString, Point, Polygon, LineString
+from shapely import Polygon, LineString
 
 
 # noinspection PyAbstractClass
@@ -41,15 +37,19 @@ Polygon.perimeter = PatchedPolygon.perimeter
 Polygon.__attrs__ = PatchedPolygon.__attrs__
 Polygon.__str__ = ReprMixin.__str__
 Polygon.__repr__ = ReprMixin.__repr__
+# noinspection PyProtectedMember
 Polygon._repr_html_ = ReprMixin._repr_html_
+# noinspection PyProtectedMember
 Polygon._repr_pretty_ = ReprMixin._repr_pretty_
 
-_RECTANGLE_CORNERS = np.asarray([
-    (-0.5, -0.5),
-    (0.5, -0.5),
-    (0.5, 0.5),
-    (-0.5, 0.5)
-])
+_RECTANGLE_CORNERS = np.asarray(
+    [
+        (-0.5, -0.5),
+        (0.5, -0.5),
+        (0.5, 0.5),
+        (-0.5, 0.5)
+    ]
+)
 
 
 def rectangle(width: float, height: float):
@@ -98,41 +98,7 @@ LineString.width = PatchedLineString.width
 LineString.__attrs__ = PatchedLineString.__attrs__
 LineString.__str__ = ReprMixin.__str__
 LineString.__repr__ = ReprMixin.__repr__
+# noinspection PyProtectedMember
 LineString._repr_html_ = ReprMixin._repr_html_
+# noinspection PyProtectedMember
 LineString._repr_pretty_ = ReprMixin._repr_pretty_
-
-
-def linemerge_if_multi(lines):
-    if isinstance(lines, MultiLineString) or isinstance(lines, Iterable):
-        merged_line = linemerge(lines)
-
-        if isinstance(merged_line, MultiLineString):
-
-            logging.getLogger(__name__).warning(
-                "Discontinuous LineStrings for profile separation. Doing point wise comparison to resolve."
-            )
-
-            line_lengths = [line.length for line in merged_line.geoms]
-            index_of_continuous_line = np.argmax(line_lengths)
-            continuous_linestring = merged_line[index_of_continuous_line]
-
-            discontinuous_lines = list(lines)
-            discontinuous_lines.pop(index_of_continuous_line)
-
-            points_representation_of_discontinuous_lines = [Point(p) for l in discontinuous_lines for p in l.coords]
-
-            distances_of_points_to_continuous_line = [continuous_linestring.distance(p) for p in
-                                                      points_representation_of_discontinuous_lines]
-
-            if max(distances_of_points_to_continuous_line) <= line_lengths[index_of_continuous_line] / 1000:
-                return continuous_linestring
-
-            else:
-                logging.getLogger(__name__).error(
-                    f"Could not resolve discontinuous LineStrings for profile separation."
-                )
-                raise RuntimeError("Could not resolve discontinuous LineStrings for profile separation.")
-
-        return merged_line
-
-    return lines
