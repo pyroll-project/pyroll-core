@@ -9,7 +9,7 @@ from ..roll_pass import RollPass
 
 
 class ThreeRollPass(RollPass):
-    """Represents a roll pass."""
+    """Represents a roll pass with three working rolls and 3-fold symmetry."""
 
     @property
     def contour_lines(self) -> List[LineString]:

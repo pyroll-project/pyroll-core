@@ -14,7 +14,7 @@ from .deformation_unit import DeformationUnit
 
 
 class RollPass(DiskElementUnit, DeformationUnit):
-    """Represents a roll pass."""
+    """Represents a roll pass with two symmetric working rolls."""
 
     rotation = Hook[Union[bool, float]]()
     """
