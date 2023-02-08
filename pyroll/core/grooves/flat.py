@@ -2,18 +2,18 @@ from .generic_elongation import GenericElongationGroove
 
 
 class FlatGroove(GenericElongationGroove):
-    """Represents a box shaped groove."""
+    """Represents a flat groove aka no groove."""
 
     def __init__(
             self,
-            width: float,
+            usable_width: float,
     ):
         """
-        :param width: width of the forming zone
+        :param usable_width: usable width of the roll face
         :type width: float
         """
 
-        super().__init__(usable_width=width)
+        super().__init__(usable_width=usable_width)
 
     @property
     def types(self) -> '("flat",)':

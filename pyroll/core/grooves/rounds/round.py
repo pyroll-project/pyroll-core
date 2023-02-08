@@ -4,16 +4,13 @@ from ..generic_elongation import GenericElongationGroove
 
 
 class RoundGroove(GenericElongationGroove):
-    """Represents a round shaped groove."""
+    """Represents a round-shaped groove."""
 
     def __init__(self, r1: float, r2: float, depth: float):
         """
-        :param r1: radius of the first edge
-        :type r1: float
-        :param r2: radius of the second edge
-        :type r2: float
-        :param depth: depth of the groove
-        :type depth: float
+        :param r1: radius 1 (face/flank)
+        :param r2: radius 2 (flank/ground)
+        :param depth: maximum depth
         """
 
         alpha = np.arccos(1 - depth / (r1 + r2))

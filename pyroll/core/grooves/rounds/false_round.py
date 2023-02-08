@@ -4,18 +4,16 @@ from ..generic_elongation import GenericElongationGroove
 
 
 class FalseRoundGroove(GenericElongationGroove):
-    """Represents a round shaped groove with a dedicated flank (false round)."""
+    """Represents a round-shaped groove with a dedicated flank (false round)."""
 
     def __init__(self, r1: float, r2: float, depth: float, flank_angle: float):
         """
-        :param r1: radius of the first edge
-        :type r1: float
-        :param r2: radius of the second edge
-        :type r2: float
-        :param depth: depth of the groove
-        :type depth: float
-        :param flank_angle: angle of the flanks
-        :type flank_angle: float
+        All angles are measured in ° (degree).
+
+        :param r1: radius 1 (face/flank)
+        :param r2: radius 2 (flank/ground)
+        :param depth: maximum depth
+        :param flank_angle: inclination angle of the flanks
         """
         flank_angle = np.deg2rad(flank_angle)
 

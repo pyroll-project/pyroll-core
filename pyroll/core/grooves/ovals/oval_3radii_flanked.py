@@ -8,7 +8,7 @@ from ..generic_elongation import GenericElongationGroove
 
 
 class Oval3RadiiFlankedGroove(GenericElongationGroove):
-    """Represents an oval shaped groove with 3 main radii and a dedicated flank."""
+    """Represents an oval-shaped groove with 3 main radii and a dedicated flank."""
 
     def __init__(
             self,
@@ -20,19 +20,15 @@ class Oval3RadiiFlankedGroove(GenericElongationGroove):
             flank_angle: float,
     ):
         """
-        Exactly two of ground_width, usable_width and flank_angle must be given.
+        Widths are always measured at the intersection of the extrapolated ground, face and flanks.
+        All angles are measured in ° (degree).
 
-        :param r1: radius of the first edge
-        :type r1: float
-        :param r2: radius of the second edge
-        :type r2: float
-        :param depth: depth of the groove
-        :type depth: float
-        :param usable_width:  ground width excluding influence of radii
-        :type usable_width: float
-        :param flank_angle: angle of the flanks
-        :type flank_angle: float
-        :raises ValueError:  if not exactly two of ground_width, usable_width and flank_angle are given
+        :param r1: radius 1 (face/flank)
+        :param r2: radius 2 (flank/ground)
+        :param r3: radius 3 (ground)
+        :param depth: maximum depth
+        :param usable_width: usable width of the groove
+        :param flank_angle: inclination angle of the flanks
         """
 
         alpha1 = np.deg2rad(flank_angle)
