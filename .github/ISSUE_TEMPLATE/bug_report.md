@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a bug report to help us eliminate issues and improve pyroll
+about: Create a bug report to help us eliminate issues and improve PyRolL
 title: ''
 labels: bug
 assignees: ''

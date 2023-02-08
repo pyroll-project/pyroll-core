@@ -1,6 +1,6 @@
 ---
 name: Plugin Request
-about: Make a suggestion for a new plugin for pyroll
+about: Make a suggestion for a new plugin for PyRolL
 title: ''
 labels: enhancement
 assignees: ''
