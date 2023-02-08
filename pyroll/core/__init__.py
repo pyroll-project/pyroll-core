@@ -15,8 +15,6 @@ from .sequence import PassSequence
 from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
 
-from .config import *
-
 root_hooks.update({
     RollPass.roll_force,
     RollPass.Roll.roll_torque,

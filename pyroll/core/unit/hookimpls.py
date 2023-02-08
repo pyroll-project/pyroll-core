@@ -1,3 +1,4 @@
+from ..config import DEFAULT_MAX_ITERATION_COUNT, DEFAULT_ITERATION_PRECISION
 from .unit import Unit
 
 for h in Unit.OutProfile.__hooks__:
@@ -13,13 +14,13 @@ for h in Unit.OutProfile.__hooks__:
 
 
 @Unit.iteration_precision
-def iteration_precision(self: Unit):
-    return 1e-2
+def default_iteration_precision(self: Unit):
+    return DEFAULT_ITERATION_PRECISION
 
 
 @Unit.max_iteration_count
-def max_iteration_count(self: Unit):
-    return 100
+def default_max_iteration_count(self: Unit):
+    return DEFAULT_MAX_ITERATION_COUNT
 
 
 @Unit.volume
