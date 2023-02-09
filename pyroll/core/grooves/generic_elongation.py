@@ -243,13 +243,12 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return self._depth
 
     def test_plausibility(self):
-        # if (self.flank_angle + self.alpha4 - self.alpha2 - self.alpha3) > 0.01:
-        #     raise ValueError("given angles should fulfill α1 + α4 = α2 + α3 to be geometrically plausible")
-        #
-        # if self.y4 - self._flank_contour_line(self.z4) > 0.001 * self.y4:
-        #     print(self.y4 - self._flank_contour_line(self.z4), 0.1 * self.y4)
-        #     raise ValueError("under given conditions a step appears in z4")
-        pass
+        if (self.flank_angle + self.alpha4 - self.alpha2 - self.alpha3) > 0.01:
+            raise ValueError("given angles should fulfill α1 + α4 = α2 + α3 to be geometrically plausible")
+
+        if self.y4 - self._flank_contour_line(self.z4) > 0.001 * self.y4:
+            print(self.y4 - self._flank_contour_line(self.z4), 0.1 * self.y4)
+            raise ValueError("under given conditions a step appears in z4")
 
     @property
     def __attrs__(self):
