@@ -3,36 +3,35 @@ import numpy as np
 import pytest
 
 from pyroll.core import ThreeRollPass, Roll, CircularOvalGroove, BoxGroove
-from pyroll.core.grooves.ovals.circular_oval import CircularOvalGroove3
 
 
 @pytest.mark.parametrize(
     "g",
     [
-        BoxGroove(
-            r1=2, r2=3, depth=15, usable_width=40, ground_width=35,
-            pad_angle=30
-        ),
-        BoxGroove(
-            r1=4, r2=3, depth=15, usable_width=40, ground_width=35,
-            pad_angle=30
-        ),
-        BoxGroove(
-            r1=6, r2=3, depth=15, usable_width=40, ground_width=35,
-            pad_angle=30
-        ),
-        # CircularOvalGroove(
-        #     r1=5, r2=40, depth=10,
+        # BoxGroove(
+        #     r1=2, r2=3, depth=15, usable_width=40, ground_width=35,
         #     pad_angle=30
         # ),
-        # CircularOvalGroove(
-        #     r1=15, r2=40, depth=10,
+        # BoxGroove(
+        #     r1=4, r2=3, depth=15, usable_width=40, ground_width=35,
         #     pad_angle=30
         # ),
-        # CircularOvalGroove(
-        #     r1=25, r2=40, depth=10,
+        # BoxGroove(
+        #     r1=6, r2=3, depth=15, usable_width=40, ground_width=35,
         #     pad_angle=30
-        # )
+        # ),
+        CircularOvalGroove(
+            r1=5, r2=40, depth=10,
+            pad_angle=30
+        ),
+        CircularOvalGroove(
+            r1=15, r2=40, depth=10,
+            pad_angle=30
+        ),
+        CircularOvalGroove(
+            r1=25, r2=40, depth=10,
+            pad_angle=30
+        )
     ]
 )
 def test_contour_lines(g):
