@@ -50,7 +50,7 @@ def abs_elongation(self: DeformationUnit):
 
 @DeformationUnit.rel_draught
 def rel_draught(self: DeformationUnit):
-    return self.abs_draught / self.in_profile.equivalent_rectangle.heigth
+    return self.abs_draught / self.in_profile.equivalent_rectangle.height
 
 
 @DeformationUnit.rel_spread
