@@ -15,7 +15,8 @@ class BoxGroove(GenericElongationGroove):
             depth: float,
             ground_width: Optional[float] = None,
             usable_width: Optional[float] = None,
-            flank_angle: Optional[float] = None
+            flank_angle: Optional[float] = None,
+            pad_angle: float = 0
     ):
         """
         Exactly two of ground_width, usable_width and flank_angle must be given.
@@ -48,7 +49,7 @@ class BoxGroove(GenericElongationGroove):
 
         super().__init__(
             usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=flank_angle,
-            even_ground_width=even_ground_width
+            even_ground_width=even_ground_width, pad_angle=np.deg2rad(pad_angle)
         )
 
     @property

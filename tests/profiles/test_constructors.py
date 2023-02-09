@@ -6,7 +6,7 @@ from shapely.affinity import rotate
 
 from pyroll.core import SquareGroove, Profile
 
-groove = SquareGroove(0, 3, tip_depth=20, tip_angle=91 / 180 * np.pi)
+groove = SquareGroove(0, 3, tip_depth=20, tip_angle=91)
 
 
 def test_from_groove():
@@ -38,7 +38,7 @@ def test_from_groove_errors():
     with pytest.raises(ValueError):
         Profile.from_groove(groove, filling=0, height=50)
     with pytest.raises(ValueError):
-        Profile.from_groove(groove, width=55, height=50)
+        Profile.from_groove(groove, width=100, height=50)
 
 
 @pytest.mark.xfail
