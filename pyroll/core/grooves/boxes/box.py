@@ -29,6 +29,7 @@ class BoxGroove(GenericElongationGroove):
         :param ground_width: width of the groove ground
         :param usable_width: usable width of the groove
         :param flank_angle: inclination angle of the flanks
+        :param pad_angle: angle between z-axis and the roll face padding
         :raises ValueError: if not exactly two of ground_width, usable_width and flank_angle are given
         """
         if flank_angle is not None:
@@ -42,7 +43,7 @@ class BoxGroove(GenericElongationGroove):
             usable_width = ground_width + 2 * depth / np.tan(flank_angle)
         else:
             raise ValueError(
-                "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle must be given."
+                "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle."
             )
 
         even_ground_width = ground_width - 2 * r2 * np.tan(flank_angle / 2)

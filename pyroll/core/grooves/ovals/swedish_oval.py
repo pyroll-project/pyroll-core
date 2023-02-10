@@ -15,7 +15,8 @@ class SwedishOvalGroove(GenericElongationGroove):
             depth: float,
             ground_width: Optional[float] = None,
             usable_width: Optional[float] = None,
-            flank_angle: Optional[float] = None
+            flank_angle: Optional[float] = None,
+            pad_angle: float = 0
     ):
         """
         Exactly two of ground_width, usable_width and flank_angle must be given.
@@ -28,6 +29,7 @@ class SwedishOvalGroove(GenericElongationGroove):
         :param ground_width: width of the groove ground
         :param usable_width: usable width of the groove
         :param flank_angle: inclination angle of the flanks
+        :param pad_angle: angle between z-axis and the roll face padding
         :raises ValueError: if not exactly two of ground_width, usable_width and flank_angle are given
         """
         if flank_angle is not None:
@@ -46,8 +48,10 @@ class SwedishOvalGroove(GenericElongationGroove):
 
         even_ground_width = ground_width - 2 * r2 * np.tan(flank_angle / 2)
 
-        super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=flank_angle,
-                         even_ground_width=even_ground_width)
+        super().__init__(
+            usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=flank_angle,
+            even_ground_width=even_ground_width, pad_angle=np.deg2rad(pad_angle)
+        )
 
     @property
     def types(self) -> '("oval", "swedish_oval")':
