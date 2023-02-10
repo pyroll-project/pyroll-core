@@ -3,6 +3,7 @@ from typing import Optional
 import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
+from ..utils import solve_box_like
 
 
 class SwedishOvalGroove(GenericElongationGroove):
@@ -35,22 +36,14 @@ class SwedishOvalGroove(GenericElongationGroove):
         if flank_angle is not None:
             flank_angle = np.deg2rad(flank_angle)
 
-        if ground_width and usable_width and not flank_angle:
-            flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
-        elif usable_width and flank_angle and not ground_width:
-            ground_width = usable_width - 2 * depth / np.tan(flank_angle)
-        elif ground_width and flank_angle and not usable_width:
-            usable_width = ground_width + 2 * depth / np.tan(flank_angle)
-        else:
-            raise ValueError(
-                "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle."
-            )
-
-        even_ground_width = ground_width - 2 * r2 * np.tan(flank_angle / 2)
+        sol = solve_box_like(
+            r2=r2, r4=0, depth=depth, ground_width=ground_width, usable_width=usable_width, flank_angle=flank_angle,
+            indent=0
+        )
 
         super().__init__(
-            usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=flank_angle,
-            even_ground_width=even_ground_width, pad_angle=np.deg2rad(pad_angle)
+            r1=r1, r2=r2, pad_angle=np.deg2rad(pad_angle),
+            **sol
         )
 
     @property

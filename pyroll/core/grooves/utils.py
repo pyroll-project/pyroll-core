@@ -51,3 +51,35 @@ def solve_two_radii(
         r2=r2,
         alpha=alpha,
     )
+
+
+def solve_box_like(
+        r2: float,
+        r4: float,
+        depth: float,
+        indent: float,
+        ground_width: Optional[float],
+        usable_width: Optional[float],
+        flank_angle: Optional[float],
+):
+    if ground_width and usable_width and not flank_angle:
+        flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
+    elif usable_width and flank_angle and not ground_width:
+        ground_width = usable_width - 2 * depth / np.tan(flank_angle)
+    elif ground_width and flank_angle and not usable_width:
+        usable_width = ground_width + 2 * depth / np.tan(flank_angle)
+    else:
+        raise ValueError(
+            "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle."
+        )
+
+    alpha4 = np.arccos(1 - indent / (r2 + r4))
+    even_ground_width = ground_width - 2 * ((r4 + r2) * np.sin(alpha4) + r2 * np.tan(flank_angle / 2))
+
+    return dict(
+        ground_width=ground_width,
+        usable_width=usable_width,
+        flank_angle=flank_angle,
+        even_ground_width=even_ground_width,
+        alpha4=alpha4
+    )
