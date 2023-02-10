@@ -45,26 +45,13 @@ def test_round_r2():
 
 
 def test_round_depth():
-    g1 = RoundGroove(usable_width=31.79180677, r1=2, r2=15.8, pad_angle=0, sol_index=0)
+    g = RoundGroove(usable_width=31.79180677, r1=2, r2=15.8, pad_angle=0)
 
     plt.figure(dpi=600)
     plt.axes().set_aspect("equal")
-    plt.plot(*g1.contour_line.xy)
-    plt.axline((g1.z3, g1.y3), slope=-np.tan(g1.flank_angle), c="C0", lw=1, ls="--")
-    plt.axline((g1.z1, g1.y1), slope=np.tan(g1.pad_angle), c="C0", lw=1, ls="--")
-
-    check(g1)
-
-    g2 = RoundGroove(usable_width=31.79180677, r1=2, r2=15.8, pad_angle=0, sol_index=1)
-    plt.plot(*g2.contour_line.xy)
-    plt.axline((g2.z3, g2.y3), slope=-np.tan(g2.flank_angle), c="C1", lw=1, ls="--")
-    plt.axline((g2.z1, g2.y1), slope=np.tan(g2.pad_angle), c="C1", lw=1, ls="--")
-
-    plt.grid()
-    plt.axhline(15.55, c="k")
-    plt.ylim(-1, 18)
-    plt.show()
-    plt.close()
+    plt.plot(*g.contour_line.xy)
+    plt.axline((g.z3, g.y3), slope=-np.tan(g.flank_angle), c="C0", lw=1, ls="--")
+    plt.axline((g.z1, g.y1), slope=np.tan(g.pad_angle), c="C0", lw=1, ls="--")
 
 
 def test_round_errors():

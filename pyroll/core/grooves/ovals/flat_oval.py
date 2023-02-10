@@ -28,7 +28,7 @@ class FlatOvalGroove(GenericElongationGroove):
         """
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_two_radii(r1=r1, r2=r2, depth=depth, width=None, pad_angle=pad_angle, sol_index=0)
+        sol = solve_two_radii(r1=r1, r2=r2, depth=depth, width=None, pad_angle=pad_angle)
 
         super().__init__(
             r2=sol["r2"], depth=sol["depth"], usable_width=usable_width, flank_angle=sol["alpha"],
