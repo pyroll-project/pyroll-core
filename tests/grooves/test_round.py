@@ -16,7 +16,7 @@ def check(g):
     assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
 
 
-def test_round_depth():
+def test_round_usable_width():
     g = RoundGroove(depth=15.55, r1=2, r2=15.8, pad_angle=0)
 
     plt.figure(dpi=300)
@@ -44,7 +44,7 @@ def test_round_r2():
     check(g)
 
 
-def test_round_usable_width():
+def test_round_depth():
     g1 = RoundGroove(usable_width=31.79180677, r1=2, r2=15.8, pad_angle=0, sol_index=0)
 
     plt.figure(dpi=600)
