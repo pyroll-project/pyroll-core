@@ -1,6 +1,7 @@
 from typing import Optional
 
 import numpy as np
+from numpy import deg2rad
 
 from ..generic_elongation import GenericElongationGroove
 
@@ -14,7 +15,8 @@ class DiamondGroove(GenericElongationGroove):
             r2: float,
             usable_width: Optional[float] = None,
             tip_depth: Optional[float] = None,
-            tip_angle: Optional[float] = None
+            tip_angle: Optional[float] = None,
+            pad_angle: float = 0
     ):
         """
         Exactly two of usable_width, tip_depth and tip_angle must be given.
@@ -26,6 +28,7 @@ class DiamondGroove(GenericElongationGroove):
         :param usable_width: usable width of the groove
         :param tip_depth: depth of the intersection of the extrapolated flanks
         :param tip_angle: angle between the flanks
+        :param pad_angle: angle between z-axis and the roll face padding
         :raises ValueError: if not exactly two of usable_width, tip_depth and tip_angle are given
         """
         if tip_angle is not None:
@@ -48,7 +51,9 @@ class DiamondGroove(GenericElongationGroove):
 
         depth = tip_depth - r2 / np.cos(alpha) + r2
 
-        super().__init__(usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=alpha)
+        super().__init__(
+            usable_width=usable_width, depth=depth, r1=r1, r2=r2, flank_angle=alpha, pad_angle=deg2rad(pad_angle)
+        )
 
     @property
     def types(self) -> '("diamond",)':
