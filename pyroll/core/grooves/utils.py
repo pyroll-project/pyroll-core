@@ -81,9 +81,9 @@ def solve_two_radii(
 
     if width is None:
         width = 2 * (
-                l23(flank_angle) * np.cos(flank_angle) + r2 * np.sin(flank_angle)
+                r2 * np.sin(flank_angle)
                 + (
-                        depth - r2 * (1 - np.cos(flank_angle)) - l23(flank_angle) * np.sin(flank_angle)
+                        depth - r2 * (1 - np.cos(flank_angle))
                 ) / np.tan(flank_angle)
         )
 

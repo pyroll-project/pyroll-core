@@ -13,13 +13,19 @@ def check(g):
     plt.figure(dpi=300)
     plt.axes().set_aspect("equal")
     plt.plot(*g.contour_line.xy)
+    plt.xlim(-50, 50)
+    plt.ylim(0, 35)
+    plt.axline((g.z3, g.y3), slope=np.tan(-g.flank_angle), c="r", ls="--", lw=1)
+    plt.axline((g.z1, g.y1), slope=np.tan(g.pad_angle), c="r", ls="--", lw=1)
     plt.show()
+    plt.close()
 
     assert isclose(g.depth, 31.8646)
     assert isclose(g.usable_width, 78.13476937)
     assert isclose(rad2deg(g.flank_angle), 65)
     assert isclose(rad2deg(g.alpha2), 65)
     assert isclose(g.z2, 39.0673769147305)
+    assert not isclose(g.z3, g.z4)
 
     assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
 
