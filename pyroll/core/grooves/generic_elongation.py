@@ -5,8 +5,6 @@ from shapely.geometry import LineString, Polygon
 
 from pyroll.core.grooves import GrooveBase
 from pyroll.core.repr import ReprMixin
-from .typing import Choice3
-
 from ..config import GROOVE_PADDING
 
 
