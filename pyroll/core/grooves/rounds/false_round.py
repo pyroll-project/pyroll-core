@@ -35,6 +35,9 @@ class FalseRoundGroove(GenericElongationGroove):
         :param usable_width: usable width
 
         :param flank_angle: inclination angle of the flanks
+        :param flank_width: horizontal extent of the flanks
+        :param flank_height: vertical extent of the flanks
+        :param flank_length: length of the flanks
         :param pad_angle: angle between z-axis and the roll face padding
         """
         pad_angle = np.deg2rad(pad_angle)
