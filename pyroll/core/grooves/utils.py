@@ -219,22 +219,42 @@ def solve_box_like(
         depth: float,
         indent: float,
         ground_width: Optional[float],
+        even_ground_width: Optional[float],
         usable_width: Optional[float],
         flank_angle: Optional[float],
 ):
-    if ground_width and usable_width and not flank_angle:
-        flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
-    elif usable_width and flank_angle and not ground_width:
-        ground_width = usable_width - 2 * depth / np.tan(flank_angle)
-    elif ground_width and flank_angle and not usable_width:
+    alpha4 = np.arccos(1 - indent / (r2 + r4))
+
+    if flank_angle is None:
+        if usable_width is not None:
+            if ground_width is not None:
+                flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
+            elif even_ground_width is not None:
+                def f(_alpha):
+                    _ground_width = even_ground_width + 2 * ((r4 + r2) * np.sin(alpha4) + r2 * np.tan(_alpha / 2))
+                    return depth - (usable_width - _ground_width) / 2 * np.tan(_alpha)
+
+                flank_angle = root_scalar(f, bracket=(0, np.pi / 2)).root
+                ground_width = even_ground_width + 2 * ((r4 + r2) * np.sin(alpha4) + r2 * np.tan(flank_angle / 2))
+            else:
+                raise TypeError("either ground_width or even_ground_width must not be None")
+        else:
+            raise TypeError("usable_width must not be None if flank_angle is None")
+    elif ground_width is None and even_ground_width is None:
+        if usable_width is not None:
+            ground_width = usable_width - 2 * depth / np.tan(flank_angle)
+        else:
+            raise TypeError("usable_width must not be None if ground_width and even_ground_width are None")
+    elif usable_width is None:
+        if ground_width is None:
+            ground_width = even_ground_width + 2 * ((r4 + r2) * np.sin(alpha4) + r2 * np.tan(flank_angle / 2))
+
         usable_width = ground_width + 2 * depth / np.tan(flank_angle)
     else:
-        raise ValueError(
-            "Exactly two of the following arguments must be given: ground_width, usable_width, flank_angle."
-        )
+        raise TypeError("either flank_angle, ground_width or usable_width must be None")
 
-    alpha4 = np.arccos(1 - indent / (r2 + r4))
-    even_ground_width = ground_width - 2 * ((r4 + r2) * np.sin(alpha4) + r2 * np.tan(flank_angle / 2))
+    if even_ground_width is None:
+        even_ground_width = ground_width - 2 * ((r4 + r2) * np.sin(alpha4) + r2 * np.tan(flank_angle / 2))
 
     return dict(
         ground_width=ground_width,

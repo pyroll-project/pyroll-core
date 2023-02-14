@@ -30,7 +30,7 @@ def test_swedish_oval_ground_width_flank_angle():
 
 
 def test_swedish_oval_all():
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         g = SwedishOvalGroove(
             depth=20, r1=8, r2=10, usable_width=100, ground_width=40,
             flank_angle=33.690068
