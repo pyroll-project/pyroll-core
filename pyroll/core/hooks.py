@@ -1,6 +1,7 @@
 import inspect
 import weakref
 from abc import ABCMeta
+from copy import deepcopy
 from functools import partial
 from typing import overload, TypeVar, Generic, List, Generator, Union
 
