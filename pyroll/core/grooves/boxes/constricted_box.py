@@ -4,9 +4,10 @@ import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
 from ..utils import solve_box_like
+from .box import BoxGroove
 
 
-class ConstrictedBoxGroove(GenericElongationGroove):
+class ConstrictedBoxGroove(BoxGroove):
     """Represents a box-shaped groove with an indented ground."""
 
     def __init__(
@@ -48,11 +49,12 @@ class ConstrictedBoxGroove(GenericElongationGroove):
             indent=indent, even_ground_width=even_ground_width
         )
 
-        super().__init__(
+        GenericElongationGroove.__init__(
+            self,
             r1=r1, r2=r2, r4=r4, pad_angle=np.deg2rad(pad_angle), indent=indent,
             **sol
         )
 
     @property
     def types(self) -> '("box", "constricted_box")':
-        return "box", "constricted_box"
+        return "box", "constricted"
