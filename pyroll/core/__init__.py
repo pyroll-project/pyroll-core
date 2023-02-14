@@ -4,7 +4,7 @@ from . import shapes as _
 
 from .grooves import (
     BoxGroove, ConstrictedBoxGroove, UpsetBoxGroove, ConstrictedUpsetBoxGroove,
-    SquareGroove, DiamondGroove,
+    SquareGroove, DiamondGroove, GothicGroove,
     RoundGroove, FalseRoundGroove,
     CircularOvalGroove, FlatOvalGroove, SwedishOvalGroove, ConstrictedSwedishOvalGroove, Oval3RadiiGroove,
     Oval3RadiiFlankedGroove, UpsetOvalGroove,
