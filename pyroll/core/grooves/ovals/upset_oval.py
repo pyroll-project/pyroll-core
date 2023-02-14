@@ -4,7 +4,7 @@ from ..utils import solve_three_radii
 
 
 class UpsetOvalGroove(GenericElongationGroove):
-    """Represents an oval-shaped groove with 3 main radii."""
+    """Represents an upright oval-shaped groove."""
 
     def __init__(
             self,
