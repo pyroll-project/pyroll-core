@@ -1,12 +1,7 @@
 import copy
-import logging
-import webbrowser
-from pathlib import Path
-
 import numpy as np
 
-from pyroll.core import RollPass, Roll, Unit, CircularOvalGroove, Profile, PassSequence, Transport, RoundGroove, \
-    HookHost
+from pyroll.core import RollPass, Roll, CircularOvalGroove, Profile, PassSequence, Transport, RoundGroove, HookHost
 
 in_profile = Profile.round(
     diameter=30e-3,
@@ -90,8 +85,17 @@ def test_deepcopy():
                 assert id(sub_unit) != id(copied_subunit)
 
 
-def test_solve_copied(tmp_path: Path, caplog):
-    sequence = PassSequence([
+def test_solve_copied():
+    local_in_profile = Profile.round(
+        diameter=30e-3,
+        temperature=1200 + 273.15,
+        strain=0,
+        material=["C45", "steel"],
+        flow_stress=100e6,
+        length=1,
+    )
+
+    local_sequence = PassSequence([
         RollPass(
             label="Oval I",
             roll=Roll(
@@ -107,13 +111,9 @@ def test_solve_copied(tmp_path: Path, caplog):
         ),
     ])
 
-    copied_sequence = copy.deepcopy(sequence)
+    copied_sequence = copy.deepcopy(local_sequence)
 
-    try:
-        sequence.solve(in_profile)
-    finally:
-        print("\nLog:")
-        print(caplog.text)
+    local_sequence.solve(local_in_profile)
 
     def fake_roll_torque_plugin(self: RollPass.Roll):
         fake_torque_value = 10000
@@ -122,11 +122,9 @@ def test_solve_copied(tmp_path: Path, caplog):
     hf = RollPass.Roll.roll_torque.add_function(fake_roll_torque_plugin)
 
     try:
-        copied_sequence.solve(in_profile)
+        copied_sequence.solve(local_in_profile)
     finally:
-        print("\nLog:")
-        print(caplog.text)
         RollPass.Roll.roll_torque.remove_function(hf)
 
-    assert sequence[0] is not copied_sequence[0]
-    assert not np.isclose(sequence[0].roll.roll_torque, copied_sequence[0].roll.roll_torque)
+    assert local_sequence[0] is not copied_sequence[0]
+    assert not np.isclose(local_sequence[0].roll.roll_torque, copied_sequence[0].roll.roll_torque)

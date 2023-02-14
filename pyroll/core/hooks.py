@@ -1,3 +1,4 @@
+import copy
 import inspect
 import weakref
 from abc import ABCMeta
@@ -392,8 +393,14 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
+
         for k, v in self.__dict__.items():
-            setattr(result, k, deepcopy(v, memo))
+            if isinstance(v, weakref.ref):
+                new_v = weakref.ref(copy.deepcopy(v(), memo))
+                memo[id(v())] = new_v
+            else:
+                new_v = copy.deepcopy(v, memo)
+            setattr(result, k, new_v)
         return result
 
 
