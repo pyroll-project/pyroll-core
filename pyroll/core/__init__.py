@@ -10,7 +10,8 @@ from .grooves import (
     Oval3RadiiFlankedGroove, UpsetOvalGroove,
     SplineGroove,
     GenericElongationGroove,
-    FlatGroove
+    FlatGroove,
+    HexagonalGroove
 )
 from .transport import Transport
 from .roll_pass import RollPass, DeformationUnit, ThreeRollPass

@@ -7,3 +7,4 @@ from .ovals import CircularOvalGroove, FlatOvalGroove, SwedishOvalGroove, Constr
     Oval3RadiiGroove, Oval3RadiiFlankedGroove, UpsetOvalGroove
 from .rounds import RoundGroove, FalseRoundGroove
 from .flat import FlatGroove
+from .hexagonal import HexagonalGroove
