@@ -45,6 +45,11 @@ class Transport(DiskElementUnit):
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(Transport.DiskElement, self.unit)
 
+            @property
+            def transport(self) -> 'Transport':
+                """Reference to the transport. Alias for ``self.unit.parent``"""
+                return cast(Transport, self.unit.parent)
+
         class InProfile(Profile, DiskElementUnit.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""
 

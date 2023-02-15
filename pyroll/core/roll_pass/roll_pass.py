@@ -162,6 +162,11 @@ class RollPass(DiskElementUnit, DeformationUnit):
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(RollPass.DiskElement, self.unit)
 
+            @property
+            def roll_pass(self) -> 'RollPass':
+                """Reference to the roll pass. Alias for ``self.unit.parent``"""
+                return cast(RollPass, self.unit.parent)
+
         class InProfile(Profile, DiskElementUnit.DiskElement.InProfile, DeformationUnit.InProfile):
             """Represents an incoming profile of a disk element unit."""
 
