@@ -83,6 +83,16 @@ class Profile(HookHost):
     """String or sequence of strings classifying the material of the profile.
     Can be used by material databases to retrieve respective data."""
 
+    grain_size = Hook[float]()
+    """Average grain size of the profile's material."""
+
+    chemical_composition = Hook[dict[str, float]]()
+    """Chemical composition of the profile's material as dict of element symbols to atom fractions (0 to 1)."""
+
+    microstructure_composition = Hook[dict[str, float]]()
+    """Phase resp. constituent composition of the profile's material 
+    as dict of constituent names to volume fractions (0 to 1)."""
+
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
         self.__dict__.update(kwargs)
