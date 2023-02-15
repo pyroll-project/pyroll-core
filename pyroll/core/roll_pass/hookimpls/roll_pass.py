@@ -54,12 +54,7 @@ def height(self):
 
 @ThreeRollPass.height
 def height3(self):
-    if self.has_set_or_cached("gap"):
-        return 2 * (
-                self.roll.groove.width / 2 / np.sqrt(3)
-                + self.gap / np.sqrt(3)
-                + self.roll.groove.depth
-        )
+    return -2 * self.contour_lines[1].bounds[1]
 
 
 @RollPass.volume
