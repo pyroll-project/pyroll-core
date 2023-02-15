@@ -1,3 +1,4 @@
+import copy
 import weakref
 from typing import Optional, Sequence, List, Iterable, SupportsIndex, Union
 
@@ -251,3 +252,18 @@ class Unit(HookHost):
         # noinspection PyProtectedMember
         def _repr_html_(self):
             return "<br/>".join(v._repr_html_() for v in self)
+
+        def __deepcopy__(self, memo):
+            cls = self.__class__
+            result = cls.__new__(cls)
+
+            o = self._owner()
+            if id(o) in memo:
+                result._owner = weakref.ref(memo[id(o)])
+            else:
+                result._owner = weakref.ref(copy.deepcopy(o, memo))
+
+            for e in self:
+                result.append(copy.deepcopy(e, memo))
+
+            return result

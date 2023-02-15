@@ -396,8 +396,13 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
 
         for k, v in self.__dict__.items():
             if isinstance(v, weakref.ref):
-                new_v = weakref.ref(copy.deepcopy(v(), memo))
-                memo[id(v())] = new_v
+                t = v()
+
+                if id(t) in memo:
+                    new_v = weakref.ref(memo[id(t)])
+                else:
+                    new_t = copy.deepcopy(t, memo)
+                    new_v = weakref.ref(new_t)
             else:
                 new_v = copy.deepcopy(v, memo)
             setattr(result, k, new_v)

@@ -113,6 +113,8 @@ def test_solve_copied():
 
     copied_sequence = copy.deepcopy(local_sequence)
 
+    assert id(copied_sequence[0].parent) == id(copied_sequence)
+
     local_sequence.solve(local_in_profile)
 
     def fake_roll_torque_plugin(self: RollPass.Roll):
