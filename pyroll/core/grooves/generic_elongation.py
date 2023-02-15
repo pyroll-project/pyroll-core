@@ -252,6 +252,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
     def __attrs__(self):
         return {
             n: v for n in ["r1", "r2", "r3", "r4", "alpha1", "alpha2", "alpha3", "alpha4", "depth", "indent",
-                           "even_ground_width", "usable_width", "types"]
+                           "even_ground_width", "usable_width", "types", "flank_angle", "pad_angle", "ground_width",
+                           "contour_line"]
             if (v := getattr(self, n))
         }
