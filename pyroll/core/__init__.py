@@ -32,8 +32,6 @@ root_hooks.update(
         Unit.OutProfile.length,
         Unit.OutProfile.types,
         Unit.OutProfile.t,
-        Unit.OutProfile.height,
-        Unit.OutProfile.width,
         PassSequence.total_elongation,
     }
 )
