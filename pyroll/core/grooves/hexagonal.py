@@ -2,12 +2,12 @@ from typing import Optional
 
 import numpy as np
 
-from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_box_like
+from .generic_elongation import GenericElongationGroove
+from .utils import solve_box_like
 
 
-class SwedishOvalGroove(GenericElongationGroove):
-    """Represents a hexagonal-shaped groove that is used like an oval groove (swedish oval)."""
+class HexagonalGroove(GenericElongationGroove):
+    """Represents a hexagonal-shaped groove."""
 
     def __init__(
             self,
@@ -51,4 +51,4 @@ class SwedishOvalGroove(GenericElongationGroove):
 
     @property
     def types(self) -> '("oval", "swedish_oval")':
-        return "oval", "swedish_oval"
+        return "hexagonal"

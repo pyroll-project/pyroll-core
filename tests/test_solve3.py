@@ -26,7 +26,8 @@ def test_solve3(tmp_path: Path, caplog):
                 groove=CircularOvalGroove(
                     depth=8e-3,
                     r1=6e-3,
-                    r2=40e-3
+                    r2=40e-3,
+                    pad_angle=30
                 ),
                 nominal_radius=160e-3,
                 rotational_frequency=1
@@ -43,7 +44,8 @@ def test_solve3(tmp_path: Path, caplog):
                 groove=RoundGroove(
                     r1=3e-3,
                     r2=25e-3,
-                    depth=11e-3
+                    depth=11e-3,
+                    pad_angle=30
                 ),
                 nominal_radius=160e-3,
                 rotational_frequency=1

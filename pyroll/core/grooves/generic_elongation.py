@@ -1,11 +1,11 @@
-from typing import Union, Tuple
+from typing import Union, Tuple, Sequence, Optional
 
 import numpy as np
-from numpy import tan, sin, cos, pi, sqrt
 from shapely.geometry import LineString, Polygon
 
 from pyroll.core.grooves import GrooveBase
 from pyroll.core.repr import ReprMixin
+from ..config import GROOVE_PADDING
 
 
 class GenericElongationGroove(GrooveBase, ReprMixin):
@@ -13,102 +13,162 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
 
     def __init__(
             self,
-            usable_width: float = 0,
-            depth: float = 0,
 
-            r1: float = 0,
-            r2: float = 0,
+            r1: float,
+            r2: float,
+
+            flank_angle: Optional[float] = None,
+            usable_width: Optional[float] = None,
+            ground_width: Optional[float] = None,
+            depth: Optional[float] = None,
+
             r3: float = 0,
-            r4: float = 0,
-
-            even_ground_width: float = 0,
-            indent: float = 0,
-
-            alpha1: float = 0,
-            alpha2: float = 0,
             alpha3: float = 0,
+
+            r4: float = 0,
             alpha4: float = 0,
 
-            types: Tuple[str, ...] = ()
+            indent: float = 0,
+            even_ground_width: float = 0,
+
+            pad: float = 0,
+            rel_pad: float = GROOVE_PADDING,
+            pad_angle: float = 0,
+
+            types: Sequence[str] = ()
     ):
+        """
+        Give any three of ``usable_width``, ``ground_width``, ``flank_angle`` and ``depth``.
+        All angles are measured in radians.
+        All measures must be non-negative.
+
+        :param r1: radius 1 (face/flank)
+        :param r2: radius 2 (flank/radius 3)
+
+        :param usable_width: width of flank/face intersections
+        :param ground_width: width of flank/ground-line intersections
+        :param flank_angle: angle of the flanks to the z-axis
+        :param depth: maximum depth
+
+        :param r3: radius 3 (radius 2/radius 4)
+        :param r4: radius 4 (radius 3/ground)
+        :param alpha3: angle corresponding to ``r3``
+        :param alpha4: angle corresponding to ``r4``
+
+
+        :param indent: indent of the ground
+
+        :param pad: absolute padding at roll face
+        :param rel_pad: padding at roll face relative to ``usable_width``
+        :param pad_angle: angle of the face padding from horizontal line
+            (commonly 0 for two-roll, π/6 for three-roll and π/4 for four-roll)
+
+        :param types: sequence of type classifiers
+        """
+
+        try:
+            if usable_width is None:
+                usable_width = ground_width + 2 * depth / np.tan(flank_angle)
+            elif ground_width is None:
+                ground_width = usable_width - 2 * depth / np.tan(flank_angle)
+            elif flank_angle is None:
+                flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
+            elif depth is None:
+                depth = (usable_width - ground_width) / 2 * np.tan(flank_angle)
+            else:
+                raise TypeError("Too many arguments given.")
+
+        except TypeError:
+            raise TypeError("Exactly three of usable_width, ground_width, flank_angle and depth must be given.")
+
         self.r1 = r1
         self.r2 = r2
         self.r3 = r3
         self.r4 = r4
-        self.alpha1 = alpha1
-        self.alpha2 = alpha2
+
+        self.alpha1 = alpha1 = flank_angle + pad_angle
         self.alpha3 = alpha3
         self.alpha4 = alpha4
+        self.alpha2 = alpha2 = flank_angle + self.alpha4 - self.alpha3
+
         self.indent = indent
         self.even_ground_width = even_ground_width
         self._usable_width = usable_width
+        self.ground_width = ground_width
+        self.flank_angle = flank_angle
         self._depth = depth
         self._types = types
+        pad = pad if pad else usable_width * rel_pad
+        self.pad_angle = pad_angle
 
         self.z2 = usable_width / 2
         self.y2 = 0
 
-        self.z1 = self.z2 + r1 * tan(alpha1 / 2)
-        self.y1 = 0
+        l12 = r1 * np.tan(alpha1 / 2)
+        self.z1 = self.z2 + l12 * np.cos(pad_angle)
+        self.y1 = l12 * np.sin(pad_angle)
 
-        self.z12 = self.z1
-        self.y12 = r1
+        self.z0 = self.z1 + pad * np.cos(pad_angle)
+        self.y0 = self.y1 + pad * np.sin(pad_angle)
 
-        self.z3 = self.z1 - r1 * sin(alpha1)
-        self.y3 = r1 * (1 - cos(alpha1))
+        self.z12 = self.z1 - r1 * np.sin(pad_angle)
+        self.y12 = self.y1 + r1 * np.cos(pad_angle)
+
+        self.z3 = self.z12 - r1 * np.sin(flank_angle)
+        self.y3 = self.y12 - r1 * np.cos(flank_angle)
 
         self.z9 = 0
         self.y9 = depth - indent
 
-        self.z7 = even_ground_width / 2
+        self.z7 = self.even_ground_width / 2
         self.y7 = self.y9
 
         self.z8 = self.z7
         self.y8 = self.y9 + r4
 
-        self.z6 = self.z8 + r4 * sin(alpha4)
-        self.y6 = self.y8 - r4 * cos(alpha4)
+        self.z6 = self.z8 + r4 * np.sin(alpha4)
+        self.y6 = self.y8 - r4 * np.cos(alpha4)
 
-        self.beta = alpha4 - alpha3 / 2
+        self.beta = beta = alpha4 - alpha3 / 2
 
-        self.z10 = self.z6 + r3 * sin(alpha3 / 2 + self.beta)
-        self.y10 = self.y6 - r3 * cos(alpha3 / 2 + self.beta)
+        self.z10 = self.z6 + r3 * np.sin(alpha3 / 2 + beta)
+        self.y10 = self.y6 - r3 * np.cos(alpha3 / 2 + beta)
 
-        self.z5 = self.z10 + r3 * sin(alpha3 / 2 - self.beta)
-        self.y5 = self.y10 + r3 * cos(alpha3 / 2 - self.beta)
+        self.z5 = self.z10 + r3 * np.sin(alpha3 / 2 - beta)
+        self.y5 = self.y10 + r3 * np.cos(alpha3 / 2 - beta)
 
-        self.z11 = self.z10 + (r3 - r2) * sin(alpha3 / 2 - self.beta)
-        self.y11 = self.y10 + (r3 - r2) * cos(alpha3 / 2 - self.beta)
+        self.z11 = self.z10 + (r3 - r2) * np.sin(alpha3 / 2 - beta)
+        self.y11 = self.y10 + (r3 - r2) * np.cos(alpha3 / 2 - beta)
 
-        self.gamma = pi / 2 - alpha2 - alpha3 + alpha4
+        self.gamma = gamma = np.pi / 2 - alpha2 - alpha3 + alpha4
 
-        self.z4 = self.z11 + r2 * cos(self.gamma)
-        self.y4 = self.y11 + r2 * sin(self.gamma)
+        self.z4 = self.z11 + r2 * np.cos(gamma)
+        self.y4 = self.y11 + r2 * np.sin(gamma)
 
-        right_side = np.unique(list(self._enumerate_contour_points()), axis=0)
-        left_side = right_side[1:][::-1].copy()
+        right_side = np.array(list(self._enumerate_contour_points()))
+        left_side = right_side[:-1].copy()
         left_side[:, 0] *= -1
 
-        self._contour_points = np.concatenate([left_side, right_side])
+        self._contour_points = np.concatenate([left_side, right_side[::-1]])
         self._contour_line = LineString(self._contour_points)
         self._cross_section = Polygon(self._contour_line)
 
         self.test_plausibility()
 
     def _r1_contour_line(self, z):
-        return self.y12 - sqrt(self.r1 ** 2 - (z - self.z12) ** 2)
+        return self.y12 - np.sqrt(self.r1 ** 2 - (z - self.z12) ** 2)
 
     def _r2_contour_line(self, z):
-        return self.y11 + sqrt(self.r2 ** 2 - (z - self.z11) ** 2)
+        return self.y11 + np.sqrt(self.r2 ** 2 - (z - self.z11) ** 2)
 
     def _r3_contour_line(self, z):
-        return self.y10 + sqrt(self.r3 ** 2 - (z - self.z10) ** 2)
+        return self.y10 + np.sqrt(self.r3 ** 2 - (z - self.z10) ** 2)
 
     def _r4_contour_line(self, z):
-        return self.y8 - sqrt(self.r4 ** 2 - (z - self.z8) ** 2)
+        return self.y8 - np.sqrt(self.r4 ** 2 - (z - self.z8) ** 2)
 
     def _flank_contour_line(self, z):
-        return self.y3 - tan(self.alpha1) * (z - self.z3)
+        return self.y3 - np.tan(self.flank_angle) * (z - self.z3)
 
     def _ground_contour_line(self, z):
         return np.ones_like(z) * (self.depth - self.indent)
@@ -118,6 +178,8 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return np.zeros_like(z)
 
     def _enumerate_contour_points(self):
+        yield self.z0, self.y0
+
         if not np.isclose(self.z1, self.z3):
             for z in np.linspace(self.z1, self.z3, 20, endpoint=False):
                 yield z, self._r1_contour_line(z)
@@ -179,7 +241,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return self._depth
 
     def test_plausibility(self):
-        if (self.alpha1 + self.alpha4 - self.alpha2 - self.alpha3) > 0.01:
+        if (self.flank_angle + self.alpha4 - self.alpha2 - self.alpha3) > 0.01:
             raise ValueError("given angles should fulfill α1 + α4 = α2 + α3 to be geometrically plausible")
 
         if self.y4 - self._flank_contour_line(self.z4) > 0.001 * self.y4:

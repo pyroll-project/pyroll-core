@@ -10,7 +10,18 @@ def rotated_cross_section(self: Rotator.OutProfile):
 @Rotator.OutProfile.types
 def types(self: Rotator.OutProfile):
     r = self.rotator
-    return r.in_profile.types | {"rotated", f"rotated_by_{r.rotation:.2f}"}
+    t: set = r.in_profile.types | {"rotated"}
+
+    if r.rotation == 45:
+        t.add("edged")
+
+    elif r.rotation == 90:
+        t.add("vertical")
+
+    elif r.rotation == 180:
+        t.add("mirrored")
+
+    return t
 
 
 @Rotator.rotation
@@ -70,6 +81,36 @@ def box_oval(self: Rotator):
 @Rotator.rotation
 def round_flat(self: Rotator):
     if "round" in self.in_profile.types and "flat" in self.next_roll_pass.types:
+        return 90
+
+
+@Rotator.rotation
+def box_flat(self: Rotator):
+    if "box" in self.in_profile.types and "flat" in self.next_roll_pass.types:
+        return 90
+
+
+@Rotator.rotation
+def square_flat(self: Rotator):
+    if "square" in self.in_profile.types and "flat" in self.next_roll_pass.types:
+        return 45
+
+
+@Rotator.rotation
+def oval_flat(self: Rotator):
+    if "oval" in self.in_profile.types and "flat" in self.next_roll_pass.types:
+        return 0
+
+
+@Rotator.rotation
+def upset_in(self: Rotator):
+    if "upset" in self.in_profile.types:
+        return 0
+
+
+@Rotator.rotation
+def upset_out(self: Rotator):
+    if "upset" in self.next_roll_pass.types:
         return 90
 
 

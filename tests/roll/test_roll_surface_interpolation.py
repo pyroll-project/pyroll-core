@@ -20,16 +20,16 @@ def test_line_interpolation_z():
     plt.show()
     plt.close()
 
-    assert np.allclose(interp[1:-1], roll.groove.contour_points[:, 1])
+    assert np.allclose(interp, roll.groove.contour_points[:, 1])
 
 
 @pytest.mark.parametrize(
     "g",
     [
         RoundGroove(r1=2, r2=10, depth=10),
-        ConstrictedBoxGroove(r1=5, r2=10, r4=5, usable_width=100, flank_angle=np.pi / 2 - 0.1, depth=20, indent=5),
+        ConstrictedBoxGroove(r1=5, r2=10, r4=5, usable_width=100, flank_angle=85, depth=20, indent=5),
         Oval3RadiiFlankedGroove(depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-                                flank_angle=(90 - 16.697244) / 180 * np.pi)
+                                flank_angle=(90 - 16.697244))
     ]
 )
 def test_surface_plot(g):

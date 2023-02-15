@@ -1,13 +1,10 @@
-from typing import Optional
 import numpy as np
-from scipy.optimize import minimize, Bounds
-from numpy import sin, cos, tan, pi, array
 from ..generic_elongation import GenericElongationGroove
 from ..utils import solve_three_radii
 
 
-class Oval3RadiiGroove(GenericElongationGroove):
-    """Represents an oval-shaped groove with 3 main radii."""
+class UpsetOvalGroove(GenericElongationGroove):
+    """Represents an upright oval-shaped groove."""
 
     def __init__(
             self,
@@ -33,6 +30,9 @@ class Oval3RadiiGroove(GenericElongationGroove):
 
         sol = solve_three_radii(r1, r2, r3, depth, usable_width, pad_angle)
 
+        if sol["flank_angle"] > np.pi / 2:
+            raise ValueError("under the given conditions the flank angle is > 90°")
+
         super().__init__(
             usable_width=usable_width, depth=depth,
             r1=r1, r2=r2, r3=r3,
@@ -41,4 +41,4 @@ class Oval3RadiiGroove(GenericElongationGroove):
 
     @property
     def types(self) -> '("oval", "oval_3_radii")':
-        return "oval", "oval_3_radii"
+        return "oval", "upset"

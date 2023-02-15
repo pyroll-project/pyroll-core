@@ -6,6 +6,7 @@ from shapely.geometry import LineString
 
 from ..hooks import Hook
 from ..roll_pass import RollPass
+from ..roll import Roll as BaseRoll
 
 
 class ThreeRollPass(RollPass):
@@ -16,7 +17,7 @@ class ThreeRollPass(RollPass):
         if self._contour_lines:
             return self._contour_lines
 
-        shift = self.roll.groove.width / 2 / np.sqrt(3) + self.gap / np.sqrt(3)
+        shift = self.roll.groove.usable_width / 2 / np.sqrt(3) + self.gap / np.sqrt(3)
         lower = rotate(translate(self.roll.contour_line, yoff=shift), angle=180, origin=(0, 0))
         lower = LineString(lower.coords[::-1])  # get back coordinate order
         right = rotate(lower, angle=120, origin=(0, 0))

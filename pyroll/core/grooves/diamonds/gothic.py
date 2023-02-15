@@ -1,13 +1,10 @@
-from typing import Optional
 import numpy as np
-from scipy.optimize import minimize, Bounds
-from numpy import sin, cos, tan, pi, array
 from ..generic_elongation import GenericElongationGroove
 from ..utils import solve_three_radii
 
 
-class Oval3RadiiGroove(GenericElongationGroove):
-    """Represents an oval-shaped groove with 3 main radii."""
+class GothicGroove(GenericElongationGroove):
+    """Represents a square-shaped groove with curved flanks similar to a gothic arc."""
 
     def __init__(
             self,
@@ -41,4 +38,4 @@ class Oval3RadiiGroove(GenericElongationGroove):
 
     @property
     def types(self) -> '("oval", "oval_3_radii")':
-        return "oval", "oval_3_radii"
+        return "diamond", "square", "gothic"
