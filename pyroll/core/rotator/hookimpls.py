@@ -12,13 +12,13 @@ def types(self: Rotator.OutProfile):
     r = self.rotator
     t: set = r.in_profile.types | {"rotated"}
 
-    if self.rotation == 45:
+    if r.rotation == 45:
         t.add("edged")
 
-    elif self.rotation == 90:
+    elif r.rotation == 90:
         t.add("vertical")
 
-    elif self.rotation == 180:
+    elif r.rotation == 180:
         t.add("mirrored")
 
     return t
