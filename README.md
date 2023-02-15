@@ -1,5 +1,10 @@
 # PyRolL Rolling Simulation Framework
 
+[![PyPI](https://img.shields.io/pypi/v/pyroll-core)](https://pypi.org/project/pyroll-core/)
+![Python Versions](https://img.shields.io/pypi/pyversions/pyroll-core)
+[![License](https://img.shields.io/pypi/l/pyroll-core)](LICENSE)
+![Downloads](https://img.shields.io/pypi/dm/pyroll-core)
+
 Welcome to The PyRolL Project!
 
 PyRolL is an OpenSource rolling framework, aimed to provide a fast and extensible base for rolling simulation.
@@ -19,16 +24,16 @@ The API of version 2.0 is mostly fixed, but there may be minor but breaking chan
 
 - Split of old `pyroll` package into `pyroll-core`, `pyroll-report`, `pyroll-export` and `pyroll-cli`.
 - Complete reworking of the hook system.
-  - Implementation of own hooking framework and removal of pluggy.
-  - Simpler user interface for hook definition and implementation.
-  - More orthodox default hook implementations, removal of "basic models".
+    - Implementation of own hooking framework and removal of pluggy.
+    - Simpler user interface for hook definition and implementation.
+    - More orthodox default hook implementations, removal of "basic models".
 - Rework of the object model.
-  - Stricter hierarchy of unit classes.
-  - Extended possibilities of groove definition.
-  - Roll passes with three working rolls.
-  - New unit classes: `Rotator`, `PassSequence`, `ThreeRollPass`.
-  - Introduction of disk elements for incremental modelling in rolling direction.
-  - Nestable units (esp. pass sequences and disk elements).
+    - Stricter hierarchy of unit classes.
+    - Extended possibilities of groove definition.
+    - Roll passes with three working rolls.
+    - New unit classes: `Rotator`, `PassSequence`, `ThreeRollPass`.
+    - Introduction of disk elements for incremental modelling in rolling direction.
+    - Nestable units (esp. pass sequences and disk elements).
 
 ## Documentation
 
