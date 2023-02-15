@@ -1,6 +1,8 @@
+import copy
 import inspect
 import weakref
 from abc import ABCMeta
+from copy import deepcopy
 from functools import partial
 from typing import overload, TypeVar, Generic, List, Generator, Union
 
@@ -380,6 +382,31 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
                         continue
 
         return list(_gen())
+
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+
+        for k, v in self.__dict__.items():
+            if isinstance(v, weakref.ref):
+                t = v()
+
+                if id(t) in memo:
+                    new_v = weakref.ref(memo[id(t)])
+                else:
+                    new_t = copy.deepcopy(t, memo)
+                    new_v = weakref.ref(new_t)
+            else:
+                new_v = copy.deepcopy(v, memo)
+            setattr(result, k, new_v)
+        return result
 
 
 root_hooks = set()  # filled in __init__.py due to circular imports
