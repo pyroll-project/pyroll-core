@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_two_radii
+from ..utils import solve_r12
 
 
 class FlatOvalGroove(GenericElongationGroove):
@@ -30,7 +30,7 @@ class FlatOvalGroove(GenericElongationGroove):
         """
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_two_radii(r1=r1, r2=r2, depth=depth, width=None, pad_angle=pad_angle)
+        sol = solve_r12(r1=r1, r2=r2, depth=depth, width=None, pad_angle=pad_angle)
 
         if usable_width is None and even_ground_width is not None:
             super().__init__(

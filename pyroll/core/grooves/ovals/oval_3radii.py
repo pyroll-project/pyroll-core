@@ -3,7 +3,7 @@ import numpy as np
 from scipy.optimize import minimize, Bounds
 from numpy import sin, cos, tan, pi, array
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_three_radii
+from ..utils import solve_r123
 
 
 class Oval3RadiiGroove(GenericElongationGroove):
@@ -31,7 +31,7 @@ class Oval3RadiiGroove(GenericElongationGroove):
 
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_three_radii(r1, r2, r3, depth, usable_width, pad_angle)
+        sol = solve_r123(r1, r2, r3, depth, usable_width, pad_angle)
 
         super().__init__(
             usable_width=usable_width, depth=depth,

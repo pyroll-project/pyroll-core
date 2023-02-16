@@ -4,7 +4,7 @@ import numpy as np
 from scipy.optimize import root_scalar, minimize_scalar
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_two_radii
+from ..utils import solve_r12
 
 
 class RoundGroove(GenericElongationGroove):
@@ -29,7 +29,7 @@ class RoundGroove(GenericElongationGroove):
         """
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_two_radii(r1=r1, r2=r2, depth=depth, width=usable_width, pad_angle=pad_angle)
+        sol = solve_r12(r1=r1, r2=r2, depth=depth, width=usable_width, pad_angle=pad_angle)
 
         super().__init__(
             r2=sol["r2"], depth=sol["depth"], usable_width=sol["width"], flank_angle=sol["alpha"],

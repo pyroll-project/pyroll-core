@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_four_radii
+from ..utils import solve_r1234
 
 
 class ConstrictedCircularOvalGroove(GenericElongationGroove):
@@ -36,7 +36,7 @@ class ConstrictedCircularOvalGroove(GenericElongationGroove):
 
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_four_radii(r1, r2, r3, r4, depth, usable_width - even_ground_width, indent, pad_angle)
+        sol = solve_r1234(r1, r2, r3, r4, depth, usable_width - even_ground_width, indent, pad_angle)
 
         super().__init__(
             usable_width=usable_width, depth=depth, indent=indent,

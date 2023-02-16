@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_two_radii
+from ..utils import solve_r12
 
 
 class FalseRoundGroove(GenericElongationGroove):
@@ -45,7 +45,7 @@ class FalseRoundGroove(GenericElongationGroove):
         if flank_angle is not None:
             flank_angle = np.deg2rad(flank_angle)
 
-        sol = solve_two_radii(
+        sol = solve_r12(
             r1=r1,
             r2=r2, depth=depth, width=usable_width,
             pad_angle=pad_angle,

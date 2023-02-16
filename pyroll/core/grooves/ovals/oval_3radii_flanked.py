@@ -5,7 +5,7 @@ from scipy.optimize import brentq
 from numpy import sin, cos, tan, pi
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_three_radii
+from ..utils import solve_r123
 
 
 class Oval3RadiiFlankedGroove(GenericElongationGroove):
@@ -47,7 +47,7 @@ class Oval3RadiiFlankedGroove(GenericElongationGroove):
 
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_three_radii(
+        sol = solve_r123(
             r1, r2, r3, depth, usable_width, pad_angle, flank_angle, flank_width, flank_height, flank_length
         )
 

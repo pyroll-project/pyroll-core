@@ -4,7 +4,7 @@ import numpy as np
 from scipy.optimize import root_scalar, root
 
 
-def solve_two_radii(
+def solve_r12(
         r1: float,
 
         r2: Optional[float],
@@ -111,7 +111,7 @@ def solve_two_radii(
     )
 
 
-def solve_three_radii(
+def solve_r123(
         r1: float,
         r2: float,
         r3: float,
@@ -213,7 +213,7 @@ def solve_three_radii(
     )
 
 
-def solve_four_radii(
+def solve_r1234(
         r1: float,
         r2: float,
         r3: float,
@@ -358,7 +358,7 @@ def solve_four_radii(
     )
 
 
-def solve_box_like(
+def solve_r124(
         r2: float,
         r4: float,
         depth: float,

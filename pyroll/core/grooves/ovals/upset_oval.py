@@ -1,6 +1,6 @@
 import numpy as np
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_three_radii
+from ..utils import solve_r123
 
 
 class UpsetOvalGroove(GenericElongationGroove):
@@ -28,7 +28,7 @@ class UpsetOvalGroove(GenericElongationGroove):
 
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_three_radii(r1, r2, r3, depth, usable_width, pad_angle)
+        sol = solve_r123(r1, r2, r3, depth, usable_width, pad_angle)
 
         if sol["flank_angle"] > np.pi / 2:
             raise ValueError("under the given conditions the flank angle is > 90°")
