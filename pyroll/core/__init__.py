@@ -7,7 +7,7 @@ from .grooves import (
     SquareGroove, DiamondGroove, GothicGroove,
     RoundGroove, FalseRoundGroove,
     CircularOvalGroove, FlatOvalGroove, SwedishOvalGroove, ConstrictedSwedishOvalGroove, Oval3RadiiGroove,
-    Oval3RadiiFlankedGroove, UpsetOvalGroove,
+    Oval3RadiiFlankedGroove, UpsetOvalGroove, ConstrictedCircularOvalGroove,
     SplineGroove,
     GenericElongationGroove,
     FlatGroove,
