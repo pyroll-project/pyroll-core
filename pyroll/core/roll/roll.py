@@ -90,6 +90,9 @@ class Roll(HookHost):
     where ``n = len(self.surface_x)`` and ``m = len(self.surface_z)``.
     """
 
+    neutral_point = Hook[float]()
+    """Point at the roll surface where the shear stress is zero."""
+
     def __init__(
             self,
             groove: GrooveBase,
