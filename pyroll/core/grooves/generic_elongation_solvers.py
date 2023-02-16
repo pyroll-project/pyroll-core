@@ -1,7 +1,7 @@
 from typing import Optional
 
 import numpy as np
-from scipy.optimize import root_scalar, root
+from scipy.optimize import root_scalar, root, fixed_point
 
 
 def solve_r12(
@@ -17,6 +17,9 @@ def solve_r12(
         flank_width: Optional[float] = None,
         flank_height: Optional[float] = None,
         flank_length: Optional[float] = None,
+
+        r4: float = 0,
+        indent: float = 0,
 ):
     def l23(_alpha):
         return r1 * np.tan((_alpha + pad_angle) / 2)
@@ -57,8 +60,13 @@ def solve_r12(
             flank_angle = root_scalar(f, bracket=(0, np.pi / 2)).root
 
         elif depth is None:
+            alpha4 = np.arccos(1 - indent / (r2 + r4))
+
             def f(_alpha):
-                return width / 2 - r2 * np.sin(_alpha) - l23(_alpha) * np.cos(_alpha) - fw(_alpha)
+                return (
+                        width / 2 - r2 * np.sin(_alpha) - l23(_alpha) * np.cos(_alpha)
+                        - fw(_alpha) - (r2 + r4) * np.sin(alpha4)
+                )
 
             raster = np.linspace(0, np.pi / 2, 100)
             values = f(raster)
@@ -68,10 +76,12 @@ def solve_r12(
 
         elif r2 is None:
             def f(_alpha):
+                _r2 = (depth - l23(_alpha) * np.sin(_alpha) - fh(_alpha)) / (1 - np.cos(_alpha))
+                _alpha4 = np.arccos(1 - indent / (_r2 + r4))
+
                 return (
-                        width / 2
-                        - (depth - l23(_alpha) * np.sin(_alpha) - fh(_alpha)) / (1 - np.cos(_alpha)) * np.sin(_alpha)
-                        - l23(_alpha) * np.cos(_alpha) - fw(_alpha)
+                        width / 2 - _r2 * np.sin(_alpha) - l23(_alpha) * np.cos(_alpha)
+                        - fw(_alpha) - (_r2 + r4) * np.sin(_alpha4)
                 )
 
             flank_angle = root_scalar(f, bracket=(0, np.pi / 2)).root
@@ -79,29 +89,31 @@ def solve_r12(
         else:
             raise TypeError("Give either usable_width or depth.")
 
-    if width is None:
-        width = 2 * (
-                r2 * np.sin(flank_angle)
-                + (
-                        depth - r2 * (1 - np.cos(flank_angle))
-                ) / np.tan(flank_angle)
-        )
+    if r2 is not None:
+        alpha4 = np.arccos(1 - indent / (r2 + r4))
 
-    elif depth is None:
-        depth = (
-                r2 * (1 - np.cos(flank_angle))
-                + (width / 2 - r2 * np.sin(flank_angle))
-                * np.tan(flank_angle)
-        )
+        if width is None:
+            width = 2 * (
+                    r2 * np.sin(flank_angle)
+                    + (depth - r2 * (1 - np.cos(flank_angle))) / np.tan(flank_angle)
+                    + (r2 + r4) * np.sin(alpha4)
+            )
 
-    elif r2 is None:
-        r2 = (
-                (depth - width / 2 * np.tan(flank_angle))
-                / (1 - np.cos(flank_angle) - np.sin(flank_angle) * np.tan(flank_angle))
-        )
+        elif depth is None:
+            depth = (
+                    r2 * (1 - np.cos(flank_angle))
+                    + (width / 2 - r2 * np.sin(flank_angle) - (r2 + r4) * np.sin(alpha4)) * np.tan(flank_angle)
+            )
 
     else:
-        raise TypeError("Give either usable_width or depth.")
+        def f(_r2):
+            _alpha4 = np.arccos(1 - indent / (_r2 + r4))
+            return (
+                    (depth - width / 2 * np.tan(flank_angle) + r4 * np.sin(_alpha4))
+                    / (1 - np.cos(flank_angle) - np.sin(flank_angle) * np.tan(flank_angle) - np.sin(_alpha4))
+            )
+        r2 = fixed_point(f, width if width > depth else depth)
+        alpha4 = np.arccos(1 - indent / (r2 + r4))
 
     return dict(
         width=width,
