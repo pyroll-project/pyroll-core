@@ -35,16 +35,12 @@ class RollPass(DiskElementUnit, DeformationUnit):
     roll_force = Hook[float]()
     """Vertical roll force."""
 
-    mean_neutral_plane_position = Hook[float]()
-    """Mean position of the neutral plane along the roll gap."""
 
-    mean_neutral_plane_angle = Hook[float]()
-    """Mean angle of the neutral plane along the roll gap."""
 
-    mean_front_tension = Hook[float]()
+    front_tension = Hook[float]()
     """Front tension acting on the current roll pass."""
 
-    mean_back_tension = Hook[float]()
+    back_tension = Hook[float]()
     """Back tension acting on the current roll pass."""
 
     def __init__(
