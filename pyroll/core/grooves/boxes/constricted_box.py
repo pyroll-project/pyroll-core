@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
-from ..generic_elongation_solvers import solve_r124
+from ..generic_elongation_solvers import solve_box_like
 from .box import BoxGroove
 
 
@@ -44,7 +44,7 @@ class ConstrictedBoxGroove(BoxGroove):
         if flank_angle is not None:
             flank_angle = np.deg2rad(flank_angle)
 
-        sol = solve_r124(
+        sol = solve_box_like(
             r2=r2, r4=r4, depth=depth, ground_width=ground_width, usable_width=usable_width, flank_angle=flank_angle,
             indent=indent, even_ground_width=even_ground_width
         )

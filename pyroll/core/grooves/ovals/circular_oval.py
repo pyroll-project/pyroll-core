@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
-from ..generic_elongation_solvers import solve_r12
+from ..generic_elongation_solvers import solve_r124
 
 
 class CircularOvalGroove(GenericElongationGroove):
@@ -28,7 +28,7 @@ class CircularOvalGroove(GenericElongationGroove):
         """
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_r12(r1=r1, r2=r2, depth=depth, width=usable_width, pad_angle=pad_angle)
+        sol = solve_r124(r1=r1, r2=r2, depth=depth, width=usable_width, pad_angle=pad_angle)
 
         super().__init__(
             r2=sol["r2"], depth=sol["depth"], usable_width=sol["width"], flank_angle=sol["alpha"],

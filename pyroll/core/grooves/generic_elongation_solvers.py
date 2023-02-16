@@ -4,7 +4,7 @@ import numpy as np
 from scipy.optimize import root_scalar, root, fixed_point
 
 
-def solve_r12(
+def solve_r124(
         r1: float,
 
         r2: Optional[float],
@@ -370,7 +370,7 @@ def solve_r1234(
     )
 
 
-def solve_r124(
+def solve_box_like(
         r2: float,
         r4: float,
         depth: float,
