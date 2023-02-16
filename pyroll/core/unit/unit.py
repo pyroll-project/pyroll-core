@@ -6,6 +6,7 @@ import numpy as np
 
 from ..hooks import HookHost, Hook
 from ..profile import Profile as BaseProfile
+from timeit import default_timer as timer
 
 
 class Unit(HookHost):
@@ -124,6 +125,7 @@ class Unit(HookHost):
         :return: The outgoing state profile.
         """
         self.logger.info(f"Started solving of {self}.")
+        start = timer()
         self.init_solve(in_profile)
 
         for i in range(1, self.max_iteration_count):
@@ -145,6 +147,9 @@ class Unit(HookHost):
                 f"Solution iteration of {self} exceeded the maximum iteration count of {self.max_iteration_count}."
                 f" Continuing anyway."
             )
+
+        end = timer()
+        self.logger.info(f"Solution took {end - start:.3f} s.")
 
         result = BaseProfile(
             **{
