@@ -5,7 +5,7 @@ from scipy.optimize import brentq
 from numpy import sin, cos, tan, pi
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_r123
+from ..generic_elongation_solvers import solve_r123
 
 
 class Oval3RadiiFlankedGroove(GenericElongationGroove):

@@ -4,7 +4,7 @@ import numpy as np
 from scipy.optimize import root_scalar, minimize_scalar
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_r12
+from ..generic_elongation_solvers import solve_r12
 
 
 class RoundGroove(GenericElongationGroove):

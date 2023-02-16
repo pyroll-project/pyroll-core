@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_r124
+from ..generic_elongation_solvers import solve_r124
 
 
 class BoxGroove(GenericElongationGroove):

@@ -1,6 +1,6 @@
 import numpy as np
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_r123
+from ..generic_elongation_solvers import solve_r123
 
 
 class UpsetOvalGroove(GenericElongationGroove):
