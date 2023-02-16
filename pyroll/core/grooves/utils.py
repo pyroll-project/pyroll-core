@@ -232,9 +232,6 @@ def solve_four_radii(
     def l23(_alpha):
         return r1 * np.tan((_alpha + pad_angle) / 2)
 
-    r32 = r3 - r2
-    r34 = r3 + r4
-
     if flank_angle is None:
         if flank_length is not None:
             def fw(_alpha):
@@ -269,24 +266,45 @@ def solve_four_radii(
             _alpha3 = _alpha[1]
             _alpha4 = _alpha[2]
             _flank_angle = _alpha2 + _alpha3 - _alpha4
-            _gamma = np.pi / 2 - _flank_angle
 
-            return np.array(
-                [
-                    (
-                            depth - r3 + r32 * np.cos(_alpha3 - _alpha4) + r2 * np.sin(_gamma)
-                            - fh(_flank_angle) - l23(_flank_angle) * np.sin(_flank_angle)
-                    ),
-                    (
-                            width / 2 - r32 * np.sin(_alpha3 - _alpha4) - r2 * np.cos(_gamma)
-                            - fw(_flank_angle) - l23(_flank_angle) * np.cos(_flank_angle)
-                            - r34 * np.sin(_alpha4)
-                    ),
-                    (
-                            indent - r34 * (1 - np.cos(_alpha4))
-                    )
-                ]
-            )
+            if _alpha3 > _alpha4:
+                _gamma = np.pi / 2 - _flank_angle
+                return np.array(
+                    [
+                        (
+                                depth - r3 + (r3 - r2) * np.cos(_alpha3 - _alpha4) + r2 * np.sin(_gamma)
+                                - fh(_flank_angle) - l23(_flank_angle) * np.sin(_flank_angle)
+                        ),
+                        (
+                                width / 2 - (r3 - r2) * np.sin(_alpha3 - _alpha4) - r2 * np.cos(_gamma)
+                                - fw(_flank_angle) - l23(_flank_angle) * np.cos(_flank_angle)
+                                - (r3 + r4) * np.sin(_alpha4)
+                        ),
+                        (
+                                indent - (r3 + r4) * (1 - np.cos(_alpha4))
+                        )
+                    ]
+                )
+            else:
+                _gamma = np.pi / 2 - _alpha4
+                return np.array(
+                    [
+                        (
+                                depth - r2 * (1 - np.cos(_flank_angle))
+                                - fh(_flank_angle) - l23(_flank_angle) * np.sin(_flank_angle)
+                        ),
+                        (
+                                width / 2 - r2 * np.sin(_flank_angle)
+                                - fw(_flank_angle) - l23(_flank_angle) * np.cos(_flank_angle)
+                                - r4 * np.sin(_alpha4) - r3 * np.cos(_gamma)
+                                - (r2 - r3) * np.sin(_alpha2 - _flank_angle)
+                        ),
+                        (
+                                indent - r4 * (1 - np.cos(_alpha4)) + r3 * np.sin(_gamma)
+                                + (r2 - r3) * np.cos(_alpha4 - _alpha3) - r2
+                        )
+                    ]
+                )
 
         sol = root(
             f, np.array([np.pi / 4, np.pi / 4, np.pi / 4]),
@@ -307,16 +325,16 @@ def solve_four_radii(
             _alpha4 = _alpha2 + _alpha3 - flank_angle
             _gamma = np.pi / 2 - flank_angle
 
-            _fw = width / 2 - r32 * np.sin(_alpha3) - r2 * np.cos(_gamma) - l23(flank_angle) * np.cos(flank_angle)
+            _fw = width / 2 - (r3 - r2) * np.sin(_alpha3) - r2 * np.cos(_gamma) - l23(flank_angle) * np.cos(flank_angle)
 
             return np.array(
                 [
                     (
-                            depth - r3 + r32 * np.cos(_alpha3 - _alpha4) + r2 * np.sin(_gamma)
+                            depth - r3 + (r3 - r2) * np.cos(_alpha3 - _alpha4) + r2 * np.sin(_gamma)
                             - _fw * np.tan(flank_angle) - l23(flank_angle) * np.sin(flank_angle)
                     ),
                     (
-                            indent - r34 * (1 - np.cos(_alpha4))
+                            indent - (r3 + r4) * (1 - np.cos(_alpha4))
                     )
                 ]
             )
