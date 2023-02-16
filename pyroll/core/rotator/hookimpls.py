@@ -25,96 +25,47 @@ def types(self: Rotator.OutProfile):
 
 
 @Rotator.rotation
-def diamonds(self: Rotator):
-    if "diamond" in self.in_profile.types and "diamond" in self.next_roll_pass.types:
-        return 90
+def default_90(self: Rotator):
+    return 90
 
 
 @Rotator.rotation
-def oval_round(self: Rotator):
-    if "oval" in self.in_profile.types and "round" in self.next_roll_pass.types:
-        return 90
-
-
-@Rotator.rotation
-def round_oval(self: Rotator):
-    if "round" in self.in_profile.types and "oval" in self.next_roll_pass.types:
-        return 90
-
-
-@Rotator.rotation
-def oval_square(self: Rotator):
-    if "oval" in self.in_profile.types and "square" in self.next_roll_pass.types:
-        return 90
-
-
-@Rotator.rotation
-def square_oval(self: Rotator):
+def square_oval_45(self: Rotator):
     if "square" in self.in_profile.types and "oval" in self.next_roll_pass.types:
         return 45
 
 
 @Rotator.rotation
-def square_box(self: Rotator):
+def square_box_45(self: Rotator):
     if "square" in self.in_profile.types and "box" in self.next_roll_pass.types:
         return 45
 
 
 @Rotator.rotation
-def box_box(self: Rotator):
-    if "box" in self.in_profile.types and "box" in self.next_roll_pass.types:
-        return 90
-
-
-@Rotator.rotation
-def box_diamond(self: Rotator):
+def box_diamond_45(self: Rotator):
     if "box" in self.in_profile.types and "diamond" in self.next_roll_pass.types:
         return 45
 
 
 @Rotator.rotation
-def box_oval(self: Rotator):
-    if "box" in self.in_profile.types and "oval" in self.next_roll_pass.types:
-        return 90
-
-
-@Rotator.rotation
-def round_flat(self: Rotator):
-    if "round" in self.in_profile.types and "flat" in self.next_roll_pass.types:
-        return 90
-
-
-@Rotator.rotation
-def box_flat(self: Rotator):
-    if "box" in self.in_profile.types and "flat" in self.next_roll_pass.types:
-        return 90
-
-
-@Rotator.rotation
-def square_flat(self: Rotator):
+def square_flat_45(self: Rotator):
     if "square" in self.in_profile.types and "flat" in self.next_roll_pass.types:
         return 45
 
 
 @Rotator.rotation
-def oval_flat(self: Rotator):
+def oval_flat_0(self: Rotator):
     if "oval" in self.in_profile.types and "flat" in self.next_roll_pass.types:
         return 0
 
 
 @Rotator.rotation
-def upset_in(self: Rotator):
+def upset_in_0(self: Rotator):
     if "upset" in self.in_profile.types:
         return 0
 
 
 @Rotator.rotation
-def upset_out(self: Rotator):
-    if "upset" in self.next_roll_pass.types:
-        return 90
-
-
-@Rotator.rotation
-def three_roll_pass(self: Rotator):
+def three_roll_pass_180(self: Rotator):
     if "3fold" in self.next_roll_pass.types:
         return 180
