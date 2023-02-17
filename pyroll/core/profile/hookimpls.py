@@ -18,13 +18,13 @@ def width(self: Profile):
 
 @Profile.height
 def height_3fold(self: Profile):
-    if "3fold" in self.types:
+    if "3fold" in self.classifiers:
         return (self.cross_section.centroid.y - self.cross_section.bounds[1]) * 2
 
 
 @Profile.width
 def width_3fold(self: Profile):
-    if "3fold" in self.types:
+    if "3fold" in self.classifiers:
         return (self.cross_section.bounds[3] - self.cross_section.centroid.y) * 2
 
 

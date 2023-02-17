@@ -40,5 +40,5 @@ class RoundGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("round",)':
-        return "round",
+    def classifiers(self):
+        return {"round",} | super().classifiers

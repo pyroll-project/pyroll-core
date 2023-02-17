@@ -49,5 +49,5 @@ class ConstrictedCircularOvalGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("oval", "circular_oval")':
-        return "oval", "circular_oval", "constricted"
+    def classifiers(self):
+        return {"oval", "circular_oval", "constricted"} | super().classifiers

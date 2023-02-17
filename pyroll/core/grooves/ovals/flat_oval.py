@@ -52,5 +52,5 @@ class FlatOvalGroove(GenericElongationGroove):
             raise TypeError("Give exactly one of usable_width and even_ground_width.")
 
     @property
-    def types(self) -> '("oval", "flat_oval")':
-        return "oval", "flat_oval"
+    def classifiers(self):
+        return {"oval", "flat_oval"} | super().classifiers

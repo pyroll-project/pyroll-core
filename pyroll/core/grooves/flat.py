@@ -27,5 +27,5 @@ class FlatGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("flat",)':
-        return "flat",
+    def classifiers(self):
+        return {"flat",} | super().classifiers

@@ -30,7 +30,7 @@ root_hooks.update(
         Unit.OutProfile.cross_section,
         Unit.OutProfile.strain,
         Unit.OutProfile.length,
-        Unit.OutProfile.types,
+        Unit.OutProfile.classifiers,
         Unit.OutProfile.t,
         PassSequence.total_elongation,
     }

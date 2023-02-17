@@ -37,5 +37,5 @@ class GothicGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("oval", "oval_3_radii")':
-        return "diamond", "square", "gothic"
+    def classifiers(self):
+        return {"diamond", "square", "gothic"} | super().classifiers

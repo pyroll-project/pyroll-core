@@ -6,13 +6,13 @@ class UpsetBoxGroove(BoxGroove):
     """Represents a box-shaped groove with a high height/width ratio."""
 
     @property
-    def types(self) -> '("box", "constricted_box")':
-        return "box", "upset"
+    def classifiers(self):
+        return {"box", "upset"} | super().classifiers
 
 
 class ConstrictedUpsetBoxGroove(ConstrictedBoxGroove, UpsetBoxGroove):
     """Represents a box-shaped groove with a high height/width ratio and an indented ground."""
 
     @property
-    def types(self) -> '("box", "constricted_box")':
-        return "box", "constricted", "upset"
+    def classifiers(self):
+        return {"box", "constricted", "upset"} | super().classifiers

@@ -27,10 +27,10 @@ class ThreeRollPass(RollPass):
         return self._contour_lines
 
     @property
-    def types(self):
-        """A tuple of keywords to specify the shape types of this roll pass.
-        Shortcut to ``self.groove.types``."""
-        return set(self.roll.groove.types) | {"3fold"}
+    def classifiers(self):
+        """A tuple of keywords to specify the shape type classifiers of this roll pass.
+        Shortcut to ``self.groove.classifiers``."""
+        return set(self.roll.groove.classifiers) | {"3fold"}
 
     @property
     def disk_elements(self) -> List['RollPass.DiskElement']:
