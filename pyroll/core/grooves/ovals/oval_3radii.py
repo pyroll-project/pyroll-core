@@ -16,7 +16,8 @@ class Oval3RadiiGroove(GenericElongationGroove):
             r3: float,
             depth: float,
             usable_width: float,
-            pad_angle: float = 0
+            pad_angle: float = 0,
+            **kwargs
     ):
         """
         Widths are always measured at the intersection of the extrapolated ground, face and flanks.
@@ -27,6 +28,7 @@ class Oval3RadiiGroove(GenericElongationGroove):
         :param depth: maximum depth
         :param usable_width: usable width of the groove
         :param pad_angle: angle between z-axis and the roll face padding
+        :param kwargs: more keyword arguments passed to the GenericElongationGroove constructor
         """
 
         pad_angle = np.deg2rad(pad_angle)
@@ -36,7 +38,8 @@ class Oval3RadiiGroove(GenericElongationGroove):
         super().__init__(
             usable_width=usable_width, depth=depth,
             r1=r1, r2=r2, r3=r3,
-            flank_angle=sol["flank_angle"], alpha3=sol["alpha3"], pad_angle=pad_angle
+            flank_angle=sol["flank_angle"], alpha3=sol["alpha3"], pad_angle=pad_angle,
+            **kwargs
         )
 
     @property

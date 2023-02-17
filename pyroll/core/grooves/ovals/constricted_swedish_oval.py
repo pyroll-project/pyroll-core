@@ -20,7 +20,8 @@ class ConstrictedSwedishOvalGroove(GenericElongationGroove):
             even_ground_width: Optional[float] = None,
             usable_width: Optional[float] = None,
             flank_angle: Optional[float] = None,
-            pad_angle: float = 0
+            pad_angle: float = 0,
+            **kwargs
     ):
         """
         Exactly two of ``ground_width``, ``even_ground_width``, ``usable_width`` and ``flank_angle`` must be given,
@@ -38,6 +39,7 @@ class ConstrictedSwedishOvalGroove(GenericElongationGroove):
         :param usable_width: usable width of the groove
         :param flank_angle: inclination angle of the flanks
         :param pad_angle: angle between z-axis and the roll face padding
+        :param kwargs: more keyword arguments passed to the GenericElongationGroove constructor
         :raises ValueError: if not exactly two of ground_width, usable_width and flank_angle are given
         """
         if flank_angle is not None:
@@ -50,7 +52,8 @@ class ConstrictedSwedishOvalGroove(GenericElongationGroove):
 
         super().__init__(
             r1=r1, r2=r2, r4=r4, pad_angle=np.deg2rad(pad_angle), indent=indent,
-            **sol
+            **sol,
+            **kwargs
         )
 
     @property
