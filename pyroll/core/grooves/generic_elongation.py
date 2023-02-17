@@ -244,8 +244,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         if (self.flank_angle + self.alpha4 - self.alpha2 - self.alpha3) > 0.01:
             raise ValueError("given angles should fulfill α1 + α4 = α2 + α3 to be geometrically plausible")
 
-        if self.y4 - self._flank_contour_line(self.z4) > 0.001 * self.y4:
-            print(self.y4 - self._flank_contour_line(self.z4), 0.1 * self.y4)
+        if self.y4 - self._flank_contour_line(self.z4) > 0.001 * self.depth:
             raise ValueError("under given conditions a step appears in z4")
 
     @property
