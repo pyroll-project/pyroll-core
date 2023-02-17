@@ -56,5 +56,5 @@ class DiamondGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("diamond",)':
+    def classifiers(self) -> '("diamond",)':
         return "diamond",

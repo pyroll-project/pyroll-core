@@ -79,10 +79,10 @@ class RollPass(DiskElementUnit, DeformationUnit):
         return self._contour_lines
 
     @property
-    def types(self):
-        """A tuple of keywords to specify the shape types of this roll pass.
-        Shortcut to ``self.groove.types``."""
-        return set(self.roll.groove.types)
+    def classifiers(self):
+        """A tuple of keywords to specify the shape type classifiers of this roll pass.
+        Shortcut to ``self.groove.classifiers``."""
+        return set(self.roll.groove.classifiers)
 
     @property
     def disk_elements(self) -> List['RollPass.DiskElement']:

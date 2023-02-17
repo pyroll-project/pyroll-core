@@ -10,8 +10,8 @@ class GrooveBase(ABC):
 
     @property
     @abstractmethod
-    def types(self) -> Tuple[str, ...]:
-        """A tuple of keywords to specify the types of this groove."""
+    def classifiers(self) -> set[str]:
+        """A tuple of keywords to specify the type classifiers of this groove."""
         raise NotImplemented
 
     @property
@@ -56,4 +56,4 @@ class GrooveBase(ABC):
         raise NotImplemented
 
     def __str__(self):
-        return f"{type(self).__name__} {self.usable_width:.4g} x {self.depth:.4g} ({', '.join(self.types)})"
+        return f"{type(self).__name__} {self.usable_width:.4g} x {self.depth:.4g} ({', '.join(self.classifiers)})"

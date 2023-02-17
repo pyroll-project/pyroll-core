@@ -59,5 +59,5 @@ class ConstrictedBoxGroove(BoxGroove):
         )
 
     @property
-    def types(self) -> '("box", "constricted_box")':
+    def classifiers(self) -> '("box", "constricted_box")':
         return "box", "constricted"

@@ -53,5 +53,5 @@ class HexagonalGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("oval", "swedish_oval")':
+    def classifiers(self) -> '("oval", "swedish_oval")':
         return "hexagonal"

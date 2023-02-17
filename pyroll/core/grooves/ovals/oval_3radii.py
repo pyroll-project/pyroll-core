@@ -43,5 +43,5 @@ class Oval3RadiiGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("oval", "oval_3_radii")':
+    def classifiers(self) -> '("oval", "oval_3_radii")':
         return "oval", "oval_3_radii"

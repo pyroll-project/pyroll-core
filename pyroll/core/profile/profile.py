@@ -16,7 +16,7 @@ class Profile(HookHost):
     cross_section = Hook[Polygon]()
     """Shape of the profile's cross-section."""
 
-    types = Hook[Set[str]]()
+    classifiers = Hook[Set[str]]()
     """Classifiers of the profile's shape's type."""
 
     x = Hook[float]()
@@ -185,7 +185,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types=set(groove.types),
+            classifiers=set(groove.classifiers),
             **kwargs
         )
 
@@ -222,7 +222,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=circle,
-            types={"round"},
+            classifiers={"round"},
             **kwargs
         )
 
@@ -269,7 +269,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types={"square", "diamond"},
+            classifiers={"square", "diamond"},
             **kwargs
         )
 
@@ -311,7 +311,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types={"box"},
+            classifiers={"box"},
             **kwargs
         )
 
@@ -353,7 +353,7 @@ class Profile(HookHost):
 
         return cls._base_factory(
             cross_section=polygon,
-            types={"diamond"},
+            classifiers={"diamond"},
             **kwargs
         )
 

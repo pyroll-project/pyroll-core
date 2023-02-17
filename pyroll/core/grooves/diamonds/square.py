@@ -44,5 +44,5 @@ class SquareGroove(DiamondGroove):
             )
 
     @property
-    def types(self) -> '("diamond", "square")':
+    def classifiers(self) -> '("diamond", "square")':
         return "diamond", "square"

@@ -28,7 +28,7 @@ def test_extension_class(caplog):
 
     @Profile.width
     def call_test_impl(self: Union[ProfileExtension, Profile]):
-        _log.info(self.types)
+        _log.info(self.classifiers)
         _log.info(self.ext_hook)
         return 21
 
@@ -65,7 +65,7 @@ def test_extension_class_derived(caplog):
 
     @Profile.width
     def call_test_impl(self: ProfileExtension):
-        _log.info(self.types)
+        _log.info(self.classifiers)
         _log.info(self.ext_hook)
         return 21
 

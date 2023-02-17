@@ -18,7 +18,7 @@ def test_spline_with_usable_width():
     g = SplineGroove(
         points,
         usable_width=9,
-        types=("oval", "swedish_oval"),
+        classifiers=("oval", "swedish_oval"),
     )
 
     assert np.isclose(g.usable_width, 9)
@@ -30,14 +30,14 @@ def test_spline_with_usable_width():
     assert np.isclose(g.local_depth(-5), 0)
     assert np.isclose(g.local_depth(-4), 1)
 
-    assert "oval" in g.types
-    assert "swedish_oval" in g.types
+    assert "oval" in g.classifiers
+    assert "swedish_oval" in g.classifiers
 
 
 def test_spline_without_usable_width():
     g = SplineGroove(
         points,
-        types=("oval", "swedish_oval"),
+        classifiers=("oval", "swedish_oval"),
     )
 
     assert np.isclose(g.usable_width, 10)
@@ -49,5 +49,5 @@ def test_spline_without_usable_width():
     assert np.isclose(g.local_depth(-5), 0)
     assert np.isclose(g.local_depth(-4), 1)
 
-    assert "oval" in g.types
-    assert "swedish_oval" in g.types
+    assert "oval" in g.classifiers
+    assert "swedish_oval" in g.classifiers

@@ -53,5 +53,5 @@ class BoxGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("box",)':
+    def classifiers(self) -> '("box",)':
         return "box",
