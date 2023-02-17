@@ -63,7 +63,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         :param pad_angle: angle of the face padding from horizontal line
             (commonly 0 for two-roll, π/6 for three-roll and π/4 for four-roll)
 
-        :param classifiers: sequence of type classifiers
+        :param classifiers: sequence of additional type classifiers
         """
 
         try:
@@ -225,8 +225,8 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         )
 
     @property
-    def classifiers(self) -> set[str]:
-        return self._classifiers
+    def classifiers(self):
+        return {"generic_elongation"} | self._classifiers
 
     @property
     def usable_width(self) -> float:
@@ -251,7 +251,8 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
     def __attrs__(self):
         return {
             n: v for n in ["r1", "r2", "r3", "r4", "alpha1", "alpha2", "alpha3", "alpha4", "depth", "indent",
-                           "even_ground_width", "usable_width", "classifiers", "flank_angle", "pad_angle", "ground_width",
+                           "even_ground_width", "usable_width", "classifiers", "flank_angle", "pad_angle",
+                           "ground_width",
                            "contour_line"]
             if (v := getattr(self, n))
         }

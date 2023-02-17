@@ -61,5 +61,5 @@ class Oval3RadiiFlankedGroove(GenericElongationGroove):
         )
 
     @property
-    def classifiers(self) -> '("oval", "oval_3_radii", "oval_3_radii_flanked")':
-        return "oval", "oval_3_radii", "oval_3_radii_flanked"
+    def classifiers(self):
+        return {"oval", "oval_3_radii", "oval_3_radii_flanked"} | super().classifiers

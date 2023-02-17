@@ -57,5 +57,5 @@ class ConstrictedSwedishOvalGroove(GenericElongationGroove):
         )
 
     @property
-    def classifiers(self) -> '("oval", "swedish_oval", "constricted_swedish_oval")':
-        return "oval", "swedish_oval", "constricted_swedish_oval"
+    def classifiers(self):
+        return {"oval", "swedish_oval", "constricted_swedish_oval"} | super().classifiers
