@@ -13,12 +13,12 @@ class SplineGroove(GrooveBase):
     def __init__(
             self,
             contour_points: Union[Iterable[Tuple[float, float]], np.ndarray],
-            types: Iterable[str],
+            classifiers: Iterable[str],
             usable_width: Optional[float] = None,
     ):
         """
         :param contour_points: an iterable of contour points to be used for the spline
-        :param types: an interable of string keys used as type classifiers
+        :param classifiers: an interable of string keys used as type classifiers
         :param usable_width: the usable width to assume for this instance, if None, the maximum width will be used
         """
         contour_points = np.asarray(contour_points, dtype="float64")
@@ -58,11 +58,11 @@ class SplineGroove(GrooveBase):
             contour_points[:, 0], contour_points[:, 1],
             fill_value="extrapolate"
         )
-        self._types = tuple(types)
+        self._classifiers = tuple(classifiers)
 
     @property
-    def types(self) -> Tuple[str, ...]:
-        return self._types
+    def classifiers(self) -> Tuple[str, ...]:
+        return self._classifiers
 
     @property
     def cross_section(self) -> Polygon:

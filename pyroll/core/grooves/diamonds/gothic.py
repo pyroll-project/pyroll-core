@@ -1,6 +1,6 @@
 import numpy as np
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_three_radii
+from ..generic_elongation_solvers import solve_r123
 
 
 class GothicGroove(GenericElongationGroove):
@@ -28,7 +28,7 @@ class GothicGroove(GenericElongationGroove):
 
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_three_radii(r1, r2, r3, depth, usable_width, pad_angle)
+        sol = solve_r123(r1, r2, r3, depth, usable_width, pad_angle)
 
         super().__init__(
             usable_width=usable_width, depth=depth,
@@ -37,5 +37,5 @@ class GothicGroove(GenericElongationGroove):
         )
 
     @property
-    def types(self) -> '("oval", "oval_3_radii")':
-        return "diamond", "square", "gothic"
+    def classifiers(self):
+        return {"diamond", "square", "gothic"} | super().classifiers

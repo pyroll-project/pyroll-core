@@ -7,7 +7,7 @@ from .grooves import (
     SquareGroove, DiamondGroove, GothicGroove,
     RoundGroove, FalseRoundGroove,
     CircularOvalGroove, FlatOvalGroove, SwedishOvalGroove, ConstrictedSwedishOvalGroove, Oval3RadiiGroove,
-    Oval3RadiiFlankedGroove, UpsetOvalGroove,
+    Oval3RadiiFlankedGroove, UpsetOvalGroove, ConstrictedCircularOvalGroove,
     SplineGroove,
     GenericElongationGroove,
     FlatGroove,
@@ -30,7 +30,7 @@ root_hooks.update(
         Unit.OutProfile.cross_section,
         Unit.OutProfile.strain,
         Unit.OutProfile.length,
-        Unit.OutProfile.types,
+        Unit.OutProfile.classifiers,
         Unit.OutProfile.t,
         PassSequence.total_elongation,
     }

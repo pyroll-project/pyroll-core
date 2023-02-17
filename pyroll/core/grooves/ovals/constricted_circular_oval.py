@@ -1,21 +1,24 @@
 from typing import Optional
+
 import numpy as np
-from scipy.optimize import minimize, Bounds
-from numpy import sin, cos, tan, pi, array
+
 from ..generic_elongation import GenericElongationGroove
-from ..generic_elongation_solvers import solve_r123
+from ..generic_elongation_solvers import solve_r1234
 
 
-class Oval3RadiiGroove(GenericElongationGroove):
-    """Represents an oval-shaped groove with 3 main radii."""
+class ConstrictedCircularOvalGroove(GenericElongationGroove):
+    """Represents an oval-shaped groove with one main radius."""
 
     def __init__(
             self,
             r1: float,
             r2: float,
             r3: float,
+            r4: float,
             depth: float,
             usable_width: float,
+            indent: float,
+            even_ground_width: float = 0,
             pad_angle: float = 0,
             **kwargs
     ):
@@ -25,23 +28,26 @@ class Oval3RadiiGroove(GenericElongationGroove):
         :param r1: radius 1 (face/flank)
         :param r2: radius 2 (flank/ground)
         :param r3: radius 3 (ground)
+        :param r4: radius 4 (indent)
         :param depth: maximum depth
         :param usable_width: usable width of the groove
+        :param even_ground_width: width of the even ground line
         :param pad_angle: angle between z-axis and the roll face padding
         :param kwargs: more keyword arguments passed to the GenericElongationGroove constructor
         """
 
         pad_angle = np.deg2rad(pad_angle)
 
-        sol = solve_r123(r1, r2, r3, depth, usable_width, pad_angle)
+        sol = solve_r1234(r1, r2, r3, r4, depth, usable_width - even_ground_width, indent, pad_angle)
 
         super().__init__(
-            usable_width=usable_width, depth=depth,
-            r1=r1, r2=r2, r3=r3,
-            flank_angle=sol["flank_angle"], alpha3=sol["alpha3"], pad_angle=pad_angle,
+            usable_width=usable_width, depth=depth, indent=indent,
+            even_ground_width=even_ground_width,
+            r1=r1, r2=r2, r3=r3, r4=r4,
+            flank_angle=sol["flank_angle"], alpha3=sol["alpha3"], alpha4=sol["alpha4"], pad_angle=pad_angle,
             **kwargs
         )
 
     @property
     def classifiers(self):
-        return {"oval", "oval_3_radii"} | super().classifiers
+        return {"oval", "circular_oval", "constricted"} | super().classifiers

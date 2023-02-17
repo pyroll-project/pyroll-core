@@ -89,6 +89,6 @@ def cross_section(self: ThreeRollPass.OutProfile) -> Polygon:
     return poly
 
 
-@RollPass.OutProfile.types
-def types(self: RollPass.OutProfile):
-    return set(self.roll_pass.types)
+@RollPass.OutProfile.classifiers
+def classifiers(self: RollPass.OutProfile):
+    return set(self.roll_pass.classifiers)

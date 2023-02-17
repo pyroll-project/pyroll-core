@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 
 from ..generic_elongation import GenericElongationGroove
-from ..utils import solve_two_radii
+from ..generic_elongation_solvers import solve_r124
 
 
 class FalseRoundGroove(GenericElongationGroove):
@@ -23,6 +23,7 @@ class FalseRoundGroove(GenericElongationGroove):
             flank_length: Optional[float] = None,
 
             pad_angle: float = 0,
+            **kwargs
     ):
         """
         All angles are measured in ° (degree).
@@ -39,13 +40,14 @@ class FalseRoundGroove(GenericElongationGroove):
         :param flank_height: vertical extent of the flanks
         :param flank_length: length of the flanks
         :param pad_angle: angle between z-axis and the roll face padding
+        :param kwargs: more keyword arguments passed to the GenericElongationGroove constructor
         """
         pad_angle = np.deg2rad(pad_angle)
 
         if flank_angle is not None:
             flank_angle = np.deg2rad(flank_angle)
 
-        sol = solve_two_radii(
+        sol = solve_r124(
             r1=r1,
             r2=r2, depth=depth, width=usable_width,
             pad_angle=pad_angle,
@@ -54,9 +56,10 @@ class FalseRoundGroove(GenericElongationGroove):
 
         super().__init__(
             r2=sol["r2"], depth=sol["depth"], usable_width=sol["width"], flank_angle=sol["alpha"],
-            r1=r1, pad_angle=pad_angle
+            r1=r1, pad_angle=pad_angle,
+            **kwargs
         )
 
     @property
-    def types(self) -> '("round", "false_round")':
-        return "round", "false_round"
+    def classifiers(self):
+        return {"round", "false_round"} | super().classifiers
