@@ -98,8 +98,8 @@ class Unit(HookHost):
 
     def get_root_hook_results(self):
         in_profile_results = self.in_profile.evaluate_and_set_hooks()
-        self_results = self.evaluate_and_set_hooks()
         out_profile_results = self.out_profile.evaluate_and_set_hooks()
+        self_results = self.evaluate_and_set_hooks()
 
         return np.concatenate([in_profile_results, self_results, out_profile_results], axis=0)
 
