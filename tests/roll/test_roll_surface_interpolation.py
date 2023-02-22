@@ -35,7 +35,8 @@ def test_line_interpolation_z():
 def test_surface_plot(g):
     roll = Roll(
         groove=g,
-        nominal_radius=200
+        nominal_radius=200,
+        contact_length=50,
     )
     x = np.linspace(-100, 100, 100)
     z = np.linspace(-g.z1 * 1.1, g.z1 * 1.1, 50)

@@ -9,3 +9,6 @@ DEFAULT_MAX_ITERATION_COUNT = 100
 
 DEFAULT_ITERATION_PRECISION = 1e-2
 """Default precision of iteration loops required to break successfully."""
+
+ROLL_SURFACE_DISCRETIZATION_COUNT = 100
+"""Count of discrete points used to describe the roll surface."""

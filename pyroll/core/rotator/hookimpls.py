@@ -7,10 +7,10 @@ def rotated_cross_section(self: Rotator.OutProfile):
     return rotate(self.rotator.in_profile.cross_section, angle=self.rotator.rotation, origin=(0, 0))
 
 
-@Rotator.OutProfile.types
-def types(self: Rotator.OutProfile):
+@Rotator.OutProfile.classifiers
+def classifiers(self: Rotator.OutProfile):
     r = self.rotator
-    t: set = r.in_profile.types | {"rotated"}
+    t: set = r.in_profile.classifiers | {"rotated"}
 
     if r.rotation == 45:
         t.add("edged")

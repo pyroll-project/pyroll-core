@@ -1,7 +1,7 @@
 import numpy as np
 
 from .roll import Roll
-from ..config import GROOVE_PADDING
+from ..config import ROLL_SURFACE_DISCRETIZATION_COUNT
 
 
 @Roll.working_radius
@@ -36,7 +36,7 @@ def rotational_frequency(self: Roll):
 
 @Roll.width
 def width(self: Roll):
-    return self.groove.width * (1 + 2 * GROOVE_PADDING)
+    return self.groove.width
 
 
 @Roll.contour_points
@@ -46,8 +46,12 @@ def contour_points(self: Roll):
 
 @Roll.surface_x
 def surface_x(self: Roll):
-    half_pi = np.pi / 2
-    return -self.min_radius * np.sin(np.linspace(-half_pi, half_pi, 101))
+    padded_contact_angle = np.arcsin(1.1 * self.contact_length / self.min_radius)
+    points = np.concatenate([
+        np.linspace(0, padded_contact_angle, ROLL_SURFACE_DISCRETIZATION_COUNT, endpoint=False),
+        np.linspace(padded_contact_angle, np.pi / 2, ROLL_SURFACE_DISCRETIZATION_COUNT),
+    ])
+    return self.min_radius * np.sin(np.concatenate([-points[::-1], points[1:]]))
 
 
 @Roll.surface_z
