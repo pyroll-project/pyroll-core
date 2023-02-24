@@ -18,6 +18,7 @@ dependencies = [
 path = ""
 dependencies = [
     "pytest ~= 7.0",
+    "matplotlib ~= 3.6",
 ]
 
 [[envs.test.matrix]]

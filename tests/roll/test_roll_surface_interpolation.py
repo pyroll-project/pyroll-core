@@ -8,7 +8,8 @@ from pyroll.core import Roll, RoundGroove, ConstrictedBoxGroove, Oval3RadiiFlank
 def test_line_interpolation_z():
     roll = Roll(
         groove=RoundGroove(r1=2, r2=10, depth=10),
-        nominal_radius=100
+        nominal_radius=100,
+        contact_length=50,
     )
 
     interp = roll.surface_interpolation(0, roll.surface_z).squeeze()

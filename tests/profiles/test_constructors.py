@@ -41,16 +41,11 @@ def test_from_groove_errors():
         Profile.from_groove(groove, width=100, height=50)
 
 
-@pytest.mark.xfail
 def test_from_groove_warnings(caplog):
     logging.getLogger("pyroll").error("Marker Error")
 
     Profile.from_groove(groove, width=45, height=50)
     Profile.from_groove(groove, filling=1.05, gap=3)
-
-    if not caplog.records:
-        pytest.xfail(
-            "Expected to fail if ran together with CLI tests, since CLI is modifying logging, so pytest does not capture.")
 
     assert len([r for r in caplog.records if r.levelname == "WARNING" and r.msg.startswith("Encountered")]) > 1
 

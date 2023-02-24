@@ -76,7 +76,7 @@ def cross_section(self: RollPass.OutProfile) -> Polygon:
 def cross_section(self: ThreeRollPass.OutProfile) -> Polygon:
     poly = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines]))
 
-    if self.width > self.roll_pass.roll.width:
+    if self.width / 2 > poly.bounds[3] * 1.01:
         raise ValueError(
             "Profile's width can not be larger than its contour lines."
             "May be caused by critical overfilling."
