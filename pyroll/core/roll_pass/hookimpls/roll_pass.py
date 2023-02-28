@@ -81,7 +81,7 @@ def contact_area3(self: ThreeRollPass):
 
 @RollPass.velocity
 def velocity(self: RollPass):
-    return self.roll.working_radius * self.roll.rotational_frequency
+    return self.roll.working_radius * self.roll.rotational_frequency * 2 * np.pi
 
 
 @RollPass.duration
