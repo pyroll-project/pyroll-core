@@ -60,3 +60,9 @@ class PassSequence(Unit, Sequence[Unit]):
     @property
     def units(self) -> List[Unit]:
         return self._subunits
+
+    @property
+    def __attrs__(self):
+        return super().__attrs__ | {
+            "units": self.units
+        }
