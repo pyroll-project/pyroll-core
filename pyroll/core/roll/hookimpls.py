@@ -21,12 +21,12 @@ def max_radius(self: Roll):
 
 @Roll.roll_power
 def roll_power(self: Roll):
-    return self.roll_torque * self.rotational_frequency
+    return self.roll_torque * self.rotational_frequency * 2 * np.pi
 
 
 @Roll.surface_velocity
 def surface_velocity(self: Roll):
-    return self.rotational_frequency * self.nominal_radius
+    return self.rotational_frequency * self.nominal_radius * 2 * np.pi
 
 
 @Roll.rotational_frequency
