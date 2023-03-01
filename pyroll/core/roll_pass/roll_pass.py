@@ -35,8 +35,6 @@ class RollPass(DiskElementUnit, DeformationUnit):
     roll_force = Hook[float]()
     """Vertical roll force."""
 
-
-
     front_tension = Hook[float]()
     """Front tension acting on the current roll pass."""
 

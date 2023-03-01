@@ -37,7 +37,16 @@ def roll_force(self: RollPass):
 @RollPass.tip_width
 def tip_width(self):
     if isinstance(self.roll.groove, GenericElongationGroove):
-        return self.roll.groove.usable_width + self.gap / 2 / np.tan(self.roll.groove.alpha1)
+        return self.roll.groove.usable_width + self.gap / 2 / np.tan(self.roll.groove.flank_angle)
+
+
+@ThreeRollPass.tip_width
+def tip_width3(self):
+    if isinstance(self.roll.groove, GenericElongationGroove):
+        return (
+                2 / 3 * np.sqrt(3) * (self.roll.groove.usable_width + self.gap / 2)
+                + self.gap / np.sqrt(3) * np.cos(self.roll.groove.flank_angle)
+        )
 
 
 @RollPass.gap
