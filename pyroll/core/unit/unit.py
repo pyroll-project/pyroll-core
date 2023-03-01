@@ -42,10 +42,10 @@ class Unit(HookHost):
 
         self._parent = weakref.ref(parent) if parent is not None else None
 
-        self.in_profile = None
+        self.in_profile: Optional[Unit.InProfile] = None
         """The state of the incoming profile."""
 
-        self.out_profile = None
+        self.out_profile: Optional[Unit.OutProfile] = None
         """The state of the outgoing profile."""
 
         self.__dict__.update(kwargs)

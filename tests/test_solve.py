@@ -7,6 +7,11 @@ import numpy as np
 from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, SquareGroove
 
 
+@RollPass.Profile.flow_stress
+def flow_stress(self: RollPass.Profile):
+    return 50e6 * (1 + self.strain) ** 0.2 * self.roll_pass.strain_rate ** 0.1
+
+
 def test_solve(tmp_path: Path, caplog):
     caplog.set_level(logging.DEBUG, logger="pyroll")
 
@@ -15,7 +20,6 @@ def test_solve(tmp_path: Path, caplog):
         temperature=1200 + 273.15,
         strain=0,
         material=["C45", "steel"],
-        flow_stress=100e6,
         length=1,
     )
 
@@ -29,7 +33,8 @@ def test_solve(tmp_path: Path, caplog):
                     r2=40e-3
                 ),
                 nominal_radius=160e-3,
-                rotational_frequency=1
+                rotational_frequency=1,
+                neutral_point=-20e-3
             ),
             gap=2e-3,
         ),
