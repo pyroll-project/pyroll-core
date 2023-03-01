@@ -51,6 +51,12 @@ def velocity(self: Unit):
         return self.in_profile.velocity
 
 
+@Unit.OutProfile.velocity
+def out_velocity(self: Unit.OutProfile):
+    if self.unit.in_profile.has_set_or_cached("velocity"):
+        return self.unit.in_profile.velocity * self.unit.in_profile.cross_section.area / self.cross_section.area
+
+
 @Unit.OutProfile.x
 def out_x(self: Unit.OutProfile):
     return self.unit.in_profile.x + self.unit.length
@@ -59,4 +65,3 @@ def out_x(self: Unit.OutProfile):
 @Unit.OutProfile.t
 def out_t(self: Unit.OutProfile):
     return self.unit.in_profile.t + self.unit.duration
-
