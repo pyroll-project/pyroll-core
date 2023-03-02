@@ -37,7 +37,16 @@ def roll_force(self: RollPass):
 @RollPass.tip_width
 def tip_width(self):
     if isinstance(self.roll.groove, GenericElongationGroove):
-        return self.roll.groove.usable_width + self.gap / 2 / np.tan(self.roll.groove.alpha1)
+        return self.roll.groove.usable_width + self.gap / 2 / np.tan(self.roll.groove.flank_angle)
+
+
+@ThreeRollPass.tip_width
+def tip_width3(self):
+    if isinstance(self.roll.groove, GenericElongationGroove):
+        return (
+                2 / 3 * np.sqrt(3) * (self.roll.groove.usable_width + self.gap / 2)
+                + self.gap / np.sqrt(3) * np.cos(self.roll.groove.flank_angle)
+        )
 
 
 @RollPass.gap
@@ -81,7 +90,11 @@ def contact_area3(self: ThreeRollPass):
 
 @RollPass.velocity
 def velocity(self: RollPass):
-    return self.roll.working_radius * self.roll.rotational_frequency * 2 * np.pi
+    if self.roll.has_value("neutral_point"):
+        alpha = np.arcsin(-self.roll.neutral_point / self.roll.working_radius)
+    else:
+        alpha = 0
+    return self.roll.working_radius * self.roll.rotational_frequency * 2 * np.pi * np.cos(alpha)
 
 
 @RollPass.duration

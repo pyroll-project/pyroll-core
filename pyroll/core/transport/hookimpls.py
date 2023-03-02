@@ -7,16 +7,6 @@ def out_strain(self: Transport.OutProfile):
     return 0
 
 
-@Transport.OutProfile.velocity
-def out_velocity(self: Transport.OutProfile):
-    return self.transport.velocity
-
-
-@Transport.velocity
-def velocity(self: Transport):
-    return self.in_profile.velocity
-
-
 @Transport.duration
 def duration(self: Transport):
     return self.length / self.velocity
