@@ -1,10 +1,14 @@
 import os
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Iterable, Mapping, Any, Callable
 
 
 class ConfigValue:
-    def __init__(self, default=None, env_var: Optional[str] = None, env_var_prefix: Optional[str] = None):
+    def __init__(self, default, env_var: Optional[str] = None, env_var_prefix: Optional[str] = None,
+                 parser: Optional[Callable[[str], Any]] = None):
         self.default = default
+        self.type = type(default)
+        self.parser = parser
 
         self._env_var = env_var
         self._env_var_prefix = env_var_prefix
@@ -31,7 +35,7 @@ class ConfigValue:
         value = os.getenv(self.env_var, None)
 
         if value is not None:
-            return value
+            return self._parse(value)
 
         return self.default
 
@@ -41,19 +45,40 @@ class ConfigValue:
     def __delete__(self, instance):
         delattr(instance, "_" + self.name)
 
+    def _parse(self, s: str):
+        if self.parser:
+            return self.parser(s)
+        if self.type is bool:
+            if s.lower().strip() == "true":
+                return True
+            elif s.lower().strip() == "false":
+                return False
+            raise ValueError(f"{s} could not be parsed to bool")
+        if self.type is Path:
+            return Path(s)
+        if self.type is str:
+            return s
+        if issubclass(self.type, Mapping):
+            return self.type((p2.strip() for p2 in p.strip().split("=")) for p in s.split(","))
+        if issubclass(self.type, Iterable):
+            return self.type(p.strip() for p in s.split(","))
+
+        return self.type(s)
+
 
 def config(env_var_prefix):
     def dec(cls):
-        cls_dict = {}
+        meta_dict = {}
 
         for n, v in cls.__dict__.items():
             if not isinstance(v, ConfigValue):
-                cls_dict[n] = ConfigValue(default=v, env_var_prefix=env_var_prefix)
+                meta_dict[n] = ConfigValue(default=v, env_var_prefix=env_var_prefix)
             else:
-                cls_dict[n] = ConfigValue(default=v.default, env_var_prefix=env_var_prefix)
+                meta_dict[n] = ConfigValue(default=v.default, env_var_prefix=env_var_prefix)
 
-        cls = type(cls)(cls.__name__, cls.__bases__, cls_dict)
-        return cls()
+        meta = type(cls.__name__ + "Meta", (type,), meta_dict)
+        cls = meta(cls.__name__, cls.__bases__, {})
+        return cls
 
     return dec
 
