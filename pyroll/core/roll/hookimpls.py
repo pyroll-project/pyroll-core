@@ -1,7 +1,7 @@
 import numpy as np
 
 from .roll import Roll
-from ..config import ROLL_SURFACE_DISCRETIZATION_COUNT
+from ..config import Config
 
 
 @Roll.working_radius
@@ -48,8 +48,8 @@ def contour_points(self: Roll):
 def surface_x(self: Roll):
     padded_contact_angle = np.arcsin(1.1 * self.contact_length / self.min_radius)
     points = np.concatenate([
-        np.linspace(0, padded_contact_angle, ROLL_SURFACE_DISCRETIZATION_COUNT, endpoint=False),
-        np.linspace(padded_contact_angle, np.pi / 2, ROLL_SURFACE_DISCRETIZATION_COUNT),
+        np.linspace(0, padded_contact_angle, Config.ROLL_SURFACE_DISCRETIZATION_COUNT, endpoint=False),
+        np.linspace(padded_contact_angle, np.pi / 2, Config.ROLL_SURFACE_DISCRETIZATION_COUNT),
     ])
     return self.min_radius * np.sin(np.concatenate([-points[::-1], points[1:]]))
 
