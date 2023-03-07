@@ -4,6 +4,9 @@ from typing import Optional, Iterable, Mapping, Any, Callable
 
 
 class ConfigValue:
+    """Helper descriptor for storing configuration values, able to determine the value from explictly set values,
+     environment variables and default values."""
+
     def __init__(self, default, env_var: Optional[str] = None, env_var_prefix: Optional[str] = None,
                  parser: Optional[Callable[[str], Any]] = None):
         self.default = default
@@ -21,6 +24,7 @@ class ConfigValue:
 
     @property
     def env_var(self):
+        """The name of the related environment variable."""
         if self._env_var:
             return self._env_var
 
@@ -46,6 +50,7 @@ class ConfigValue:
         delattr(instance, "_" + self.name)
 
     def _parse(self, s: str):
+        """Parse value from string."""
         if self.parser:
             return self.parser(s)
         if self.type is bool:
@@ -67,17 +72,40 @@ class ConfigValue:
 
 
 def config(env_var_prefix):
+    """
+    Decorator for creating config classes.
+    Automatically creates a metaclass with respective :py:class:`ConfigValue` descriptors for class attributes with
+    uppercase names that do not start with underscore.
+
+    Use it as follows::
+
+        @config("PREFIX")
+        class Config:
+            VAR1 = 42
+            VAR2 = "abc"
+
+            # not modified
+            _PRIV_VAR = None
+            normal_var = None
+
+
+    :param env_var_prefix: prefix for the respective env vars, should be uppercase and delimited by underscores
+    """
+
     def dec(cls):
         meta_dict = {}
+        cls_dict = dict(cls.__dict__)
 
         for n, v in cls.__dict__.items():
-            if not isinstance(v, ConfigValue):
-                meta_dict[n] = ConfigValue(default=v, env_var_prefix=env_var_prefix)
-            else:
-                meta_dict[n] = ConfigValue(default=v.default, env_var_prefix=env_var_prefix)
+            if n.isupper() and not n.startswith("_"):
+                del cls_dict[n]
+                if not isinstance(v, ConfigValue):
+                    meta_dict[n] = ConfigValue(default=v, env_var_prefix=env_var_prefix)
+                else:
+                    meta_dict[n] = ConfigValue(default=v.default, env_var_prefix=env_var_prefix)
 
         meta = type(cls.__name__ + "Meta", (type,), meta_dict)
-        cls = meta(cls.__name__, cls.__bases__, {})
+        cls = meta(cls.__name__, cls.__bases__, cls_dict)
         return cls
 
     return dec
@@ -85,6 +113,7 @@ def config(env_var_prefix):
 
 @config("PYROLL_CORE")
 class Config:
+    """Configuration class for ``pyroll.core``."""
     ROLL_PASS_AUTO_ROTATION = True
     """Whether to enable automatic rotation of incoming profiles in roll passes by default."""
 
