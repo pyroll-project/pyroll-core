@@ -71,6 +71,31 @@ class ConfigValue:
         return self.type(s)
 
 
+class ConfigMeta(type):
+    def to_dict(cls):
+        """Return the config values of this class as dict."""
+        return {
+            n: v
+            for n, v in type(cls).__dict__.items()
+            if isinstance(v, ConfigValue)
+        }
+
+    def update(cls, d: dict[str, Any]):
+        """
+        Update the config values of this class from a dict.
+
+        :return: the updated contents
+        """
+        for n, v in d.items():
+            cv = type(cls).__dict__.get(n, None)
+            if isinstance(cv, ConfigValue):
+                setattr(cls, n, v)
+            else:
+                AttributeError(f"{cls} has no config value {n}")
+
+        return cls.to_dict()
+
+
 def config(env_var_prefix):
     """
     Decorator for creating config classes.
@@ -104,7 +129,7 @@ def config(env_var_prefix):
                 else:
                     meta_dict[n] = ConfigValue(default=v.default, env_var_prefix=env_var_prefix)
 
-        meta = type(cls.__name__ + "Meta", (type,), meta_dict)
+        meta = type(cls.__name__ + "Meta", (ConfigMeta,), meta_dict)
         cls = meta(cls.__name__, cls.__bases__, cls_dict)
         return cls
 
