@@ -301,11 +301,13 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
     def __init__(self):
         self.__cache__ = dict()
 
-    def clear_cache(self):
+    def reevaluate_cache(self):
         """
         Clears the cache of hook function results.
         """
-        self.__cache__.clear()
+        for n in list(self.__cache__.keys()):
+            hook = getattr(type(self), n)
+            self.__cache__[n] = hook.get_result(self)
 
     def has_set(self, name: str):
         """Checks whether a value is explicitly set for the hook `name`."""

@@ -103,10 +103,10 @@ class Unit(HookHost):
 
         return np.concatenate([in_profile_results, self_results, out_profile_results], axis=0)
 
-    def clear_cache(self):
-        self.in_profile.clear_cache()
-        super().clear_cache()
-        self.out_profile.clear_cache()
+    def reevaluate_cache(self):
+        self.in_profile.reevaluate_cache()
+        super().reevaluate_cache()
+        self.out_profile.reevaluate_cache()
 
     def _solve_subunits(self):
         last_profile = self.in_profile
@@ -129,8 +129,8 @@ class Unit(HookHost):
         self.init_solve(in_profile)
 
         for i in range(1, self.max_iteration_count):
-            self.clear_cache()
             self._solve_subunits()
+            self.reevaluate_cache()
             current_results = self.get_root_hook_results()
 
             if np.all(
