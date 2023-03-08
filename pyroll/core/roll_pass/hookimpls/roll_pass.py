@@ -5,17 +5,17 @@ from ..three_roll_pass import ThreeRollPass
 from ...rotator import Rotator
 from ...grooves import GenericElongationGroove
 
-from ...config import ROLL_PASS_AUTO_ROTATION
+from ...config import Config
 
 
 @RollPass.rotation
 def auto_rotation(self: RollPass):
-    return ROLL_PASS_AUTO_ROTATION
+    return Config.ROLL_PASS_AUTO_ROTATION
 
 
 @RollPass.rotation
 def detect_already_rotated(self: RollPass):
-    if ROLL_PASS_AUTO_ROTATION and self.parent is not None:
+    if Config.ROLL_PASS_AUTO_ROTATION and self.parent is not None:
         try:
             prev = self.prev
         except IndexError:

@@ -5,7 +5,7 @@ from shapely.geometry import LineString, Polygon
 
 from pyroll.core.grooves import GrooveBase
 from pyroll.core.repr import ReprMixin
-from ..config import GROOVE_PADDING
+from ..config import Config
 
 
 class GenericElongationGroove(GrooveBase, ReprMixin):
@@ -32,7 +32,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
             even_ground_width: float = 0,
 
             pad: float = 0,
-            rel_pad: float = GROOVE_PADDING,
+            rel_pad: float = Config.GROOVE_PADDING,
             pad_angle: float = 0,
 
             classifiers: Sequence[str] = ()

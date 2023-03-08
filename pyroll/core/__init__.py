@@ -22,6 +22,7 @@ from .rotator import Rotator
 from .sequence import PassSequence
 from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
+from .config import Config, config
 
 root_hooks.update(
     {
