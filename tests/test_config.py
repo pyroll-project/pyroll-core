@@ -81,3 +81,10 @@ def test_config_hidden():
     assert not hasattr(type(Config), "_HIDDEN")
     assert not hasattr(type(Config), "hidden")
     assert not hasattr(type(Config), "_hidden")
+
+
+def test_config_del():
+    Config.VAR = 42
+    assert Config.VAR == 42
+    del Config.VAR
+    assert Config.VAR == 1
