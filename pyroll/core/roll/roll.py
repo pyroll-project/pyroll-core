@@ -111,8 +111,8 @@ class Roll(HookHost):
 
         self._contour_line = None
 
-    def clear_cache(self):
-        super().clear_cache()
+    def reevaluate_cache(self):
+        super().reevaluate_cache()
         self._contour_line = None
 
     @property

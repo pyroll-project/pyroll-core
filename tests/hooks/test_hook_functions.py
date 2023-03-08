@@ -112,9 +112,8 @@ def test_cache():
     assert host.hook1 == 21
     assert host.has_cached("hook1")
 
-    host.clear_cache()
+    host.reevaluate_cache()
 
-    assert not host.has_cached("hook1")
     assert host.hook1 == 42
 
 
