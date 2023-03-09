@@ -70,7 +70,7 @@ def strain(self: DeformationUnit):
 
 @DeformationUnit.strain_rate
 def strain_rate(self: DeformationUnit):
-    return self.strain / self.duration
+    return np.abs(self.strain) / self.duration
 
 
 @DeformationUnit.free_surface_area
