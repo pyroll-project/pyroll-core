@@ -94,7 +94,7 @@ def velocity(self: RollPass):
         alpha = np.arcsin(-self.roll.neutral_point / self.roll.working_radius)
     else:
         alpha = 0
-    return self.roll.working_radius * self.roll.rotational_frequency * 2 * np.pi * np.cos(alpha)
+    return self.roll.surface_velocity * np.cos(alpha)
 
 
 @RollPass.duration
