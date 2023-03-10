@@ -65,7 +65,7 @@ def rel_elongation(self: DeformationUnit):
 
 @DeformationUnit.strain
 def strain(self: DeformationUnit):
-    return self.log_elongation
+    return np.sqrt(2 / 3 * (self.log_elongation ** 2 + self.log_spread ** 2 + self.log_draught ** 2))
 
 
 @DeformationUnit.strain_rate
