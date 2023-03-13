@@ -16,7 +16,7 @@ def contact_length(self: RollPass.Roll):
 
 @RollPass.Roll.contact_length
 def contact_length_square_oval(self: RollPass.Roll):
-    if {"square", "box"}.intersection(self.roll_pass.in_profile.classifiers) and "oval" in self.roll_pass.classifiers:
+    if "square" in self.roll_pass.in_profile.classifiers and "oval" in self.roll_pass.classifiers:
         depth = self.groove.local_depth(self.roll_pass.in_profile.width / 2)
         height_change = self.roll_pass.in_profile.height - self.roll_pass.gap - 2 * depth
         radius = self.max_radius - depth
