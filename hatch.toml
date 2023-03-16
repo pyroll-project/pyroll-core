@@ -11,7 +11,8 @@ path = ".venv"
 dependencies = [
     "ipython ~= 8.0",
     "pytest ~= 7.0",
-    "pyroll-report ~= 2.0.0rc",
+    "matplotlib ~= 3.6",
+    "pyroll-report ~= 2.0.0",
 ]
 
 [envs.test]
