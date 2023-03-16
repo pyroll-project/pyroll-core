@@ -14,11 +14,10 @@ Further functionality is provided via [extension packages](https://pyroll.readth
 
 ## Versions
 
-The main branch of this repository contains the code of the version 2.0 of PyRolL, which is under ongoing development and currently in beta state.
+The main branch of this repository contains the code of the version 2.0 of PyRolL.
 See the [backport branch](https://github.com/pyroll-project/pyroll-core/tree/v1.0_backport) for the code of version 1.0.
-Version 1.0 will be out of support, as version 2.0 is released.
-Consider to start development targeting version 2.0 as soon as possible.
-The API of version 2.0 is mostly fixed, but there may be minor but breaking changes until release.
+Version 1.0 is now out of support, as version 2.0 has been released.
+It is recommended to develop new plugins and extensions only for 2.0.
 
 ### Principal Changes of Version 2.0 Respective to 1.0
 
