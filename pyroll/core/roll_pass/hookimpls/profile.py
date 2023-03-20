@@ -37,10 +37,11 @@ def width(self: RollPass.OutProfile, cycle):
     if cycle:
         return None
 
-    def w(x):
-        return self.equivalent_width ** 2 / helpers.out_cross_section(self.roll_pass, x).area * self.height
+    if self.has_set("equivalent_width"):
+        def w(x):
+            return self.equivalent_width ** 2 / helpers.out_cross_section(self.roll_pass, x).area * self.height
 
-    return fixed_point(w, x0=self.width)
+        return fixed_point(w, x0=self.width)
 
 
 @RollPass.OutProfile.length
@@ -73,7 +74,6 @@ def cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
             "May be caused by critical overfilling."
         )
     return cs
-
 
 
 @RollPass.OutProfile.classifiers
