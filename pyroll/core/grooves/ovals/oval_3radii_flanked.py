@@ -1,8 +1,6 @@
 from typing import Optional
 
 import numpy as np
-from scipy.optimize import brentq
-from numpy import sin, cos, tan, pi
 
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r123

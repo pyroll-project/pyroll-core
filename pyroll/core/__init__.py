@@ -1,16 +1,6 @@
 from . import shapes as _
 
-from .grooves import (
-    BoxGroove, ConstrictedBoxGroove, UpsetBoxGroove, ConstrictedUpsetBoxGroove,
-    SquareGroove, DiamondGroove, GothicGroove,
-    RoundGroove, FalseRoundGroove,
-    CircularOvalGroove, FlatOvalGroove, SwedishOvalGroove, ConstrictedSwedishOvalGroove, Oval3RadiiGroove,
-    Oval3RadiiFlankedGroove, UpsetOvalGroove, ConstrictedCircularOvalGroove,
-    SplineGroove,
-    GenericElongationGroove,
-    FlatGroove,
-    HexagonalGroove
-)
+from .grooves import *
 from .transport import Transport
 from .roll_pass import RollPass, DeformationUnit, ThreeRollPass
 from .unit import Unit

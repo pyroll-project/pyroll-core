@@ -1,7 +1,4 @@
-from typing import Optional
 import numpy as np
-from scipy.optimize import minimize, Bounds
-from numpy import sin, cos, tan, pi, array
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r123
 

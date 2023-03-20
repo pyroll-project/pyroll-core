@@ -1,4 +1,3 @@
-import numpy as np
 from numpy import deg2rad
 
 from .generic_elongation import GenericElongationGroove
@@ -28,4 +27,4 @@ class FlatGroove(GenericElongationGroove):
 
     @property
     def classifiers(self):
-        return {"flat",} | super().classifiers
+        return {"flat", } | super().classifiers
