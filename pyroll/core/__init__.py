@@ -1,4 +1,4 @@
-VERSION = "2.0.0"
+VERSION = "2.0.0.post1"
 
 from . import shapes as _
 

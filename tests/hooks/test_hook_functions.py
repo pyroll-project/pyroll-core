@@ -243,3 +243,23 @@ def test_tryfirst_and_trylast_inherited():
     assert Host2.hook1.functions == [
         ff22, ff12, ff2, ff1, f22, f12, f2, f1, fl22, fl12, fl2, fl1
     ]
+
+
+def test_context_manager():
+    class Host(HookHost):
+        hook1 = Hook[Any]()
+
+    host = Host()
+
+    @Host.hook1
+    def f1(self: Host):
+        return 21
+
+    def f2(self):
+        return 42
+
+    with Host.hook1(f2):
+        assert host.hook1 == 42
+
+    host.__cache__.clear()
+    assert host.hook1 == 21

@@ -84,6 +84,12 @@ class HookFunction:
 
         return extra_args
 
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.hook.remove_function(self)
+
 
 class Hook(Generic[T]):
     """
