@@ -24,14 +24,9 @@ def strain(self: RollPass.OutProfile):
     return self.roll_pass.in_profile.strain + self.roll_pass.strain
 
 
-@ThreeRollPass.OutProfile.width
-def width(self: ThreeRollPass.OutProfile):
-    return 2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2)
-
-
 @RollPass.OutProfile.width
 def width(self: RollPass.OutProfile):
-    return self.roll_pass.roll.groove.usable_width
+    return self.roll_pass.usable_width
 
 
 @RollPass.OutProfile.width
@@ -47,12 +42,7 @@ def length(self: RollPass.OutProfile):
 
 @RollPass.OutProfile.filling_ratio
 def filling_ratio(self: RollPass.OutProfile):
-    return self.width / self.roll_pass.roll.groove.usable_width
-
-
-@ThreeRollPass.OutProfile.filling_ratio
-def filling_ratio(self: ThreeRollPass.OutProfile):
-    return self.width / (2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2))
+    return self.width / self.roll_pass.usable_width
 
 
 @RollPass.OutProfile.cross_section
@@ -73,7 +63,7 @@ def cross_section(self: RollPass.OutProfile) -> Polygon:
 
 
 @ThreeRollPass.OutProfile.cross_section
-def cross_section(self: ThreeRollPass.OutProfile) -> Polygon:
+def cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
     poly = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines]))
 
     if self.width / 2 > poly.bounds[3] * 1.01:

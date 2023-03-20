@@ -1,4 +1,8 @@
+import math
+
 import numpy as np
+from shapely import Polygon, clip_by_rect
+from shapely.affinity import rotate
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
@@ -34,6 +38,16 @@ def roll_force(self: RollPass):
     return (self.in_profile.flow_stress + 2 * self.out_profile.flow_stress) / 3 * self.roll.contact_area
 
 
+@RollPass.usable_width
+def usable_width(self: RollPass):
+    return self.roll.groove.usable_width
+
+
+@ThreeRollPass.usable_width
+def usable_width3(self: RollPass):
+    return 2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2)
+
+
 @RollPass.tip_width
 def tip_width(self):
     if isinstance(self.roll.groove, GenericElongationGroove):
@@ -47,6 +61,44 @@ def tip_width3(self):
                 2 / 3 * np.sqrt(3) * (self.roll.groove.usable_width + self.gap / 2)
                 + self.gap / np.sqrt(3) * np.cos(self.roll.groove.flank_angle)
         )
+
+
+@RollPass.usable_cross_section
+def usable_cross_section(self: RollPass.OutProfile) -> Polygon:
+    width = self.usable_width
+    poly = Polygon(np.concatenate([cl.coords for cl in self.contour_lines]))
+    return clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
+
+
+@ThreeRollPass.usable_cross_section
+def usable_cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
+    width = self.usable_width
+    poly = Polygon(np.concatenate([cl.coords for cl in self.contour_lines]))
+
+    for _ in range(3):
+        poly = clip_by_rect(poly, -math.inf, -math.inf, math.inf, width / 2)
+        poly = rotate(poly, angle=120, origin=(0, 0))
+
+    return poly
+
+
+@RollPass.tip_cross_section
+def tip_cross_section(self: RollPass.OutProfile) -> Polygon:
+    width = self.tip_width
+    poly = Polygon(np.concatenate([cl.coords for cl in self.contour_lines]))
+    return clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
+
+
+@ThreeRollPass.tip_cross_section
+def tip_cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
+    width = self.tip_width
+    poly = Polygon(np.concatenate([cl.coords for cl in self.contour_lines]))
+
+    for _ in range(3):
+        poly = clip_by_rect(poly, -math.inf, -math.inf, math.inf, width / 2)
+        poly = rotate(poly, angle=120, origin=(0, 0))
+
+    return poly
 
 
 @RollPass.gap
