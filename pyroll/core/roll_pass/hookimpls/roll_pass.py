@@ -10,6 +10,7 @@ from ...rotator import Rotator
 from ...grooves import GenericElongationGroove
 
 from ...config import Config
+from . import helpers
 
 
 @RollPass.rotation
@@ -64,41 +65,23 @@ def tip_width3(self):
 
 
 @RollPass.usable_cross_section
-def usable_cross_section(self: RollPass.OutProfile) -> Polygon:
-    width = self.usable_width
-    poly = Polygon(np.concatenate([cl.coords for cl in self.contour_lines]))
-    return clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
+def usable_cross_section(self: RollPass) -> Polygon:
+    return helpers.out_cross_section(self, self.usable_width)
 
 
 @ThreeRollPass.usable_cross_section
-def usable_cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
-    width = self.usable_width
-    poly = Polygon(np.concatenate([cl.coords for cl in self.contour_lines]))
-
-    for _ in range(3):
-        poly = clip_by_rect(poly, -math.inf, -math.inf, math.inf, width / 2)
-        poly = rotate(poly, angle=120, origin=(0, 0))
-
-    return poly
+def usable_cross_section3(self: ThreeRollPass) -> Polygon:
+    return helpers.out_cross_section3(self, self.usable_width)
 
 
 @RollPass.tip_cross_section
-def tip_cross_section(self: RollPass.OutProfile) -> Polygon:
-    width = self.tip_width
-    poly = Polygon(np.concatenate([cl.coords for cl in self.contour_lines]))
-    return clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
+def tip_cross_section(self: RollPass) -> Polygon:
+    return helpers.out_cross_section(self, self.tip_width)
 
 
 @ThreeRollPass.tip_cross_section
-def tip_cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
-    width = self.tip_width
-    poly = Polygon(np.concatenate([cl.coords for cl in self.contour_lines]))
-
-    for _ in range(3):
-        poly = clip_by_rect(poly, -math.inf, -math.inf, math.inf, width / 2)
-        poly = rotate(poly, angle=120, origin=(0, 0))
-
-    return poly
+def tip_cross_section3(self: ThreeRollPass) -> Polygon:
+    return helpers.out_cross_section3(self, self.tip_width)
 
 
 @RollPass.gap
