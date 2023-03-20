@@ -148,7 +148,7 @@ class Config:
     DEFAULT_MAX_ITERATION_COUNT = 100
     """Default maximum count of iterations before aborting the loop."""
 
-    DEFAULT_ITERATION_PRECISION = 1e-2
+    DEFAULT_ITERATION_PRECISION = 1e-3
     """Default precision of iteration loops required to break successfully."""
 
     ROLL_SURFACE_DISCRETIZATION_COUNT = 100
