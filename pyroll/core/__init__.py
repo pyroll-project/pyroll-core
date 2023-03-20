@@ -1,5 +1,3 @@
-VERSION = "2.0.0.post1"
-
 from . import shapes as _
 
 from .grooves import (
@@ -23,6 +21,8 @@ from .sequence import PassSequence
 from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
 from .config import Config, config
+
+VERSION = "2.0.1"
 
 root_hooks.update(
     {
