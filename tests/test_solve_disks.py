@@ -7,7 +7,9 @@ import numpy as np
 from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, SquareGroove
 
 
-def test_solve_disks(tmp_path: Path, caplog):
+def test_solve_disks(tmp_path: Path, caplog, monkeypatch):
+    monkeypatch.setenv("PYROLL_REPORT_PRINT_DISK_ELEMENTS", "True")
+
     caplog.set_level(logging.DEBUG, logger="pyroll")
 
     in_profile = Profile.round(
