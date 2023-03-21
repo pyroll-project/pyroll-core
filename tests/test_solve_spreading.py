@@ -4,17 +4,24 @@ from pathlib import Path
 
 import numpy as np
 
-from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, SquareGroove
+from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, \
+    root_hooks, Rotator
 
 
-def flow_stress(self: RollPass.Profile):
-    return 50e6 * (1 + self.strain) ** 0.2 * self.roll_pass.strain_rate ** 0.1
+def equivalent_width(self: RollPass.OutProfile, cycle):
+    if cycle:
+        return None
+
+    return self.roll_pass.in_profile.equivalent_width * self.roll_pass.draught ** -0.5
 
 
 def test_solve(tmp_path: Path, caplog):
-    caplog.set_level(logging.DEBUG, logger="pyroll")
+    caplog.set_level(logging.INFO, logger="pyroll")
 
-    with RollPass.Profile.flow_stress(flow_stress):
+    with RollPass.OutProfile.equivalent_width(equivalent_width):
+
+        root_hooks.add(RollPass.OutProfile.equivalent_width)
+        root_hooks.add(Rotator.OutProfile.equivalent_width)
 
         in_profile = Profile.round(
             diameter=30e-3,
@@ -22,6 +29,7 @@ def test_solve(tmp_path: Path, caplog):
             strain=0,
             material=["C45", "steel"],
             length=1,
+            flow_stress=100e6,
         )
 
         sequence = PassSequence([
@@ -81,6 +89,9 @@ def test_solve(tmp_path: Path, caplog):
             print("\nLog:")
             print(caplog.text)
 
+            root_hooks.remove(RollPass.OutProfile.equivalent_width)
+            root_hooks.remove(Rotator.OutProfile.equivalent_width)
+
     try:
         import pyroll.report
 
@@ -93,3 +104,5 @@ def test_solve(tmp_path: Path, caplog):
 
     except ImportError:
         pass
+
+    assert not np.isclose(sequence[0].out_profile.filling_ratio, 1)

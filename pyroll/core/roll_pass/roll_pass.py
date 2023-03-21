@@ -29,8 +29,20 @@ class RollPass(DiskElementUnit, DeformationUnit):
     height = Hook[float]()
     """Maximum height of the roll pass."""
 
+    usable_width = Hook[float]()
+    """
+    Usable width (width of ideal filling).
+    Equals the usable width of the groove for two-roll passes, but deviates for three and four-roll passes.
+    """
+
     tip_width = Hook[float]()
     """Width of the intersection of the extended groove flanks (theoretical maximum filling width)."""
+
+    usable_cross_section = Hook[Polygon]()
+    """Cross-section of the roll pass at ideal filling with its usable width."""
+
+    tip_cross_section = Hook[Polygon]()
+    """Cross-section of the roll pass at filling with its tip width."""
 
     roll_force = Hook[float]()
     """Vertical roll force."""

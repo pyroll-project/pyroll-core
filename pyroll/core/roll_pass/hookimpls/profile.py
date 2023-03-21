@@ -1,12 +1,15 @@
 import math
 
 import numpy as np
+from scipy.optimize import root_scalar, fixed_point
 from shapely.affinity import rotate
 from shapely.geometry import Polygon
 from shapely.ops import clip_by_rect
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
+
+from . import helpers
 
 
 @RollPass.InProfile.x
@@ -24,20 +27,21 @@ def strain(self: RollPass.OutProfile):
     return self.roll_pass.in_profile.strain + self.roll_pass.strain
 
 
-@ThreeRollPass.OutProfile.width
-def width(self: ThreeRollPass.OutProfile):
-    return 2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2)
+@RollPass.OutProfile.width
+def width(self: RollPass.OutProfile):
+    return self.roll_pass.usable_width
 
 
 @RollPass.OutProfile.width
-def width(self: RollPass.OutProfile):
-    return self.roll_pass.roll.groove.usable_width
+def width(self: RollPass.OutProfile, cycle):
+    if cycle:
+        return None
 
-
-@RollPass.OutProfile.width
-def width(self: RollPass.OutProfile):
     if self.has_set("equivalent_width"):
-        return self.equivalent_width ** 2 / self.cross_section.area * self.height
+        def w(x):
+            return self.equivalent_width ** 2 / helpers.out_cross_section(self.roll_pass, x).area * self.height
+
+        return fixed_point(w, x0=self.width)
 
 
 @RollPass.OutProfile.length
@@ -47,46 +51,29 @@ def length(self: RollPass.OutProfile):
 
 @RollPass.OutProfile.filling_ratio
 def filling_ratio(self: RollPass.OutProfile):
-    return self.width / self.roll_pass.roll.groove.usable_width
-
-
-@ThreeRollPass.OutProfile.filling_ratio
-def filling_ratio(self: ThreeRollPass.OutProfile):
-    return self.width / (2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2))
+    return self.width / self.roll_pass.usable_width
 
 
 @RollPass.OutProfile.cross_section
 def cross_section(self: RollPass.OutProfile) -> Polygon:
-    poly = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines]))
-
-    if (
-            # one percent tolerance to bypass discretization issues
-            - self.width / 2 < poly.bounds[0] * 1.01
-            or self.width / 2 > poly.bounds[2] * 1.01
-    ):
+    cs = helpers.out_cross_section(self.roll_pass, self.width)
+    if cs.width < self.width:
         raise ValueError(
             "Profile's width can not be larger than its contour lines."
             "May be caused by critical overfilling."
         )
-
-    return clip_by_rect(poly, -self.width / 2, -math.inf, self.width / 2, math.inf)
+    return cs
 
 
 @ThreeRollPass.OutProfile.cross_section
-def cross_section(self: ThreeRollPass.OutProfile) -> Polygon:
-    poly = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines]))
-
-    if self.width / 2 > poly.bounds[3] * 1.01:
+def cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
+    cs = helpers.out_cross_section3(self.roll_pass, self.width)
+    if (cs.bounds[3] - cs.centroid.y) * 2 < self.width:
         raise ValueError(
             "Profile's width can not be larger than its contour lines."
             "May be caused by critical overfilling."
         )
-
-    for _ in range(3):
-        poly = clip_by_rect(poly, -math.inf, -math.inf, math.inf, self.width / 2)
-        poly = rotate(poly, angle=120, origin=(0, 0))
-
-    return poly
+    return cs
 
 
 @RollPass.OutProfile.classifiers

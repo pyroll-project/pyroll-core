@@ -1,7 +1,6 @@
 from typing import Optional
 
 import numpy as np
-from scipy.optimize import root_scalar, minimize_scalar
 
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r124
@@ -41,4 +40,4 @@ class RoundGroove(GenericElongationGroove):
 
     @property
     def classifiers(self):
-        return {"round",} | super().classifiers
+        return {"round", } | super().classifiers

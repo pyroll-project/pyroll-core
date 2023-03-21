@@ -1,4 +1,4 @@
-from typing import Union, Tuple, Sequence, Optional
+from typing import Union, Sequence, Optional
 
 import numpy as np
 from shapely.geometry import LineString, Polygon

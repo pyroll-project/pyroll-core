@@ -104,12 +104,21 @@ class Unit(HookHost):
         return np.concatenate([in_profile_results, self_results, out_profile_results], axis=0)
 
     def _solve_subunits(self):
-        last_profile = self.in_profile
-        for u in self._subunits:
-            try:
-                last_profile = u.solve(last_profile)
-            except Exception as e:
-                raise RuntimeError(f"Solution of sub units failed at unit {u}.") from e
+        if self._subunits:
+            last_profile = self.in_profile
+
+            for u in self._subunits:
+                try:
+                    last_profile = u.solve(last_profile)
+                except Exception as e:
+                    raise RuntimeError(f"Solution of sub units failed at unit {u}.") from e
+
+            self.out_profile.__dict__.update(
+                {k: v for k, v in last_profile.__dict__.items() if not k.startswith("_")}
+            )
+            self.out_profile.__cache__.update(
+                {k: v for k, v in last_profile.__cache__.items() if not k.startswith("_")}
+            )
 
     def solve(self, in_profile: BaseProfile) -> BaseProfile:
         """
