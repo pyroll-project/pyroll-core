@@ -23,6 +23,7 @@ class Config:
     VAR_STR = "abc"
     VAR_DICT = {}
     PARSED = ConfigValue(CustomData(42), parser=lambda v: CustomData(int(v)))
+    SPEC_ENV = ConfigValue(42, env_var="P_SPEC_ENV")
 
 
 def test_config_default():
@@ -108,5 +109,12 @@ def test_parser(monkeypatch):
     assert Config.PARSED.value == 42
     monkeypatch.setenv("PYROLL_TEST_PARSED", "21")
     assert Config.PARSED.value == 21
+
+
+def test_env_var_override(monkeypatch):
+    assert type(Config).SPEC_ENV.env_var == "P_SPEC_ENV"
+    monkeypatch.setenv("P_SPEC_ENV", "21")
+    assert Config.SPEC_ENV == 21
+
 
 

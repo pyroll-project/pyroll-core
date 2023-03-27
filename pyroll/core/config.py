@@ -7,8 +7,14 @@ class ConfigValue:
     """Helper descriptor for storing configuration values, able to determine the value from explictly set values,
      environment variables and default values."""
 
-    def __init__(self, default, env_var: Optional[str] = None, env_var_prefix: Optional[str] = None,
-                 parser: Optional[Callable[[str], Any]] = None):
+    def __init__(
+            self,
+            default,
+            *,
+            env_var: Optional[str] = None,
+            env_var_prefix: Optional[str] = None,
+            parser: Optional[Callable[[str], Any]] = None
+    ):
         self.default = default
         self.type = type(default)
         self.parser = parser
