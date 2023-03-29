@@ -1,6 +1,12 @@
 import os
 
 from pyroll.core import config
+from pyroll.core.config import ConfigValue
+
+
+class CustomData:
+    def __init__(self, value: int):
+        self.value = value
 
 
 @config("PYROLL_TEST")
@@ -16,6 +22,8 @@ class Config:
     VAR_TUPLE = ("a", "b")
     VAR_STR = "abc"
     VAR_DICT = {}
+    PARSED = ConfigValue(CustomData(42), parser=lambda v: CustomData(int(v)))
+    SPEC_ENV = ConfigValue(42, env_var="P_SPEC_ENV")
 
 
 def test_config_default():
@@ -71,7 +79,7 @@ def test_config_explicit():
 
 
 def test_config_env_and_explicit(monkeypatch):
-    monkeypatch.setenv("PYROLL_TEST_PYROLL_TEST_VAR", "21")
+    monkeypatch.setenv("PYROLL_TEST_VAR", "21")
     Config.VAR = 42
 
     assert Config.VAR == 42
@@ -88,3 +96,25 @@ def test_config_del():
     assert Config.VAR == 42
     del Config.VAR
     assert Config.VAR == 1
+
+
+def test_config_meta():
+    meta = type(Config)
+    assert meta.__name__ == "ConfigMeta"
+
+    assert isinstance(meta.VAR, ConfigValue)
+
+
+def test_parser(monkeypatch):
+    assert Config.PARSED.value == 42
+    monkeypatch.setenv("PYROLL_TEST_PARSED", "21")
+    assert Config.PARSED.value == 21
+
+
+def test_env_var_override(monkeypatch):
+    assert type(Config).SPEC_ENV.env_var == "P_SPEC_ENV"
+    monkeypatch.setenv("P_SPEC_ENV", "21")
+    assert Config.SPEC_ENV == 21
+
+
+

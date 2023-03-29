@@ -7,8 +7,14 @@ class ConfigValue:
     """Helper descriptor for storing configuration values, able to determine the value from explictly set values,
      environment variables and default values."""
 
-    def __init__(self, default, env_var: Optional[str] = None, env_var_prefix: Optional[str] = None,
-                 parser: Optional[Callable[[str], Any]] = None):
+    def __init__(
+            self,
+            default,
+            *,
+            env_var: Optional[str] = None,
+            env_var_prefix: Optional[str] = None,
+            parser: Optional[Callable[[str], Any]] = None
+    ):
         self.default = default
         self.type = type(default)
         self.parser = parser
@@ -31,6 +37,9 @@ class ConfigValue:
         return f"{self._env_var_prefix}_{self.name.upper()}"
 
     def __get__(self, instance, owner):
+        if instance is None:
+            return self
+
         value = getattr(instance, "_" + self.name, None)
 
         if value is not None:
@@ -127,7 +136,13 @@ def config(env_var_prefix):
                 if not isinstance(v, ConfigValue):
                     meta_dict[n] = ConfigValue(default=v, env_var_prefix=env_var_prefix)
                 else:
-                    meta_dict[n] = ConfigValue(default=v.default, env_var_prefix=env_var_prefix)
+                    # noinspection PyProtectedMember
+                    meta_dict[n] = ConfigValue(
+                        default=v.default,
+                        env_var_prefix=env_var_prefix,
+                        env_var=v._env_var,
+                        parser=v.parser
+                    )
 
         meta = type(cls.__name__ + "Meta", (ConfigMeta,), meta_dict)
         cls = meta(cls.__name__, cls.__bases__, cls_dict)
