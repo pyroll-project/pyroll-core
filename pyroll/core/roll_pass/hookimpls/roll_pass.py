@@ -46,7 +46,7 @@ def usable_width(self: RollPass):
 
 @ThreeRollPass.usable_width
 def usable_width3(self: RollPass):
-    return 2 / 3 * np.sqrt(3) * (self.roll_pass.roll.groove.usable_width + self.roll_pass.gap / 2)
+    return 2 / 3 * np.sqrt(3) * (self.roll.groove.usable_width + self.gap / 2)
 
 
 @RollPass.tip_width

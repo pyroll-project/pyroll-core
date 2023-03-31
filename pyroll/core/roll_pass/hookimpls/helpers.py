@@ -13,7 +13,6 @@ def out_cross_section(rp: RollPass, width: float) -> Polygon:
     return clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
 
 
-@ThreeRollPass.usable_cross_section
 def out_cross_section3(rp: ThreeRollPass, width: float) -> Polygon:
     poly = Polygon(np.concatenate([cl.coords for cl in rp.contour_lines]))
 
