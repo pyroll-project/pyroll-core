@@ -107,6 +107,7 @@ class RollPass(DiskElementUnit, DeformationUnit):
             in_profile = rotator.out_profile
 
         super().init_solve(in_profile)
+        self.out_profile.cross_section = self.usable_cross_section
 
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
