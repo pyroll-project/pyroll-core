@@ -4,7 +4,7 @@ import weakref
 from abc import ABCMeta
 from copy import deepcopy
 from functools import partial
-from typing import overload, TypeVar, Generic, List, Generator, Union
+from typing import overload, TypeVar, Generic, List, Generator, Union, Optional, Any
 
 import numpy as np
 
@@ -369,6 +369,13 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
             if not n.startswith("_") and not isinstance(v, weakref.ref)
         }
 
+    def root_hook_fallback(self, hook: Hook) -> Optional[Any]:
+        """
+        May return a fallback value for getting of root hooks.
+        The default implementation returns None, may be overridden in subclasses.
+        """
+        return None
+
     def evaluate_and_set_hooks(self):
         """Evaluate functions of root hooks and set the results explicitly as attributes."""
 
@@ -379,7 +386,10 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
                     result = h.get_result(self)
 
                     if result is None:
-                        continue
+                        result = self.root_hook_fallback(h)
+
+                    if result is None:
+                        raise AttributeError("Call for root hook resulted in None.")
 
                     setattr(self, h.name, result)
 

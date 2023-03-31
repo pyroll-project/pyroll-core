@@ -207,6 +207,10 @@ class Unit(HookHost):
     class OutProfile(Profile):
         """Represents an outgoing profile of a unit."""
 
+        def root_hook_fallback(self, hook):
+            """Copy the value from the in profile as fallback for root hooks."""
+            return getattr(self.unit.in_profile, hook.name, None)
+
     class _SubUnitsList(list):
         """Specialized list for holding the units of a pass sequence."""
 
