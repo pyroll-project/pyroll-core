@@ -38,6 +38,7 @@ class Split(GenericElongationGroove):
             left_side[:, 0] *= -1
             list1 = np.concatenate([left_side, right_side[::-1]])
             list2 = groove._contour_points.copy()
-            axisshift = 2*list1[-1,0]
+            axisshift = abs(list1[-1,0])
             list1[:,0] = list1[:,0] - axisshift
+            list2[:,0] = list2[:,0] + axisshift
             return (np.concatenate([list2,list1]))
