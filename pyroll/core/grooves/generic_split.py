@@ -14,6 +14,8 @@ class Split(GenericElongationGroove):
                          alpha1 = groove.alpha1, alpha2 = groove.alpha2, alpha3 = groove.alpha3,
                          alpha4 = groove.alpha4, usable_width = groove.usable_width, depth = groove.depth, 
                          even_ground_width = groove.even_ground_width, indent = groove.indent)
+        
+        self.flank_angle = np.arctan(groove._depthdepth / (groove.usable_width - groove.ground_width) * 2)
         self.y1 = depth2
         self.z1 = self.z2.copy()
 
