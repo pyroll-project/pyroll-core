@@ -51,6 +51,9 @@ class DeformationUnit(Unit):
     free_surface_area = Hook[float]()
     """Area of free surface."""
 
+    deformation_resistance = Hook[float]()
+    """Equivalent deformation resistance (mean flow stress increased by deformation efficiency)."""
+
     class Profile(Unit.Profile):
         """Represents a profile in context of a deformation unit."""
 
