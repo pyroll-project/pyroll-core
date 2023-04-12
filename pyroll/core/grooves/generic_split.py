@@ -44,3 +44,7 @@ class Split(GenericElongationGroove):
             list1[:,0] = list1[:,0] - axisshift
             list2[:,0] = list2[:,0] + axisshift
             return (np.concatenate([list2,list1]))
+        
+        
+'''RuntimeWarning: invalid value encountered in sqrt
+  return self.y12 - sqrt(self.r1 ** 2 - (z - self.z12) ** 2)'''
