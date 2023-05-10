@@ -31,7 +31,10 @@ def detect_already_rotated(self: RollPass):
                 return True
             if isinstance(prev, Rotator):
                 return False
-            prev = prev.prev
+            try:
+                prev = prev.prev
+            except IndexError:
+                return True
 
 
 @RollPass.roll_force
