@@ -45,3 +45,11 @@ dynamic = ["version"]
 Homepage = "https://pyroll-project.github.io"
 Repository = "https://github.com/pyroll-project/pyroll-core"
 Documentation = "https://pyroll.readthedocs.io/en/latest"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "error",
+    'ignore:Matplotlib is currently using:UserWarning',
+    'ignore:More than 20 figures have been opened:RuntimeWarning',
+]
+
