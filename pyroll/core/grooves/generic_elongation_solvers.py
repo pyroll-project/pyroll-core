@@ -4,6 +4,11 @@ import numpy as np
 from scipy.optimize import root_scalar, root, fixed_point
 
 
+# angle brackets for numerical solvers to prevent divide by zero
+MIN_ANGLE = 1e-6
+MAX_ANGLE = np.pi / 2 - MIN_ANGLE
+
+
 def solve_r124(
         r1: float,
 
@@ -57,7 +62,7 @@ def solve_r124(
             def f(_alpha):
                 return depth - r2 * (1 - np.cos(_alpha)) - l23(_alpha) * np.sin(_alpha) - fh(_alpha)
 
-            flank_angle = root_scalar(f, bracket=(0, np.pi / 2)).root
+            flank_angle = root_scalar(f, bracket=(MIN_ANGLE, MAX_ANGLE)).root
 
         elif depth is None:
             alpha4 = np.arccos(1 - indent / (r2 + r4))
@@ -68,7 +73,7 @@ def solve_r124(
                         - fw(_alpha) - (r2 + r4) * np.sin(alpha4)
                 )
 
-            raster = np.linspace(0, np.pi / 2, 100)
+            raster = np.linspace(MIN_ANGLE, MAX_ANGLE, 100)
             values = f(raster)
             lower = raster[values > 0][0]
             upper = raster[values < 0][-1]
@@ -84,7 +89,7 @@ def solve_r124(
                         - fw(_alpha) - (_r2 + r4) * np.sin(_alpha4)
                 )
 
-            flank_angle = root_scalar(f, bracket=(0, np.pi / 2)).root
+            flank_angle = root_scalar(f, bracket=(MIN_ANGLE, MAX_ANGLE)).root
 
         else:
             raise TypeError("Give either usable_width or depth.")
@@ -112,6 +117,7 @@ def solve_r124(
                     (depth - width / 2 * np.tan(flank_angle) + r4 * np.sin(_alpha4))
                     / (1 - np.cos(flank_angle) - np.sin(flank_angle) * np.tan(flank_angle) - np.sin(_alpha4))
             )
+
         r2 = fixed_point(f, width if width > depth else depth)
         alpha4 = np.arccos(1 - indent / (r2 + r4))
 
@@ -214,7 +220,7 @@ def solve_r123(
                     - _fw * np.tan(flank_angle) - l23(flank_angle) * np.sin(flank_angle)
             )
 
-        sol = root_scalar(f, bracket=(0, np.pi / 2)).root
+        sol = root_scalar(f, bracket=(MIN_ANGLE, MAX_ANGLE)).root
         alpha2 = sol
         alpha3 = flank_angle - sol
 
@@ -391,7 +397,7 @@ def solve_box_like(
                     _ground_width = even_ground_width + 2 * ((r4 + r2) * np.sin(alpha4) + r2 * np.tan(_alpha / 2))
                     return depth - (usable_width - _ground_width) / 2 * np.tan(_alpha)
 
-                flank_angle = root_scalar(f, bracket=(0, np.pi / 2)).root
+                flank_angle = root_scalar(f, bracket=(MIN_ANGLE, MAX_ANGLE)).root
                 ground_width = even_ground_width + 2 * ((r4 + r2) * np.sin(alpha4) + r2 * np.tan(flank_angle / 2))
             else:
                 raise TypeError("either ground_width or even_ground_width must not be None")

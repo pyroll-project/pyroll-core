@@ -68,9 +68,15 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
 
         try:
             if usable_width is None:
-                usable_width = ground_width + 2 * depth / np.tan(flank_angle)
+                if np.isclose(depth, 0):
+                    usable_width = ground_width
+                else:
+                    usable_width = ground_width + 2 * depth / np.tan(flank_angle)
             elif ground_width is None:
-                ground_width = usable_width - 2 * depth / np.tan(flank_angle)
+                if np.isclose(depth, 0):
+                    ground_width = usable_width
+                else:
+                    ground_width = usable_width - 2 * depth / np.tan(flank_angle)
             elif flank_angle is None:
                 flank_angle = np.arctan(depth / (usable_width - ground_width) * 2)
             elif depth is None:
