@@ -156,14 +156,14 @@ def displaced_cross_section(self: RollPass):
 
 @RollPass.reappearing_cross_section
 def reappearing_cross_section(self: RollPass):
-    diff = difference(self.out_profile.cross_section, self.in_profile.cross_section)
-    return diff
+    return difference(self.out_profile.cross_section, self.in_profile.cross_section)
 
 
 @RollPass.elongation_efficiency
 def elongation_efficiency(self: RollPass):
     if self.reappearing_cross_section.area == 0:
         return np.nan
+
     displaced_area = sum([poly.area for poly in self.displaced_cross_section.geoms])
     reappearing_area = sum([poly.area for poly in self.reappearing_cross_section.geoms])
     return 1 - reappearing_area / displaced_area
