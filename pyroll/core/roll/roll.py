@@ -50,6 +50,9 @@ class Roll(HookHost):
     temperature = Hook[float]()
     """Mean temperature."""
 
+    core_temperature = Hook[float]()
+    """Effective core temperature."""
+
     surface_temperature = Hook[float]()
     """Effective surface temperature."""
 
@@ -90,6 +93,12 @@ class Roll(HookHost):
     where ``n = len(self.surface_x)`` and ``m = len(self.surface_z)``.
     """
 
+    heat_penetration_number = Hook[float]()
+    """Mean heat penetration number of the roll material."""
+
+    thermal_diffusivity = Hook[float]()
+    """Mean thermal diffusivity of the roll material."""
+
     neutral_point = Hook[float]()
     """Point at the roll surface where the shear stress is zero."""
 
@@ -101,6 +110,9 @@ class Roll(HookHost):
 
     mounting_stress = Hook[float]()
     """Stress inside the roll body caused by the roll mounting system."""
+
+    ultimate_tensile_strength = Hook[float]()
+    """Ultimate Tensile strength of the roll material."""
 
     def __init__(
             self,

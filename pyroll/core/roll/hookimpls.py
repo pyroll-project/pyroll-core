@@ -63,3 +63,15 @@ def surface_z(self: Roll):
 def surface_y(self: Roll):
     local_radii = self.max_radius - self.contour_points[:, 1]
     return self.max_radius - np.sqrt(local_radii.reshape(-1, 1) ** 2 - self.surface_x ** 2)
+
+
+@Roll.heat_penetration_number
+def heat_penetration_number(self: Roll):
+    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "thermal_capacity"):
+        return np.sqrt(self.thermal_conductivity * self.density * self.thermal_capacity)
+
+
+@Roll.thermal_diffusivity
+def thermal_diffusivity(self: Roll):
+    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "thermal_capacity"):
+        return self.thermal_conductivity / (self.density * self.thermal_capacity)
