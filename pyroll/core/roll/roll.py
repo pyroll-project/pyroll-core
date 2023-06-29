@@ -93,6 +93,15 @@ class Roll(HookHost):
     neutral_point = Hook[float]()
     """Point at the roll surface where the shear stress is zero."""
 
+    thermal_stress = Hook[float]()
+    """Thermal stress inside the roll body."""
+
+    centrifugal_force_stress = Hook[float]()
+    """Centrifugal stress inside the roll body."""
+
+    mounting_stress = Hook[float]()
+    """Stress inside the roll body caused by the roll mounting system."""
+
     def __init__(
             self,
             groove: GrooveBase,
