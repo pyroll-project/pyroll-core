@@ -101,7 +101,14 @@ def height(self):
 
 @ThreeRollPass.height
 def height3(self):
-    return -2 * self.contour_lines[1].bounds[1]
+    usable_contour = clip_by_rect(
+        self.contour_lines[1],
+        -self.roll.groove.usable_width / 2,
+        -math.inf,
+        self.roll.groove.usable_width / 2,
+        math.inf
+    )
+    return -2 * usable_contour.bounds[1]
 
 
 @RollPass.volume
