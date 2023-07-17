@@ -395,7 +395,7 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
 
                     try:
                         arr = np.array(result)
-                        yield from arr[np.isfinite(arr)].flat
+                        yield from arr[np.isfinite(arr) | np.isinf(arr) | np.isnan(arr)].flat
                     except TypeError:  # yield only numeric values
                         continue
 

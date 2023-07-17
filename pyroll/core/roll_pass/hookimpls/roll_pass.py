@@ -1,8 +1,5 @@
-import math
-
 import numpy as np
-from shapely import Polygon, clip_by_rect
-from shapely.affinity import rotate
+from shapely import MultiPolygon, Polygon, difference
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
@@ -150,3 +147,23 @@ def duration(self: RollPass):
 @RollPass.length
 def length(self: RollPass):
     return self.roll.contact_length
+
+
+@RollPass.displaced_cross_section
+def displaced_cross_section(self: RollPass):
+    return difference(self.in_profile.cross_section, self.usable_cross_section)
+
+
+@RollPass.reappearing_cross_section
+def reappearing_cross_section(self: RollPass):
+    return difference(self.out_profile.cross_section, self.in_profile.cross_section)
+
+
+@RollPass.elongation_efficiency
+def elongation_efficiency(self: RollPass):
+    if self.reappearing_cross_section.area == 0:
+        return np.nan
+    else:
+        displaced_area = sum([poly.area for poly in self.displaced_cross_section.geoms])
+        reappearing_area = sum([poly.area for poly in self.reappearing_cross_section.geoms])
+        return 1 - reappearing_area / displaced_area

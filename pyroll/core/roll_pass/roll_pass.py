@@ -3,7 +3,7 @@ from typing import List, Union, cast
 
 import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import LineString, Polygon
+from shapely.geometry import LineString, Polygon, MultiPolygon
 
 from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
@@ -44,6 +44,12 @@ class RollPass(DiskElementUnit, DeformationUnit):
     tip_cross_section = Hook[Polygon]()
     """Cross-section of the roll pass at filling with its tip width."""
 
+    reappearing_cross_section = Hook[MultiPolygon]()
+    """Cross-section of the roll pass witch appears again in the next roll-pass due to spreading."""
+
+    displaced_cross_section = Hook[MultiPolygon]()
+    """Cross-section of the roll pass witch is displaced due to elongation and won't reappear in the next roll-pass."""
+
     roll_force = Hook[float]()
     """Vertical roll force."""
 
@@ -52,6 +58,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
 
     back_tension = Hook[float]()
     """Back tension acting on the current roll pass."""
+
+    elongation_efficiency = Hook[float]()
+    """Efficiency of a roll pass to elongate a incoming profile."""
 
     def __init__(
             self,

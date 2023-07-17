@@ -18,11 +18,12 @@ root_hooks.update(
     {
         RollPass.roll_force,
         RollPass.Roll.roll_torque,
+        RollPass.elongation_efficiency,
         Unit.OutProfile.cross_section,
         Unit.OutProfile.strain,
         Unit.OutProfile.length,
         Unit.OutProfile.classifiers,
         Unit.OutProfile.t,
-        PassSequence.total_elongation,
+        PassSequence.total_elongation
     }
 )
