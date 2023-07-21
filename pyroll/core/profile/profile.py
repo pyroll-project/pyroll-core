@@ -1,5 +1,6 @@
 import math
-from typing import Optional, Tuple, Iterable, Union, Set, Callable
+from typing import Optional, Union, Callable
+from collections.abc import Iterable, Collection, Set
 
 import numpy as np
 from shapely.affinity import translate, rotate
@@ -387,3 +388,27 @@ class Profile(HookHost):
         intersection = hline.intersection(self.cross_section)
 
         return intersection.length
+
+    def fits_material(self, key: str):
+        """Return true, if the given material key is present in the profile's material hook (case-insensitive),
+        otherwise false."""
+
+        def _format(s):
+            try:
+                return s.lower()
+            except AttributeError:
+                raise ValueError(f"Given value {repr(s)} is no str.")
+
+        key = _format(key)
+
+        try:
+            return key in _format(self.material)
+
+        except ValueError:
+            try:
+                return key in {
+                    _format(k)
+                    for k in self.material
+                }
+            except TypeError:
+                raise ValueError("Value of self.material is neither a string or a collection of strings.")
