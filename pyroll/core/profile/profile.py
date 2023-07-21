@@ -393,10 +393,22 @@ class Profile(HookHost):
         """Return true, if the given material key is present in the profile's material hook (case-insensitive),
         otherwise false."""
 
-        if isinstance(self.material, str):
-            return key.lower() in self.material.lower()
+        def _format(s):
+            try:
+                return s.lower()
+            except AttributeError:
+                raise ValueError(f"Given value {repr(s)} is no str.")
 
-        if isinstance(self.material, Collection):
-            return key.lower() in {k.lower() for k in self.material}
+        key = _format(key)
 
-        raise ValueError("Value of self.material is neither a string or a collection of strings.")
+        try:
+            return key in _format(self.material)
+
+        except ValueError:
+            try:
+                return key in {
+                    _format(k)
+                    for k in self.material
+                }
+            except TypeError:
+                raise ValueError("Value of self.material is neither a string or a collection of strings.")
