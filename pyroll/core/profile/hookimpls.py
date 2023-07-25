@@ -28,11 +28,6 @@ def width_3fold(self: Profile):
         return (self.cross_section.bounds[3] - self.cross_section.centroid.y) * 2
 
 
-@Profile.length
-def length(self: Profile):
-    return 0
-
-
 @Profile.equivalent_height
 def equivalent_height(self: Profile):
     return np.sqrt(self.cross_section.area * self.height / self.width)

@@ -40,6 +40,11 @@ def velocity(self: Unit):
         return self.in_profile.velocity
 
 
+@Unit.InProfile.length
+def in_length(self: Unit.InProfile):
+    return 0
+
+
 @Unit.OutProfile.velocity
 def out_velocity(self: Unit.OutProfile):
     if self.unit.in_profile.has_set_or_cached("velocity"):
