@@ -1,5 +1,7 @@
 from typing import Any
 
+import pytest
+
 from pyroll.core import Hook, HookHost
 
 
@@ -263,3 +265,58 @@ def test_context_manager():
 
     host.__cache__.clear()
     assert host.hook1 == 21
+
+
+def test_wrapper():
+    class Host(HookHost):
+        hook1 = Hook[Any]()
+
+    @Host.hook1
+    def f1(self: Host):
+        return 21
+
+    @Host.hook1(wrapper=True)
+    def f1(self: Host, cycle):
+        if cycle:
+            return None
+
+        return 2 * (yield)
+
+    host = Host()
+    assert host.hook1 == 42
+
+
+def test_wrapper_2yield():
+    class Host(HookHost):
+        hook1 = Hook[Any]()
+
+    @Host.hook1
+    def f1(self: Host):
+        return 21
+
+    @Host.hook1(wrapper=True)
+    def f1(self: Host, cycle):
+        if cycle:
+            return None
+        b = (yield)
+        return 2 * (yield)
+
+    host = Host()
+
+    with pytest.raises(SyntaxError):
+        _ = host.hook1
+
+
+def test_wrapper_none():
+    class Host(HookHost):
+        hook1 = Hook[Any]()
+
+    @Host.hook1(wrapper=True)
+    def f1(self: Host, cycle):
+        if cycle:
+            return None
+
+        return (yield) is None
+
+    host = Host()
+    assert host.hook1

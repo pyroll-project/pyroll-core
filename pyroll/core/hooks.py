@@ -21,7 +21,7 @@ class HookFunction:
     You should not instantiate it yourself.
     """
 
-    def __init__(self, func, hook, tryfirst=False, trylast=False):
+    def __init__(self, func, hook, tryfirst=False, trylast=False, wrapper=False):
         """
         :param func: the function
         :param hook: the associated hook
@@ -46,6 +46,9 @@ class HookFunction:
         self.cycle = False
         """Cycle detection."""
 
+        self.wrapper = wrapper
+        """Whether the hook function is a wrapper."""
+
         self._tryfirst = tryfirst
         self._trylast = trylast
 
@@ -65,9 +68,18 @@ class HookFunction:
         extra_args = self._determine_extra_args()
         self.cycle = True
         try:
-            result = self.function(instance, **extra_args)
+            if self.wrapper:
+                gen = self.function(instance, **extra_args)
+                next(gen)
+                gen.send(self.hook.get_result(instance))
+                raise SyntaxError("Wrapper function must only contain one yield expression.")
+            else:
+                result = self.function(instance, **extra_args)
+        except StopIteration as e:
+            result = e.value
         finally:
             self.cycle = False
+
         return result
 
     def __repr__(self):
@@ -109,6 +121,10 @@ class Hook(Generic[T]):
         self._last_functions: List[HookFunction] = []
 
         self._functions: List[HookFunction] = []
+
+        self._wrappers: List[HookFunction] = []
+        self._first_wrappers: List[HookFunction] = []
+        self._last_wrappers: List[HookFunction] = []
 
     def __set_name__(self, owner, name):
         self.name = name
@@ -212,6 +228,9 @@ class Hook(Generic[T]):
         """
         Generator listing functions stored in this instance and equally named instances in superclasses of its owner.
         """
+        yield from self._yield_functions_from("_first_wrappers")
+        yield from self._yield_functions_from("_wrappers")
+        yield from self._yield_functions_from("_last_wrappers")
 
         yield from self._yield_functions_from("_first_functions")
         yield from self._yield_functions_from("_functions")
@@ -242,7 +261,7 @@ class Hook(Generic[T]):
                 self.owner.__qualname__, self.name, instance, f.qualname
             )
 
-    def add_function(self, func, tryfirst=False, trylast=False):
+    def add_function(self, func, tryfirst=False, trylast=False, wrapper=False):
         """
         Add the given function to the internal function store.
 
@@ -251,21 +270,29 @@ class Hook(Generic[T]):
         if isinstance(func, HookFunction):
             func = func.function
 
-        hf = HookFunction(func, self, trylast=trylast, tryfirst=tryfirst)
+        hf = HookFunction(func, self, trylast=trylast, tryfirst=tryfirst, wrapper=wrapper)
 
-        if tryfirst:
-            self._first_functions.append(hf)
-        elif trylast:
-            self._last_functions.append(hf)
+        if wrapper:
+            if tryfirst:
+                self._first_wrappers.append(hf)
+            elif trylast:
+                self._last_wrappers.append(hf)
+            else:
+                self._wrappers.append(hf)
         else:
-            self._functions.append(hf)
+            if tryfirst:
+                self._first_functions.append(hf)
+            elif trylast:
+                self._last_functions.append(hf)
+            else:
+                self._functions.append(hf)
 
         return hf
 
-    def __call__(self, func=None, tryfirst=False, trylast=False):
+    def __call__(self, func=None, tryfirst=False, trylast=False, wrapper=False):
         if func is None:
-            return partial(self.add_function, tryfirst=tryfirst, trylast=trylast)
-        return self.add_function(func, tryfirst=tryfirst, trylast=trylast)
+            return partial(self.add_function, tryfirst=tryfirst, trylast=trylast, wrapper=wrapper)
+        return self.add_function(func, tryfirst=tryfirst, trylast=trylast, wrapper=wrapper)
 
     def remove_function(self, func: HookFunction):
         """
@@ -277,6 +304,9 @@ class Hook(Generic[T]):
             self._functions,
             self._last_functions,
             self._first_functions,
+            self._wrappers,
+            self._last_wrappers,
+            self._first_wrappers,
         ]:
             try:
                 store.remove(func)
