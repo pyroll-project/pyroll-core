@@ -1,5 +1,7 @@
+import math
+
 import numpy as np
-from shapely import MultiPolygon, Polygon, difference
+from shapely import MultiPolygon, Polygon, difference, clip_by_rect
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
