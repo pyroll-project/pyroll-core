@@ -22,14 +22,9 @@ class Rotator(Unit):
         from ..roll_pass import RollPass
 
         if isinstance(self.parent, RollPass):
-            prev = self.parent.prev
-        else:
-            prev = self.prev
+            return self.parent.prev_of(RollPass)
 
-        while True:
-            if isinstance(prev, RollPass):
-                return prev
-            prev = prev.prev
+        return self.prev_of(RollPass)
 
     @property
     def next_roll_pass(self):
@@ -44,11 +39,7 @@ class Rotator(Unit):
         if isinstance(self.parent, RollPass):
             return self.parent
 
-        next_ = self.next
-        while True:
-            if isinstance(next_, RollPass):
-                return next_
-            next_ = next_.next
+        return self.next_of(RollPass)
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a rotator."""
