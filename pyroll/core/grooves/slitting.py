@@ -3,7 +3,7 @@ from numpy import tan, sin
 from shapely.geometry import LineString, Polygon
 from pyroll.core.grooves import GenericElongationGroove
 
-class Split(GenericElongationGroove):
+class SlittingGroove(GenericElongationGroove):
     
     def __init__(
             self,
