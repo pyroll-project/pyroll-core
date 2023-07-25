@@ -1,4 +1,5 @@
-from typing import Union, Sequence, Optional
+from collections.abc import Collection
+from typing import Union, Optional
 
 import numpy as np
 from shapely.geometry import LineString, Polygon
@@ -35,7 +36,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
             rel_pad: float = Config.GROOVE_PADDING,
             pad_angle: float = 0,
 
-            classifiers: Sequence[str] = ()
+            classifiers: Collection[str] = ()
     ):
         """
         Give any three of ``usable_width``, ``ground_width``, ``flank_angle`` and ``depth``.
@@ -184,7 +185,8 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         return np.zeros_like(z)
 
     def _enumerate_contour_points(self):
-        yield self.z0, self.y0
+        if not np.isclose(self.z0, self.z1):
+            yield self.z0, self.y0
 
         if not np.isclose(self.z1, self.z3):
             for z in np.linspace(self.z1, self.z3, 20, endpoint=False):

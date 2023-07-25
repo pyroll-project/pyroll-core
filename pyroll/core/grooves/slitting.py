@@ -1,51 +1,91 @@
+from typing import Union
+
 import numpy as np
 from numpy import tan, sin
 from shapely.geometry import LineString, Polygon
-from pyroll.core.grooves import GenericElongationGroove
+
+from .base import GrooveBase
+from .generic_elongation import GenericElongationGroove
 
 
-class SlittingGroove(GenericElongationGroove):
+class SlittingGroove(GrooveBase):
 
     def __init__(
             self,
-            groove,
-            depth2
+            template_groove_type: type,
+            separator_indent: float,
+            **kwargs
     ):
-        super().__init__(r1=groove.r1, r2=groove.r2, r3=groove.r3, r4=groove.r4,
-                         alpha1=groove.alpha1, alpha2=groove.alpha2, alpha3=groove.alpha3,
-                         alpha4=groove.alpha4, usable_width=groove.usable_width, depth=groove.depth,
-                         even_ground_width=groove.even_ground_width, indent=groove.indent)
+        self._outer_groove = template_groove_type(**kwargs)
+        self._inner_groove = template_groove_type(
+            **(kwargs | dict(pad=0, rel_pad=0, pad_angle=0, depth=self._outer_groove.depth - separator_indent))
+        )
 
-        self.flank_angle = np.arctan(groove._depthdepth / (groove.usable_width - groove.ground_width) * 2)
-        self.y1 = depth2
-        self.z1 = self.z2.copy()
+        self.z_pass = -self._inner_groove.contour_points[0, 0]
 
-        self.y2 = 0
-        # z2 is kept the same
+        outer_right_side = self._outer_groove.contour_points[self._outer_groove.contour_points[:, 0] >= 0].copy()
+        outer_right_side[:, 0] += self.z_pass
+        inner_right_side = self._inner_groove.contour_points[self._inner_groove.contour_points[:, 0] <= 0].copy()
+        inner_right_side[:, 0] += self.z_pass
+        inner_right_side[:, 1] += separator_indent
+        right_side = np.concatenate([inner_right_side[:-1], outer_right_side])
 
-        self.y3 = self.r1 * tan(self.alpha1) * sin(self.flank_angle)
-        self.z3 = self.z1 - sin(self.alpha1)
+        left_side = right_side[1:].copy()
+        left_side[:, 0] *= -1
 
-        self.y12 = self.y1 + self.r1
-        self.z12 = self.z2.copy()
-
-        self._contour_points = self._generatepoints(groove)
+        self._contour_points = np.concatenate([left_side[::-1], right_side])
         self._contour_line = LineString(self._contour_points)
         self._cross_section = Polygon(self._contour_line)
 
+        self._classifiers = set(self._outer_groove.classifiers)
+
         self.test_plausibility()
 
-    def _generatepoints(self, groove):
-        right_side = np.array(list(self._enumerate_contour_points()))
-        left_side = np.flip(right_side, axis=0).copy()
-        left_side[:, 0] *= -1
-        list1 = np.concatenate([left_side, right_side[::-1]])
-        list2 = groove._contour_points.copy()
-        axisshift = abs(list1[-1, 0])
-        list1[:, 0] = list1[:, 0] - axisshift
-        list2[:, 0] = list2[:, 0] + axisshift
-        return (np.concatenate([list2, list1]))
+    @property
+    def contour_points(self):
+        return self._contour_points
 
+    @property
+    def contour_line(self) -> LineString:
+        return self._contour_line
 
-'''RuntimeWarning: invalid value encountered in sqrt
-  return self.y12 - sqrt(self.r1 ** 2 - (z - self.z12) ** 2)'''
+    @property
+    def cross_section(self) -> Polygon:
+        return self._cross_section
+
+    def local_depth(self, z) -> Union[float, np.ndarray]:
+        z = np.abs(z)
+
+        return np.piecewise(
+            z,
+            [np.abs(z) < self.z_pass, np.abs(z) >= self.z_pass],
+            [self._inner_groove.local_depth, self._outer_groove.local_depth]
+        )
+
+    @property
+    def classifiers(self):
+        return {"slitting"} | self._classifiers
+
+    @property
+    def usable_width(self) -> float:
+        return self._outer_groove.usable_width / 2 + self.z_pass
+
+    @property
+    def width(self) -> float:
+        return self._outer_groove.z1 + self.z_pass
+
+    @property
+    def depth(self) -> float:
+        return self._outer_groove.depth
+
+    def test_plausibility(self):
+        pass
+
+    @property
+    def __attrs__(self):
+        return {
+            n: v for n in ["depth", "separator_indent",
+                           "usable_width", "classifiers", "pad_angle",
+                           "contour_line"]
+            if (v := getattr(self, n))
+        }
