@@ -71,6 +71,20 @@ class Unit(HookHost):
             raise IndexError("This unit has no previous, as it is the first one.")
         return self.parent.subunits[i - 1]
 
+    def prev_of(self, unit_type: type):
+        """
+        Returns the instance of the first predecessor of the given type in the sequence.
+        Like the :py:attr:`Unit.prev` property, but returns the first unit with given type.
+
+        :raises ValueError: if this unit has no parent unit
+        """
+        prev = self.prev
+
+        while True:
+            if isinstance(prev, unit_type):
+                return prev
+            prev = prev.prev
+
     @property
     def next(self):
         """
@@ -84,6 +98,20 @@ class Unit(HookHost):
         if i == len(self.parent.subunits) - 1:
             raise IndexError("This unit has no next, as it is the last one.")
         return self.parent.subunits[i + 1]
+
+    def next_of(self, unit_type: type):
+        """
+        Returns the instance of the first predecessor of the given type in the sequence.
+        Like the :py:attr:`Unit.prev` property, but returns the first unit with given type.
+
+        :raises ValueError: if this unit has no parent unit
+        """
+        next_ = self.next
+
+        while True:
+            if isinstance(next_, unit_type):
+                return next_
+            next_ = next_.next
 
     def init_solve(self, in_profile: BaseProfile):
         """
