@@ -1,14 +1,14 @@
 from typing import Union
 
 import numpy as np
-from numpy import tan, sin
 from shapely.geometry import LineString, Polygon
 
 from .base import GrooveBase
-from .generic_elongation import GenericElongationGroove
 
 
 class SlittingGroove(GrooveBase):
+    """Represents a slitting (splitting, cutting) groove consisting of two elongation grooves
+     used to cut a strand into two."""
 
     def __init__(
             self,
@@ -16,6 +16,11 @@ class SlittingGroove(GrooveBase):
             separator_indent: float,
             **kwargs
     ):
+        """
+        :param template_groove_type: subclass of :py:class:`pyroll.core.GenericElongationGroove` to use as shape template
+        :param separator_indent: indent of the separator line in the center of the groove
+        :param kwargs: arguments to pass to the ``template_groove_type`` constructor
+        """
         self._outer_groove = template_groove_type(**kwargs)
         self._inner_groove = template_groove_type(
             **(kwargs | dict(pad=0, rel_pad=0, pad_angle=0, depth=self._outer_groove.depth - separator_indent))
