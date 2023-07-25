@@ -273,7 +273,15 @@ class Hook(Generic[T]):
 
         :return: the underlying function object
         """
-        self._functions.remove(func)
+        for store in [
+            self._functions,
+            self._last_functions,
+            self._first_functions,
+        ]:
+            try:
+                store.remove(func)
+            except ValueError:
+                continue
         return func.function
 
     def __repr__(self):
