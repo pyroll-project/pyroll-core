@@ -47,3 +47,7 @@ class ReprMixin(ABC):
 
         buf.append("</table>")
         return ''.join(buf)
+
+    def __rich_repr__(self):
+        """Pretty printing for Rich."""
+        yield from sorted(self.__attrs__.items())
