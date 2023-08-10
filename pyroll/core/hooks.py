@@ -167,6 +167,18 @@ class Hook(Generic[T]):
         # try to get value explicitly set by user
         result = instance.__dict__.get(self.name, None)
         if result is not None:
+            if callable(result):
+                if len(inspect.signature(result).parameters) == 0:
+                    result = result()
+                else:
+                    result = result(instance)
+
+                self.owner.logger.debug(
+                    f"Hook %s.%s on %s: resolved with explicit function result value %s.",
+                    self.owner.__qualname__, self.name, instance, result
+                )
+                return result
+
             self.owner.logger.debug(
                 f"Hook %s.%s on %s: resolved with explicit value %s.",
                 self.owner.__qualname__, self.name, instance, result
