@@ -9,7 +9,16 @@ def out_strain(self: Transport.OutProfile):
 
 @Transport.duration
 def duration(self: Transport):
-    return self.length / self.velocity
+    if self.has_set_or_cached("length"):
+        return self.length / self.velocity
+
+
+@Transport.velocity(
+    trylast=True  # do not override getting from in_profile
+)
+def conti_velocity(self: Transport):
+    if self.has_set_or_cached("length"):  # probably indicates conti process
+        return self.prev.velocity
 
 
 @Transport.environment_temperature
