@@ -320,3 +320,20 @@ def test_wrapper_none():
 
     host = Host()
     assert host.hook1
+
+
+def test_explicit_function():
+    class Host(HookHost):
+        hook1 = Hook[Any]()
+
+    @Host.hook1
+    def f1(self: Host, cycle):
+        return 42
+
+    host = Host()
+
+    host.hook1 = lambda self: 21
+    assert host.hook1 == 21
+
+    host.hook1 = lambda: 21
+    assert host.hook1 == 21
