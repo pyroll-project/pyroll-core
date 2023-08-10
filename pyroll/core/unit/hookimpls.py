@@ -40,8 +40,13 @@ def velocity(self: Unit):
         return self.in_profile.velocity
 
 
-@Unit.InProfile.length
-def in_length(self: Unit.InProfile):
+@Unit.InProfile.length(trylast=True)
+def default_in_length(self: Unit.InProfile):
+    return 0
+
+
+@Unit.InProfile.strain(trylast=True)
+def default_in_strain(self: Unit.InProfile):
     return 0
 
 
