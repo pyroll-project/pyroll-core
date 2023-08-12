@@ -412,3 +412,36 @@ class Profile(HookHost):
                 }
             except TypeError:
                 raise ValueError("Value of self.material is neither a string or a collection of strings.")
+
+    try:
+        import matplotlib.pyplot as plt
+
+        def plot(self) -> plt.Figure:
+            """
+            Returns a matplotlib figure visualizing this instance.
+
+            :raises NotImplementedError: if matplotlib is not importable
+            """
+
+            import matplotlib.pyplot as plt
+
+            fig: plt.Figure = plt.figure(constrained_layout=True, figsize=(4, 4))
+            ax: plt.Axes = fig.subplots()
+
+            ax.set_ylabel("y")
+            ax.set_xlabel("z")
+
+            ax.set_aspect("equal", "datalim")
+            ax.grid(lw=0.5)
+
+            ax.fill(*self.cross_section.boundary.xy, alpha=0.5, label="in profile")
+            return fig
+
+    except ImportError:
+        def plot(self) -> 'plt.Figure':
+            """
+            Returns a matplotlib figure visualizing this instance.
+
+            :raises NotImplementedError: if matplotlib is not importable
+            """
+            raise NotImplementedError("This method is only available if matplotlib is installed in the environment.")
