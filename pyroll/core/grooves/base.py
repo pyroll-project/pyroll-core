@@ -57,3 +57,38 @@ class GrooveBase(ABC):
 
     def __str__(self):
         return f"{type(self).__name__} {self.usable_width:.4g} x {self.depth:.4g} ({', '.join(self.classifiers)})"
+
+    try:
+        import matplotlib.pyplot as plt
+
+        def plot(self, **kwargs) -> plt.Figure:
+            """
+            Returns a matplotlib figure visualizing this instance.
+            :param kwargs: keyword arguments passed to the figure constructor
+
+            :raises NotImplementedError: if matplotlib is not importable
+            """
+
+            import matplotlib.pyplot as plt
+
+            fig: plt.Figure = plt.figure(**kwargs)
+            ax: plt.Axes = fig.subplots()
+
+            ax.set_ylabel("y")
+            ax.set_xlabel("z")
+
+            ax.set_aspect("equal", "datalim")
+            ax.grid(lw=0.5)
+
+            ax.plot(*self.contour_line.xy, color="k")
+            return fig
+
+    except ImportError:
+        def plot(self, **kwargs) -> 'plt.Figure':
+            """
+            Returns a matplotlib figure visualizing this instance.
+            :param kwargs: keyword arguments passed to the figure constructor
+
+            :raises NotImplementedError: if matplotlib is not importable
+            """
+            raise NotImplementedError("This method is only available if matplotlib is installed in the environment.")
