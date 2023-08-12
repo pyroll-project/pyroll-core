@@ -192,16 +192,17 @@ class RollPass(DiskElementUnit, DeformationUnit):
     try:
         import matplotlib.pyplot as plt
 
-        def plot(self) -> plt.Figure:
+        def plot(self, **kwargs) -> plt.Figure:
             """
             Returns a matplotlib figure visualizing this instance.
+            :param kwargs: keyword arguments passed to the figure constructor
 
             :raises NotImplementedError: if matplotlib is not importable
             """
 
             import matplotlib.pyplot as plt
 
-            fig: plt.Figure = plt.figure(constrained_layout=True, figsize=(6, 4))
+            fig: plt.Figure = plt.figure(**kwargs)
             ax: plt.Axes
             axl: plt.Axes
             ax, axl = fig.subplots(nrows=2, height_ratios=[1, 0.3])
@@ -241,7 +242,7 @@ class RollPass(DiskElementUnit, DeformationUnit):
             return fig
 
     except ImportError:
-        def plot(self) -> 'plt.Figure':
+        def plot(self, **kwargs) -> 'plt.Figure':
             """
             Returns a matplotlib figure visualizing this instance.
 

@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-
 import pyroll.core as pr
 
 

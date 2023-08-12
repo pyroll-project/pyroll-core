@@ -416,16 +416,17 @@ class Profile(HookHost):
     try:
         import matplotlib.pyplot as plt
 
-        def plot(self) -> plt.Figure:
+        def plot(self, **kwargs) -> plt.Figure:
             """
             Returns a matplotlib figure visualizing this instance.
+            :param kwargs: keyword arguments passed to the figure constructor
 
             :raises NotImplementedError: if matplotlib is not importable
             """
 
             import matplotlib.pyplot as plt
 
-            fig: plt.Figure = plt.figure(constrained_layout=True, figsize=(4, 4))
+            fig: plt.Figure = plt.figure(**kwargs)
             ax: plt.Axes = fig.subplots()
 
             ax.set_ylabel("y")
@@ -434,13 +435,15 @@ class Profile(HookHost):
             ax.set_aspect("equal", "datalim")
             ax.grid(lw=0.5)
 
-            ax.fill(*self.cross_section.boundary.xy, alpha=0.5, label="in profile")
+            ax.plot(*self.cross_section.boundary.xy, color="k")
+            ax.fill(*self.cross_section.boundary.xy, color="k", alpha=0.5)
             return fig
 
     except ImportError:
-        def plot(self) -> 'plt.Figure':
+        def plot(self, **kwargs) -> 'plt.Figure':
             """
             Returns a matplotlib figure visualizing this instance.
+            :param kwargs: keyword arguments passed to the figure constructor
 
             :raises NotImplementedError: if matplotlib is not importable
             """
