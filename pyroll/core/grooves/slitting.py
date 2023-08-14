@@ -74,11 +74,11 @@ class SlittingGroove(GrooveBase):
 
     @property
     def usable_width(self) -> float:
-        return self._outer_groove.usable_width / 2 + self.z_pass
+        return self._outer_groove.usable_width + self.z_pass * 2
 
     @property
     def width(self) -> float:
-        return self._outer_groove.z1 + self.z_pass
+        return (self._outer_groove.z1 + self.z_pass) * 2
 
     @property
     def depth(self) -> float:
