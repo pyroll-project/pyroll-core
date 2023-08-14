@@ -161,6 +161,11 @@ def reappearing_cross_section(self: RollPass):
     return difference(self.out_profile.cross_section, self.in_profile.cross_section)
 
 
+@RollPass.cross_section_filling_ratio
+def cross_section_filling_ratio(self: RollPass):
+    return (self.out_profile.cross_section.area - self.usable_cross_section.area) / self.usable_cross_section.area
+
+
 @RollPass.elongation_efficiency
 def elongation_efficiency(self: RollPass):
     if self.reappearing_cross_section.area == 0:

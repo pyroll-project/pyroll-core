@@ -17,6 +17,9 @@ class Profile(HookHost):
     cross_section = Hook[Polygon]()
     """Shape of the profile's cross-section."""
 
+    cross_section_area_deviation = Hook[float]()
+    """Deviation of the actual cross section area from the nominal cross section area in percent."""
+
     classifiers = Hook[Set[str]]()
     """Classifiers of the profile's shape's type."""
 
@@ -102,6 +105,8 @@ class Profile(HookHost):
 
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
+
+    
 
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""

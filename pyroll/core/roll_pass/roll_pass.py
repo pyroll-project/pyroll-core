@@ -50,6 +50,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
     displaced_cross_section = Hook[MultiPolygon]()
     """Cross-section of the roll pass witch is displaced due to elongation and won't reappear in the next roll-pass."""
 
+    cross_section_filling_ratio = Hook[float]()
+    """Filling ratio of the usable cross-section area."""
+
     roll_force = Hook[float]()
     """Vertical roll force."""
 
@@ -61,6 +64,8 @@ class RollPass(DiskElementUnit, DeformationUnit):
 
     elongation_efficiency = Hook[float]()
     """Efficiency of a roll pass to elongate a incoming profile."""
+
+
 
     def __init__(
             self,
