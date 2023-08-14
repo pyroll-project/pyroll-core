@@ -4,6 +4,7 @@ import numpy as np
 from shapely.geometry import LineString, Polygon
 
 from .base import GrooveBase
+from .generic_elongation import GenericElongationGroove
 
 
 class SlittingGroove(GrooveBase):
@@ -12,18 +13,20 @@ class SlittingGroove(GrooveBase):
 
     def __init__(
             self,
-            template_groove_type: type,
+            template_groove_type: type[GenericElongationGroove],
+            depth: float,
             separator_indent: float,
             **kwargs
     ):
         """
         :param template_groove_type: subclass of :py:class:`pyroll.core.GenericElongationGroove` to use as shape template
+        :param depth: depth of the groove (mandatory parameter, choose from the others to your needs in kwargs)
         :param separator_indent: indent of the separator line in the center of the groove
-        :param kwargs: arguments to pass to the ``template_groove_type`` constructor
+        :param kwargs: further arguments to pass to the ``template_groove_type`` constructor
         """
-        self._outer_groove = template_groove_type(**kwargs)
-        self._inner_groove = template_groove_type(
-            **(kwargs | dict(pad=0, rel_pad=0, pad_angle=0, depth=self._outer_groove.depth - separator_indent))
+        self._outer_groove: GenericElongationGroove = template_groove_type(depth=depth, **kwargs)
+        self._inner_groove: GenericElongationGroove = template_groove_type(
+            **(kwargs | dict(pad=0, rel_pad=0, pad_angle=0, depth=depth - separator_indent))
         )
 
         self.z_pass = -self._inner_groove.contour_points[0, 0]
@@ -43,8 +46,6 @@ class SlittingGroove(GrooveBase):
         self._cross_section = Polygon(self._contour_line)
 
         self._classifiers = set(self._outer_groove.classifiers)
-
-        self.test_plausibility()
 
     @property
     def contour_points(self):
@@ -82,9 +83,6 @@ class SlittingGroove(GrooveBase):
     @property
     def depth(self) -> float:
         return self._outer_groove.depth
-
-    def test_plausibility(self):
-        pass
 
     @property
     def __attrs__(self):
