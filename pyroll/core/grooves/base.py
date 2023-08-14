@@ -4,8 +4,10 @@ from typing import Union, Tuple
 import numpy as np
 from shapely.geometry import Polygon, LineString
 
+from ..repr import ReprMixin
 
-class GrooveBase(ABC):
+
+class GrooveBase(ReprMixin):
     """Abstract base class for all grooves."""
 
     @property
@@ -55,5 +57,30 @@ class GrooveBase(ABC):
         """Function of the local groove depth in dependence on the z-coordinate."""
         raise NotImplemented
 
-    def __str__(self):
-        return f"{type(self).__name__} {self.usable_width:.4g} x {self.depth:.4g} ({', '.join(self.classifiers)})"
+    @property
+    def __attrs__(self):
+        return {
+            n: v for n in ["depth", "usable_width", "classifiers", "contour_line"]
+            if (v := getattr(self, n))
+        }
+
+    def plot(self, **kwargs):
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError as e:
+            raise RuntimeError(
+                "This method is only available if matplotlib is installed in the environment. "
+                "You may install it using the 'plot' extra of pyroll-core."
+            ) from e
+
+        fig: plt.Figure = plt.figure(**kwargs)
+        ax: plt.Axes = fig.subplots()
+
+        ax.set_ylabel("y")
+        ax.set_xlabel("z")
+
+        ax.set_aspect("equal", "datalim")
+        ax.grid(lw=0.5)
+
+        ax.plot(*self.contour_line.xy, color="k")
+        return fig

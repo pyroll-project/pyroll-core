@@ -1,5 +1,6 @@
 import html
 from abc import ABC, abstractmethod
+from io import StringIO
 
 
 class ReprMixin(ABC):
@@ -10,6 +11,17 @@ class ReprMixin(ABC):
     @abstractmethod
     def __attrs__(self):
         raise NotImplementedError()
+
+    def plot(self, **kwargs):
+        """
+        Returns a matplotlib figure visualizing this instance.
+        It is not required to implement this method.
+        :param kwargs: keyword arguments passed to the figure constructor
+
+        :raises RuntimeError: if matplotlib is not importable
+        :raises TypeError: if the current type does not support plotting
+        """
+        raise TypeError("This type does not support plotting.")
 
     def __str__(self):
         return type(self).__qualname__
@@ -46,7 +58,27 @@ class ReprMixin(ABC):
             buf.append(f"<tr><td style='text-align:left'>{html.escape(name, True)}</td><td>{r}</td></tr>")
 
         buf.append("</table>")
-        return ''.join(buf)
+
+        table = ''.join(buf)
+
+        try:
+            plot = self.plot()
+
+            import matplotlib.pyplot as plt
+            import re
+
+            with StringIO() as sio:
+                plot.savefig(sio, format="svg")
+                plt.close(plot)
+                svg = sio.getvalue()
+
+                svg = re.sub(r'height="[\d.\w]*?"', 'height="100%"', svg)
+                svg = re.sub(r'width="[\d.\w]*?"', 'width="100%"', svg)
+
+                return "<div>" + svg + table + "</div>"
+
+        except (NotImplementedError, ImportError, AttributeError):
+            return table
 
     def __rich_repr__(self):
         """Pretty printing for Rich."""
