@@ -189,63 +189,50 @@ class RollPass(DiskElementUnit, DeformationUnit):
         class OutProfile(Profile, DiskElementUnit.DiskElement.OutProfile, DeformationUnit.OutProfile):
             """Represents an outgoing profile of a disk element unit."""
 
-    try:
-        import matplotlib.pyplot as plt
-
-        def plot(self, **kwargs) -> plt.Figure:
-            """
-            Returns a matplotlib figure visualizing this instance.
-            :param kwargs: keyword arguments passed to the figure constructor
-
-            :raises NotImplementedError: if matplotlib is not importable
-            """
-
+    def plot(self, **kwargs):
+        try:
             import matplotlib.pyplot as plt
+        except ImportError as e:
+            raise RuntimeError(
+                "This method is only available if matplotlib is installed in the environment. "
+                "You may install it using the 'plot' extra of pyroll-core."
+            ) from e
 
-            fig: plt.Figure = plt.figure(**kwargs)
-            ax: plt.Axes
-            axl: plt.Axes
-            ax, axl = fig.subplots(nrows=2, height_ratios=[1, 0.3])
+        fig: plt.Figure = plt.figure(**kwargs)
+        ax: plt.Axes
+        axl: plt.Axes
+        ax, axl = fig.subplots(nrows=2, height_ratios=[1, 0.3])
 
-            if self.label:
-                ax.set_title(f"Roll Pass '{self.label}'")
+        if self.label:
+            ax.set_title(f"Roll Pass '{self.label}'")
 
-            ax.set_ylabel("y")
-            ax.set_xlabel("z")
+        ax.set_ylabel("y")
+        ax.set_xlabel("z")
 
-            ax.set_aspect("equal", "datalim")
-            ax.grid(lw=0.5)
+        ax.set_aspect("equal", "datalim")
+        ax.grid(lw=0.5)
 
-            c = []
-            ipp = []
-            ipr = []
-            opp = []
-            opr = []
+        c = []
+        ipp = []
+        ipr = []
+        opp = []
+        opr = []
 
-            for cl in self.contour_lines:
-                c = ax.plot(*cl.xy, color="k", label="roll surface")
+        for cl in self.contour_lines:
+            c = ax.plot(*cl.xy, color="k", label="roll surface")
 
-            if self.in_profile:
-                ipp = ax.fill(*self.in_profile.cross_section.boundary.xy, alpha=0.5, color="red", label="in profile")
-                ipr = ax.fill(*self.in_profile.equivalent_rectangle.boundary.xy, fill=False, color="red", ls="--",
-                              label="in eq. rectangle")
+        if self.in_profile:
+            ipp = ax.fill(*self.in_profile.cross_section.boundary.xy, alpha=0.5, color="red", label="in profile")
+            ipr = ax.fill(*self.in_profile.equivalent_rectangle.boundary.xy, fill=False, color="red", ls="--",
+                          label="in eq. rectangle")
 
-            if self.out_profile:
-                opp = ax.fill(*self.out_profile.cross_section.boundary.xy, alpha=0.5, color="blue", label="out profile")
-                opr = ax.fill(*self.out_profile.equivalent_rectangle.boundary.xy, fill=False, color="blue", ls="--",
-                              label="out eq. rectangle")
+        if self.out_profile:
+            opp = ax.fill(*self.out_profile.cross_section.boundary.xy, alpha=0.5, color="blue", label="out profile")
+            opr = ax.fill(*self.out_profile.equivalent_rectangle.boundary.xy, fill=False, color="blue", ls="--",
+                          label="out eq. rectangle")
 
-            axl.axis("off")
-            axl.legend(handles=c + ipp + opp + ipr + opr, ncols=2, loc="lower center")
-            fig.set_layout_engine('constrained')
+        axl.axis("off")
+        axl.legend(handles=c + ipp + opp + ipr + opr, ncols=2, loc="lower center")
+        fig.set_layout_engine('constrained')
 
-            return fig
-
-    except ImportError:
-        def plot(self, **kwargs) -> 'plt.Figure':
-            """
-            Returns a matplotlib figure visualizing this instance.
-
-            :raises NotImplementedError: if matplotlib is not importable
-            """
-            raise NotImplementedError("This method is only available if matplotlib is installed in the environment.")
+        return fig

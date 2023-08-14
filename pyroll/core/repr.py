@@ -15,11 +15,13 @@ class ReprMixin(ABC):
     def plot(self, **kwargs):
         """
         Returns a matplotlib figure visualizing this instance.
+        It is not required to implement this method.
         :param kwargs: keyword arguments passed to the figure constructor
 
-        :raises NotImplementedError: if matplotlib is not importable or the current instance supports no plotting
+        :raises RuntimeError: if matplotlib is not importable
+        :raises TypeError: if the current type does not support plotting
         """
-        raise NotImplementedError()
+        raise TypeError("This type does not support plotting.")
 
     def __str__(self):
         return type(self).__qualname__

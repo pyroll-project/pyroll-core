@@ -413,38 +413,24 @@ class Profile(HookHost):
             except TypeError:
                 raise ValueError("Value of self.material is neither a string or a collection of strings.")
 
-    try:
-        import matplotlib.pyplot as plt
-
-        def plot(self, **kwargs) -> plt.Figure:
-            """
-            Returns a matplotlib figure visualizing this instance.
-            :param kwargs: keyword arguments passed to the figure constructor
-
-            :raises NotImplementedError: if matplotlib is not importable
-            """
-
+    def plot(self, **kwargs):
+        try:
             import matplotlib.pyplot as plt
+        except ImportError as e:
+            raise RuntimeError(
+                "This method is only available if matplotlib is installed in the environment. "
+                "You may install it using the 'plot' extra of pyroll-core."
+            ) from e
 
-            fig: plt.Figure = plt.figure(**kwargs)
-            ax: plt.Axes = fig.subplots()
+        fig: plt.Figure = plt.figure(**kwargs)
+        ax: plt.Axes = fig.subplots()
 
-            ax.set_ylabel("y")
-            ax.set_xlabel("z")
+        ax.set_ylabel("y")
+        ax.set_xlabel("z")
 
-            ax.set_aspect("equal", "datalim")
-            ax.grid(lw=0.5)
+        ax.set_aspect("equal", "datalim")
+        ax.grid(lw=0.5)
 
-            ax.plot(*self.cross_section.boundary.xy, color="k")
-            ax.fill(*self.cross_section.boundary.xy, color="k", alpha=0.5)
-            return fig
-
-    except ImportError:
-        def plot(self, **kwargs) -> 'plt.Figure':
-            """
-            Returns a matplotlib figure visualizing this instance.
-            :param kwargs: keyword arguments passed to the figure constructor
-
-            :raises NotImplementedError: if matplotlib is not importable
-            """
-            raise NotImplementedError("This method is only available if matplotlib is installed in the environment.")
+        ax.plot(*self.cross_section.boundary.xy, color="k")
+        ax.fill(*self.cross_section.boundary.xy, color="k", alpha=0.5)
+        return fig
