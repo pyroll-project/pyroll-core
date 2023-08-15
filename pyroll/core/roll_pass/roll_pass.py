@@ -68,7 +68,7 @@ class RollPass(DiskElementUnit, DeformationUnit):
     target_filling_ratio = Hook[float]()
     """Target filling ratio of the out profile."""
 
-    target_cross_section = Hook[float]()
+    target_cross_section_area = Hook[float]()
     """Target cross-section of the out profile."""
 
     target_cross_section_filling_ratio = Hook[float]()
