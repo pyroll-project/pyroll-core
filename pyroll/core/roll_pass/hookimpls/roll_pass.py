@@ -171,9 +171,14 @@ def elongation_efficiency(self: RollPass):
         return 1 - reappearing_area / displaced_area
 
 
+@RollPass.target_filling_ratio(trylast=True)
+def default_target_filling(self: RollPass):
+    return 1
+
+
 @RollPass.target_width
 def target_width_from_target_filling_ratio(self: RollPass):
-    if self.has_set_or_cached("target_filling_ratio"):
+    if self.has_value("target_filling_ratio"):
         return self.target_filling_ratio * self.roll.groove.usable_width
 
 

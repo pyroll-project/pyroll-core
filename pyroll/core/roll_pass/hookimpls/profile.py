@@ -61,14 +61,12 @@ def cross_section_filling_ratio(self: RollPass.OutProfile):
 
 @RollPass.OutProfile.filling_error
 def filling_error(self: RollPass.OutProfile):
-    if self.roll_pass.has_value("target_width"):
-        return self.width / self.roll_pass.target_width - 1
+    return self.width / self.roll_pass.target_width - 1
 
 
 @RollPass.OutProfile.cross_section_error
 def cross_section_error(self: RollPass.OutProfile):
-    if self.roll_pass.has_value("target_cross_section_area"):
-        return self.cross_section.area / self.roll_pass.target_cross_section_area - 1
+    return self.cross_section.area / self.roll_pass.target_cross_section_area - 1
 
 
 @RollPass.OutProfile.cross_section
