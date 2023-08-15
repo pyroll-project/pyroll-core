@@ -62,6 +62,18 @@ class RollPass(DiskElementUnit, DeformationUnit):
     elongation_efficiency = Hook[float]()
     """Efficiency of a roll pass to elongate a incoming profile."""
 
+    target_width = Hook[float]()
+    """Target width of the out profile."""
+
+    target_filling_ratio = Hook[float]()
+    """Target filling ratio of the out profile."""
+
+    target_cross_section_area = Hook[float]()
+    """Target cross-section of the out profile."""
+
+    target_cross_section_filling_ratio = Hook[float]()
+    """Target cross-section filling ratio of the out profile."""
+
     def __init__(
             self,
             roll: BaseRoll,
@@ -144,6 +156,16 @@ class RollPass(DiskElementUnit, DeformationUnit):
         """Represents an outgoing profile of a roll pass."""
 
         filling_ratio = Hook[float]()
+        """Ratio of profile width to usable width of the groove as width based measure of ideal filling."""
+
+        cross_section_filling_ratio = Hook[float]()
+        """Ratio of profile cross-section to usable cross-section of the pass as cross-section based measure of ideal filling."""
+
+        filling_error = Hook[float]()
+        """Ratio of profile width to target width as width based measure of target filling."""
+
+        cross_section_error = Hook[float]()
+        """Ratio of profile cross-section to target cross-section as cross-section based measure of target filling."""
 
     class Roll(BaseRoll):
         """Represents a roll applied in a :py:class:`RollPass`."""

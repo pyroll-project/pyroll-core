@@ -103,6 +103,8 @@ class Profile(HookHost):
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
 
+    
+
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
         self.__dict__.update(kwargs)

@@ -54,6 +54,21 @@ def filling_ratio(self: RollPass.OutProfile):
     return self.width / self.roll_pass.usable_width
 
 
+@RollPass.OutProfile.cross_section_filling_ratio
+def cross_section_filling_ratio(self: RollPass.OutProfile):
+    return self.cross_section.area / self.roll_pass.usable_cross_section.area
+
+
+@RollPass.OutProfile.filling_error
+def filling_error(self: RollPass.OutProfile):
+    return self.width / self.roll_pass.target_width - 1
+
+
+@RollPass.OutProfile.cross_section_error
+def cross_section_error(self: RollPass.OutProfile):
+    return self.cross_section.area / self.roll_pass.target_cross_section_area - 1
+
+
 @RollPass.OutProfile.cross_section
 def cross_section(self: RollPass.OutProfile) -> Polygon:
     cs = helpers.out_cross_section(self.roll_pass, self.width)

@@ -169,3 +169,46 @@ def elongation_efficiency(self: RollPass):
         displaced_area = sum([poly.area for poly in self.displaced_cross_section.geoms])
         reappearing_area = sum([poly.area for poly in self.reappearing_cross_section.geoms])
         return 1 - reappearing_area / displaced_area
+
+
+@RollPass.target_filling_ratio(trylast=True)
+def default_target_filling(self: RollPass):
+    return 1
+
+
+@RollPass.target_width
+def target_width_from_target_filling_ratio(self: RollPass):
+    if self.has_value("target_filling_ratio"):
+        return self.target_filling_ratio * self.roll.groove.usable_width
+
+
+@RollPass.target_filling_ratio
+def target_filling_ratio_from_target_width(self: RollPass):
+    if self.has_set_or_cached("target_width"):
+        return self.target_width / self.roll.groove.usable_width
+
+
+@RollPass.target_cross_section_area
+def target_cross_section_area_from_target_width(self: RollPass):
+    if self.has_value("target_width"):
+        target_cross_section = helpers.out_cross_section(self, self.target_width)
+        return target_cross_section.area
+
+
+@ThreeRollPass.target_cross_section_area
+def target_cross_section_area_from_target_width3(self: ThreeRollPass):
+    if self.has_value("target_width"):
+        target_cross_section = helpers.out_cross_section3(self, self.target_width)
+        return target_cross_section.area
+
+
+@RollPass.target_cross_section_area
+def target_cross_section_area_from_target_cross_section_filling_ratio(self: RollPass):
+    if self.has_set_or_cached("target_cross_section_filling_ratio"):
+        return self.target_cross_section_filling_ratio * self.usable_cross_section.area
+
+
+@RollPass.target_cross_section_filling_ratio
+def target_cross_section_filling_ratio_from_target_cross_section_area(self: RollPass):
+    if self.has_value("target_cross_section_area"):  # important has_value for computing from target_width
+        return self.target_cross_section_area / self.usable_cross_section.area
