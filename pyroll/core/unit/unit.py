@@ -221,8 +221,8 @@ class Unit(HookHost):
                 e for e in template.__dict__.items()
                 if not e[0].startswith("_")
             )
-            super().__init__(**kwargs)
             self._unit = weakref.ref(unit)
+            super().__init__(**kwargs)
 
         @property
         def unit(self) -> 'Unit':
