@@ -17,9 +17,6 @@ class Profile(HookHost):
     cross_section = Hook[Polygon]()
     """Shape of the profile's cross-section."""
 
-    cross_section_area_deviation = Hook[float]()
-    """Deviation of the actual cross section area from the nominal cross section area in percent."""
-
     classifiers = Hook[Set[str]]()
     """Classifiers of the profile's shape's type."""
 
