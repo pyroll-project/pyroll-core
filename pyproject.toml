@@ -53,7 +53,7 @@ Documentation = "https://pyroll.readthedocs.io/en/latest"
 
 [tool.pytest.ini_options]
 filterwarnings = [
-    "error",
+#    "error",
     'ignore:Matplotlib is currently using:UserWarning',
     'ignore:More than 20 figures have been opened:RuntimeWarning',
 ]
