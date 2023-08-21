@@ -193,6 +193,39 @@ class Profile(HookHost):
         )
 
     @classmethod
+    def from_polygon(
+            cls,
+            cross_section: Polygon,
+            classifiers: Set[str],
+            **kwargs
+    ) -> 'Profile':
+        """
+        Creates a custom profile from a shapely polygon object.
+
+        :param cross_section: a polygon representing the cross-section shape
+        :param classifiers: a set of strings classifying the shape
+        :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        """
+
+        if not cross_section.is_simple:
+            raise ValueError("The cross-section must be a simple polygon.")
+
+        if not cross_section.is_valid:
+            raise ValueError("The cross-section must be a valid polygon.")
+
+        if cross_section.is_empty:
+            raise ValueError("The cross-section must not be empty.")
+
+        if len(cross_section.interiors) > 0:
+            raise ValueError("The cross-section must not contain holes.")
+
+        return cls(
+            cross_section=cross_section,
+            classifiers=set(classifiers),
+            **kwargs
+        )
+
+    @classmethod
     def round(
             cls,
             radius: Optional[float] = None,
