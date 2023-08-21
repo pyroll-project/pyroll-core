@@ -198,7 +198,7 @@ class Profile(HookHost):
             radius: Optional[float] = None,
             diameter: Optional[float] = None,
             **kwargs
-    ) -> 'Profile':
+    ) -> 'RoundProfile':
         """
         Creates a round shaped profile (a real circle round, without imperfections of round grooves).
         Give exactly one of ``radius`` and ``diameter``.
@@ -219,7 +219,7 @@ class Profile(HookHost):
             diagonal: Optional[float] = None,
             corner_radius: float = 0,
             **kwargs
-    ) -> 'Profile':
+    ) -> 'SquareProfile':
         """
         Creates a square shaped profile (a real square with rounded corners, without imperfections of square grooves).
         A square is oriented to stand on its corner, use :py:meth:`box` to create a side standing one.
@@ -244,7 +244,7 @@ class Profile(HookHost):
             width: float,
             corner_radius: float = 0,
             **kwargs
-    ) -> 'Profile':
+    ) -> 'BoxProfile':
         """
         Creates a box shaped profile (a real rectangular shape with rounded corners,
         without imperfections of box grooves).
@@ -266,7 +266,7 @@ class Profile(HookHost):
             width: float,
             corner_radius: float = 0,
             **kwargs
-    ) -> 'Profile':
+    ) -> 'DiamondProfile':
         """
         Creates a diamond shaped profile (a real diamond shape with rounded corners,
         without imperfections of diamond grooves).
