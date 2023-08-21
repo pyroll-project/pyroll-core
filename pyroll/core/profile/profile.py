@@ -109,9 +109,6 @@ class Profile(HookHost):
         self.__dict__.update(kwargs)
         super().__init__()
 
-        _ = self.height
-        _ = self.width
-
     @classmethod
     def from_groove(
             cls,
