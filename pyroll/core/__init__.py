@@ -5,7 +5,7 @@ from .transport import Transport
 from .roll_pass import RollPass, DeformationUnit, ThreeRollPass
 from .unit import Unit
 from .roll import Roll
-from .profile import Profile
+from .profile import *
 from .rotator import Rotator
 from .sequence import PassSequence
 from .hooks import Hook, HookHost, HookFunction, root_hooks

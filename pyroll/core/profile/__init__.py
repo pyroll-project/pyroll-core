@@ -1,3 +1,3 @@
-from .profile import Profile
+from .profile import Profile, RoundProfile, DiamondProfile, BoxProfile, SquareProfile
 
-from . import hookimpls
+from . import hookimpls as _
