@@ -42,6 +42,9 @@ class Unit(HookHost):
     power = Hook[float]()
     """Total energy demand per time of this unit."""
 
+    energy_consumption = Hook[float]()
+    """Energy consumption of this unit per produced mass."""
+
     def __init__(self, label: str = "", parent=None, **kwargs):
         super().__init__()
         self.label = label

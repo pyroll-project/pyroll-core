@@ -69,3 +69,19 @@ def out_t(self: Unit.OutProfile):
 @Unit.power(trylast=True)
 def default_power(self: Unit):
     return 0
+
+
+@Unit.volume_throughput
+def volume_throughput(self: Unit):
+    v = self.out_profile.velocity if self.out_profile.has_value("velocity") else self.velocity
+    return self.out_profile.cross_section.area * v
+
+
+@Unit.mass_throughput
+def mass_throughput(self: Unit):
+    return self.volume_throughput * self.out_profile.density
+
+
+@Unit.energy_consumption
+def energy_consumption(self: Unit):
+    return self.power / self.mass_throughput
