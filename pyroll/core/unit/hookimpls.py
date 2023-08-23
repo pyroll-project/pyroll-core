@@ -64,3 +64,8 @@ def out_x(self: Unit.OutProfile):
 @Unit.OutProfile.t
 def out_t(self: Unit.OutProfile):
     return self.unit.in_profile.t + self.unit.duration
+
+
+@Unit.power(trylast=True)
+def default_power(self: Unit):
+    return 0

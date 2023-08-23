@@ -212,3 +212,13 @@ def target_cross_section_area_from_target_cross_section_filling_ratio(self: Roll
 def target_cross_section_filling_ratio_from_target_cross_section_area(self: RollPass):
     if self.has_value("target_cross_section_area"):  # important has_value for computing from target_width
         return self.target_cross_section_area / self.usable_cross_section.area
+
+
+@RollPass.power
+def roll_power(self: RollPass):
+    return 2 * self.roll.roll_power
+
+
+@ThreeRollPass.power
+def roll_power_3(self: ThreeRollPass):
+    return 3 * self.roll.roll_power

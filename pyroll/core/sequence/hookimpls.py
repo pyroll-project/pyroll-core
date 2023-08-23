@@ -25,9 +25,14 @@ def total_rel_elongation(self: PassSequence):
 
 @PassSequence.duration
 def duration(self: PassSequence):
-    return np.sum([u.duration for u in self.units])
+    return sum([u.duration for u in self.units])
 
 
 @PassSequence.length
 def length(self: PassSequence):
-    return np.sum([u.length for u in self.units])
+    return sum([u.length for u in self.units])
+
+
+@PassSequence.power
+def total_power(self: PassSequence):
+    return sum([u.power for u in self.units])
