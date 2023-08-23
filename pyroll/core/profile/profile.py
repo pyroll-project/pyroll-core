@@ -103,20 +103,11 @@ class Profile(HookHost):
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
 
-    
-
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
+        self.t = 0
         self.__dict__.update(kwargs)
         super().__init__()
-
-    @classmethod
-    def _base_factory(cls, **kwargs):
-        if "t" not in kwargs:
-            kwargs["t"] = 0
-        return cls(
-            **kwargs
-        )
 
     @classmethod
     def from_groove(
@@ -195,9 +186,42 @@ class Profile(HookHost):
 
         polygon = clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
 
-        return cls._base_factory(
+        return cls(
             cross_section=polygon,
             classifiers=set(groove.classifiers),
+            **kwargs
+        )
+
+    @classmethod
+    def from_polygon(
+            cls,
+            cross_section: Polygon,
+            classifiers: Set[str],
+            **kwargs
+    ) -> 'Profile':
+        """
+        Creates a custom profile from a shapely polygon object.
+
+        :param cross_section: a polygon representing the cross-section shape
+        :param classifiers: a set of strings classifying the shape
+        :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        """
+
+        if not cross_section.is_simple:
+            raise ValueError("The cross-section must be a simple polygon.")
+
+        if not cross_section.is_valid:
+            raise ValueError("The cross-section must be a valid polygon.")
+
+        if cross_section.is_empty:
+            raise ValueError("The cross-section must not be empty.")
+
+        if len(cross_section.interiors) > 0:
+            raise ValueError("The cross-section must not contain holes.")
+
+        return cls(
+            cross_section=cross_section,
+            classifiers=set(classifiers),
             **kwargs
         )
 
@@ -207,7 +231,7 @@ class Profile(HookHost):
             radius: Optional[float] = None,
             diameter: Optional[float] = None,
             **kwargs
-    ) -> 'Profile':
+    ) -> 'RoundProfile':
         """
         Creates a round shaped profile (a real circle round, without imperfections of round grooves).
         Give exactly one of ``radius`` and ``diameter``.
@@ -219,24 +243,7 @@ class Profile(HookHost):
         :raises ValueError: if arguments are out of range
         """
 
-        if radius is not None and diameter is None:
-            diameter = 2 * radius
-        elif diameter is not None and radius is None:
-            radius = diameter / 2
-        else:
-            raise TypeError("either 'radius' or 'diameter' must be given")
-
-        if radius <= 0:
-            raise ValueError("argument value(s) out of range")
-
-        center = Point((0, 0))
-        circle = center.buffer(radius)
-
-        return cls._base_factory(
-            cross_section=circle,
-            classifiers={"round"},
-            **kwargs
-        )
+        return RoundProfile(radius, diameter, **kwargs)
 
     @classmethod
     def square(
@@ -245,7 +252,7 @@ class Profile(HookHost):
             diagonal: Optional[float] = None,
             corner_radius: float = 0,
             **kwargs
-    ) -> 'Profile':
+    ) -> 'SquareProfile':
         """
         Creates a square shaped profile (a real square with rounded corners, without imperfections of square grooves).
         A square is oriented to stand on its corner, use :py:meth:`box` to create a side standing one.
@@ -261,29 +268,7 @@ class Profile(HookHost):
         :raises ValueError: if arguments are out of range
         """
 
-        if side is not None and diagonal is None:
-            diagonal = np.sqrt(2) * side
-        elif diagonal is not None and side is None:
-            side = diagonal / np.sqrt(2)
-        else:
-            raise TypeError("either 'side' or 'diagonal' must be given")
-
-        if (
-                side <= 0
-                or corner_radius < 0
-                or corner_radius > side / 2
-        ):
-            raise ValueError("argument value(s) out of range")
-
-        line = LinearRing(np.array([(1, 0), (0, 1), (-1, 0), (0, -1)]) * (diagonal / 2 - corner_radius * np.sqrt(2)))
-        polygon = Polygon(line)
-        polygon = polygon.buffer(corner_radius)
-
-        return cls._base_factory(
-            cross_section=polygon,
-            classifiers={"square", "diamond"},
-            **kwargs
-        )
+        return SquareProfile(side, diagonal, corner_radius, **kwargs)
 
     @classmethod
     def box(
@@ -292,7 +277,7 @@ class Profile(HookHost):
             width: float,
             corner_radius: float = 0,
             **kwargs
-    ) -> 'Profile':
+    ) -> 'BoxProfile':
         """
         Creates a box shaped profile (a real rectangular shape with rounded corners,
         without imperfections of box grooves).
@@ -305,27 +290,7 @@ class Profile(HookHost):
         :raises ValueError: if arguments are out of range
         """
 
-        if (
-                height <= 0
-                or width <= 0
-                or corner_radius < 0
-                or corner_radius > height / 2
-                or corner_radius > width / 2
-        ):
-            raise ValueError("argument value(s) out of range")
-
-        line = LinearRing(
-            np.array([(1, -1), (1, 1), (-1, 1), (-1, -1)])
-            * (width / 2 - corner_radius, height / 2 - corner_radius)
-        )
-        polygon = Polygon(line)
-        polygon = polygon.buffer(corner_radius)
-
-        return cls._base_factory(
-            cross_section=polygon,
-            classifiers={"box"},
-            **kwargs
-        )
+        return BoxProfile(height, width, corner_radius, **kwargs)
 
     @classmethod
     def diamond(
@@ -334,7 +299,7 @@ class Profile(HookHost):
             width: float,
             corner_radius: float = 0,
             **kwargs
-    ) -> 'Profile':
+    ) -> 'DiamondProfile':
         """
         Creates a diamond shaped profile (a real diamond shape with rounded corners,
         without imperfections of diamond grooves).
@@ -342,32 +307,12 @@ class Profile(HookHost):
 
         :param height: the height of the diamond profile, must be > 0
         :param width: the width of the diamond profile, must be > 0
-        :param corner_radius: the radius of the diamonds's corners, must be >= 0, <= height / 2 and <= width / 2
+        :param corner_radius: the radius of the diamond's corners, must be >= 0, <= height / 2 and <= width / 2
         :param kwargs: additional keyword arguments to be passed to the Profile constructor
         :raises ValueError: if arguments are out of range
         """
 
-        if (
-                height <= 0
-                or width <= 0
-                or corner_radius < 0
-                or corner_radius > height / 2
-                or corner_radius > width / 2
-        ):
-            raise ValueError("argument value(s) out of range")
-
-        line = LinearRing(
-            np.array([(1, 0), (0, 1), (-1, 0), (0, -1)])
-            * (width / 2 - corner_radius, height / 2 - corner_radius)
-        )
-        polygon = Polygon(line)
-        polygon = polygon.buffer(corner_radius)
-
-        return cls._base_factory(
-            cross_section=polygon,
-            classifiers={"diamond"},
-            **kwargs
-        )
+        return DiamondProfile(height, width, corner_radius, **kwargs)
 
     def local_height(self, z: float) -> float:
         coords = np.array([(1, -1), (1, 1)]) * (z, self.height)
@@ -436,3 +381,241 @@ class Profile(HookHost):
         ax.plot(*self.cross_section.boundary.xy, color="k")
         ax.fill(*self.cross_section.boundary.xy, color="k", alpha=0.5)
         return fig
+
+
+class RoundProfile(Profile):
+    def __init__(
+            self,
+            radius: Optional[float] = None,
+            diameter: Optional[float] = None,
+            **kwargs
+    ):
+        """
+        Creates a round shaped profile (a real circle round, without imperfections of round grooves).
+        Give exactly one of ``radius`` and ``diameter``.
+
+        :param radius: the radius of the round profile, must be > 0
+        :param diameter: the diameter of the round profile, must be > 0
+        :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        :raises TypeError: on invalid argument combinations
+        :raises ValueError: if arguments are out of range
+        """
+
+        if radius is not None and diameter is None:
+            diameter = 2 * radius
+        elif diameter is not None and radius is None:
+            radius = diameter / 2
+        else:
+            raise TypeError("either 'radius' or 'diameter' must be given")
+
+        if radius <= 0:
+            raise ValueError("argument value(s) out of range")
+
+        self._radius = radius
+        self._diameter = diameter
+
+        center = Point((0, 0))
+        circle = center.buffer(radius)
+
+        super().__init__(
+            cross_section=circle,
+            classifiers={"round"},
+            **kwargs
+        )
+
+    @property
+    def radius(self):
+        """The radius of the round shaped profile (half diameter)."""
+        return self._radius
+
+    @property
+    def diameter(self):
+        """The diameter of the round shaped profile (double radius)."""
+        return self._diameter
+
+    @property
+    def __attrs__(self):
+        return super().__attrs__ | dict(radius=self.radius, diameter=self.diameter)
+
+
+class BoxProfile(Profile):
+    def __init__(
+            self,
+            height: float,
+            width: float,
+            corner_radius: float = 0,
+            **kwargs
+    ):
+        """
+        Creates a box shaped profile (a real rectangular shape with rounded corners,
+        without imperfections of box grooves).
+        A box is oriented to stand on its side, use :py:meth:`square` to create a corner standing square.
+
+        :param height: the height of the box profile, must be > 0
+        :param width: the width of the box profile, must be > 0
+        :param corner_radius: the radius of the square's corners, must be >= 0, <= height / 2 and <= width / 2
+        :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        :raises ValueError: if arguments are out of range
+        """
+
+        if (
+                height <= 0
+                or width <= 0
+                or corner_radius < 0
+                or corner_radius > height / 2
+                or corner_radius > width / 2
+        ):
+            raise ValueError("argument value(s) out of range")
+
+        self._corner_radius = corner_radius
+
+        line = LinearRing(
+            np.array([(1, -1), (1, 1), (-1, 1), (-1, -1)])
+            * (width / 2 - corner_radius, height / 2 - corner_radius)
+        )
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
+
+        super().__init__(
+            cross_section=polygon,
+            classifiers={"box"},
+            **kwargs
+        )
+
+    @property
+    def corner_radius(self):
+        """The radius of the profile's corners resp. edges."""
+        return self._corner_radius
+
+    @property
+    def __attrs__(self):
+        return super().__attrs__ | dict(corner_radius=self._corner_radius)
+
+
+class DiamondProfile(Profile):
+    def __init__(
+            self,
+            height: float,
+            width: float,
+            corner_radius: float = 0,
+            **kwargs
+    ):
+        """
+        Creates a diamond shaped profile (a real diamond shape with rounded corners,
+        without imperfections of diamond grooves).
+        A diamond is oriented to stand on its corner.
+
+        :param height: the height of the diamond profile, must be > 0
+        :param width: the width of the diamond profile, must be > 0
+        :param corner_radius: the radius of the diamond's corners, must be >= 0, <= height / 2 and <= width / 2
+        :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        :raises ValueError: if arguments are out of range
+        """
+
+        if (
+                height <= 0
+                or width <= 0
+                or corner_radius < 0
+                or corner_radius > height / 2
+                or corner_radius > width / 2
+        ):
+            raise ValueError("argument value(s) out of range")
+
+        self._corner_radius = corner_radius
+
+        line = LinearRing(
+            np.array([(1, 0), (0, 1), (-1, 0), (0, -1)])
+            * (width / 2 - corner_radius, height / 2 - corner_radius)
+        )
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
+
+        super().__init__(
+            cross_section=polygon,
+            classifiers={"diamond"},
+            **kwargs
+        )
+
+    @property
+    def corner_radius(self):
+        """The radius of the profile's corners resp. edges."""
+        return self._corner_radius
+
+    @property
+    def __attrs__(self):
+        return super().__attrs__ | dict(corner_radius=self._corner_radius)
+
+
+class SquareProfile(Profile):
+    def __init__(
+            self,
+            side: Optional[float] = None,
+            diagonal: Optional[float] = None,
+            corner_radius: float = 0,
+            **kwargs
+    ):
+        """
+        Creates a square shaped profile (a real square with rounded corners, without imperfections of square grooves).
+        A square is oriented to stand on its corner, use :py:meth:`box` to create a side standing one.
+        Give exactly one of ``side`` and ``diagonal``.
+
+        :param side: the side length of the square profile, must be > 0
+        :param diagonal: the diagonal's length of the square profile, must be > 0.
+            Note, that the diagonal is measured at the tips, as if the corner radii were not present
+            for consistency with :py:meth:`box`.
+        :param corner_radius: the radius of the square's corners, must be >= 0 and <= side / 2
+        :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        :raises TypeError: on invalid argument combinations
+        :raises ValueError: if arguments are out of range
+        """
+
+        if side is not None and diagonal is None:
+            diagonal = np.sqrt(2) * side
+        elif diagonal is not None and side is None:
+            side = diagonal / np.sqrt(2)
+        else:
+            raise TypeError("either 'side' or 'diagonal' must be given")
+
+        if (
+                side <= 0
+                or corner_radius < 0
+                or corner_radius > side / 2
+        ):
+            raise ValueError("argument value(s) out of range")
+
+        self._side = side
+        self._diagonal = diagonal
+        self._corner_radius = corner_radius
+
+        line = LinearRing(np.array([(1, 0), (0, 1), (-1, 0), (0, -1)]) * (diagonal / 2 - corner_radius * np.sqrt(2)))
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
+
+        super().__init__(
+            cross_section=polygon,
+            classifiers={"square", "diamond"},
+            **kwargs
+        )
+
+    @property
+    def side(self):
+        """The side length of the square profile."""
+        return self._side
+
+    @property
+    def diagonal(self):
+        """The diagonal length of the profile."""
+        return self._diagonal
+
+    @property
+    def corner_radius(self):
+        """The radius of the profile's corners resp. edges."""
+        return self._corner_radius
+
+    @property
+    def __attrs__(self):
+        return super().__attrs__ | dict(
+            side=self._side,
+            diagonal=self._diagonal,
+            corner_radius=self._corner_radius
+        )

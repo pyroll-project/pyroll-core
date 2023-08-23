@@ -49,6 +49,9 @@ class DiamondGroove(GenericElongationGroove):
                 "Exactly two of the following arguments must be given: usable_width, tip_depth, tip_angle."
             )
 
+        self._tip_depth = tip_depth
+        self._tip_angle = tip_angle
+
         depth = tip_depth - r2 / np.cos(alpha) + r2
 
         super().__init__(
@@ -57,4 +60,18 @@ class DiamondGroove(GenericElongationGroove):
 
     @property
     def classifiers(self):
-        return {"diamond",} | super().classifiers
+        return {"diamond", } | super().classifiers
+
+    @property
+    def tip_depth(self):
+        """Depth of the intersection of the extrapolated flanks."""
+        return self._tip_depth
+
+    @property
+    def tip_angle(self):
+        """Angle between the flanks."""
+        return self._tip_angle
+
+    @property
+    def __attrs__(self):
+        return super().__attrs__ | dict(tip_depth=self.tip_depth, tip_angle=self.tip_angle)
