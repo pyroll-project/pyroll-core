@@ -439,7 +439,7 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
                         result = self.root_hook_fallback(h)
 
                     if result is None:
-                        raise AttributeError("Call for root hook resulted in None.")
+                        raise AttributeError(f"Call for root hook '{h.name}' on '{self}' resulted in None.")
 
                     setattr(self, h.name, result)
 
