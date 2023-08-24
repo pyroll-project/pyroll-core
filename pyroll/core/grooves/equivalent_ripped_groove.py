@@ -18,8 +18,8 @@ class EquivalentRibbedGroove(GenericElongationGroove):
             rib_angle: float,
             base_body_height: float,
             nominal_outer_diameter: float,
-            depth: float,
             usable_width: float,
+            depth: float,
 
             pad_angle: float = 0,
             **kwargs
