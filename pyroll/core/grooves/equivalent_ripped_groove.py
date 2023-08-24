@@ -18,6 +18,8 @@ class EquivalentRibbedGroove(GenericElongationGroove):
             rib_angle: float,
             base_body_height: float,
             nominal_outer_diameter: float,
+            depth: float,
+            usable_width: float,
 
             pad_angle: float = 0,
             **kwargs
@@ -53,8 +55,7 @@ class EquivalentRibbedGroove(GenericElongationGroove):
         r2 = (4 * equivalent_circle_segment_height ** 2 + base_body_height ** 2) / (
                     8 * equivalent_circle_segment_height)
         alpha = np.deg2rad(45)
-        depth = 0
-        width = 0
+
 
 
         super().__init__(
