@@ -158,6 +158,7 @@ class Hook(Generic[T]):
         if self.owner != owner:
             # create distinct instance on subclass
             hook = Hook()
+            hook.__orig_class__ = self.__orig_class__
             setattr(owner, self.name, hook)
             return hook.__get__(instance, owner)
 
