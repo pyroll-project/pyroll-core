@@ -71,8 +71,8 @@ def default_power(self: Unit):
     return 0
 
 
-@Unit.volume_throughput
-def volume_throughput(self: Unit):
+@Unit.volume_flux
+def volume_flux(self: Unit):
     v = self.out_profile.velocity if self.out_profile.has_value("velocity") else self.velocity
     return self.out_profile.cross_section.area * v
 

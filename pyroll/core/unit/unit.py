@@ -33,7 +33,7 @@ class Unit(HookHost):
     surface_area = Hook[float]()
     """Surface area of workpiece within the unit."""
 
-    volume_throughput = Hook[float]()
+    volume_flux = Hook[float]()
     """Throughput of volume through this unit."""
 
     mass_throughput = Hook[float]()
