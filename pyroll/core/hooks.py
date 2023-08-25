@@ -232,6 +232,10 @@ class Hook(Generic[T]):
 
     @property
     def type(self):
+        """
+        Returns the given generic attribute (the data type of the hook).
+        :raises TypeError: if the instance was not created using a generic parameter (so ``__orig_class__`` was not set)
+        """
         if self.__orig_class__ is None:
             raise TypeError("This instance was not instantiated using a generic type parameter.")
         args = get_args(self.__orig_class__)
