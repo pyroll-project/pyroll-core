@@ -1,7 +1,7 @@
-from typing import Iterable, Union
+from typing import Union, Set
 
 import numpy as np
-from scipy.interpolate import RegularGridInterpolator, interpn
+from scipy.interpolate import interpn
 from shapely.geometry import LineString
 
 from ..grooves import GrooveBase
@@ -74,7 +74,7 @@ class Roll(HookHost):
     density = Hook[float]()
     """Density (specific weight) of the roll material."""
 
-    material = Hook[Union[str, Iterable[str]]]()
+    material = Hook[Union[str, Set[str]]]()
     """String or sequence of strings classifying the material of the roll.
     Can be used by material databases to retrieve respective data."""
 

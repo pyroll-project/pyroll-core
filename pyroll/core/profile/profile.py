@@ -80,7 +80,7 @@ class Profile(HookHost):
     density = Hook[float]()
     """Mean density (specific weight) of the profile material."""
 
-    material = Hook[Union[str, Iterable[str]]]()
+    material = Hook[Union[str, Set[str]]]()
     """String or sequence of strings classifying the material of the profile.
     Can be used by material databases to retrieve respective data."""
 
