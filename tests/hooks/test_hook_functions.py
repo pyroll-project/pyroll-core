@@ -337,3 +337,12 @@ def test_explicit_function():
 
     host.hook1 = lambda: 21
     assert host.hook1 == 21
+
+
+def test_hook_type():
+    class Host(HookHost):
+        hook1 = Hook[float]()
+        hook2 = Hook[str]()
+
+    assert Host.hook1.type == float
+    assert Host.hook2.type == str

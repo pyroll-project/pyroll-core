@@ -4,7 +4,7 @@ import weakref
 from abc import ABCMeta
 from copy import deepcopy
 from functools import partial
-from typing import overload, TypeVar, Generic, List, Generator, Union, Optional, Any
+from typing import overload, TypeVar, Generic, List, Generator, Union, Optional, Any, get_args
 
 import numpy as np
 
@@ -126,6 +126,8 @@ class Hook(Generic[T]):
         self._first_wrappers: List[HookFunction] = []
         self._last_wrappers: List[HookFunction] = []
 
+        self.__orig_class__ = None
+
     def __set_name__(self, owner, name):
         self.name = name
         self.owner = owner
@@ -156,6 +158,7 @@ class Hook(Generic[T]):
         if self.owner != owner:
             # create distinct instance on subclass
             hook = Hook()
+            hook.__orig_class__ = self.__orig_class__
             setattr(owner, self.name, hook)
             return hook.__get__(instance, owner)
 
@@ -227,6 +230,17 @@ class Hook(Generic[T]):
         Does not raise, if the value is not in the ``__dict__``.
         """
         instance.__dict__.pop(self.name, None)
+
+    @property
+    def type(self):
+        """
+        Returns the given generic attribute (the data type of the hook).
+        :raises TypeError: if the instance was not created using a generic parameter (so ``__orig_class__`` was not set)
+        """
+        if self.__orig_class__ is None:
+            raise TypeError("This instance was not instantiated using a generic type parameter.")
+        args = get_args(self.__orig_class__)
+        return args[0]
 
     def _yield_functions_from(self, attr: str):
         for s in self.owner.__mro__:
