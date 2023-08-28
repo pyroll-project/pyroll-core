@@ -77,11 +77,11 @@ def volume_flux(self: Unit):
     return self.out_profile.cross_section.area * v
 
 
-@Unit.mass_throughput
-def mass_throughput(self: Unit):
-    return self.volume_throughput * self.out_profile.density
+@Unit.mass_flux
+def mass_flux(self: Unit):
+    return self.volume_flux * self.out_profile.density
 
 
 @Unit.energy_consumption
 def energy_consumption(self: Unit):
-    return self.power / self.mass_throughput
+    return self.power / self.mass_flux
