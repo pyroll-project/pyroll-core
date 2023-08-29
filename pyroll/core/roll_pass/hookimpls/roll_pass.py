@@ -163,12 +163,7 @@ def reappearing_cross_section(self: RollPass):
 
 @RollPass.elongation_efficiency
 def elongation_efficiency(self: RollPass):
-    if self.reappearing_cross_section.area == 0:
-        return np.nan
-    else:
-        displaced_area = sum([poly.area for poly in self.displaced_cross_section.geoms])
-        reappearing_area = sum([poly.area for poly in self.reappearing_cross_section.geoms])
-        return 1 - reappearing_area / displaced_area
+    return 1 - self.reappearing_cross_section.area / self.displaced_cross_section.area
 
 
 @RollPass.target_filling_ratio(trylast=True)
