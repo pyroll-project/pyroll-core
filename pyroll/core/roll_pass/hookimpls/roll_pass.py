@@ -179,13 +179,13 @@ def default_target_filling(self: RollPass):
 @RollPass.target_width
 def target_width_from_target_filling_ratio(self: RollPass):
     if self.has_value("target_filling_ratio"):
-        return self.target_filling_ratio * self.roll.groove.usable_width
+        return self.target_filling_ratio * self.usable_width
 
 
 @RollPass.target_filling_ratio
 def target_filling_ratio_from_target_width(self: RollPass):
     if self.has_set_or_cached("target_width"):
-        return self.target_width / self.roll.groove.usable_width
+        return self.target_width / self.usable_width
 
 
 @RollPass.target_cross_section_area

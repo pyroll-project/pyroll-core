@@ -37,10 +37,11 @@ def test_solve(tmp_path: Path, caplog):
                     neutral_point=-20e-3
                 ),
                 gap=2e-3,
+
             ),
             Transport(
                 label="I => II",
-                duration=1
+                duration=1,
             ),
             RollPass(
                 label="Round II",
