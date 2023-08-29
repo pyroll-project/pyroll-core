@@ -153,13 +153,6 @@ class Unit(HookHost):
                 except Exception as e:
                     raise RuntimeError(f"Solution of sub units failed at unit {u}.") from e
 
-            self.out_profile.__dict__.update(
-                {k: v for k, v in last_profile.__dict__.items() if not k.startswith("_")}
-            )
-            self.out_profile.__cache__.update(
-                {k: v for k, v in last_profile.__cache__.items() if not k.startswith("_")}
-            )
-
     def solve(self, in_profile: BaseProfile) -> BaseProfile:
         """
         Solve the workpiece evolution within this unit based on the incoming state specified by in_profile.
@@ -249,6 +242,8 @@ class Unit(HookHost):
 
         def root_hook_fallback(self, hook):
             """Copy the value from the in profile as fallback for root hooks."""
+            if self.unit.subunits:
+                return getattr(self.unit.subunits[-1].in_profile, hook.name, None)
             return getattr(self.unit.in_profile, hook.name, None)
 
     class _SubUnitsList(list):

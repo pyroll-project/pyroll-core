@@ -49,10 +49,6 @@ class PassSequence(Unit, Sequence[Unit]):
     class OutProfile(Profile, Unit.OutProfile):
         """Represents an outgoing profile of a pass sequence unit."""
 
-        def root_hook_fallback(self, hook):
-            """Copy the value from the in profile as fallback for root hooks."""
-            return getattr(self.unit.units[-1].out_profile, hook.name, None)
-
     def __len__(self) -> int:
         return self._subunits.__len__()
 
