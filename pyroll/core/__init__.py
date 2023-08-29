@@ -28,6 +28,7 @@ root_hooks.update(
         Unit.OutProfile.length,
         Unit.OutProfile.classifiers,
         Unit.OutProfile.t,
-        PassSequence.total_elongation
+        PassSequence.log_elongation,
+        Unit.power,
     }
 )

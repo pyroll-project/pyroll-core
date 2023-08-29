@@ -12,8 +12,17 @@ class PassSequence(Unit, Sequence[Unit]):
     Can be nested to define distinct rolling lines or similar.
     """
 
-    total_elongation = Hook[float]()
-    """Total elongation of the workpiece within the sequence."""
+    elongation = Hook[float]()
+    """Coefficient of elongation (change in length)."""
+
+    log_elongation = Hook[float]()
+    """Log. coefficient of elongation (change in length)."""
+
+    abs_elongation = Hook[float]()
+    """Absolute elongation (change in length)."""
+
+    rel_elongation = Hook[float]()
+    """Relative elongation (change in length)."""
 
     def __init__(self, units: Sequence[Unit], label: str = "", **kwargs):
         """

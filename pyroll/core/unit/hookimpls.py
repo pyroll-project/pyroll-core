@@ -64,3 +64,24 @@ def out_x(self: Unit.OutProfile):
 @Unit.OutProfile.t
 def out_t(self: Unit.OutProfile):
     return self.unit.in_profile.t + self.unit.duration
+
+
+@Unit.power(trylast=True)
+def default_power(self: Unit):
+    return 0
+
+
+@Unit.volume_flux
+def volume_flux(self: Unit):
+    v = self.out_profile.velocity if self.out_profile.has_value("velocity") else self.velocity
+    return self.out_profile.cross_section.area * v
+
+
+@Unit.mass_flux
+def mass_flux(self: Unit):
+    return self.volume_flux * self.out_profile.density
+
+
+@Unit.energy_consumption
+def energy_consumption(self: Unit):
+    return self.power / self.mass_flux

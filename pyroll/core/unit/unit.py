@@ -33,6 +33,18 @@ class Unit(HookHost):
     surface_area = Hook[float]()
     """Surface area of workpiece within the unit."""
 
+    volume_flux = Hook[float]()
+    """Flux/throughput of volume through this unit."""
+
+    mass_flux = Hook[float]()
+    """Flux/throughput of mass through this unit."""
+
+    power = Hook[float]()
+    """Total energy demand per time of this unit."""
+
+    energy_consumption = Hook[float]()
+    """Energy consumption of this unit per produced mass."""
+
     def __init__(self, label: str = "", parent=None, **kwargs):
         super().__init__()
         self.label = label
