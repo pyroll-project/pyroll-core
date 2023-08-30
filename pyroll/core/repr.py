@@ -75,7 +75,7 @@ class ReprMixin(ABC):
                 svg = re.sub(r'height="[\d.\w]*?"', 'height="100%"', svg)
                 svg = re.sub(r'width="[\d.\w]*?"', 'width="100%"', svg)
 
-                return "<div>" + svg + table + "</div>"
+                return "<table><tr><td style='width:60%'>" + svg + "</td><td>" + table + "</td></tr></table>"
 
         except (NotImplementedError, ImportError, AttributeError):
             return table
