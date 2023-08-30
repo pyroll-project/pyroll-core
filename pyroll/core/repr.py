@@ -77,7 +77,7 @@ class ReprMixin(ABC):
 
                 return "<table><tr><td style='width:60%'>" + svg + "</td><td>" + table + "</td></tr></table>"
 
-        except (NotImplementedError, ImportError, AttributeError):
+        except (NotImplementedError, ImportError, AttributeError, TypeError):
             return table
 
     def __rich_repr__(self):
