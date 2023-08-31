@@ -76,7 +76,7 @@ def rectangle(width: float, height: float):
 
 class PatchedLineString(LineString):
     @property
-    def depth(self) -> float:
+    def height(self) -> float:
         """Computes the height of the bounding box."""
         return self.bounds[3] - self.bounds[1]
 
@@ -89,13 +89,13 @@ class PatchedLineString(LineString):
     def __attrs__(self):
         return {
             "width": self.width,
-            "depth": self.depth,
+            "height": self.height,
             "length": self.length,
         }
 
 
 for cls in [LineString, MultiLineString]:
-    cls.depth = PatchedLineString.depth
+    cls.height = PatchedLineString.height
     cls.width = PatchedLineString.width
     cls.__attrs__ = PatchedLineString.__attrs__
     cls.__str__ = ReprMixin.__str__
