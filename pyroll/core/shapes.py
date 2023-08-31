@@ -1,7 +1,7 @@
 import numpy as np
 
 from pyroll.core.repr import ReprMixin
-from shapely import Polygon, LineString
+from shapely import Polygon, LineString, MultiPolygon, MultiLineString
 
 
 # noinspection PyAbstractClass
@@ -31,16 +31,17 @@ class PatchedPolygon(Polygon):
         }
 
 
-Polygon.height = PatchedPolygon.height
-Polygon.width = PatchedPolygon.width
-Polygon.perimeter = PatchedPolygon.perimeter
-Polygon.__attrs__ = PatchedPolygon.__attrs__
-Polygon.__str__ = ReprMixin.__str__
-Polygon.__repr__ = ReprMixin.__repr__
-# noinspection PyProtectedMember
-Polygon._repr_html_ = ReprMixin._repr_html_
-# noinspection PyProtectedMember
-Polygon._repr_pretty_ = ReprMixin._repr_pretty_
+for cls in [Polygon, MultiPolygon]:
+    cls.height = PatchedPolygon.height
+    cls.width = PatchedPolygon.width
+    cls.perimeter = PatchedPolygon.perimeter
+    cls.__attrs__ = PatchedPolygon.__attrs__
+    cls.__str__ = ReprMixin.__str__
+    cls.__repr__ = ReprMixin.__repr__
+    # noinspection PyProtectedMember
+    cls._repr_html_ = ReprMixin._repr_html_
+    # noinspection PyProtectedMember
+    cls._repr_pretty_ = ReprMixin._repr_pretty_
 
 _RECTANGLE_CORNERS = np.asarray(
     [
@@ -93,12 +94,13 @@ class PatchedLineString(LineString):
         }
 
 
-LineString.depth = PatchedLineString.depth
-LineString.width = PatchedLineString.width
-LineString.__attrs__ = PatchedLineString.__attrs__
-LineString.__str__ = ReprMixin.__str__
-LineString.__repr__ = ReprMixin.__repr__
-# noinspection PyProtectedMember
-LineString._repr_html_ = ReprMixin._repr_html_
-# noinspection PyProtectedMember
-LineString._repr_pretty_ = ReprMixin._repr_pretty_
+for cls in [LineString, MultiLineString]:
+    cls.depth = PatchedLineString.depth
+    cls.width = PatchedLineString.width
+    cls.__attrs__ = PatchedLineString.__attrs__
+    cls.__str__ = ReprMixin.__str__
+    cls.__repr__ = ReprMixin.__repr__
+    # noinspection PyProtectedMember
+    cls._repr_html_ = ReprMixin._repr_html_
+    # noinspection PyProtectedMember
+    cls._repr_pretty_ = ReprMixin._repr_pretty_
