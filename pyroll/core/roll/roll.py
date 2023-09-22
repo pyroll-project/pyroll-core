@@ -68,8 +68,8 @@ class Roll(HookHost):
     thermal_conductivity = Hook[float]()
     """Thermal conductivity of the roll material."""
 
-    thermal_capacity = Hook[float]()
-    """Thermal capacity of the roll material."""
+    specific_heat_capacity = Hook[float]()
+    """Specific heat capacity of the roll material."""
 
     density = Hook[float]()
     """Density (specific weight) of the roll material."""

@@ -74,8 +74,8 @@ class Profile(HookHost):
     thermal_conductivity = Hook[float]()
     """Mean thermal conductivity of the profile material."""
 
-    thermal_capacity = Hook[float]()
-    """Mean thermal capacity of the profile material."""
+    specific_heat_capacity = Hook[float]()
+    """Mean specific heat capacity of the profile material."""
 
     density = Hook[float]()
     """Mean density (specific weight) of the profile material."""
