@@ -90,28 +90,30 @@ So new research can start on a growing base to explore the actual topic, without
 # Acknowledgements
 
 The authors thank the following people for their valuable feedback and/or testing effort:
-    - Jennifer Mantel (Student, TU Bergakademie Freiberg)
-    - Richard Pfeifer (Student, TU Bergakademie Freiberg)
-    - Frank Gerlach (VFUP Riesa e.V.)
-    - Gerald Rothenbucher (Plansee SE)
-    - Koos van Putten (SMS Group GmbH)
-    - Louisa Preis (FNsteel B.V.)
-    - Christian Overhagen (Universität Duisburg-Essen)
+
+- Jennifer Mantel (Student, TU Bergakademie Freiberg)
+- Richard Pfeifer (Student, TU Bergakademie Freiberg)
+- Frank Gerlach (VFUP Riesa e.V.)
+- Gerald Rothenbucher (Plansee SE)
+- Koos van Putten (SMS Group GmbH)
+- Louisa Preis (FNsteel B.V.)
+- Christian Overhagen (Universität Duisburg-Essen)
 
 The authors thank the following industrial partners for supporting the software development by submitting feedback on usage, simulation result quality and rewarding questions to answer:
-    - ESF Elbe-Stahlwerke Feralpi GmbH
-    - FNsteel B.V.
-    - BGH Edelstahl Freital GmbH
-    - SMS Group GmbH
-    - Plansee SE
-    - Liberty Ostrava a.s.
+
+- ESF Elbe-Stahlwerke Feralpi GmbH
+- FNsteel B.V.
+- BGH Edelstahl Freital GmbH
+- SMS Group GmbH
+- Plansee SE
+- Liberty Ostrava a.s.
 
 # Research Projects
 
 The software development was or is supported by the following research projects:
-    - ESF
+- ESF
 
 The software development will be supported by the following coming research projects:
-    - Validation Funding by Sächsische Aufbaubank (SAB)
+- Validation Funding by Sächsische Aufbaubank (SAB)
 
 # References
