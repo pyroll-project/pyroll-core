@@ -98,6 +98,7 @@ The authors thank the following people for their valuable feedback and/or testin
 - Koos van Putten (SMS Group GmbH)
 - Louisa Preis (FNsteel B.V.)
 - Christian Overhagen (Universität Duisburg-Essen)
+- Tomas Kubina (Liberty a.s.)
 
 The authors thank the following industrial partners for supporting the software development by submitting feedback on usage, simulation result quality and rewarding questions to answer:
 
