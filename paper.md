@@ -109,6 +109,10 @@ The authors thank the following industrial partners for supporting the software 
 - Plansee SE
 - Liberty Ostrava a.s.
 
+# Conflict of Interest
+
+The authors declare, that they have no conflict of interest.
+
 # Research Projects
 
 The software development was or is supported by the following research projects:
