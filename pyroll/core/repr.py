@@ -72,10 +72,12 @@ class ReprMixin(ABC):
                 plt.close(plot)
                 svg = sio.getvalue()
 
-                svg = re.sub(r'height="[\d.\w]*?"', 'height="100%"', svg)
-                svg = re.sub(r'width="[\d.\w]*?"', 'width="100%"', svg)
-
-                return "<table><tr><td style='width:60%'>" + svg + "</td><td>" + table + "</td></tr></table>"
+                return (
+                        "<table>"
+                        + "<tr><td style='text-align: center'>" + svg + "</td></tr>"
+                        + "<tr><td style='text-align: left'>" + table + "</td></tr>"
+                        + "</table>"
+                )
 
         except (NotImplementedError, ImportError, AttributeError, TypeError):
             return table
