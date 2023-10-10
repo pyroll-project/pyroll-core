@@ -111,9 +111,14 @@ The authors thank the following industrial partners for supporting the software 
 # Research Projects
 
 The software development was or is supported by the following research projects:
-- ESF
+- Development and Modelling of Wear of grooved rolls for finishing Blocks (Industrial Funding by ESF Elbe-Stahlwerke Feralpi Riesa GmbH)
+- Investigations on Material Flow and Forming Conditions (Industrial Funding by ESF Elbe-Stahlwerke Feralpi Riesa GmbH)
+- Design and Numerical Investigations of different Leader Passes for Rebar (Industrial Funding by ESF Elbe-Stahlwerke Feralpi Riesa GmbH)
 
 The software development will be supported by the following coming research projects:
-- Validation Funding by Sächsische Aufbaubank (SAB)
+- "Validierungsförderung" by Sächsische Aufbaubank (SAB) and European Union (EU)
+- Implementation and Validation of a Calculation Model for Angular Sections produced by Rolling (RISE DAAD)
+
+![](EFRE-ESF_LO_Kombination_EU-Logo_FreistaatSachsen_H_ENG_RGB.png)
 
 # References
