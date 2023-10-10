@@ -23,6 +23,13 @@ class RollPass(DiskElementUnit, DeformationUnit):
     true means automatic determination from hook functions of ``Rotator.rotation``.
     """
 
+    orientation = Hook[int]()
+    """
+    Orientation of the roll pass for displaying purposes. 
+    Meaning of height and width always refer to standard horizontal orientation anyway.
+    Commonly 0 (horizontal) or 90 (vertical) for two-roll passes. Other integer values are supported, too.
+    """
+
     gap = Hook[float]()
     """Gap between the rolls (outer surface)."""
 
@@ -234,6 +241,11 @@ class RollPass(DiskElementUnit, DeformationUnit):
         ax.set_aspect("equal", "datalim")
         ax.grid(lw=0.5)
 
+        def oriented(geom):
+            if self.orientation != 0:
+                return rotate(geom, self.orientation, (0, 0))
+            return geom
+
         c = []
         ipp = []
         ipr = []
@@ -241,17 +253,27 @@ class RollPass(DiskElementUnit, DeformationUnit):
         opr = []
 
         for cl in self.contour_lines:
-            c = ax.plot(*cl.xy, color="k", label="roll surface")
+            c = ax.plot(*oriented(cl).xy, color="k", label="roll surface")
 
         if self.in_profile:
-            ipp = ax.fill(*self.in_profile.cross_section.boundary.xy, alpha=0.5, color="red", label="in profile")
-            ipr = ax.fill(*self.in_profile.equivalent_rectangle.boundary.xy, fill=False, color="red", ls="--",
-                          label="in eq. rectangle")
+            ipp = ax.fill(
+                *oriented(self.in_profile.cross_section.boundary).xy,
+                alpha=0.5, color="red", label="in profile"
+            )
+            ipr = ax.fill(
+                *oriented(self.in_profile.equivalent_rectangle.boundary).xy,
+                fill=False, color="red", ls="--", label="in eq. rectangle"
+            )
 
         if self.out_profile:
-            opp = ax.fill(*self.out_profile.cross_section.boundary.xy, alpha=0.5, color="blue", label="out profile")
-            opr = ax.fill(*self.out_profile.equivalent_rectangle.boundary.xy, fill=False, color="blue", ls="--",
-                          label="out eq. rectangle")
+            opp = ax.fill(
+                *oriented(self.out_profile.cross_section.boundary).xy,
+                alpha=0.5, color="blue", label="out profile"
+            )
+            opr = ax.fill(
+                *oriented(self.out_profile.equivalent_rectangle.boundary).xy,
+                fill=False, color="blue", ls="--", label="out eq. rectangle"
+            )
 
         axl.axis("off")
         axl.legend(handles=c + ipp + opp + ipr + opr, ncols=2, loc="lower center")
