@@ -36,6 +36,11 @@ def detect_already_rotated(self: RollPass):
                 return True
 
 
+@RollPass.orientation
+def default_orientation(self: RollPass):
+    return 0
+
+
 @RollPass.roll_force
 def roll_force(self: RollPass):
     return (self.in_profile.flow_stress + 2 * self.out_profile.flow_stress) / 3 * self.roll.contact_area
