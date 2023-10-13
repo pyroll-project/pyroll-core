@@ -21,6 +21,7 @@ path = ""
 dependencies = [
     "pytest ~= 7.0",
     "matplotlib ~= 3.6",
+    "pylint"
 ]
 
 [[envs.test.matrix]]
