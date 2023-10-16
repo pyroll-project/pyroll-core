@@ -47,34 +47,17 @@ class EquivalentRibbedGroove(GenericElongationGroove):
 
         # Calculation of the radius 2, that makes the equivalent ribbed grove have the same average cross-section,
         # as the non approximated
-
-        # rib width along the length of the rolled stock
         vertical_rib_width = rib_width / np.cos(rib_angle)
-
-        # ratio of rib width to rib distance
         width_distance_ratio = vertical_rib_width / rib_distance
-
         nominal_outer_radius = nominal_outer_diameter / 2
-
-        # height of the circle segment on top of the base body
         ribbed_circle_segment_height = nominal_outer_radius - base_body_height / 2
-
-        # height of the equivalent circle segment on top of the base body
         equivalent_circle_segment_height = ribbed_circle_segment_height * width_distance_ratio
 
-
-        # diagonal width of the base body
         base_body_diagonal_width = base_body_height * np.sqrt(2)
-
-        # help triangle - interim calculation for later use
-        help_triangle_inner_angle = 180 - (45 + (180 - np.rad2deg(np.arcsin(((base_body_diagonal_width / 2) *
-                                    np.sin(np.deg2rad(45))) / nominal_outer_radius))))
-
-        # base width of the new circle segment on top of the base body
+        help_triangle_inner_angle = np.pi - (np.pi / 4 + (np.pi - np.arcsin(((base_body_diagonal_width / 2) *
+                                    np.sin(np.deg2rad(45))) / nominal_outer_radius)))
         circle_segment_base_width = base_body_height - (2 * ((nominal_outer_radius *
-                                    np.sin(np.deg2rad(help_triangle_inner_angle))) / np.sin(np.deg2rad(45))))
-
-        # r2 calculated from the base width and height of the new circle segment
+                                    np.sin(help_triangle_inner_angle)) / np.sin(np.deg2rad(45))))
         r2 = (4 * equivalent_circle_segment_height ** 2 + circle_segment_base_width ** 2) / (
             8 * equivalent_circle_segment_height)
 
