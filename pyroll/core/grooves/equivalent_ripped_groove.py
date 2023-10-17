@@ -55,9 +55,9 @@ class EquivalentRibbedGroove(GenericElongationGroove):
 
         base_body_diagonal_width = base_body_height * np.sqrt(2)
         help_triangle_inner_angle = np.pi - (np.pi / 4 + (np.pi - np.arcsin(((base_body_diagonal_width / 2) *
-                                    np.sin(np.deg2rad(45))) / nominal_outer_radius)))
+                                    np.sin(np.pi / 4)) / nominal_outer_radius)))
         circle_segment_base_width = base_body_height - (2 * ((nominal_outer_radius *
-                                    np.sin(help_triangle_inner_angle)) / np.sin(np.deg2rad(45))))
+                                    np.sin(help_triangle_inner_angle)) / np.sin(np.pi / 4)))
         r2 = (4 * equivalent_circle_segment_height ** 2 + circle_segment_base_width ** 2) / (
             8 * equivalent_circle_segment_height)
 
