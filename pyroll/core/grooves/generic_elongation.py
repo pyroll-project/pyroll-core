@@ -160,6 +160,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self._cross_section = Polygon(self._contour_line)
 
         self.test_plausibility()
+        self.test_complexity_of_contour_line()
 
     def _r1_contour_line(self, z):
         return self.y12 - np.sqrt(self.r1 ** 2 - (z - self.z12) ** 2)
@@ -252,6 +253,10 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
 
         if self.y4 - self._flank_contour_line(self.z4) > 0.001 * self.depth:
             raise ValueError("under given conditions a step appears in z4")
+
+    def test_complexity_of_contour_line(self):
+        if not self.contour_line.is_simple:
+            raise TypeError("Given groove arguments create complex contour line.")
 
     @property
     def __attrs__(self):
