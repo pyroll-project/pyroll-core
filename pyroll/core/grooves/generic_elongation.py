@@ -69,7 +69,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         mandatory_positive_or_zero = [r1, r2, r3, r4, alpha3, alpha4, indent, even_ground_width, flank_angle,
                                       usable_width, ground_width, depth]
         if any(value < 0 for value in mandatory_positive_or_zero):
-            raise ValueError("Groove arguments have to be positive.")
+            raise ValueError("Groove arguments have to be non-negative.")
 
         try:
             if usable_width is None:
