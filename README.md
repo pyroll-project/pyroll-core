@@ -25,6 +25,12 @@ PyRolL is therefore a tool for model developers, either with broad focus or spec
 Currently, there is no click'n'run graphical user interface (GUI) provided, at least basic knowledge of programming in general and Python in particular is needed to use the software.
 Nevertheless, this is also recommended to leverage the full power of PyRolL.
 
+## Documentation
+
+See the [documentation](https://pyroll.readthedocs.io/en/latest) to learn about basic concepts and
+usage.
+The documentation of version 1.0 can be found [here](https://pyroll.readthedocs.io/en/stable).
+
 ## Versions
 
 The main branch of this repository contains the code of the version 2.0 of PyRolL.
@@ -46,12 +52,6 @@ It is recommended to develop new plugins and extensions only for 2.0.
     - New unit classes: `Rotator`, `PassSequence`, `ThreeRollPass`.
     - Introduction of disk elements for incremental modelling in rolling direction.
     - Nestable units (esp. pass sequences and disk elements).
-
-## Documentation
-
-See the [documentation](https://pyroll.readthedocs.io/en/latest) to learn about basic concepts and
-usage.
-The documentation of version 1.0 can be found [here](https://pyroll.readthedocs.io/en/stable).
 
 ## License
 
