@@ -61,7 +61,7 @@ def test_roll_pass_plot_complete():
     result.show()
 
 
-def test_roll_pass_plot_orientation():
+def test_roll_pass_plot_orientation_90():
     p = pr.RollPass(
         roll=pr.Roll(
             groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
@@ -69,6 +69,24 @@ def test_roll_pass_plot_orientation():
         ),
         gap=1,
         orientation=90,
+        rotation=0,
+        velocity=1,
+    )
+    p.solve(pr.Profile.box(height=6, width=4, flow_stress=100e6))
+
+    result = p.plot()
+
+    result.show()
+
+
+def test_roll_pass_plot_orientation_horizontal():
+    p = pr.RollPass(
+        roll=pr.Roll(
+            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
+            nominal_radius=100
+        ),
+        gap=1,
+        orientation="Horizontal",
         rotation=0,
         velocity=1,
     )
@@ -132,7 +150,7 @@ def test_three_roll_pass_plot_complete():
     result.show()
 
 
-def test_three_roll_pass_plot_orientation():
+def test_three_roll_pass_plot_orientation_180():
     p = pr.ThreeRollPass(
         roll=pr.Roll(
             groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1, pad_angle=30),
@@ -141,6 +159,24 @@ def test_three_roll_pass_plot_orientation():
         gap=1,
         rotation=0,
         orientation=180,
+        velocity=1,
+    )
+    p.solve(pr.Profile.round(diameter=7.5, flow_stress=100e6))
+
+    result = p.plot()
+
+    result.show()
+
+
+def test_three_roll_pass_plot_orientation_anti_y():
+    p = pr.ThreeRollPass(
+        roll=pr.Roll(
+            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1, pad_angle=30),
+            nominal_radius=100,
+        ),
+        gap=1,
+        rotation=0,
+        orientation="AntiY",
         velocity=1,
     )
     p.solve(pr.Profile.round(diameter=7.5, flow_stress=100e6))
