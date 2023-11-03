@@ -23,3 +23,5 @@ from .rounds import RoundGroove, FalseRoundGroove
 from .flat import FlatGroove
 
 from .hexagonal import HexagonalGroove
+
+from .equivalent_ripped_groove import EquivalentRibbedGroove

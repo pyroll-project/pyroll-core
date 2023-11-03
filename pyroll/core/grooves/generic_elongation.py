@@ -66,6 +66,11 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         :param classifiers: sequence of additional type classifiers
         """
 
+        mandatory_positive_or_zero = [r1, r2, r3, r4, alpha3, alpha4, indent, even_ground_width, flank_angle,
+                                      usable_width, ground_width, depth]
+        if any(value < 0 for value in mandatory_positive_or_zero):
+            raise ValueError("Groove arguments have to be non-negative.")
+
         try:
             if usable_width is None:
                 if np.isclose(depth, 0):
@@ -160,6 +165,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self._cross_section = Polygon(self._contour_line)
 
         self.test_plausibility()
+        self.test_complexity_of_contour_line()
 
     def _r1_contour_line(self, z):
         return self.y12 - np.sqrt(self.r1 ** 2 - (z - self.z12) ** 2)
@@ -252,6 +258,10 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
 
         if self.y4 - self._flank_contour_line(self.z4) > 0.001 * self.depth:
             raise ValueError("under given conditions a step appears in z4")
+
+    def test_complexity_of_contour_line(self):
+        if not self.contour_line.is_simple:
+            raise TypeError("Given groove arguments create complex contour line.")
 
     @property
     def __attrs__(self):
