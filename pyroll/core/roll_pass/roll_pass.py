@@ -23,7 +23,7 @@ class RollPass(DiskElementUnit, DeformationUnit):
     true means automatic determination from hook functions of ``Rotator.rotation``.
     """
 
-    orientation = Hook[int]()
+    orientation = Hook[Union[int, str]]()
     """
     Orientation of the roll pass for displaying purposes. 
     Meaning of height and width always refer to standard horizontal orientation anyway.
