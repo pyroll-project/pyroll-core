@@ -1,10 +1,5 @@
-import math
-
-import numpy as np
-from scipy.optimize import root_scalar, fixed_point
-from shapely.affinity import rotate
+from scipy.optimize import fixed_point
 from shapely.geometry import Polygon
-from shapely.ops import clip_by_rect
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
@@ -83,7 +78,7 @@ def cross_section(self: RollPass.OutProfile) -> Polygon:
 @ThreeRollPass.OutProfile.cross_section
 def cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
     cs = helpers.out_cross_section3(self.roll_pass, self.width)
-    if (cs.bounds[3] - cs.centroid.y) * 2.02 < self.width:
+    if (-cs.bounds[1] + cs.centroid.y) * 2.02 < self.width:
         raise ValueError(
             "Profile's width can not be larger than its contour lines."
             "May be caused by critical overfilling."
