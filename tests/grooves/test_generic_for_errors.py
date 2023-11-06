@@ -18,7 +18,7 @@ def test_initialization_error_non_positive():
                                       indent=1e-3,
                                       even_ground_width=1e-3
                                       )
-    assert str(exc_info.value) == "Groove arguments have to be positive."
+    assert str(exc_info.value) == "Groove arguments have to be non-negative."
 
 
 def test_initialization_error_to_many_given_values():
