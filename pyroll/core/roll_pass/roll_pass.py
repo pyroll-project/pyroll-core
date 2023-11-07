@@ -242,16 +242,19 @@ class RollPass(DiskElementUnit, DeformationUnit):
         ax.grid(lw=0.5)
 
         def oriented(geom):
-            if isinstance(self.orientation, int) and self.orientation != 0:
-                return rotate(geom, self.orientation, (0, 0))
-            elif self.orientation == 0:
-                return geom
-            elif self.orientation.lower() in ["horizontal", "h", "antiy", "ay"]:
-                return geom
-            elif self.orientation.lower() in ["vertical", "v"]:
-                return rotate(geom, 90, (0, 0))
-            elif self.orientation.lower() in ["y"]:
-                return rotate(geom, 180, (0, 0))
+            orientation = self.orientation
+
+            if isinstance(orientation, str):
+                if orientation.lower() in ["horizontal", "h", "y"]:
+                    orientation = 0
+                elif orientation.lower() in ["vertical", "v"]:
+                    orientation = 90
+                elif orientation.lower() in ["antiy", "ay"]:
+                    orientation = 180
+
+            if orientation != 0:
+                return rotate(geom, orientation, (0, 0))
+            return geom
 
         artists = []
 
