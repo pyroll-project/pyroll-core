@@ -17,7 +17,7 @@ def out_cross_section3(rp: ThreeRollPass, width: float) -> Polygon:
     poly = Polygon(np.concatenate([cl.coords for cl in rp.contour_lines]))
 
     for _ in range(3):
-        poly = clip_by_rect(poly, -math.inf, -math.inf, math.inf, width / 2)
+        poly = clip_by_rect(poly, -math.inf, -width / 2, math.inf, math.inf)
         poly = rotate(poly, angle=120, origin=(0, 0))
 
     return poly
