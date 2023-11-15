@@ -33,6 +33,22 @@ def center(self: RollPass.Roll):
     return np.array([0, self.roll_pass.gap / 2 + self.nominal_radius])
 
 
+@RollPass.Roll.neutral_angle
+def neutral_angle(self: RollPass.Roll):
+    if self.neutral_angle is not None:
+        return -np.arcsin(self.neutral_point / self.working_radius)
+    else:
+        return None
+
+
+@RollPass.Roll.neutral_point
+def neutral_point(self: RollPass.Roll):
+    if self.neutral_angle is not None:
+        return - np.sin(self.neutral_angle) * self.working_radius
+    else:
+        return None
+
+
 @RollPass.Roll.surface_velocity
 def surface_velocity(self: RollPass.Roll):
     if self.roll_pass.has_set("velocity"):

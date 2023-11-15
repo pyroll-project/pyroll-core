@@ -99,6 +99,9 @@ class Roll(HookHost):
     thermal_diffusivity = Hook[float]()
     """Mean thermal diffusivity of the roll material."""
 
+    neutral_angle = Hook[float]()
+    """Angle at the roll surface where the shear stress is zero."""
+
     neutral_point = Hook[float]()
     """Point at the roll surface where the shear stress is zero."""
 
