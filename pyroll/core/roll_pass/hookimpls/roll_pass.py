@@ -139,11 +139,10 @@ def contact_area3(self: ThreeRollPass):
 
 @RollPass.velocity
 def velocity(self: RollPass):
-    if self.roll.has_value("neutral_point"):
+    if self.roll.has_value("neutral_angle"):
         return self.roll.surface_velocity * np.cos(self.roll.neutral_angle)
     else:
         return self.roll.surface_velocity * np.cos(0)
-
 
 
 @RollPass.duration
