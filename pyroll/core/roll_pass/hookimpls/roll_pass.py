@@ -139,11 +139,10 @@ def contact_area3(self: ThreeRollPass):
 
 @RollPass.velocity
 def velocity(self: RollPass):
-    if self.roll.has_value("neutral_point"):
-        alpha = np.arcsin(-self.roll.neutral_point / self.roll.working_radius)
+    if self.roll.has_value("neutral_angle"):
+        return self.roll.surface_velocity * np.cos(self.roll.neutral_angle)
     else:
-        alpha = 0
-    return self.roll.surface_velocity * np.cos(alpha)
+        return self.roll.surface_velocity * np.cos(0)
 
 
 @RollPass.duration
@@ -222,3 +221,8 @@ def roll_power(self: RollPass):
 @ThreeRollPass.power
 def roll_power_3(self: ThreeRollPass):
     return 3 * self.roll.roll_power
+
+
+@RollPass.entry_angle
+def entry_angle(self: RollPass):
+    return -np.arcsin(self.roll.contact_length / self.roll.working_radius)
