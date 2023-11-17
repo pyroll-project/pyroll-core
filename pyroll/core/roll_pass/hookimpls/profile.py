@@ -27,18 +27,6 @@ def width(self: RollPass.OutProfile):
     return self.roll_pass.usable_width
 
 
-@RollPass.OutProfile.width
-def width(self: RollPass.OutProfile, cycle):
-    if cycle:
-        return None
-
-    if self.has_set("equivalent_width"):
-        def w(x):
-            return self.equivalent_width ** 2 / helpers.out_cross_section(self.roll_pass, x).area * self.height
-
-        return fixed_point(w, x0=self.width)
-
-
 @RollPass.OutProfile.length
 def length(self: RollPass.OutProfile):
     return self.roll_pass.elongation * self.roll_pass.in_profile.length
