@@ -13,7 +13,7 @@ class Transport(DiskElementUnit):
     @property
     def disk_elements(self) -> List['Transport.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
-        return self._subunits
+        return list(self._subunits)
 
     class Profile(DiskElementUnit.Profile):
         """Represents a profile in context of a transport unit."""
