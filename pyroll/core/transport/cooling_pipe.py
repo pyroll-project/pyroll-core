@@ -18,7 +18,7 @@ class CoolingPipe(Transport):
 
 
     @property
-    def disk_elements(self) -> List['Transport.DiskElement']:
+    def disk_elements(self) -> List['CoolingPipe.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -26,9 +26,9 @@ class CoolingPipe(Transport):
         """Represents a profile in context of a transport unit."""
 
         @property
-        def transport(self) -> 'Transport':
+        def cooling_pipe(self) -> 'CoolingPipe':
             """Reference to the transport. Alias for ``self.unit``."""
-            return cast(Transport, self.unit)
+            return cast(CoolingPipe, self.unit)
 
     class InProfile(Profile, Transport.InProfile):
         """Represents an incoming profile of a transport unit."""
@@ -53,9 +53,9 @@ class CoolingPipe(Transport):
                 return cast(CoolingPipe.DiskElement, self.unit)
 
             @property
-            def transport(self) -> 'Transport':
+            def cooling_pipe(self) -> 'CoolingPipe':
                 """Reference to the transport. Alias for ``self.unit.parent``"""
-                return cast(Transport, self.unit.parent)
+                return cast(CoolingPipe, self.unit.parent)
 
         class InProfile(Profile, Transport.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""
