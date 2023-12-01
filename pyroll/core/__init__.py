@@ -1,7 +1,7 @@
 from . import shapes as _
 
 from .grooves import *
-from .transport import Transport
+from .transport import Transport, CoolingPipe
 from .roll_pass import RollPass, DeformationUnit, ThreeRollPass
 from .unit import Unit
 from .roll import Roll
