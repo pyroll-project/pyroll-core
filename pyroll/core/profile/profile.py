@@ -47,6 +47,9 @@ class Profile(HookHost):
     equivalent_width = Hook[float]()
     """Width of the equivalent rectangle."""
 
+    equivalent_radius = Hook[float]()
+    """Radius of a equivalent round."""
+
     temperature = Hook[float]()
     """Mean temperature of the profile cross-section."""
 

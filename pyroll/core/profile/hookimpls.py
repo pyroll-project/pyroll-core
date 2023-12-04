@@ -38,6 +38,11 @@ def equivalent_width(self: Profile):
     return np.sqrt(self.cross_section.area * self.width / self.height)
 
 
+@Profile.equivalent_radius
+def equivalent_radius(self: Profile):
+    return np.sqrt(self.cross_section.area / np.pi)
+
+
 @Profile.equivalent_rectangle
 def equivalent_rectangle(self: Profile):
     return rectangle(self.equivalent_width, self.equivalent_height)
