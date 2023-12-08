@@ -6,7 +6,7 @@ from shapely.geometry import LineString
 
 from ..hooks import Hook
 from ..roll_pass import RollPass
-from ..roll import Roll as BaseRoll
+from ..profile import Profile as BaseProfile
 
 
 class ThreeRollPass(RollPass):
@@ -50,6 +50,11 @@ class ThreeRollPass(RollPass):
 
     class OutProfile(Profile, RollPass.OutProfile):
         """Represents an outgoing profile of a roll pass."""
+
+        def __init__(self, unit: 'RollPass', template: BaseProfile):
+            super().__init__(unit, template)
+            from .hookimpls.profile import cross_section3
+            self.cross_section = cross_section3(self)
 
         filling_ratio = Hook[float]()
 

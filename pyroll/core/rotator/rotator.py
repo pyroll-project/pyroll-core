@@ -2,6 +2,7 @@ from typing import cast
 
 from ..hooks import Hook
 from ..unit import Unit
+from ..profile import Profile as BaseProfile
 
 
 class Rotator(Unit):
@@ -54,3 +55,8 @@ class Rotator(Unit):
 
     class OutProfile(Profile, Unit.OutProfile):
         """Represents an outgoing profile of a rotator."""
+
+        def __init__(self, unit: 'Rotator', template: BaseProfile):
+            super().__init__(unit, template)
+            from .hookimpls import rotated_cross_section
+            self.cross_section = rotated_cross_section(self)

@@ -165,6 +165,11 @@ class RollPass(DiskElementUnit, DeformationUnit):
     class OutProfile(Profile, DiskElementUnit.OutProfile, DeformationUnit.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
+        def __init__(self, unit: 'RollPass', template: BaseProfile):
+            super().__init__(unit, template)
+            from .hookimpls.profile import cross_section
+            self.cross_section = cross_section(self)
+
         filling_ratio = Hook[float]()
         """Ratio of profile width to usable width of the groove as width based measure of ideal filling."""
 
