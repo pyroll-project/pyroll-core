@@ -4,6 +4,8 @@
 ![Python Versions](https://img.shields.io/pypi/pyversions/pyroll-core)
 [![License](https://img.shields.io/pypi/l/pyroll-core)](LICENSE)
 ![Downloads](https://img.shields.io/pypi/dm/pyroll-core)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7971/badge)](https://www.bestpractices.dev/projects/7971)
+
 
 Welcome to The PyRolL Project!
 
