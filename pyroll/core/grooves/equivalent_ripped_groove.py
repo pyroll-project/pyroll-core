@@ -20,6 +20,7 @@ class EquivalentRibbedGroove(GenericElongationGroove):
             nominal_outer_diameter: float,
             usable_width: float,
             depth: float,
+            rib_flank_angle: Optional[float] = None,
 
             pad_angle: float = 0,
             **kwargs
@@ -41,6 +42,13 @@ class EquivalentRibbedGroove(GenericElongationGroove):
         :param pad_angle: angle between z-axis and the roll face padding
         :param kwargs: more keyword arguments passed to the GenericElongationGroove constructor
         """
+
+        self.nominal_outer_diameter = nominal_outer_diameter
+        self.base_body_height = base_body_height
+        self.rib_distance = rib_distance
+        self.rib_width = rib_width
+        self.rib_flank_angle = rib_flank_angle
+
 
         pad_angle = np.deg2rad(pad_angle)
         rib_angle = np.deg2rad(rib_angle)
