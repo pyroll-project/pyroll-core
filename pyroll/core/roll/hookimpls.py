@@ -67,11 +67,11 @@ def surface_y(self: Roll):
 
 @Roll.heat_penetration_number
 def heat_penetration_number(self: Roll):
-    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "thermal_capacity"):
-        return np.sqrt(self.thermal_conductivity * self.density * self.thermal_capacity)
+    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "specific_heat_capacity"):
+        return np.sqrt(self.thermal_conductivity * self.density * self.specific_heat_capacity)
 
 
 @Roll.thermal_diffusivity
 def thermal_diffusivity(self: Roll):
-    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "thermal_capacity"):
-        return self.thermal_conductivity / (self.density * self.thermal_capacity)
+    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "specific_heat_capacity"):
+        return self.thermal_conductivity / (self.density * self.specific_heat_capacity)
