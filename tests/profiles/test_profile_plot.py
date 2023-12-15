@@ -7,3 +7,11 @@ def test_plot_profile():
     result = p.plot()
 
     result.show()
+
+
+def test_plot_hexagon_profile():
+    p = pr.Profile.hexagon(side=10, corner_radius=2)
+
+    result = p.plot()
+
+    result.show()
