@@ -1,5 +1,6 @@
 import numpy as np
 from pyroll.core import SplineGroove
+import matplotlib.pyplot as plt
 
 points = [
     (-2, 0),
@@ -48,6 +49,21 @@ def test_spline_without_usable_width():
     assert np.isclose(g.local_depth(4), 1)
     assert np.isclose(g.local_depth(-5), 0)
     assert np.isclose(g.local_depth(-4), 1)
+
+    assert "oval" in g.classifiers
+    assert "swedish_oval" in g.classifiers
+
+
+def test_spline_from_dxf():
+    g = SplineGroove.from_dxf_drawing(filepath="swedish_oval_test_groove.dxf", classifiers=["oval", "swedish_oval"])
+
+    plt.figure(dpi=300)
+    plt.axes().set_aspect("equal")
+    plt.plot(*g.contour_line.xy)
+    plt.show()
+    plt.close()
+
+    assert np.isclose(g.usable_width, 0.0413, atol=0.001)
 
     assert "oval" in g.classifiers
     assert "swedish_oval" in g.classifiers
