@@ -12,6 +12,25 @@ The current focus lies on groove rolling in elongation grooves.
 The core package includes the basic data structures and algorithms.
 Further functionality is provided via [extension packages](https://pyroll.readthedocs.io/en/latest/extensions/index.html) and model approaches are provided via [plugin packages](https://pyroll.readthedocs.io/en/latest/plugins/index.html).
 
+## Aim and Scope
+
+Publications in the field of groove rolling simulation are, to the authors knowledge, characterized by lack of reproducibility, mainly because often details are missing regarding implementation or numerical solution procedure or the provided equations are erroneous.
+Very few authors provide their source code alongside their publications.
+PyRolL aims to change this by providing an open basis for model and methodology development.
+The PyRolL Core package hosted in this repository is the common base dependency to refer to.
+Plugins to the core provide model approaches for the partial problems to be described in a rolling simulation, which include mechanical, thermal, material behavior and more.
+The library of available models is constantly growing and can be extended by everyone.
+Extensions provide application logic and numerical procedures helping to analyse the subject rolling process regarding its technical feasibility, optimization potential, identity error sources, or, to design a new process.
+PyRolL is therefore a tool for model developers, either with broad focus or specialists, wishing to try out for example a new physical material model within a real process simulation, as well as for technologists wishing to investigate a concrete process.
+Currently, there is no click'n'run graphical user interface (GUI) provided, at least basic knowledge of programming in general and Python in particular is needed to use the software.
+Nevertheless, this is also recommended to leverage the full power of PyRolL.
+
+## Documentation
+
+See the [documentation](https://pyroll.readthedocs.io/en/latest) to learn about basic concepts and
+usage.
+The documentation of version 1.0 can be found [here](https://pyroll.readthedocs.io/en/stable).
+
 ## Versions
 
 The main branch of this repository contains the code of the version 2.0 of PyRolL.
@@ -33,12 +52,6 @@ It is recommended to develop new plugins and extensions only for 2.0.
     - New unit classes: `Rotator`, `PassSequence`, `ThreeRollPass`.
     - Introduction of disk elements for incremental modelling in rolling direction.
     - Nestable units (esp. pass sequences and disk elements).
-
-## Documentation
-
-See the [documentation](https://pyroll.readthedocs.io/en/latest) to learn about basic concepts and
-usage.
-The documentation of version 1.0 can be found [here](https://pyroll.readthedocs.io/en/stable).
 
 ## License
 
