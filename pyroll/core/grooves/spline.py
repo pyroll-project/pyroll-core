@@ -2,7 +2,8 @@ from typing import Union, Tuple, Iterable, Optional
 
 import numpy as np
 import scipy.interpolate
-from shapely.geometry import Polygon, LineString
+from ezdxf import readfile
+from shapely.geometry import Polygon, LineString, Point
 
 from pyroll.core.grooves import GrooveBase
 
@@ -18,7 +19,7 @@ class SplineGroove(GrooveBase):
     ):
         """
         :param contour_points: an iterable of contour points to be used for the spline
-        :param classifiers: an interable of string keys used as type classifiers
+        :param classifiers: an iterable of string keys used as type classifiers
         :param usable_width: the usable width to assume for this instance, if None, the maximum width will be used
         """
         contour_points = np.asarray(contour_points, dtype="float64")
@@ -90,3 +91,48 @@ class SplineGroove(GrooveBase):
 
     def local_depth(self, z) -> Union[float, np.ndarray]:
         return self._local_depth(z)
+
+    @classmethod
+    def from_dxf_drawing(cls, filepath: str, classifiers: Iterable[str], usable_width: Optional[float] = None,
+                         arc_discretization: int = 1000) -> 'SplineGroove':
+        """
+        Creates a spline groove with a given contour line as defined inside the .dxf drawing.
+
+        :param filepath: the filepath to the drawing
+        :param classifiers: an iterable of string keys used as type classifiers
+        :param usable_width: the usable width to assume for this instance, if None, the maximum width will be used
+        :param arc_discretization: discretization of arcs of the dxf drawing, default is 1000.
+        """
+
+        doc = readfile(filepath)
+        msp = doc.modelspace()
+
+        points = []
+        for entity in msp:
+            if entity.dxftype() == 'LINE':
+                points.append((entity.dxf.start[0], entity.dxf.start[1]))
+                points.append((entity.dxf.end[0], entity.dxf.end[1]))
+
+            elif entity.dxftype() == 'ARC':
+                center = (entity.dxf.center[0], entity.dxf.center[1])
+                radius = entity.dxf.radius
+                start_angle = np.radians(entity.dxf.start_angle)
+                end_angle = np.radians(entity.dxf.end_angle)
+
+                arc_points = [
+                    (
+                        center[0] + radius * np.cos(start_angle + (end_angle - start_angle) * i / arc_discretization),
+                        center[1] + radius * np.sin(start_angle + (end_angle - start_angle) * i / arc_discretization),
+                    )
+                    for i in range(arc_discretization + 1)
+                ]
+                points.extend(arc_points)
+
+        points.sort(key=lambda p: p[0])
+
+        distance_to_y_0 = -points[0][1]
+
+        shifted_points = [(x, y + distance_to_y_0) for x, y in points]
+        shifted_points.sort(key=lambda p: p[0])
+
+        return SplineGroove(contour_points=shifted_points, classifiers=classifiers, usable_width=usable_width)
