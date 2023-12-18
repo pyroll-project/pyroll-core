@@ -60,11 +60,11 @@ def core_temperature(self: Profile):
 
 @Profile.heat_penetration_number
 def heat_penetration_number(self: Profile):
-    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "thermal_capacity"):
-        return np.sqrt(self.thermal_conductivity * self.density * self.thermal_capacity)
+    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "specific_heat_capacity"):
+        return np.sqrt(self.thermal_conductivity * self.density * self.specific_heat_capacity)
 
 
 @Profile.thermal_diffusivity
 def thermal_diffusivity(self: Profile):
-    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "thermal_capacity"):
-        return self.thermal_conductivity / (self.density * self.thermal_capacity)
+    if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "specific_heat_capacity"):
+        return self.thermal_conductivity / (self.density * self.specific_heat_capacity)
