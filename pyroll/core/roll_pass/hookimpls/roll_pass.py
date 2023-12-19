@@ -223,6 +223,11 @@ def roll_power_3(self: ThreeRollPass):
     return 3 * self.roll.roll_power
 
 
+@RollPass.entry_point
+def entry_point(self: RollPass):
+    return - self.roll.contact_length
+
+
 @RollPass.entry_angle
 def entry_angle(self: RollPass):
-    return -np.arcsin(self.roll.contact_length / self.roll.working_radius)
+    return np.arcsin(self.entry_point / self.roll.working_radius)

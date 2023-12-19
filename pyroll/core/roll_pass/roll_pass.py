@@ -60,6 +60,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
     roll_force = Hook[float]()
     """Vertical roll force."""
 
+    entry_point = Hook[float]()
+    """Point where the material enters the roll gap."""
+
     entry_angle = Hook[float]()
     """Angle at which the material enters the roll gap."""
 
