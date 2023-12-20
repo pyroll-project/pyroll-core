@@ -66,6 +66,12 @@ class RollPass(DiskElementUnit, DeformationUnit):
     entry_angle = Hook[float]()
     """Angle at which the material enters the roll gap."""
 
+    exit_point = Hook[float]()
+    """Point where the material exits the roll gap."""
+
+    exit_angle = Hook[float]()
+    """Angle at which the material exits the roll gap."""
+
     front_tension = Hook[float]()
     """Front tension acting on the current roll pass."""
 
@@ -86,6 +92,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
 
     target_cross_section_filling_ratio = Hook[float]()
     """Target cross-section filling ratio of the out profile."""
+
+    forward_slip_ratio = Hook[float]()
+    """Ratio of forward slip of the roll gap."""
 
     def __init__(
             self,
