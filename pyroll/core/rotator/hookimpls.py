@@ -74,9 +74,3 @@ def upset_in_0(self: Rotator):
 def three_roll_pass_180(self: Rotator):
     if "3fold" in self.next_roll_pass.classifiers:
         return 180
-
-
-@Rotator.rotation
-def three_roll_pass_hexagon_to_hexagon(self: Rotator):
-    if "3fold" in self.next_roll_pass.classifiers and "flat" in self.next_roll_pass.classifiers:
-        return 0
