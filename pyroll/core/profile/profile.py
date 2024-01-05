@@ -321,24 +321,27 @@ class Profile(HookHost):
     def hexagon(
             cls,
             side: Optional[float] = None,
+            height: Optional[float] = None,
             diagonal: Optional[float] = None,
             corner_radius: float = 0,
             **kwargs
     ) -> 'HexagonProfile':
         """
-        Creates a hexagon-shaped profile (a real hexagon shape with rounded corners,
-        without imperfections of hexagon groove).
-        A hexagon is oriented to stand on its side.
+        Creates a hexagonal shaped profile (a real hexagonal shape with rounded corners,
+        without imperfections of hexagonal grooves). A hexagon is oriented to stand on its side.
+        Give exactly one of ``side``, ``height`` and ``diagonal``.
 
-        :param side: the side of the hexagon profile, must be > 0
-        :param diagonal: the diagonal's length of the hexagon profile, must be > 0.
-            Note, that the diagonal is measured at the flat sides
+        :param side: the side length of the hexagonal profile, must be > 0
+        :param height: the height of the hexagonal profile when standing on the flat base, must be > 0
+        :param diagonal: the diagonal length of the hexagonal profile (corner-to-corner distance)
         :param corner_radius: the radius of the hexagon's corners, must be >= 0, <= diagonal / 2
         :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        :raises TypeError: on invalid argument combinations
         :raises ValueError: if arguments are out of range
         """
 
-        return HexagonProfile(side, diagonal, corner_radius, **kwargs)
+
+        return HexagonProfile(side, height, diagonal, corner_radius, **kwargs)
 
     def local_height(self, z: float) -> float:
         coords = np.array([(1, -1), (1, 1)]) * (z, self.height)
@@ -651,6 +654,7 @@ class HexagonProfile(Profile):
     def __init__(
             self,
             side: Optional[float] = None,
+            height: Optional[float] = None,
             diagonal: Optional[float] = None,
             corner_radius: float = 0,
             **kwargs
@@ -658,25 +662,32 @@ class HexagonProfile(Profile):
         """
         Creates a hexagonal shaped profile (a real hexagonal shape with rounded corners,
         without imperfections of hexagonal grooves). A hexagon is oriented to stand on its side.
-        Give exactly one of ``side`` and ``height``.
+        Give exactly one of ``side``, ``height`` and ``diagonal``.
 
         :param side: the side length of the hexagonal profile, must be > 0
-        :param diagonal: the height of the hexagonal profile when standing on the flat base, must be > 0
+        :param height: the height of the hexagonal profile when standing on the flat base, must be > 0
+        :param diagonal: the diagonal length of the hexagonal profile (corner-to-corner distance)
         :param corner_radius: the radius of the hexagon's corners, must be >= 0, <= diagonal / 2
         :param kwargs: additional keyword arguments to be passed to the Profile constructor
         :raises TypeError: on invalid argument combinations
         :raises ValueError: if arguments are out of range
         """
 
-        if side is not None and diagonal is None:
-            diagonal = side * np.sqrt(3)
-        elif diagonal is not None and side is None:
-            side = diagonal / np.sqrt(3)
+        if side is not None and diagonal is None and height is None:
+            height = side * np.sqrt(3)
+            diagonal = side * 2
+        elif diagonal is not None and side is None and height is None:
+            side = diagonal / 2
+            height = side / np.sqrt(3)
+        elif height is not None and side is None and diagonal is None:
+            side = height / np.sqrt(3)
+            diagonal = side * 2
         else:
-            raise TypeError("either 'side' or 'diagonal' must be given")
+            raise TypeError("either 'side', 'height' or 'diagonal' must be given")
 
         if (
                 side <= 0
+                or height <= 0
                 or diagonal <= 0
                 or corner_radius < 0
                 or corner_radius > side / 2

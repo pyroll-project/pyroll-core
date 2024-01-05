@@ -128,7 +128,11 @@ def test_square_box_equivalence():
 
 
 def test_hexagon():
-    Profile.hexagon(side=10)
+    p1 = Profile.hexagon(side=10)
+    p2 = Profile.hexagon(diagonal=20)
+    p3 = Profile.hexagon(height=10 * np.sqrt(3))
+    assert np.isclose(p1.cross_section.boundary.xy, p2.cross_section.boundary.xy).all()
+    assert np.isclose(p1.cross_section.boundary.xy, p3.cross_section.boundary.xy).all()
     Profile.hexagon(side=10, corner_radius=1)
 
 
