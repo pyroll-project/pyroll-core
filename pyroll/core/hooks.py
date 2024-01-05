@@ -491,9 +491,26 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
         return result
 
 
-root_hooks = set()  # filled in __init__.py due to circular imports
+class _RootHooksList(list):
+    def add(self, item):
+        self.append(item)
+
+    def insert_before(self, position, item):
+        i = self.index(position)
+        self.insert(i, item)
+
+    def insert_after(self, position, item):
+        i = self.index(position) + 1
+        self.insert(i, item)
+
+    def remove_last(self, item):
+        i = list(reversed(self)).index(item)
+        del self[-1 - i]
+
+
+root_hooks = _RootHooksList()  # filled in __init__.py due to circular imports
 """
-Set of hooks to call explicitly in each solution iteration.
+List of hooks to call explicitly in each solution iteration.
 Their values will be treated as explicitly set but reevaluated in every iteration.
 They will not be deleted during cache clearing.
 They serve as root for the calling tree and persistent iterational variables.

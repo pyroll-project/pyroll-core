@@ -8,20 +8,20 @@ from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, Circula
     root_hooks, Rotator
 
 
-def equivalent_width(self: RollPass.OutProfile, cycle):
+def width(self: RollPass.OutProfile, cycle):
     if cycle:
         return None
 
-    return self.roll_pass.in_profile.equivalent_width * self.roll_pass.draught ** -0.5
+    return self.roll_pass.in_profile.width * self.roll_pass.draught ** -0.5
 
 
 def test_solve(tmp_path: Path, caplog):
     caplog.set_level(logging.INFO, logger="pyroll")
 
-    with RollPass.OutProfile.equivalent_width(equivalent_width):
+    with RollPass.OutProfile.width(width):
 
-        root_hooks.add(RollPass.OutProfile.equivalent_width)
-        root_hooks.add(Rotator.OutProfile.equivalent_width)
+        root_hooks.add(RollPass.OutProfile.width)
+        root_hooks.add(Rotator.OutProfile.width)
 
         in_profile = Profile.round(
             diameter=30e-3,
@@ -89,8 +89,8 @@ def test_solve(tmp_path: Path, caplog):
             print("\nLog:")
             print(caplog.text)
 
-            root_hooks.remove(RollPass.OutProfile.equivalent_width)
-            root_hooks.remove(Rotator.OutProfile.equivalent_width)
+            root_hooks.remove_last(RollPass.OutProfile.width)
+            root_hooks.remove_last(Rotator.OutProfile.width)
 
     try:
         import pyroll.report
