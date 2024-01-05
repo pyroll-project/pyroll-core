@@ -14,8 +14,8 @@ from .config import Config, config
 
 VERSION = "2.1.3"
 
-root_hooks.update(
-    {
+root_hooks.extend(
+    [
         RollPass.roll_force,
         RollPass.Roll.roll_torque,
         RollPass.elongation_efficiency,
@@ -30,5 +30,5 @@ root_hooks.update(
         Unit.OutProfile.t,
         PassSequence.log_elongation,
         Unit.power,
-    }
+    ]
 )
