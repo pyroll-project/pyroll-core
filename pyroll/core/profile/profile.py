@@ -317,6 +317,32 @@ class Profile(HookHost):
 
         return DiamondProfile(height, width, corner_radius, **kwargs)
 
+    @classmethod
+    def hexagon(
+            cls,
+            side: Optional[float] = None,
+            height: Optional[float] = None,
+            diagonal: Optional[float] = None,
+            corner_radius: float = 0,
+            **kwargs
+    ) -> 'HexagonProfile':
+        """
+        Creates a hexagonal shaped profile (a real hexagonal shape with rounded corners,
+        without imperfections of hexagonal grooves). A hexagon is oriented to stand on its side.
+        Give exactly one of ``side``, ``height`` and ``diagonal``.
+
+        :param side: the side length of the hexagonal profile, must be > 0
+        :param height: the height of the hexagonal profile when standing on the flat base, must be > 0
+        :param diagonal: the diagonal length of the hexagonal profile (corner-to-corner distance)
+        :param corner_radius: the radius of the hexagon's corners, must be >= 0, <= diagonal / 2
+        :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        :raises TypeError: on invalid argument combinations
+        :raises ValueError: if arguments are out of range
+        """
+
+
+        return HexagonProfile(side, height, diagonal, corner_radius, **kwargs)
+
     def local_height(self, z: float) -> float:
         coords = np.array([(1, -1), (1, 1)]) * (z, self.height)
 
@@ -622,3 +648,94 @@ class SquareProfile(Profile):
             diagonal=self._diagonal,
             corner_radius=self._corner_radius
         )
+
+
+class HexagonProfile(Profile):
+    def __init__(
+            self,
+            side: Optional[float] = None,
+            height: Optional[float] = None,
+            diagonal: Optional[float] = None,
+            corner_radius: float = 0,
+            **kwargs
+    ):
+        """
+        Creates a hexagonal shaped profile (a real hexagonal shape with rounded corners,
+        without imperfections of hexagonal grooves). A hexagon is oriented to stand on its side.
+        Give exactly one of ``side``, ``height`` and ``diagonal``.
+
+        :param side: the side length of the hexagonal profile, must be > 0
+        :param height: the height of the hexagonal profile when standing on the flat base, must be > 0
+        :param diagonal: the diagonal length of the hexagonal profile (corner-to-corner distance)
+        :param corner_radius: the radius of the hexagon's corners, must be >= 0, <= diagonal / 2
+        :param kwargs: additional keyword arguments to be passed to the Profile constructor
+        :raises TypeError: on invalid argument combinations
+        :raises ValueError: if arguments are out of range
+        """
+
+        if side is not None and diagonal is None and height is None:
+            height = side * np.sqrt(3)
+            diagonal = side * 2
+        elif diagonal is not None and side is None and height is None:
+            side = diagonal / 2
+            height = side / np.sqrt(3)
+        elif height is not None and side is None and diagonal is None:
+            side = height / np.sqrt(3)
+            diagonal = side * 2
+        else:
+            raise TypeError("either 'side', 'height' or 'diagonal' must be given")
+
+        if (
+                side <= 0
+                or height <= 0
+                or diagonal <= 0
+                or corner_radius < 0
+                or corner_radius > side / 2
+        ):
+            raise ValueError("argument value(s) out of range")
+
+        self._corner_radius = corner_radius
+        self._side = side
+        self._diagonal = diagonal
+
+        line = LinearRing(
+            np.array([
+                (-1, 0),
+                (-1 / 2, np.sqrt(3) / 2),
+                (1 / 2, np.sqrt(3) / 2),
+                (1, 0),
+                (1 / 2, -np.sqrt(3) / 2),
+                (-1 / 2, -np.sqrt(3) / 2),
+            ])
+            * (side, side)
+        )
+        polygon = Polygon(line)
+        polygon = polygon.buffer(corner_radius)
+
+        super().__init__(
+            cross_section=polygon,
+            classifiers={"hexagon"},
+            **kwargs
+        )
+
+    @property
+    def side(self):
+        """The side length of the hexagon profile."""
+        return self._side
+
+    @property
+    def diagonal(self):
+        """The diagonal between two flat sides of the hexagon profile."""
+        return self._diagonal
+
+    @property
+    def corner_radius(self):
+        """The radius of the profile's corners resp. edges."""
+        return self._corner_radius
+
+    @property
+    def __attrs__(self):
+        return super().__attrs__ | dict(
+            side=self._side,
+            diagonal=self._diagonal,
+            corner_radius=self._corner_radius)

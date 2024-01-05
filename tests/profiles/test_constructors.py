@@ -125,3 +125,21 @@ def test_square_box_equivalence():
     p1 = Profile.square(side=10, corner_radius=2)
     p2 = Profile.box(height=10, width=10, corner_radius=2)
     assert np.isclose(p1.cross_section.symmetric_difference(rotate(p2.cross_section, angle=45, origin=(0, 0))).area, 0)
+
+
+def test_hexagon():
+    p1 = Profile.hexagon(side=10)
+    p2 = Profile.hexagon(diagonal=20)
+    p3 = Profile.hexagon(height=10 * np.sqrt(3))
+    assert np.isclose(p1.cross_section.boundary.xy, p2.cross_section.boundary.xy).all()
+    assert np.isclose(p1.cross_section.boundary.xy, p3.cross_section.boundary.xy).all()
+    Profile.hexagon(side=10, corner_radius=1)
+
+
+def test_hexagon_errors():
+    with pytest.raises(ValueError):
+        Profile.hexagon(side=-1)
+    with pytest.raises(ValueError):
+        Profile.hexagon(diagonal=-1)
+    with pytest.raises(ValueError):
+        Profile.hexagon(side=10, corner_radius=-1)
