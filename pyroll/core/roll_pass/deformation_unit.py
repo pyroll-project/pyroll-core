@@ -15,6 +15,9 @@ class DeformationUnit(Unit):
     elongation = Hook[float]()
     """Coefficient of elongation (change in length)."""
 
+    tension_elongation = Hook[float]()
+    """Coefficient of elongation due to tension between units. """
+
     draught = Hook[float]()
     """Coefficient of draught (change in height)."""
 
@@ -23,6 +26,9 @@ class DeformationUnit(Unit):
 
     log_elongation = Hook[float]()
     """Log. coefficient of elongation (change in length)."""
+
+    log_tension_elongation = Hook[float]()
+    """log. coefficient of elongation due to tension between units (change in length due to tension)."""
 
     log_draught = Hook[float]()
     """Log. coefficient of draught (change in height)."""

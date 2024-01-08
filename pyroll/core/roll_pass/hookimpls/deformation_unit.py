@@ -15,7 +15,12 @@ def spread(self: DeformationUnit):
 
 @DeformationUnit.elongation
 def elongation(self: DeformationUnit):
-    return self.in_profile.cross_section.area / self.out_profile.cross_section.area
+    return self.in_profile.cross_section.area / self.out_profile.cross_section.area * self.tension_elongation
+
+
+@DeformationUnit.tension_elongation
+def tension_elongation(self: DeformationUnit):
+    return np.exp(self.log_tension_elongation)
 
 
 @DeformationUnit.log_draught
@@ -30,7 +35,12 @@ def log_spread(self: DeformationUnit):
 
 @DeformationUnit.log_elongation
 def log_elongation(self: DeformationUnit):
-    return np.log(self.elongation)
+    return np.log(self.elongation) + self.log_tension_elongation
+
+
+@DeformationUnit.log_tension_elongation
+def log_tension_elongation(self: DeformationUnit):
+    return 0
 
 
 @DeformationUnit.abs_draught
