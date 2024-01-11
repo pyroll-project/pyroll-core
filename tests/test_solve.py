@@ -11,6 +11,7 @@ def flow_stress(self: RollPass.Profile):
     return 50e6 * (1 + self.strain) ** 0.2 * self.roll_pass.strain_rate ** 0.1
 
 
+# noinspection DuplicatedCode
 def test_solve(tmp_path: Path, caplog):
     caplog.set_level(logging.DEBUG, logger="pyroll")
 
