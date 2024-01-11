@@ -2,6 +2,8 @@ from collections.abc import Sequence
 from typing import overload, List, cast
 
 from ..unit import Unit
+from ..roll_pass import RollPass
+from ..transport import Transport
 from ..hooks import Hook
 
 
@@ -68,7 +70,18 @@ class PassSequence(Unit, Sequence[Unit]):
 
     @property
     def units(self) -> List[Unit]:
-        return self._subunits
+        """Returns a list of all units in this sequence."""
+        return list(self._subunits)
+
+    @property
+    def roll_passes(self) -> List[RollPass]:
+        """Returns a list of all roll passes in this sequence."""
+        return list(u for u in self._subunits if isinstance(u, RollPass))
+
+    @property
+    def transports(self) -> List[Transport]:
+        """Returns a list of all transports in this sequence."""
+        return list(u for u in self._subunits if isinstance(u, Transport))
 
     @property
     def __attrs__(self):
