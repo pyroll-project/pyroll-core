@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
+import shapely
 
 from pyroll.core import ThreeRollPass, Roll, CircularOvalGroove, BoxGroove
 
@@ -62,6 +63,8 @@ def test_contour_lines(g):
     shift = g.usable_width / 2 / np.sqrt(3) + rp.gap / np.sqrt(3)
     plt.axline((g.z3, -g.y3-shift), slope=np.tan(g.flank_angle), c="r", ls="--", lw=1)
     plt.axline((g.z1, -g.y1-shift), slope=np.tan(-g.pad_angle), c="r", ls="--", lw=1)
+
+    plt.plot(*shapely.Point(0,0).buffer(rp.inscribed_circle_diameter / 2).boundary.xy)
 
     plt.show()
     plt.close()
