@@ -91,3 +91,6 @@ class PassSequence(Unit, Sequence[Unit]):
         return super().__attrs__ | {
             "units": self.units
         }
+    
+    def _ipython_key_completions_(self):
+        return [u.label for u in self._subunits]
