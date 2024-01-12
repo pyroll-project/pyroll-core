@@ -258,3 +258,13 @@ def entry_point(self: RollPass):
 @RollPass.entry_angle
 def entry_angle(self: RollPass):
     return np.arcsin(self.entry_point / self.roll.working_radius)
+
+
+@RollPass.exit_point
+def exit_point(self: RollPass):
+    return 0
+
+
+@RollPass.exit_angle
+def exit_angle(self: RollPass):
+    return np.arcsin(self.exit_point / self.roll.working_radius)
