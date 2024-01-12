@@ -97,6 +97,33 @@ def gap(self: RollPass):
         return self.height - 2 * self.roll.groove.depth
 
 
+@ThreeRollPass.inscribed_circle_diameter
+def inscribed_circle_diameter_from_gap(self: ThreeRollPass):
+    if self.has_set_or_cached("gap"):
+        half = self.roll.groove.usable_width / 2 / np.sqrt(3) + self.gap / np.sqrt(3) + self.roll.groove.depth
+        return half * 2
+
+
+@ThreeRollPass.gap
+def gap3_from_height(self: ThreeRollPass):
+    if self.has_set_or_cached("height"):
+        return (
+                self.height / 2
+                - self.roll.groove.usable_width / 2 / np.sqrt(3)
+                - self.roll.groove.depth
+        ) * np.sqrt(3)
+
+
+@ThreeRollPass.gap
+def gap3_from_icd(self: ThreeRollPass):
+    if self.has_set_or_cached("inscribed_circle_diameter"):
+        return (
+                self.inscribed_circle_diameter / 2
+                - self.roll.groove.usable_width / 2 / np.sqrt(3)
+                - self.roll.groove.depth
+        ) * np.sqrt(3)
+
+
 @RollPass.height
 def height(self):
     if self.has_set_or_cached("gap"):

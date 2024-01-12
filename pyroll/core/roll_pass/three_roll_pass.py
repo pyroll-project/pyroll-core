@@ -12,6 +12,9 @@ from ..roll import Roll as BaseRoll
 class ThreeRollPass(RollPass):
     """Represents a roll pass with three working rolls and 3-fold symmetry."""
 
+    inscribed_circle_diameter = Hook[float]()
+    """Diameter of inscribed circle between roll barrels as alternative to roll gap definition."""
+
     @property
     def contour_lines(self) -> List[LineString]:
         if self._contour_lines:
