@@ -58,15 +58,31 @@ class PassSequence(Unit, Sequence[Unit]):
         return self._subunits.__iter__()
 
     @overload
-    def __getitem__(self, index: int) -> Unit:
+    def __getitem__(self, key: int) -> Unit:
+        """Gets unit item by index."""
         ...
 
     @overload
-    def __getitem__(self, index: slice) -> list[Unit]:
+    def __getitem__(self, key: str) -> Unit:
+        """Gets unit item by label."""
         ...
 
-    def __getitem__(self, index: int) -> Unit:
-        return self._subunits.__getitem__(index)
+    @overload
+    def __getitem__(self, key: slice) -> list[Unit]:
+        """Gets a slice of units."""
+        ...
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            try:
+                return next(u for u in self._subunits if u.label == key)
+            except StopIteration:
+                raise KeyError(f"No unit with label '{key}' found.")
+
+        if isinstance(key, int) or isinstance(key, slice):
+            return self._subunits.__getitem__(key)
+
+        raise TypeError("Key must be int, slice or str")
 
     @property
     def units(self) -> List[Unit]:
@@ -88,3 +104,6 @@ class PassSequence(Unit, Sequence[Unit]):
         return super().__attrs__ | {
             "units": self.units
         }
+    
+    def _ipython_key_completions_(self):
+        return [u.label for u in self._subunits]
