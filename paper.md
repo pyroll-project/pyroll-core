@@ -45,15 +45,20 @@ bibliography: paper.bib
 
 # Summary
 
-Groove rolling is one of the main process routes for the production of metal long products, such as bars, beams, wire and rods.
+Groove rolling is one of the main process routes for the production of metal long products, such as bars, beams, wires and rods.
+In this process, a workpiece is deformed by two or more rotating rolls to reduce the cross-section achieve a desired cross-section shape.
+The shape is determined by the contour of the rolls' surfaces, called the groove or calibre.
+The process is usually accomplished in multiple steps, each called a pass.
 The industry is currently under heavy pressure to optimize its processes regarding energy consumption while maintaining or increasing product quality.
 The introduction of new materials and alloys challenges production and technology engineers.
 In the past decades, numerical simulation tools have become an integral part of process development and maintenance.
+There are used to estimate forces and engine torques, as well as geometrical and microstructural evolution of the workpiece for a given pass sequence and input workpiece geometry and material.
+This knowledge is important to design or optimize a process, identify sources of errors, increase product quality or extend the product portfolio.
 
-PyRolL is an open-source, modular and extensible framework aiming at the numerical simulation of groove rolling processes and accompanying processes.
+PyRolL is an open-source, modular and extensible framework aiming at the numerical simulation of groove rolling processes and accompanying processes, such as heating, cooling and transportation.
 PyRolL Core serves as the basis for model and application development by defining needed data structures and solution algorithms and providing a versatile plugin system.
 Rolling processes are quite a complex issue since a simulation has to regard the mechanical behavior of the workpiece and plant, as well as thermodynamic and chemical processes occurring within the workpiece.
-The plugin system enables modular simulation setup, where the user can choose from a growing library of state-of-the-art model approaches published in scientific literature.
+The plugin system enables modular simulation setup, where the user can choose from a growing library of state-of-the-art model approaches published in scientific literature that target specific aspects of the process auch as material flow, stress state, thermal evolution, microstructure evolution or elastic tool response.
 Additional and new model approaches can be implemented as plugin packages and used just the same as officially provided ones.
 By this concept, the ecosystem can grow and thus avoid the need to implement the basic stuff every time, so the user or developer can concentrate on the actual focus of his work.
 
@@ -73,11 +78,9 @@ The mentioned models and simulation programs use empirical, analytical or semi-a
 Aside from these models, there is a huge amount of research focusing on the usage of Finite-Element-Method (FEM) based models for groove rolling and groove pass design.
 The finite element theory is actively developed since the 1980s for use in groove rolling [@Shivpuri1992; @Macura1996; @Yanagimoto2000; @Liu2002; @Glowacki2005; @Kim2005; @Bontcheva2005; @Vallellano2008; @Bernhardt2013; @Takashima2014].
 It provides a general approach for complex problems in two or three dimensions and offers simulation results of high accuracy and depth.
-The main disadvantage is the high computational effort in solving the equation systems, increasing rapidly with the non-linearity of the model equations and the resolution of the solution space.
-Therefore, this method has grown along with the development of high-performance computer systems in the past decades.
-The usage of FEM increases the achievable modelling depth immensely at the expense of high calculation times.
-However, none of the authors cited provides the source code of the simulation programs used or the corresponding build files for the used commercial FEM toolkits.
-This circumstance makes it difficult for other authors to compare their own results with results from the literature, as they are unable to reproduce the results without extensive effort.
+The main disadvantage is the high computational effort in solving the equation systems, increasing rapidly with the non-linearity of the model equations and the resolution of the solution space, typically in the range from hours to days.
+Analytical and empirical models, however, do not provide that high accuracy and depth, but are usually computable within fractions of seconds.
+So they are suitable for interactive design with quick feedback loops and numerical applications, which require large count of evaluations, such as optimization routines.
 
 **(Comment): This statement seems a bit misleading; for example, many open-source finite element (or similar) codes are capable of metal forming simulation, i.e. contact with large plastic strains, e.g. [CalculiX](https://calculix.discourse.group/t/contact-convergence-in-metal-forming-simulation/1357), [FEBio](https://febio.org/knowledgebase/case-studies/structural-mechanics/reactive-plasticity-benchmark-problem/), [deal.II](https://www.dealii.org/current/doxygen/deal.II/step_42.html), my own [solids4foam](https://www.solids4foam.com/tutorials/more-tutorials/solid-mechanics/elastoplasticity/cooksMembrane.html) OpenFOAM toolbox ([paper](https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.5345)).** In the field of metal forming simulation in general, the authors of this software know only of very few authors providing their source code, namely @Alexander1972 and @Pawelski2000.
 The field of groove rolling simulation is, according to the authors' experience, characterized by the usage of handcrafted, specialized, not reusable software tools or by the usage of large commercial packages.
@@ -86,6 +89,8 @@ The authors propose a new open and extensible rolling simulation framework to su
 The framework is designed to allow a modular exchange of model approaches describing partial problems of the highly complex groove rolling process.
 The whole project aims to provide a growing library of model approaches to reflect the state of the art found in scientific literature and make it available to the public.
 So new research can start on a growing base to explore the actual topic without implementing the same stuff again and again.
+The primary focus lies hereby on analytical, empirical and semi-empirical approaches, although interfacing with third-party software such as FE or CALPHAD suites, as well as material databases, is possible and planned.
+PyRolL is deeply integrated with Python's scientific ecosystem, which allows efficient and user-friendly post-processing of simulation results, as well as application of numerical routines wrapped around the simulation core, such as optimization and fitting of metamodels.
 
 # Acknowledgements
 
