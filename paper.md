@@ -82,9 +82,10 @@ The main disadvantage is the high computational effort in solving the equation s
 Analytical and empirical models, however, do not provide that high accuracy and depth, but are usually computable within fractions of seconds.
 So they are suitable for interactive design with quick feedback loops and numerical applications, which require large count of evaluations, such as optimization routines.
 
-**(Comment): This statement seems a bit misleading; for example, many open-source finite element (or similar) codes are capable of metal forming simulation, i.e. contact with large plastic strains, e.g. [CalculiX](https://calculix.discourse.group/t/contact-convergence-in-metal-forming-simulation/1357), [FEBio](https://febio.org/knowledgebase/case-studies/structural-mechanics/reactive-plasticity-benchmark-problem/), [deal.II](https://www.dealii.org/current/doxygen/deal.II/step_42.html), my own [solids4foam](https://www.solids4foam.com/tutorials/more-tutorials/solid-mechanics/elastoplasticity/cooksMembrane.html) OpenFOAM toolbox ([paper](https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.5345)).** In the field of metal forming simulation in general, the authors of this software know only of very few authors providing their source code, namely @Alexander1972 and @Pawelski2000.
-The field of groove rolling simulation is, according to the authors' experience, characterized by the usage of handcrafted, specialized, not reusable software tools or by the usage of large commercial packages.
-Therefore, every research project has to start from scratch to build up a simulation, even if only small partial models have to be investigated.
+According to the authors' experience, it is not common in the field of rolling simulation to provide source code and input files alongside journal publications, so the work cannot be reproduced directly and easily.
+Noteable exceptions from this are @Alexander1972 and a textbook by @Pawelski2000.
+Also, the field is characterized by the usage of handcrafted, specialized and not reusable self-made tools, or, by the usage of large commercial FE packages, either specialized or general-purpose.
+In effect, every research project has to start from scratch to build up a simulation, even if only small partial models have to be investigated.
 The authors propose a new open and extensible rolling simulation framework to support future research and development.
 The framework is designed to allow a modular exchange of model approaches describing partial problems of the highly complex groove rolling process.
 The whole project aims to provide a growing library of model approaches to reflect the state of the art found in scientific literature and make it available to the public.
