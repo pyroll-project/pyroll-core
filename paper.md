@@ -58,7 +58,7 @@ This knowledge is important to design or optimize a process, identify sources of
 PyRolL is an open-source, modular and extensible framework aiming at the numerical simulation of groove rolling processes and accompanying processes, such as heating, cooling and transportation.
 PyRolL Core serves as the basis for model and application development by defining needed data structures and solution algorithms and providing a versatile plugin system.
 Rolling processes are quite a complex issue since a simulation has to regard the mechanical behavior of the workpiece and plant, as well as thermodynamic and chemical processes occurring within the workpiece.
-The plugin system enables modular simulation setup, where the user can choose from a growing library of state-of-the-art model approaches published in scientific literature that target specific aspects of the process auch as material flow, stress state, thermal evolution, microstructure evolution or elastic tool response.
+The plugin system enables modular simulation setup, where the user can choose from a growing library of state-of-the-art model approaches published in scientific literature that target specific aspects of the process such as material flow, stress state, thermal evolution, microstructure evolution or elastic tool response.
 Additional and new model approaches can be implemented as plugin packages and used just the same as officially provided ones.
 By this concept, the ecosystem can grow and thus avoid the need to implement the basic stuff every time, so the user or developer can concentrate on the actual focus of his work.
 
