@@ -1,5 +1,7 @@
 from ..unit import Unit
 from ..hooks import Hook
+from shapely.geometry import LineString
+from typing import List
 
 
 class DeformationUnit(Unit):
@@ -62,6 +64,18 @@ class DeformationUnit(Unit):
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a deformation unit."""
+
+        contact_lines = Hook[List[LineString]]()
+        """List of lines that are in contact with tooling (rolls)."""
+
+        free_surface_lines = Hook[List[LineString]]()
+        """List of lines that are not in contact with tooling (rolls)."""
+
+        contact_width = Hook[float]()
+        """Projected width of contact lines."""
+
+        contact_depth = Hook[float]()
+        """Projected depth of contact lines."""
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a deformation unit."""
