@@ -106,6 +106,24 @@ class Profile(HookHost):
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
 
+    normal_stress_x = Hook[float]()
+    """Normal stress (principal stress) in rolling (x) direction. Positive means tension, negative pressure."""
+
+    normal_stress_y = Hook[float]()
+    """Normal stress (principal stress) in thickness (y) direction. Positive means tension, negative pressure."""
+
+    normal_stress_z = Hook[float]()
+    """Normal stress (principal stress) in width (z) direction. Positive means tension, negative pressure."""
+
+    normal_strain_x = Hook[float]()
+    """Logarithmic normal strain (principal strain) in rolling (x) direction."""
+
+    normal_strain_y = Hook[float]()
+    """Logarithmic normal strain (principal strain) in thickness (y) direction."""
+
+    normal_strain_z = Hook[float]()
+    """Logarithmic normal strain (principal strain) in width (z) direction."""
+
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
         self.t = 0
@@ -339,7 +357,6 @@ class Profile(HookHost):
         :raises TypeError: on invalid argument combinations
         :raises ValueError: if arguments are out of range
         """
-
 
         return HexagonProfile(side, height, diagonal, corner_radius, **kwargs)
 
