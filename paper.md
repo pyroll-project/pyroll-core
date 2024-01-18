@@ -103,6 +103,7 @@ The authors thank the following people for their valuable feedback and/or testin
 - Gerald Rothenbucher (Plansee SE)
 - Koos van Putten (SMS Group GmbH)
 - Louisa Preis (FNsteel B.V.)
+- Michael Molter (Saatstahl AG)
 - Christian Overhagen (Universität Duisburg-Essen)
 - Tomas Kubina (Liberty a.s.)
 
@@ -113,6 +114,7 @@ The authors thank the following industrial partners for supporting the software 
 - BGH Edelstahl Freital GmbH
 - SMS Group GmbH
 - Plansee SE
+- Saarstahl AG
 - Liberty Ostrava a.s.
 
 # Conflict of Interest
