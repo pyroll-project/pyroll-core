@@ -45,7 +45,7 @@ bibliography: paper.bib
 
 # Summary
 
-Groove rolling is one of the main process routes for the production of long metal products, such as bars, beams, wires, and rods.
+Groove rolling is one of the main process routes for the production of metal loag products, such as bars, beams, wires, and rods.
 In this process, a workpiece is deformed by two or more rotating rolls to reduce the cross-section achieve a desired cross-section shape.
 The shape is determined by the contour of the rolls' surfaces, called the groove or calibre.
 The process is usually accomplished in multiple steps, each called a pass.
