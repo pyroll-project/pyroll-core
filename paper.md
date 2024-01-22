@@ -46,19 +46,19 @@ bibliography: paper.bib
 # Summary
 
 Groove rolling is one of the main process routes for the production of metal long products, such as bars, beams, wires, and rods.
-In this process, a workpiece is deformed by two or more rotating rolls to reduce the cross-section achieve a desired cross-section shape.
+In this process, a workpiece is deformed by two or more rotating rolls to reduce the cross-section to achieve a desired cross-section shape.
 The shape is determined by the contour of the rolls' surfaces, called the groove or calibre.
 The process is usually accomplished in multiple steps, each called a pass.
 The industry is currently under heavy pressure to optimize its processes regarding energy consumption while maintaining or increasing product quality.
 The introduction of new materials and alloys challenges production and technology engineers.
 In the past decades, numerical simulation tools have become an integral part of process development and maintenance.
-There are used to estimate forces and engine torques, as well as geometrical and microstructural evolution of the workpiece for a given pass sequence and input workpiece geometry and material.
+They are used to estimate forces and engine torques, as well as geometrical and microstructural evolution of the workpiece for a given pass sequence and input workpiece geometry and material.
 This knowledge is important to design or optimize a process, identify sources of errors, increase product quality or extend the product portfolio.
 
 PyRolL is an open-source, modular, and extensible framework aiming at the numerical simulation of groove rolling processes and accompanying processes, such as heating, cooling, and transportation.
 PyRolL Core serves as the basis for model and application development by defining needed data structures and solution algorithms and providing a versatile plugin system.
 Rolling processes are quite a complex issue since a simulation has to regard the mechanical behavior of the workpiece and plant, as well as thermodynamic and chemical processes occurring within the workpiece.
-The plugin system enables modular simulation setup, where the user can choose from a growing library of state-of-the-art model approaches published in scientific literature that target specific aspects of the process such as material flow, stress state, thermal evolution, microstructure evolution or elastic tool response.
+The plugin system enables a modular simulation setup, where the user can choose from a growing library of state-of-the-art model approaches published in scientific literature that target specific aspects of the process such as material flow, stress state, thermal evolution, microstructure evolution or elastic tool response.
 Additional and new model approaches can be implemented as plugin packages and used just the same as officially provided ones.
 By this concept, the ecosystem can grow and thus avoid the need to implement the basics every time, so the user or developer can concentrate on the actual focus of their work.
 
@@ -80,7 +80,7 @@ The finite element theory is actively developed since the 1980s for use in groov
 It provides a general approach for complex problems in two or three dimensions and offers simulation results of high accuracy and depth.
 The main disadvantage is the high computational effort in solving the equation systems, increasing rapidly with the non-linearity of the model equations and the resolution of the solution space, typically in the range from hours to days.
 Analytical and empirical models, however, do not provide that high accuracy and depth, but are usually computable within fractions of seconds.
-So they are suitable for interactive design with quick feedback loops and numerical applications, which require large count of evaluations, such as optimization routines.
+Therefore they are suitable for interactive design with quick feedback loops and numerical applications, which require large count of evaluations, such as optimization routines.
 
 According to the authors' experience, it is not common in the field of rolling simulation to provide source code and input files alongside journal publications, so the work cannot be reproduced directly and easily.
 Noteable exceptions from this are @Alexander1972 and a textbook by @Pawelski2000.
@@ -89,7 +89,7 @@ In effect, every research project has to start from scratch to build up a simula
 The authors propose a new open and extensible rolling simulation framework to support future research and development.
 The framework is designed to allow a modular exchange of model approaches describing partial problems of the highly complex groove rolling process.
 The whole project aims to provide a growing library of model approaches to reflect the state of the art found in scientific literature and make it available to the public.
-So new research can start on a growing base to explore the actual topic without implementing the same stuff again and again.
+So new research can start on a growing base to explore the actual topic without implementing the same basics again and again.
 The primary focus lies hereby on analytical, empirical and semi-empirical approaches, although interfacing with third-party software such as finite element or CALPHAD suites, as well as material databases, is possible and planned.
 PyRolL is deeply integrated with Python's scientific ecosystem, which allows efficient and user-friendly post-processing of simulation results, as well as application of numerical routines wrapped around the simulation core, such as optimization and fitting of metamodels.
 
@@ -103,8 +103,8 @@ The authors thank the following people for their valuable feedback and/or testin
 - Gerald Rothenbucher (Plansee SE)
 - Koos van Putten (SMS Group GmbH)
 - Louisa Preis (FNsteel B.V.)
-- Michael Molter (Saatstahl AG)
-- Christian Overhagen (Universität Duisburg-Essen)
+- Michael Molter (Saarstahl AG)
+- Christian Overhagen (University Duisburg-Essen)
 - Tomas Kubina (Liberty a.s.)
 
 The authors thank the following industrial partners for supporting the software development by submitting feedback on usage, simulation result quality and rewarding questions to answer:
@@ -129,7 +129,7 @@ The software development was or is supported by the following research projects:
 - Investigations on Material Flow and Forming Conditions (Industrial Funding by ESF Elbe-Stahlwerke Feralpi Riesa GmbH)
 - Design and Numerical Investigations of Different Leader Passes for Rebars (Industrial Funding by ESF Elbe-Stahlwerke Feralpi Riesa GmbH)
 
-The software development will be supported by the following coming research projects:
+The software development will be supported by the following upcoming research projects:
 
 - "Validierungsförderung" by Sächsische Aufbaubank (SAB) and European Union (EU)
 - Implementation and Validation of a Calculation Model for Angular Sections produced by Rolling (RISE DAAD)
