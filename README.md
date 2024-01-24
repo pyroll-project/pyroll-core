@@ -3,6 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/pyroll-core)](https://pypi.org/project/pyroll-core/)
 ![Python Versions](https://img.shields.io/pypi/pyversions/pyroll-core)
 [![License](https://img.shields.io/pypi/l/pyroll-core)](LICENSE)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.06200/status.svg)](https://doi.org/10.21105/joss.06200)
 ![Downloads](https://img.shields.io/pypi/dm/pyroll-core)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7971/badge)](https://www.bestpractices.dev/projects/7971)
 
