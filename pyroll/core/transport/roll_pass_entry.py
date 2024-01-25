@@ -10,7 +10,8 @@ class RollPassEntry(Transport):
     environment_temperature = Hook[float]()
     """Temperature of the surrounding atmosphere."""
 
-
+    cooling_water_temperature = Hook[float]()
+    """Temperature of the succeeding roll pass."""
 
     @property
     def disk_elements(self) -> List['RollPassEntry.DiskElement']:
