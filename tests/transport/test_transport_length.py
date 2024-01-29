@@ -1,0 +1,66 @@
+import logging
+
+import pyroll.core as pr
+
+
+def test_transport_length_from_roll_pass_positions():
+    sequence = pr.PassSequence([
+        pr.RollPass(
+            roll=pr.Roll(
+                groove=None,
+                contact_length=10,
+            ),
+            location=100
+        ),
+        pr.Transport(label="transport"),
+        pr.RollPass(
+            roll=pr.Roll(
+                groove=None,
+                contact_length=20,
+            ),
+            location=200
+        ),
+    ])
+
+    assert sequence["transport"].length == 80
+
+
+def test_transport_length_from_roll_pass_positions_solve(caplog):
+    caplog.set_level(logging.DEBUG, logger="pyroll")
+
+    in_profile = pr.BoxProfile(
+        width=1,
+        height=3,
+        flow_stress=1
+    )
+
+    sequence = pr.PassSequence([
+        pr.RollPass(
+            roll=pr.Roll(
+                groove=pr.FlatGroove(usable_width=1),
+                nominal_radius=1,
+            ),
+            rotation=0,
+            gap=2,
+            velocity=1,
+            location=100,
+        ),
+        pr.Transport(label="transport"),
+        pr.RollPass(
+            roll=pr.Roll(
+                groove=pr.FlatGroove(usable_width=1),
+                nominal_radius=1,
+            ),
+            rotation=0,
+            gap=1,
+            velocity=1,
+            location=200,
+        ),
+    ])
+
+    try:
+        sequence.solve(in_profile)
+    finally:
+        print(caplog.text)
+
+    assert sequence["transport"].length == 100 - sequence.roll_passes[1].roll.contact_length

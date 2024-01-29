@@ -23,20 +23,20 @@ def surface_area(self: Unit):
 
 
 @Unit.length
-def length(self: Unit):
-    if self.has_set_or_cached("duration"):
+def length(self: Unit, cycle):
+    if not cycle and self.has_value("duration"):
         return self.velocity * self.duration
 
 
 @Unit.duration
-def duration(self: Unit):
-    if self.has_set_or_cached("length"):
+def duration(self: Unit, cycle):
+    if not cycle and self.has_value("length"):
         return self.length / self.velocity
 
 
 @Unit.velocity
 def velocity(self: Unit):
-    if self.in_profile.has_set_or_cached("velocity"):
+    if self.in_profile.has_value("velocity"):
         return self.in_profile.velocity
 
 

@@ -96,6 +96,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
     forward_slip_ratio = Hook[float]()
     """Ratio of forward slip of the roll gap."""
 
+    location = Hook[float]()
+    """Coordinate of the passes high point in rolling direction."""
+
     def __init__(
             self,
             roll: BaseRoll,

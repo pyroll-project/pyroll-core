@@ -24,3 +24,12 @@ def conti_velocity(self: Transport):
 @Transport.environment_temperature
 def environment_temperature(self):
     return 293
+
+
+@Transport.length
+def length_from_roll_pass_positions(self: Transport):
+    from ..roll_pass import RollPass
+
+    if self.prev.has_value("location") and self.next.has_value("location"):
+        entry = self.next.entry_point if self.next.has_value("entry_point") else 0
+        return self.next.location - self.prev.location + entry
