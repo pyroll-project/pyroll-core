@@ -46,6 +46,12 @@ dynamic = ["version"]
 plot = [
     "matplotlib ~= 3.7"
 ]
+matplotlib = [
+    "matplotlib ~= 3.7"
+]
+plotly = [
+    "plotly ~= 5.18"
+]
 
 [project.urls]
 Homepage = "https://pyroll-project.github.io"
