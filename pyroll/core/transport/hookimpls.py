@@ -27,9 +27,26 @@ def environment_temperature(self):
 
 
 @Transport.length
-def length_from_roll_pass_positions(self: Transport):
-    from ..roll_pass import RollPass
+def length_from_roll_pass_positions(self: Transport, cycle):
+    if cycle:
+        return None
 
-    if self.prev.has_value("location") and self.next.has_value("location"):
-        entry = self.next.entry_point if self.next.has_value("entry_point") else 0
-        return self.next.location - self.prev.location + entry
+    from ..roll_pass import RollPass
+    next_pass = self.next_of(RollPass)
+    prev_pass = self.prev_of(RollPass)
+
+    if next_pass.has_value("location") and prev_pass.has_value("location"):
+        entry = next_pass.entry_point if next_pass.has_value("entry_point") else 0
+        length = 0
+
+        current = self
+        while not (current.next is next_pass):
+            length += current.next.length
+            current = current.next
+
+        current = self
+        while not (current.prev is prev_pass):
+            length += current.prev.length
+            current = current.prev
+
+        return next_pass.location - prev_pass.location + entry - length
