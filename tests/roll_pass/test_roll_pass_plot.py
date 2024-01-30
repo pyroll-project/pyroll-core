@@ -11,7 +11,8 @@ import pyroll.core as pr
             roll=pr.Roll(
                 groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1)
             ),
-            gap=1
+            gap=1,
+            in_profile = pr.Profile.round(diameter=4),
         ),
         pr.RollPass(
             roll=pr.Roll(
@@ -23,7 +24,8 @@ import pyroll.core as pr
             roll=pr.Roll(
                 groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1)
             ),
-            gap=1
+            gap=1,
+            out_profile=pr.Profile.round(diameter=4),
         ),
         pr.RollPass(
             roll=pr.Roll(
@@ -31,8 +33,8 @@ import pyroll.core as pr
                 nominal_radius=100
             ),
             gap=1,
-            rotation=0,
-            velocity=1,
+            in_profile=pr.Profile.round(diameter=4),
+            out_profile=pr.Profile.box(height=3, width=6, corner_radius=1),
         ),
     ]
 )
