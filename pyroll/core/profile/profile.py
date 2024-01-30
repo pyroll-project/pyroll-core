@@ -106,6 +106,9 @@ class Profile(HookHost):
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
 
+    deformation_activation_energy = Hook[float]()
+    """Activation energy of deformation especially for calculation of Zener-Holomon-Parameter."""
+
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
         self.t = 0
@@ -339,7 +342,6 @@ class Profile(HookHost):
         :raises TypeError: on invalid argument combinations
         :raises ValueError: if arguments are out of range
         """
-
 
         return HexagonProfile(side, height, diagonal, corner_radius, **kwargs)
 

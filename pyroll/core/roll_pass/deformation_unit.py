@@ -54,6 +54,9 @@ class DeformationUnit(Unit):
     deformation_resistance = Hook[float]()
     """Equivalent deformation resistance (mean flow stress increased by deformation efficiency)."""
 
+    zener_holomon_parameter = Hook[float]()
+    """Temperature corrected strain rate acc. to Zener and Holomon."""
+
     class Profile(Unit.Profile):
         """Represents a profile in context of a deformation unit."""
 

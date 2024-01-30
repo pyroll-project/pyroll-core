@@ -1,6 +1,7 @@
 import numpy as np
 
 from ..roll_pass import DeformationUnit
+from ... import Config
 
 
 @DeformationUnit.draught
@@ -76,3 +77,10 @@ def strain_rate(self: DeformationUnit):
 @DeformationUnit.free_surface_area
 def free_surface_area(self: DeformationUnit):
     return self.surface_area - self.contact_area
+
+
+@DeformationUnit.zener_holomon_parameter
+def zener_holomon_parameter(self: DeformationUnit):
+    return self.strain_rate * np.exp(- self.in_profile.deformation_activation_energy / (
+            Config.UNIVERSAL_GAS_CONSTANT * self.in_profile.temperature
+    ))
