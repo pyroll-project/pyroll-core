@@ -340,7 +340,6 @@ class Profile(HookHost):
         :raises ValueError: if arguments are out of range
         """
 
-
         return HexagonProfile(side, height, diagonal, corner_radius, **kwargs)
 
     def local_height(self, z: float) -> float:
@@ -390,26 +389,47 @@ class Profile(HookHost):
                 raise ValueError("Value of self.material is neither a string or a collection of strings.")
 
     def plot(self, **kwargs):
-        try:
-            import matplotlib.pyplot as plt
-        except ImportError as e:
+        from pyroll.core import PLOTTING_BACKEND
+        if PLOTTING_BACKEND is None:
             raise RuntimeError(
-                "This method is only available if matplotlib is installed in the environment. "
-                "You may install it using the 'plot' extra of pyroll-core."
-            ) from e
+                "This method is only available if matplotlib or plotly is installed in the environment. "
+                "You may install one of them using the 'plot', 'matplotlib' or 'plotly' extras of pyroll-core."
+            )
 
-        fig: plt.Figure = plt.figure(**kwargs)
-        ax: plt.Axes = fig.subplots()
+        if PLOTTING_BACKEND == "matplotlib":
+            import matplotlib.pyplot as plt
 
-        ax.set_ylabel("y")
-        ax.set_xlabel("z")
+            fig: plt.Figure = plt.figure(**kwargs)
+            ax: plt.Axes = fig.subplots()
 
-        ax.set_aspect("equal", "datalim")
-        ax.grid(lw=0.5)
+            ax.set_ylabel("y")
+            ax.set_xlabel("z")
 
-        ax.plot(*self.cross_section.boundary.xy, color="k")
-        ax.fill(*self.cross_section.boundary.xy, color="k", alpha=0.5)
-        return fig
+            ax.set_aspect("equal", "datalim")
+            ax.grid(lw=0.5)
+
+            ax.plot(*self.cross_section.boundary.xy, color="k")
+            ax.fill(*self.cross_section.boundary.xy, color="k", alpha=0.5)
+            return fig
+
+        if PLOTTING_BACKEND == "plotly":
+            import plotly.express as px
+
+            fig = px.line(
+                x=self.cross_section.boundary.xy[0],
+                y=self.cross_section.boundary.xy[1],
+                labels={"y": "y", "x": "z"},
+                template="simple_white",
+            )
+
+            fig.data[0].fill = "toself"
+
+            fig.update_yaxes(
+                scaleanchor="x",
+                scaleratio=1
+            )
+
+            return fig
 
 
 class RoundProfile(Profile):
