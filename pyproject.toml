@@ -51,7 +51,8 @@ matplotlib = [
 ]
 plotly = [
     "plotly ~= 5.18",
-    "pandas ~= 2.0"
+    "pandas ~= 2.0",
+    "kaleido"
 ]
 
 [project.urls]
