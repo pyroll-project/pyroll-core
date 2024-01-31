@@ -1,17 +1,24 @@
+import pytest
+
 import pyroll.core as pr
 
 
-def test_plot_profile():
-    p = pr.Profile.square(side=10, corner_radius=2)
+@pytest.mark.parametrize(
+    "p",
+    [
+        pr.Profile.square(side=10, corner_radius=2),
+        pr.Profile.hexagon(side=10, corner_radius=2)
+    ]
+)
+def test_plot_profile(p):
+    if pr.PLOTTING_BACKEND is not None:
+        result = p.plot()
+        result.show()
 
-    result = p.plot()
+        if pr.PLOTTING_BACKEND == "matplotlib":
+            from matplotlib.pyplot import Figure
+            assert isinstance(result, Figure)
 
-    result.show()
-
-
-def test_plot_hexagon_profile():
-    p = pr.Profile.hexagon(side=10, corner_radius=2)
-
-    result = p.plot()
-
-    result.show()
+        if pr.PLOTTING_BACKEND == "plotly":
+            from plotly.graph_objects import Figure
+            assert isinstance(result, Figure)

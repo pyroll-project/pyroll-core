@@ -32,3 +32,16 @@ root_hooks.extend(
         PassSequence.log_elongation,
     ]
 )
+
+# determine available plotting backend, plotly is preferred
+try:
+    import plotly as _
+    PLOTTING_BACKEND = "plotly"
+
+except ImportError:
+    try:
+        import matplotlib as _
+        PLOTTING_BACKEND = "matplotlib"
+
+    except ImportError:
+        PLOTTING_BACKEND = None

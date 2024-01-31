@@ -64,22 +64,32 @@ class ReprMixin(ABC):
         try:
             plot = self.plot()
 
-            import matplotlib.pyplot as plt
-            import re
+            from pyroll.core import PLOTTING_BACKEND
 
-            with StringIO() as sio:
-                plot.savefig(sio, format="svg")
-                plt.close(plot)
+            if PLOTTING_BACKEND == "matplotlib":
+                import matplotlib.pyplot as plt
+                with StringIO() as sio:
+                    plot.savefig(sio, format="svg")
                 svg = sio.getvalue()
+                plt.close(plot)
+            if PLOTTING_BACKEND == "plotly":
+                from plotly.io import to_image
+                svg = to_image(
+                    plot,
+                    format="svg",
+                    width=600,
+                    height=400
+                ).decode("utf-8")
 
-                return (
-                        "<table>"
-                        + "<tr><td style='text-align: center'>" + svg + "</td></tr>"
-                        + "<tr><td style='text-align: left'>" + table + "</td></tr>"
-                        + "</table>"
-                )
+            return (
+                    "<table>"
+                    + "<tr><td style='text-align: center'>" + svg + "</td></tr>"
+                    + "<tr><td style='text-align: left'>" + table + "</td></tr>"
+                    + "</table>"
+            )
 
-        except (NotImplementedError, ImportError, AttributeError, TypeError):
+        except (NotImplementedError, ImportError, AttributeError, TypeError) as e:
+            print(e)
             return table
 
     def __rich_repr__(self):

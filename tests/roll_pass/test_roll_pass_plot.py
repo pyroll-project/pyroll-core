@@ -1,186 +1,109 @@
 import matplotlib.pyplot as plt
+import pytest
 
 import pyroll.core as pr
 
 
-def test_plot_roll_pass_plain():
-    p = pr.RollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+@pytest.mark.parametrize(
+    "rp",
+    [
+        pr.RollPass(
+            roll=pr.Roll(
+                groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+            ),
+            gap=1,
+            in_profile = pr.Profile.round(diameter=4),
         ),
-        gap=1
-    )
-
-    result = p.plot()
-
-    result.show()
-
-
-def test_plot_roll_pass_ip():
-    p = pr.RollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+        pr.RollPass(
+            roll=pr.Roll(
+                groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+            ),
+            gap=1
         ),
-        gap=1
-    )
-    p.in_profile = pr.Profile.round(diameter=4)
-
-    result = p.plot()
-
-    result.show()
-
-
-def test_plot_roll_pass_op():
-    p = pr.RollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+        pr.RollPass(
+            roll=pr.Roll(
+                groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+            ),
+            gap=1,
+            out_profile=pr.Profile.round(diameter=4),
         ),
-        gap=1
-    )
-    p.out_profile = pr.Profile.square(diagonal=3)
-
-    result = p.plot()
-
-    result.show()
-
-
-def test_roll_pass_plot_complete():
-    p = pr.RollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
-            nominal_radius=100
+        pr.RollPass(
+            roll=pr.Roll(
+                groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
+                nominal_radius=100
+            ),
+            gap=1,
+            in_profile=pr.Profile.round(diameter=4),
+            out_profile=pr.Profile.box(height=3, width=6, corner_radius=1),
         ),
-        gap=1,
-        rotation=0,
-        velocity=1,
-    )
-    p.solve(pr.Profile.box(height=6, width=4, flow_stress=100e6))
+    ]
+)
+def test_plot_roll_pass_with_profiles_or_not(rp):
+    if pr.PLOTTING_BACKEND is not None:
+        result = rp.plot()
+        result.show()
 
-    result = p.plot()
+        if pr.PLOTTING_BACKEND == "matplotlib":
+            from matplotlib.pyplot import Figure
+            assert isinstance(result, Figure)
 
-    result.show()
-
-
-def test_roll_pass_plot_orientation_90():
-    p = pr.RollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
-            nominal_radius=100
-        ),
-        gap=1,
-        orientation=90,
-        rotation=0,
-        velocity=1,
-    )
-    p.solve(pr.Profile.box(height=6, width=4, flow_stress=100e6))
-
-    result = p.plot()
-
-    result.show()
+        if pr.PLOTTING_BACKEND == "plotly":
+            from plotly.graph_objects import Figure
+            assert isinstance(result, Figure)
 
 
-def test_roll_pass_plot_orientation_horizontal():
-    p = pr.RollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
-            nominal_radius=100
-        ),
-        gap=1,
-        orientation="Horizontal",
-        rotation=0,
-        velocity=1,
-    )
-    p.solve(pr.Profile.box(height=6, width=4, flow_stress=100e6))
+@pytest.mark.parametrize(
+    "orientation", [0, 90, "Horizontal", 45, -45, "Vertical"]
+)
+def test_roll_pass_plot_orientation(orientation):
+    if pr.PLOTTING_BACKEND is not None:
+        rp = pr.RollPass(
+            roll=pr.Roll(
+                groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
+                nominal_radius=100
+            ),
+            gap=1,
+            orientation=orientation,
+            rotation=0,
+            velocity=1,
+        )
+        rp.solve(pr.Profile.box(height=6, width=4, flow_stress=100e6))
+        result = rp.plot()
+        result.show()
 
-    result = p.plot()
+        if pr.PLOTTING_BACKEND == "matplotlib":
+            from matplotlib.pyplot import Figure
+            assert isinstance(result, Figure)
 
-    result.show()
-
-
-def test_roll_pass_plot_orientation_45():
-    p = pr.RollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
-            nominal_radius=100
-        ),
-        gap=1,
-        orientation=45,
-        rotation=0,
-        velocity=1,
-    )
-    p.solve(pr.Profile.box(height=6, width=4, flow_stress=100e6))
-
-    result = p.plot()
-
-    result.show()
+        if pr.PLOTTING_BACKEND == "plotly":
+            from plotly.graph_objects import Figure
+            assert isinstance(result, Figure)
 
 
-def test_roll_pass_plot_orientation_neg45():
-    p = pr.RollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1),
-            nominal_radius=100
-        ),
-        gap=1,
-        orientation=-45,
-        rotation=0,
-        velocity=1,
-    )
-    p.solve(pr.Profile.box(height=6, width=4, flow_stress=100e6))
+@pytest.mark.parametrize(
+    "orientation", [0, 180, "Y", "AntiY", -180]
+)
+def test_three_roll_pass_plot_orientation(orientation):
+    if pr.PLOTTING_BACKEND is not None:
+        rp = pr.ThreeRollPass(
+            roll=pr.Roll(
+                groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1, pad_angle=30),
+                nominal_radius=100,
+            ),
+            gap=1,
+            orientation=orientation,
+            rotation=0,
+            velocity=1,
+        )
+        rp.solve(pr.Profile.round(diameter=7.5, flow_stress=100e6))
+        result = rp.plot()
+        result.show()
 
-    result = p.plot()
+        if pr.PLOTTING_BACKEND == "matplotlib":
+            from matplotlib.pyplot import Figure
+            assert isinstance(result, Figure)
 
-    result.show()
+        if pr.PLOTTING_BACKEND == "plotly":
+            from plotly.graph_objects import Figure
+            assert isinstance(result, Figure)
 
-
-def test_three_roll_pass_plot_complete():
-    p = pr.ThreeRollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1, pad_angle=30),
-            nominal_radius=100,
-        ),
-        gap=1,
-        rotation=0,
-        velocity=1,
-    )
-    p.solve(pr.Profile.round(diameter=7.5, flow_stress=100e6))
-
-    result = p.plot()
-
-    result.show()
-
-
-def test_three_roll_pass_plot_orientation_180():
-    p = pr.ThreeRollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1, pad_angle=30),
-            nominal_radius=100,
-        ),
-        gap=1,
-        rotation=0,
-        orientation=180,
-        velocity=1,
-    )
-    p.solve(pr.Profile.round(diameter=7.5, flow_stress=100e6))
-
-    result = p.plot()
-
-    result.show()
-
-
-def test_three_roll_pass_plot_orientation_anti_y():
-    p = pr.ThreeRollPass(
-        roll=pr.Roll(
-            groove=pr.CircularOvalGroove(r1=1, r2=5, depth=1, pad_angle=30),
-            nominal_radius=100,
-        ),
-        gap=1,
-        rotation=0,
-        orientation="AntiY",
-        velocity=1,
-    )
-    p.solve(pr.Profile.round(diameter=7.5, flow_stress=100e6))
-
-    result = p.plot()
-
-    result.show()

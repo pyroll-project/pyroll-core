@@ -65,22 +65,44 @@ class GrooveBase(ReprMixin):
         }
 
     def plot(self, **kwargs):
-        try:
-            import matplotlib.pyplot as plt
-        except ImportError as e:
+        from pyroll.core import PLOTTING_BACKEND
+        if PLOTTING_BACKEND is None:
             raise RuntimeError(
-                "This method is only available if matplotlib is installed in the environment. "
-                "You may install it using the 'plot' extra of pyroll-core."
-            ) from e
+                "This method is only available if matplotlib or plotly is installed in the environment. "
+                "You may install one of them using the 'plot', 'matplotlib' or 'plotly' extras of pyroll-core."
+            )
 
-        fig: plt.Figure = plt.figure(**kwargs)
-        ax: plt.Axes = fig.subplots()
+        if PLOTTING_BACKEND == "matplotlib":
+            import matplotlib.pyplot as plt
 
-        ax.set_ylabel("y")
-        ax.set_xlabel("z")
+            fig: plt.Figure = plt.figure(**kwargs)
+            ax: plt.Axes = fig.subplots()
 
-        ax.set_aspect("equal", "datalim")
-        ax.grid(lw=0.5)
+            ax.set_ylabel("y")
+            ax.set_xlabel("z")
 
-        ax.plot(*self.contour_line.xy, color="k")
-        return fig
+            ax.set_aspect("equal", "datalim")
+            ax.grid(lw=0.5)
+
+            ax.plot(*self.contour_line.xy, color="k")
+            return fig
+
+        if PLOTTING_BACKEND == "plotly":
+            import plotly.express as px
+
+            fig = px.line(
+                x=self.contour_line.xy[0],
+                y=self.contour_line.xy[1],
+                labels={"y": "y", "x": "z"},
+                template="simple_white",
+            )
+
+            fig.update_traces(line_color="black")
+
+            fig.update_yaxes(
+                scaleanchor="x",
+                scaleratio=1
+            )
+
+            return fig
+
