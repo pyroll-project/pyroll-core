@@ -1,7 +1,7 @@
 import numpy as np
 
 from ..roll_pass import DeformationUnit
-from ... import Config
+from ...config import Config
 
 
 @DeformationUnit.draught
