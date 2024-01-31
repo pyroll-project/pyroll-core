@@ -1,5 +1,6 @@
 import numpy as np
 from pyroll.core import SplineGroove
+from pathlib import Path
 import matplotlib.pyplot as plt
 
 points = [
@@ -55,7 +56,11 @@ def test_spline_without_usable_width():
 
 
 def test_spline_from_dxf():
-    g = SplineGroove.from_dxf_drawing(filepath="swedish_oval_test_groove.dxf", classifiers=["oval", "swedish_oval"])
+    script_dir = Path(__file__).resolve().parent
+    dxf_file = "swedish_oval_test_groove.dxf"
+    absolute_path = script_dir / dxf_file
+
+    g = SplineGroove.from_dxf_drawing(filepath=absolute_path, classifiers=["oval", "swedish_oval"])
 
     plt.figure(dpi=300)
     plt.axes().set_aspect("equal")
