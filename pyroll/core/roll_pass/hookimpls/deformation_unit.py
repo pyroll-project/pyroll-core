@@ -81,6 +81,6 @@ def free_surface_area(self: DeformationUnit):
 
 @DeformationUnit.zener_holomon_parameter
 def zener_holomon_parameter(self: DeformationUnit):
-    return self.strain_rate * np.exp(- self.in_profile.deformation_activation_energy / (
+    return self.strain_rate * np.exp(self.in_profile.deformation_activation_energy / (
             Config.UNIVERSAL_GAS_CONSTANT * self.in_profile.temperature
     ))
