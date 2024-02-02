@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from shapely.affinity import rotate
 
-from pyroll.core import SquareGroove, Profile
+from pyroll.core import SquareGroove, Profile, Config
 
 groove = SquareGroove(0, 3, tip_depth=20, tip_angle=91)
 
@@ -143,3 +143,20 @@ def test_hexagon_errors():
         Profile.hexagon(diagonal=-1)
     with pytest.raises(ValueError):
         Profile.hexagon(side=10, corner_radius=-1)
+
+
+def test_refinement(monkeypatch):
+    p1 = Profile.square(side=10, corner_radius=1)
+
+    monkeypatch.setattr(Config, "PROFILE_CONTOUR_REFINEMENT", 50)
+
+    p2 = Profile.square(side=10, corner_radius=1)
+
+    import  matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots()
+    ax.scatter(*p1.cross_section.boundary.xy, marker="+")
+    ax.scatter(*p2.cross_section.boundary.xy, marker="x")
+    fig.show()
+
+    assert len(p1.cross_section.boundary.coords) < len(p2.cross_section.boundary.coords)

@@ -183,3 +183,7 @@ class Config:
 
     STANDARD_GRAVITY = 9.80665
     """Standard acceleration of gravity g0."""
+
+    PROFILE_CONTOUR_REFINEMENT = 0
+    """Refine the line string of profile contours with more intermediate points. 
+    Higher integers mean finer. Values < 1 disable this feature."""

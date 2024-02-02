@@ -7,6 +7,7 @@ from shapely.affinity import translate, rotate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
 from shapely.ops import clip_by_rect, unary_union
 
+from ..config import Config
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
 
@@ -193,7 +194,7 @@ class Profile(HookHost):
         polygon = clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
 
         return cls(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers=set(groove.classifiers),
             **kwargs
         )
@@ -470,7 +471,7 @@ class RoundProfile(Profile):
         circle = center.buffer(radius)
 
         super().__init__(
-            cross_section=circle,
+            cross_section=refine_cross_section(circle),
             classifiers={"round"},
             **kwargs
         )
@@ -529,7 +530,7 @@ class BoxProfile(Profile):
         polygon = polygon.buffer(corner_radius)
 
         super().__init__(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers={"box"},
             **kwargs
         )
@@ -583,7 +584,7 @@ class DiamondProfile(Profile):
         polygon = polygon.buffer(corner_radius)
 
         super().__init__(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers={"diamond"},
             **kwargs
         )
@@ -644,7 +645,7 @@ class SquareProfile(Profile):
         polygon = polygon.buffer(corner_radius)
 
         super().__init__(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers={"square", "diamond"},
             **kwargs
         )
@@ -736,7 +737,7 @@ class HexagonProfile(Profile):
         polygon = polygon.buffer(corner_radius)
 
         super().__init__(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers={"hexagon"},
             **kwargs
         )
@@ -762,3 +763,10 @@ class HexagonProfile(Profile):
             side=self._side,
             diagonal=self._diagonal,
             corner_radius=self._corner_radius)
+
+
+def refine_cross_section(cross_section: Polygon):
+    if Config.PROFILE_CONTOUR_REFINEMENT < 1:
+        return cross_section
+
+    return cross_section.segmentize(cross_section.boundary.length / Config.PROFILE_CONTOUR_REFINEMENT)
