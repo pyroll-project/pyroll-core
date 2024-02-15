@@ -110,16 +110,16 @@ class Profile(HookHost):
     deformation_activation_energy = Hook[float]()
     """Activation energy of deformation especially for calculation of Zener-Holomon-Parameter."""
 
-    martensite_start_temperture = Hook[float]()
+    martensite_start_temperature = Hook[float]()
     """Martensite start temperature for the given chemical composition of the profile."""
 
-    martensite_finish_temperture = Hook[float]()
+    martensite_finish_temperature = Hook[float]()
     """Martensite finish temperature for the given chemical composition of the profile."""
 
-    bainite_start_temperture = Hook[float]()
+    bainite_start_temperature = Hook[float]()
     """Bainite start temperature for the given chemical composition of the profile."""
 
-    bainite_finish_temperture = Hook[float]()
+    bainite_finish_temperature = Hook[float]()
     """Bainite finish temperature for the given chemical composition of the profile."""
 
     ae1_temperature = Hook[float]()
