@@ -218,6 +218,20 @@ class Unit(HookHost):
         """List of the subunits."""
         return self._subunits
 
+    @property
+    def profiles(self) -> List[BaseProfile]:
+        """Returns a list of all profiles appearing in this unit.
+        The list contains in and out profiles of all subunits and this unit itself in the order of rolling direction.
+        This property recurses into all subunits."""
+
+        def _yield_profiles():
+            yield self.in_profile
+            for u in self._subunits:
+                yield from u.profiles
+            yield self.out_profile
+
+        return list(_yield_profiles())
+
     class Profile(BaseProfile):
         """Represents a profile in context of a unit."""
 
