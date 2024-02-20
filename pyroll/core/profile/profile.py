@@ -129,7 +129,7 @@ class Profile(HookHost):
     """Temperature above which the transformation of austenite into a mixture of ferrite and cementite is complete during cooling."""
 
     vickers_hardness = Hook[float]()
-    """Vickers hardness of the profile material."""
+    """Vickers hardness of the cold profile material."""
 
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
