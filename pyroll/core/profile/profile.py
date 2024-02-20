@@ -110,6 +110,27 @@ class Profile(HookHost):
     deformation_activation_energy = Hook[float]()
     """Activation energy of deformation especially for calculation of Zener-Holomon-Parameter."""
 
+    martensite_start_temperature = Hook[float]()
+    """Martensite start temperature for the given chemical composition of the profile."""
+
+    martensite_finish_temperature = Hook[float]()
+    """Martensite finish temperature for the given chemical composition of the profile."""
+
+    bainite_start_temperature = Hook[float]()
+    """Bainite start temperature for the given chemical composition of the profile."""
+
+    bainite_finish_temperature = Hook[float]()
+    """Bainite finish temperature for the given chemical composition of the profile."""
+
+    ae1_temperature = Hook[float]()
+    """Temperature at which austenite starts to transform into a mixture of ferrite and cementite during cooling."""
+
+    ae3_temperature = Hook[float]()
+    """Temperature above which the transformation of austenite into a mixture of ferrite and cementite is complete during cooling."""
+
+    vickers_hardness = Hook[float]()
+    """Vickers hardness of the cold profile material."""
+
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
         self.t = 0
