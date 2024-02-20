@@ -126,7 +126,7 @@ class Profile(HookHost):
     """Temperature at which austenite starts to transform into a mixture of ferrite and cementite during cooling."""
 
     ae3_temperature = Hook[float]()
-    """Temperature above which the transformation of austeniteinto a mixture of ferrite and cementite is complete during cooling."""
+    """Temperature above which the transformation of austenite into a mixture of ferrite and cementite is complete during cooling."""
 
     vickers_hardness = Hook[float]()
     """Vickers hardness of the profile material."""
