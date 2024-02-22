@@ -124,6 +124,12 @@ class Profile(HookHost):
     normal_strain_z = Hook[float]()
     """Logarithmic normal strain (principal strain) in width (z) direction."""
 
+    hydrodynamic_stress = Hook[float]()
+    """Hydrodynamic Stress."""
+
+    equivalent_stress = Hook[float]()
+    """Equivalent Stress."""
+
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
         self.t = 0

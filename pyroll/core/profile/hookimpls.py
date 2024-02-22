@@ -68,3 +68,17 @@ def heat_penetration_number(self: Profile):
 def thermal_diffusivity(self: Profile):
     if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "specific_heat_capacity"):
         return self.thermal_conductivity / (self.density * self.specific_heat_capacity)
+
+
+@Profile.hydrodynamic_stress
+def hydrodynamic_stress(self: Profile):
+    if hasattr(self, "normal_stress_x") and hasattr(self, "normal_stress_y") and hasattr(self, "normal_stress_z"):
+        return (self.normal_stress_x + self.normal_stress_y + self.normal_stress_z) / 3
+
+
+@Profile.equivalent_stress
+def equivalent_stress(self: Profile):
+    if hasattr(self, "normal_stress_x") and hasattr(self, "normal_stress_y") and hasattr(self, "normal_stress_z"):
+        return np.sqrt(1 / 2 * (self.normal_stress_x - self.normal_stress_y) ** 2 + (
+                    self.normal_stress_y - self.normal_stress_z) ** 2 + (
+                                   self.normal_stress_z - self.normal_stress_x) ** 2)
