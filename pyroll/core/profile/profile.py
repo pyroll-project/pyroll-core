@@ -98,7 +98,9 @@ class Profile(HookHost):
     """Mean thermal diffusivity of the profile material."""
 
     chemical_composition = Hook[dict[str, float]]()
-    """Chemical composition of the profile's material as dict of element symbols to atom fractions (0 to 1)."""
+    """Chemical composition of the profile's material as dict of element symbols to atom fractions (0 to 1).
+    The key of the dict should correspond to the nomenclature of the TDB (Thermodynamic Data Base file). 
+    This means only capital letters and abbreviations according to the periodic table of the elements."""
 
     microstructure_composition = Hook[dict[str, float]]()
     """Phase resp. constituent composition of the profile's material 
