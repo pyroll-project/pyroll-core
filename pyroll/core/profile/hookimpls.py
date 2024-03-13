@@ -76,6 +76,6 @@ def astm_grain_size_number(self: Profile):
         grain_diameter_inch = self.grain_size / 0.0254
         grain_area_square_inch = np.pi * (grain_diameter_inch / 2) ** 2
         grains_per_square_inch_1x_magnification = 1 / grain_area_square_inch
-        grains_per_square_inch_100x_magnification = grains_per_square_inch_1x_magnification * (100 ** 2)
+        grains_per_square_inch_100x_magnification = grains_per_square_inch_1x_magnification / (100 ** 2)
 
         return 1 + np.log2(grains_per_square_inch_100x_magnification)
