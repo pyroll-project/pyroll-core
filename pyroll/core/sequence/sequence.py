@@ -84,6 +84,18 @@ class PassSequence(Unit, Sequence[Unit]):
 
         raise TypeError("Key must be int, slice or str")
 
+    def prepend(self, unit: Unit) -> None:
+        """Prepend a unit to the beginning of the sequence."""
+        self._subunits.insert(0, unit)
+
+    def append(self, unit: Unit) -> None:
+        """Append a unit to the end of the sequence."""
+        self._subunits.append(unit)
+
+    def drop(self, index: int) -> None:
+        """Remove the unit at the specified index from the sequence."""
+        del self._subunits[index]
+
     @property
     def units(self) -> List[Unit]:
         """Returns a list of all units in this sequence."""
@@ -104,6 +116,6 @@ class PassSequence(Unit, Sequence[Unit]):
         return super().__attrs__ | {
             "units": self.units
         }
-    
+
     def _ipython_key_completions_(self):
         return [u.label for u in self._subunits]
