@@ -68,3 +68,14 @@ def heat_penetration_number(self: Profile):
 def thermal_diffusivity(self: Profile):
     if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "specific_heat_capacity"):
         return self.thermal_conductivity / (self.density * self.specific_heat_capacity)
+
+
+@Profile.astm_grain_size_number
+def astm_grain_size_number(self: Profile):
+    if self.has_set_or_cached("grain_size"):
+        grain_diameter_inch = self.grain_size / 0.0254
+        grain_area_square_inch = np.pi * (grain_diameter_inch / 2) ** 2
+        grains_per_square_inch_1x_magnification = 1 / grain_area_square_inch
+        grains_per_square_inch_100x_magnification = grains_per_square_inch_1x_magnification / (100 ** 2)
+
+        return 1 + np.log2(grains_per_square_inch_100x_magnification)

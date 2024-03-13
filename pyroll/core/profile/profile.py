@@ -91,6 +91,9 @@ class Profile(HookHost):
     grain_size = Hook[float]()
     """Average grain size of the profile's material."""
 
+    astm_grain_size_number = Hook[float]()
+    """ASTM grain size number, assuming grains are round."""
+
     heat_penetration_number = Hook[float]()
     """Mean heat penetration number of the profile material."""
 
