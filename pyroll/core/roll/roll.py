@@ -23,6 +23,9 @@ class Roll(HookHost):
     max_radius = Hook[float]()
     """Maximum radius (at highest point of groove)."""
 
+    roll_neck_radius = Hook[float]()
+    """Radius of the roll neck."""
+
     rotational_frequency = Hook[float]()
     """Rotational frequency (revolutions per time)."""
 

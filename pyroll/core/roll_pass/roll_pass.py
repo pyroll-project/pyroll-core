@@ -9,6 +9,7 @@ from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 from ..roll import Roll as BaseRoll
+from ..engine import Engine as BaseEngine
 from ..rotator import Rotator
 from .deformation_unit import DeformationUnit
 
@@ -99,14 +100,19 @@ class RollPass(DiskElementUnit, DeformationUnit):
     location = Hook[float]()
     """Coordinate of the passes high point in rolling direction."""
 
+    idle_torque = Hook[float]()
+    """Resulting idle torque of the whole roll pass."""
+
     def __init__(
             self,
             roll: BaseRoll,
+            engine: BaseEngine,
             label: str = "",
             **kwargs
     ):
         """
         :param roll: the roll object representing the equal working rolls of the pass
+        :param engine: the engine object representing the engine of the pass
         :param label: label for human identification
         :param kwargs: additional hook values as keyword arguments to set explicitly
         """
@@ -115,6 +121,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
 
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (equal upper and lower)."""
+
+        self.engine = self.Engine(engine, self)
+        """The engine of this pass."""
 
         self._contour_lines = None
 
@@ -164,6 +173,7 @@ class RollPass(DiskElementUnit, DeformationUnit):
     def reevaluate_cache(self):
         super().reevaluate_cache()
         self.roll.reevaluate_cache()
+        self.engine.reevaluate_cache()
         self._contour_lines = None
 
     class Profile(DiskElementUnit.Profile, DeformationUnit.Profile):
@@ -207,6 +217,23 @@ class RollPass(DiskElementUnit, DeformationUnit):
         @property
         def roll_pass(self):
             """Reference to the roll pass this roll is used in."""
+            return self._roll_pass()
+
+    class Engine(BaseEngine):
+        """Represents an engine applied in a :py:class:`RollPass`."""
+
+        def __init__(self, template: BaseEngine, roll_pass: 'RollPass'):
+            kwargs = dict(
+                e for e in template.__dict__.items()
+                if not e[0].startswith("_")
+            )
+            super().__init__(**kwargs)
+
+            self._roll_pass = weakref.ref(roll_pass)
+
+        @property
+        def roll_pass(self):
+            """Reference to the roll pass this engine is used in."""
             return self._roll_pass()
 
     class DiskElement(DiskElementUnit.DiskElement, DeformationUnit):
