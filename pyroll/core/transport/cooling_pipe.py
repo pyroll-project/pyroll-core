@@ -7,15 +7,23 @@ from .transport import Transport
 class CoolingPipe(Transport):
     """Represents a smooth cooling pipe."""
 
-    inner_diameter = Hook[float]()
-    """Inner diameter of the cooling pipe"""
+    inner_radius = Hook[float]()
+    """Inner radius of the cooling pipe."""
 
-    cooling_water_volume_flux = Hook[float]()
-    """Volume flux of the cooling water"""
+    cross_section_area = Hook[float]()
+    """Inner cross section area of the cooling pipe."""
 
-    cooling_water_temperature = Hook[float]()
-    """Temperature of the cooling water"""
+    coolant_flow_cross_section = Hook[float]()
+    """Difference between profile and cooling pipe cross-section."""
 
+    coolant_volume_flux = Hook[float]()
+    """Volume flux of the coolant."""
+
+    coolant_velocity = Hook[float]()
+    """Velocity of the coolant."""
+
+    coolant_temperature = Hook[float]()
+    """Temperature of the coolant."""
 
     @property
     def disk_elements(self) -> List['CoolingPipe.DiskElement']:
