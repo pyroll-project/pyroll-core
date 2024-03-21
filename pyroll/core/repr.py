@@ -76,8 +76,9 @@ class ReprMixin(ABC):
                 import matplotlib.pyplot as plt
                 with StringIO() as sio:
                     plot.savefig(sio, format="svg")
-                svg = sio.getvalue()
+                    svg = sio.getvalue()
                 plt.close(plot)
+
             if PLOTTING_BACKEND == "plotly":
                 from plotly.io import to_image
                 svg = to_image(
