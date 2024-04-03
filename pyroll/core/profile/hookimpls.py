@@ -72,13 +72,15 @@ def thermal_diffusivity(self: Profile):
 
 @Profile.hydrodynamic_stress
 def hydrodynamic_stress(self: Profile):
-    if hasattr(self, "normal_stress_x") and hasattr(self, "normal_stress_y") and hasattr(self, "normal_stress_z"):
-        return (self.normal_stress_x + self.normal_stress_y + self.normal_stress_z) / 3
+    if hasattr(self, "longitudinal_stress") and hasattr(self, "altitudinal_stress") and hasattr(self,
+                                                                                                "latitudinal_stress"):
+        return (self.longitudinal_stress + self.altitudinal_stress + self.latitudinal_stress) / 3
 
 
 @Profile.equivalent_stress
 def equivalent_stress(self: Profile):
-    if hasattr(self, "normal_stress_x") and hasattr(self, "normal_stress_y") and hasattr(self, "normal_stress_z"):
-        return np.sqrt(1 / 2 * (self.normal_stress_x - self.normal_stress_y) ** 2 + (
-                    self.normal_stress_y - self.normal_stress_z) ** 2 + (
-                                   self.normal_stress_z - self.normal_stress_x) ** 2)
+    if hasattr(self, "longitudinal_stress") and hasattr(self, "altitudinal_stress") and hasattr(self,
+                                                                                                "latitudinal_stress"):
+        return np.sqrt(1 / 2 * (self.longitudinal_stress - self.altitudinal_stress) ** 2 + (
+                self.altitudinal_stress - self.latitudinal_stress) ** 2 + (
+                               self.latitudinal_stress - self.longitudinal_stress) ** 2)

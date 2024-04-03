@@ -106,22 +106,22 @@ class Profile(HookHost):
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
 
-    normal_stress_x = Hook[float]()
+    longitudinal_stress = Hook[float]()
     """Normal stress (principal stress) in rolling (x) direction. Positive means tension, negative pressure."""
 
-    normal_stress_y = Hook[float]()
+    altitudinal_stress = Hook[float]()
     """Normal stress (principal stress) in thickness (y) direction. Positive means tension, negative pressure."""
 
-    normal_stress_z = Hook[float]()
+    latitudinal_stress = Hook[float]()
     """Normal stress (principal stress) in width (z) direction. Positive means tension, negative pressure."""
 
-    normal_strain_x = Hook[float]()
+    longitudinal_strain = Hook[float]()
     """Logarithmic normal strain (principal strain) in rolling (x) direction."""
 
-    normal_strain_y = Hook[float]()
+    altitudinal_strain = Hook[float]()
     """Logarithmic normal strain (principal strain) in thickness (y) direction."""
 
-    normal_strain_z = Hook[float]()
+    latitudinal_strain = Hook[float]()
     """Logarithmic normal strain (principal strain) in width (z) direction."""
 
     hydrodynamic_stress = Hook[float]()
