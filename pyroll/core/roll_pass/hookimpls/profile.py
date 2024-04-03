@@ -1,10 +1,41 @@
-from scipy.optimize import fixed_point
+import numpy as np
 from shapely.geometry import Polygon
+from shapely.affinity import translate, rotate
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
 
 from . import helpers
+
+
+@RollPass.Profile.contact_contour_lines
+def contact_contour_lines(self: RollPass.Profile):
+    rp = self.roll_pass
+    upper = translate(rp.roll.contour_line, yoff=rp.gap / 2)
+    lower = rotate(upper, angle=180, origin=(0, 0))
+
+    return [upper, lower]
+
+
+@RollPass.Profile.contact_contour_angles
+def contact_contour_angles(self: RollPass.Profile):
+    angles = []
+    for cl in self.contact_contour_lines:
+        coords = list(cl.coords)
+        for i in range(len(coords) - 2):
+            vector1 = np.array(coords[i + 1]) - np.array(coords[i])
+            vector2 = np.array(coords[i + 2]) - np.array(coords[i + 1])
+
+            dot_product = np.dot(vector1, vector2)
+            magnitude1 = np.linalg.norm(vector1)
+            magnitude2 = np.linalg.norm(vector2)
+
+            cosine_angle = dot_product / (magnitude1 * magnitude2)
+            angle = np.arccos(np.clip(cosine_angle, -1.0, 1.0))
+
+            angles.append(angle)
+
+        return angles
 
 
 @RollPass.InProfile.x
