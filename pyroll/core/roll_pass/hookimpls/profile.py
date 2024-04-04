@@ -1,6 +1,7 @@
 import numpy as np
 from shapely.geometry import Polygon
 from shapely.affinity import translate, rotate
+from shapely.ops import linemerge
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
@@ -11,17 +12,21 @@ from . import helpers
 @RollPass.Profile.contact_contour_lines
 def contact_contour_lines(self: RollPass.Profile):
     rp = self.roll_pass
-    upper = translate(rp.roll.contour_line, yoff=rp.gap / 2)
-    lower = rotate(upper, angle=180, origin=(0, 0))
+    upper_groove_cl = translate(rp.roll.contour_line, yoff=rp.gap / 2)
+    lower_groove_cl = rotate(upper_groove_cl, angle=180, origin=(0, 0))
 
-    return [upper, lower]
+    upper_contact_contour = linemerge(upper_groove_cl.intersection(self.cross_section.exterior))
+    lower_contact_contour = linemerge(lower_groove_cl.intersection(self.cross_section.exterior))
+
+    return [upper_contact_contour, lower_contact_contour]
 
 
 @RollPass.Profile.contact_contour_angles
 def contact_contour_angles(self: RollPass.Profile):
-    angles = []
-    for cl in self.contact_contour_lines:
-        coords = list(cl.coords)
+    def calculate_angles(contour_line):
+        angles = []
+        coords = list(contour_line.coords)
+
         for i in range(len(coords) - 2):
             vector1 = np.array(coords[i + 1]) - np.array(coords[i])
             vector2 = np.array(coords[i + 2]) - np.array(coords[i + 1])
@@ -34,8 +39,13 @@ def contact_contour_angles(self: RollPass.Profile):
             angle = np.arccos(np.clip(cosine_angle, -1.0, 1.0))
 
             angles.append(angle)
-
         return angles
+
+    upper_groove_cl_angles = calculate_angles(self.contact_contour_lines[0])
+    lower_groove_cl_angles = calculate_angles(self.contact_contour_lines[1])
+
+
+    return [upper_groove_cl_angles, lower_groove_cl_angles]
 
 
 @RollPass.InProfile.x

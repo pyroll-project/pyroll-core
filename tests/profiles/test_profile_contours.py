@@ -40,7 +40,9 @@ def test_plot_profile_contact_contours():
 
     plt.figure(dpi=300)
     plt.axes().set_aspect("equal")
-    for cca in rp.out_profile.contact_contour_angles:
-        plt.plot(cca, color='C0')
+    for cca, ccl in zip(rp.out_profile.contact_contour_angles, rp.out_profile.contact_contour_lines):
+        x, y = ccl.xy
+        x = x[1:-1]
+        plt.plot(x, cca, color='C0')
     plt.show()
     plt.close()
