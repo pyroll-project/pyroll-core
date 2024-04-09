@@ -124,7 +124,7 @@ class Profile(HookHost):
     latitudinal_strain = Hook[float]()
     """Logarithmic normal strain (principal strain) in width (z) direction."""
 
-    hydrodynamic_stress = Hook[float]()
+    hydrostatic_stress = Hook[float]()
     """Hydrodynamic Stress."""
 
     equivalent_stress = Hook[float]()
