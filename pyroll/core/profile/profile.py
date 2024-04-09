@@ -1,11 +1,11 @@
 import math
-from typing import Optional, Union, Callable, List
-from collections.abc import Iterable, Collection, Set
+from typing import Optional, Union, Callable
+from collections.abc import Set
 
 import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
-from shapely.ops import clip_by_rect, unary_union
+from shapely.ops import clip_by_rect
 
 from ..config import Config
 from ..grooves import GrooveBase
@@ -135,12 +135,6 @@ class Profile(HookHost):
 
     vickers_hardness = Hook[float]()
     """Vickers hardness of the cold profile material."""
-
-    contact_contour_lines = Hook[List[LineString]]()
-    """List of contour lines contacting the roll as LineStrings of the profile."""
-
-    contact_contour_angles = Hook[List[np.ndarray]]()
-    """List of contour angles contacting the roll as arrays of the profile."""
 
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""

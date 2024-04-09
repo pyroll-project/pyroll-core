@@ -1,3 +1,7 @@
+import numpy as np
+
+from typing import List
+from shapely.geometry import LineString
 from ..unit import Unit
 from ..hooks import Hook
 
@@ -59,6 +63,12 @@ class DeformationUnit(Unit):
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a deformation unit."""
+
+        contact_contour_lines = Hook[List[LineString]]()
+        """List of contour lines contacting the roll as LineStrings of the profile."""
+
+        contact_contour_angles = Hook[List[np.ndarray]]()
+        """List of contour angles contacting the roll as arrays of the profile."""
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a deformation unit."""
