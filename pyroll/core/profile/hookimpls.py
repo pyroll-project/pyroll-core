@@ -70,8 +70,8 @@ def thermal_diffusivity(self: Profile):
         return self.thermal_conductivity / (self.density * self.specific_heat_capacity)
 
 
-@Profile.hydrodynamic_stress
-def hydrodynamic_stress(self: Profile):
+@Profile.hydrostatic_stress
+def hydrostatic_stress(self: Profile):
     if hasattr(self, "longitudinal_stress") and hasattr(self, "altitudinal_stress") and hasattr(self,
                                                                                                 "latitudinal_stress"):
         return (self.longitudinal_stress + self.altitudinal_stress + self.latitudinal_stress) / 3
