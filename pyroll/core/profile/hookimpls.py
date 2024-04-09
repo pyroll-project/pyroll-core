@@ -70,6 +70,7 @@ def thermal_diffusivity(self: Profile):
         return self.thermal_conductivity / (self.density * self.specific_heat_capacity)
 
 
+
 @Profile.hydrostatic_stress
 def hydrostatic_stress(self: Profile):
     if hasattr(self, "longitudinal_stress") and hasattr(self, "altitudinal_stress") and hasattr(self,
@@ -84,3 +85,13 @@ def equivalent_stress(self: Profile):
         return np.sqrt(1 / 2 * (self.longitudinal_stress - self.altitudinal_stress) ** 2 + (
                 self.altitudinal_stress - self.latitudinal_stress) ** 2 + (
                                self.latitudinal_stress - self.longitudinal_stress) ** 2)
+
+@Profile.astm_grain_size_number
+def astm_grain_size_number(self: Profile):
+    if self.has_set_or_cached("grain_size"):
+        grain_diameter_inch = self.grain_size / 0.0254
+        grain_area_square_inch = np.pi * (grain_diameter_inch / 2) ** 2
+        grains_per_square_inch_1x_magnification = 1 / grain_area_square_inch
+        grains_per_square_inch_100x_magnification = grains_per_square_inch_1x_magnification / (100 ** 2)
+
+        return 1 + np.log2(grains_per_square_inch_100x_magnification)

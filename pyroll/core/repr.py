@@ -48,38 +48,54 @@ class ReprMixin(ABC):
     def _repr_html_(self):
         """HTML repr for IPython."""
 
-        buf = [f"<table><tr><th colspan=2 style='text-align:center'>{html.escape(str(self), True)}</th></tr>"]
+        buf = [f"<details><summary style='font-weight:bold'>{html.escape(str(self), True)}</summary><table>"]
 
         for name, value in sorted(self.__attrs__.items()):
             if hasattr(value, "_repr_html_"):
                 r = value._repr_html_()
+            elif isinstance(value, list) or isinstance(value, set):
+                item_reprs = (
+                    item._repr_html_() if hasattr(item, "_repr_html_") else html.escape(repr(item), True)
+                    for item in value
+                )
+                r = f"<table style='margin:0'>{''.join(f'<tr><td>{item}</td></tr>' for item in item_reprs)}</table>"
             else:
                 r = html.escape(repr(value), True)
             buf.append(f"<tr><td style='text-align:left'>{html.escape(name, True)}</td><td>{r}</td></tr>")
 
-        buf.append("</table>")
+        buf.append("</table></details>")
 
         table = ''.join(buf)
 
         try:
             plot = self.plot()
 
-            import matplotlib.pyplot as plt
-            import re
+            from pyroll.core import PLOTTING_BACKEND
 
-            with StringIO() as sio:
-                plot.savefig(sio, format="svg")
+            if PLOTTING_BACKEND == "matplotlib":
+                import matplotlib.pyplot as plt
+                with StringIO() as sio:
+                    plot.savefig(sio, format="svg")
+                    svg = sio.getvalue()
                 plt.close(plot)
-                svg = sio.getvalue()
 
-                return (
-                        "<table>"
-                        + "<tr><td style='text-align: center'>" + svg + "</td></tr>"
-                        + "<tr><td style='text-align: left'>" + table + "</td></tr>"
-                        + "</table>"
-                )
+            if PLOTTING_BACKEND == "plotly":
+                from plotly.io import to_image
+                svg = to_image(
+                    plot,
+                    format="svg",
+                    width=600,
+                    height=400
+                ).decode("utf-8")
 
-        except (NotImplementedError, ImportError, AttributeError, TypeError):
+            return (
+                    "<table>"
+                    + "<tr><td style='text-align: center'>" + svg + "</td></tr>"
+                    + "<tr><td style='text-align: left'>" + table + "</td></tr>"
+                    + "</table>"
+            )
+
+        except (NotImplementedError, ImportError, AttributeError, TypeError) as e:
             return table
 
     def __rich_repr__(self):

@@ -1,9 +1,9 @@
-from typing import Union, Tuple, Iterable, Optional
-
 import numpy as np
 import scipy.interpolate
+from pathlib import Path
 from ezdxf import readfile
-from shapely.geometry import Polygon, LineString, Point
+from shapely.geometry import Polygon, LineString
+from typing import Union, Tuple, Iterable, Optional
 
 from pyroll.core.grooves import GrooveBase
 
@@ -93,7 +93,7 @@ class SplineGroove(GrooveBase):
         return self._local_depth(z)
 
     @classmethod
-    def from_dxf_drawing(cls, filepath: str, classifiers: Iterable[str], usable_width: Optional[float] = None,
+    def from_dxf_drawing(cls, filepath: Path, classifiers: Iterable[str], usable_width: Optional[float] = None,
                          arc_discretization: int = 1000) -> 'SplineGroove':
         """
         Creates a spline groove with a given contour line as defined inside the .dxf drawing.

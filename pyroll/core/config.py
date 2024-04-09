@@ -168,3 +168,25 @@ class Config:
 
     ROLL_SURFACE_DISCRETIZATION_COUNT = 100
     """Count of discrete points used to describe the roll surface."""
+
+    UNIVERSAL_GAS_CONSTANT = 8.31446261815324
+    """Universal gas constant R."""
+
+    BOLTZMANN_CONSTANT = 1.380649e-23
+    """Boltzmann constant kB."""
+    
+    STEFAN_BOLTZMANN_CONSTANT = 5.670374419e-8
+    """Stefan-Boltzmann radiation constant σ."""
+
+    AVOGADRO_CONSTANT = 6.02214076e23
+    """Avogadro constant NA."""
+
+    STANDARD_GRAVITY = 9.80665
+    """Standard acceleration of gravity g0."""
+
+    PROFILE_CONTOUR_REFINEMENT = 0
+    """Refine the line string of profile contours with more intermediate points. 
+    Higher integers mean finer. Values < 1 disable this feature."""
+
+    GROOVE_RADIUS_POINT_COUNT = 20
+    """Count of points used to represent the radii in a generic elongation groove as line string."""

@@ -7,6 +7,7 @@ from shapely.affinity import translate, rotate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
 from shapely.ops import clip_by_rect, unary_union
 
+from ..config import Config
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
 
@@ -90,6 +91,9 @@ class Profile(HookHost):
     grain_size = Hook[float]()
     """Average grain size of the profile's material."""
 
+    astm_grain_size_number = Hook[float]()
+    """ASTM grain size number, assuming grains are round."""
+
     heat_penetration_number = Hook[float]()
     """Mean heat penetration number of the profile material."""
 
@@ -97,7 +101,9 @@ class Profile(HookHost):
     """Mean thermal diffusivity of the profile material."""
 
     chemical_composition = Hook[dict[str, float]]()
-    """Chemical composition of the profile's material as dict of element symbols to atom fractions (0 to 1)."""
+    """Chemical composition of the profile's material as dict of element symbols to atom fractions (0 to 1).
+    The key of the dict should correspond to the nomenclature of the TDB (Thermodynamic Data Base file). 
+    This means only capital letters and abbreviations according to the periodic table of the elements."""
 
     microstructure_composition = Hook[dict[str, float]]()
     """Phase resp. constituent composition of the profile's material 
@@ -105,6 +111,7 @@ class Profile(HookHost):
 
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
+
 
     longitudinal_stress = Hook[float]()
     """Normal stress (principal stress) in rolling (x) direction. Positive means tension, negative pressure."""
@@ -129,6 +136,31 @@ class Profile(HookHost):
 
     equivalent_stress = Hook[float]()
     """Equivalent Stress."""
+
+    deformation_activation_energy = Hook[float]()
+    """Activation energy of deformation especially for calculation of Zener-Holomon-Parameter."""
+
+    martensite_start_temperature = Hook[float]()
+    """Martensite start temperature for the given chemical composition of the profile."""
+
+    martensite_finish_temperature = Hook[float]()
+    """Martensite finish temperature for the given chemical composition of the profile."""
+
+    bainite_start_temperature = Hook[float]()
+    """Bainite start temperature for the given chemical composition of the profile."""
+
+    bainite_finish_temperature = Hook[float]()
+    """Bainite finish temperature for the given chemical composition of the profile."""
+
+    ae1_temperature = Hook[float]()
+    """Temperature at which austenite starts to transform into a mixture of ferrite and cementite during cooling."""
+
+    ae3_temperature = Hook[float]()
+    """Temperature above which the transformation of austenite into a mixture of ferrite and cementite is complete during cooling."""
+
+    vickers_hardness = Hook[float]()
+    """Vickers hardness of the cold profile material."""
+    
 
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
@@ -214,7 +246,7 @@ class Profile(HookHost):
         polygon = clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
 
         return cls(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers=set(groove.classifiers),
             **kwargs
         )
@@ -413,26 +445,47 @@ class Profile(HookHost):
                 raise ValueError("Value of self.material is neither a string or a collection of strings.")
 
     def plot(self, **kwargs):
-        try:
-            import matplotlib.pyplot as plt
-        except ImportError as e:
+        from pyroll.core import PLOTTING_BACKEND
+        if PLOTTING_BACKEND is None:
             raise RuntimeError(
-                "This method is only available if matplotlib is installed in the environment. "
-                "You may install it using the 'plot' extra of pyroll-core."
-            ) from e
+                "This method is only available if matplotlib or plotly is installed in the environment. "
+                "You may install one of them using the 'plot', 'matplotlib' or 'plotly' extras of pyroll-core."
+            )
 
-        fig: plt.Figure = plt.figure(**kwargs)
-        ax: plt.Axes = fig.subplots()
+        if PLOTTING_BACKEND == "matplotlib":
+            import matplotlib.pyplot as plt
 
-        ax.set_ylabel("y")
-        ax.set_xlabel("z")
+            fig: plt.Figure = plt.figure(**kwargs)
+            ax: plt.Axes = fig.subplots()
 
-        ax.set_aspect("equal", "datalim")
-        ax.grid(lw=0.5)
+            ax.set_ylabel("y")
+            ax.set_xlabel("z")
 
-        ax.plot(*self.cross_section.boundary.xy, color="k")
-        ax.fill(*self.cross_section.boundary.xy, color="k", alpha=0.5)
-        return fig
+            ax.set_aspect("equal", "datalim")
+            ax.grid(lw=0.5)
+
+            ax.plot(*self.cross_section.boundary.xy, color="k")
+            ax.fill(*self.cross_section.boundary.xy, color="k", alpha=0.5)
+            return fig
+
+        if PLOTTING_BACKEND == "plotly":
+            import plotly.express as px
+
+            fig = px.line(
+                x=self.cross_section.boundary.xy[0],
+                y=self.cross_section.boundary.xy[1],
+                labels={"y": "y", "x": "z"},
+                template="simple_white",
+            )
+
+            fig.data[0].fill = "toself"
+
+            fig.update_yaxes(
+                scaleanchor="x",
+                scaleratio=1
+            )
+
+            return fig
 
 
 class RoundProfile(Profile):
@@ -470,7 +523,7 @@ class RoundProfile(Profile):
         circle = center.buffer(radius)
 
         super().__init__(
-            cross_section=circle,
+            cross_section=refine_cross_section(circle),
             classifiers={"round"},
             **kwargs
         )
@@ -529,7 +582,7 @@ class BoxProfile(Profile):
         polygon = polygon.buffer(corner_radius)
 
         super().__init__(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers={"box"},
             **kwargs
         )
@@ -583,7 +636,7 @@ class DiamondProfile(Profile):
         polygon = polygon.buffer(corner_radius)
 
         super().__init__(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers={"diamond"},
             **kwargs
         )
@@ -644,7 +697,7 @@ class SquareProfile(Profile):
         polygon = polygon.buffer(corner_radius)
 
         super().__init__(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers={"square", "diamond"},
             **kwargs
         )
@@ -736,7 +789,7 @@ class HexagonProfile(Profile):
         polygon = polygon.buffer(corner_radius)
 
         super().__init__(
-            cross_section=polygon,
+            cross_section=refine_cross_section(polygon),
             classifiers={"hexagon"},
             **kwargs
         )
@@ -762,3 +815,10 @@ class HexagonProfile(Profile):
             side=self._side,
             diagonal=self._diagonal,
             corner_radius=self._corner_radius)
+
+
+def refine_cross_section(cross_section: Polygon):
+    if Config.PROFILE_CONTOUR_REFINEMENT < 1:
+        return cross_section
+
+    return cross_section.segmentize(cross_section.boundary.length / Config.PROFILE_CONTOUR_REFINEMENT)

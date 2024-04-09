@@ -11,20 +11,19 @@ path = ".venv"
 dependencies = [
     "ipython ~= 8.0",
     "pytest ~= 7.0",
-    "matplotlib ~= 3.6",
     "pyroll-report ~= 2.0.0",
-    "jupyter"
+    "jupyter",
 ]
+features = ["plotly", "matplotlib"]
 
 [envs.test]
 path = ""
 dependencies = [
     "pytest ~= 7.0",
-    "matplotlib ~= 3.6",
 ]
 
 [[envs.test.matrix]]
-python = ["3.9", "3.10", "3.11"]
+features = ["matplotlib", "plotly"]
 
 [envs.test.scripts]
 all = "pytest tests"

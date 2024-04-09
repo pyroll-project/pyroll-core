@@ -12,7 +12,7 @@ from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
 from .config import Config, config
 
-VERSION = "2.1.3"
+VERSION = "2.1.5"
 
 root_hooks.extend(
     [
@@ -32,3 +32,16 @@ root_hooks.extend(
         PassSequence.log_elongation,
     ]
 )
+
+# determine available plotting backend, plotly is preferred
+try:
+    import plotly as _
+    PLOTTING_BACKEND = "plotly"
+
+except ImportError:
+    try:
+        import matplotlib as _
+        PLOTTING_BACKEND = "matplotlib"
+
+    except ImportError:
+        PLOTTING_BACKEND = None

@@ -4,8 +4,16 @@ import pyroll.core as pr
 
 
 def test_plot_groove():
-    groove = pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+    if pr.PLOTTING_BACKEND is not None:
+        groove = pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+        result = groove.plot()
+        result.show()
 
-    result = groove.plot()
+        if pr.PLOTTING_BACKEND == "matplotlib":
+            from matplotlib.pyplot import Figure
+            assert isinstance(result, Figure)
 
-    result.show()
+        if pr.PLOTTING_BACKEND == "plotly":
+            from plotly.graph_objects import Figure
+            assert isinstance(result, Figure)
+
