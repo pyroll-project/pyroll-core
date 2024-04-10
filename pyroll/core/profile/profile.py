@@ -1,11 +1,11 @@
 import math
 from typing import Optional, Union, Callable
-from collections.abc import Iterable, Collection, Set
+from collections.abc import Set
 
 import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
-from shapely.ops import clip_by_rect, unary_union
+from shapely.ops import clip_by_rect
 
 from ..config import Config
 from ..grooves import GrooveBase

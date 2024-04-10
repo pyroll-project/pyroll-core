@@ -1,5 +1,7 @@
-from scipy.optimize import fixed_point
+import numpy as np
 from shapely.geometry import Polygon
+from shapely.affinity import translate, rotate
+from shapely.ops import linemerge
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass

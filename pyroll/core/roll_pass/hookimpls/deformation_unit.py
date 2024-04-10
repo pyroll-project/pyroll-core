@@ -1,6 +1,10 @@
 import numpy as np
 
-from ..roll_pass import DeformationUnit
+from shapely.ops import linemerge
+from shapely.geometry import LineString
+from shapely.affinity import translate, rotate
+
+from ..roll_pass import DeformationUnit, RollPass
 from ...config import Config
 
 
@@ -84,3 +88,35 @@ def zener_holomon_parameter(self: DeformationUnit):
     return self.strain_rate * np.exp(self.in_profile.deformation_activation_energy / (
             Config.UNIVERSAL_GAS_CONSTANT * self.in_profile.temperature
     ))
+
+
+@DeformationUnit.Profile.contact_contour_lines
+def contact_contour_lines(self: DeformationUnit.Profile):
+    if isinstance(self.unit, RollPass):
+        rp = self.unit
+        upper_groove_cl = translate(rp.roll.contour_line, yoff=rp.gap / 2)
+        lower_groove_cl = rotate(upper_groove_cl, angle=180, origin=(0, 0))
+
+        upper_contact_contour = linemerge(upper_groove_cl.intersection(self.cross_section.exterior))
+        lower_contact_contour = linemerge(lower_groove_cl.intersection(self.cross_section.exterior))
+
+        return [upper_contact_contour, lower_contact_contour]
+    else:
+        return None
+
+
+@DeformationUnit.Profile.contact_contour_angles
+def contact_contour_angles(self: DeformationUnit.Profile):
+    def calculate_angles(contour_line: LineString):
+        x, y = np.array(contour_line.coords.xy)
+
+        xdiff = x[2:] - x[:-2]
+        ydiff = y[2:] - y[:-2]
+        angles = np.arctan2(ydiff, xdiff)
+
+        return angles
+
+    upper_groove_cl_angles = calculate_angles(self.contact_contour_lines[0])
+    lower_groove_cl_angles = calculate_angles(self.contact_contour_lines[1])
+
+    return [upper_groove_cl_angles, lower_groove_cl_angles]
