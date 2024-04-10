@@ -36,14 +36,14 @@ def test_plot_profile_contact_contours():
 
     plt.figure(dpi=300)
     plt.axes().set_aspect("equal")
-    for ccl in rp.out_profile.contact_contour_lines:
-        plt.plot(*rp.out_profile.contact_contour_lines[0].xy, color='C0')
+    for ccl in rp.out_profile.contact_lines:
+        plt.plot(*rp.out_profile.contact_lines[0].xy, color='C0')
     plt.show()
     plt.close()
 
     plt.figure(dpi=300)
     # plt.axes().set_aspect("equal")
-    for cca, ccl in zip(rp.out_profile.contact_contour_angles, rp.out_profile.contact_contour_lines):
+    for cca, ccl in zip(rp.out_profile.contact_angles, rp.out_profile.contact_lines):
         x, y = ccl.xy
         x = x[1:-1]
         plt.plot(x, cca)

@@ -90,7 +90,7 @@ def zener_holomon_parameter(self: DeformationUnit):
     ))
 
 
-@DeformationUnit.Profile.contact_contour_lines
+@DeformationUnit.Profile.contact_lines
 def contact_contour_lines(self: DeformationUnit.Profile):
     if isinstance(self.unit, RollPass):
         rp = self.unit
@@ -105,7 +105,7 @@ def contact_contour_lines(self: DeformationUnit.Profile):
         return None
 
 
-@DeformationUnit.Profile.contact_contour_angles
+@DeformationUnit.Profile.contact_angles
 def contact_contour_angles(self: DeformationUnit.Profile):
     def calculate_angles(contour_line: LineString):
         x, y = np.array(contour_line.coords.xy)
@@ -116,7 +116,7 @@ def contact_contour_angles(self: DeformationUnit.Profile):
 
         return angles
 
-    upper_groove_cl_angles = calculate_angles(self.contact_contour_lines[0])
-    lower_groove_cl_angles = calculate_angles(self.contact_contour_lines[1])
+    upper_groove_cl_angles = calculate_angles(self.contact_lines[0])
+    lower_groove_cl_angles = calculate_angles(self.contact_lines[1])
 
     return [upper_groove_cl_angles, lower_groove_cl_angles]

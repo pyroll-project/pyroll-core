@@ -60,7 +60,6 @@ class DeformationUnit(Unit):
     deformation_resistance = Hook[float]()
     """Equivalent deformation resistance (mean flow stress increased by deformation efficiency)."""
 
-
     contact_pressure = Hook[float]()
     """Pressure acting on the contact area."""
 
@@ -70,18 +69,14 @@ class DeformationUnit(Unit):
     zener_holomon_parameter = Hook[float]()
     """Temperature corrected strain rate acc. to Zener and Holomon."""
 
-
     class Profile(Unit.Profile):
         """Represents a profile in context of a deformation unit."""
 
-        contact_contour_lines = Hook[List[LineString]]()
-        """List of contour lines contacting the roll as LineStrings of the profile."""
-
-        contact_contour_angles = Hook[List[np.ndarray]]()
-        """List of contour angles contacting the roll as arrays of the profile."""
-        
         contact_lines = Hook[List[LineString]]()
         """List of lines that are in contact with tooling (rolls)."""
+
+        contact_angles = Hook[List[np.ndarray]]()
+        """List of contour angles that are in contact with tooling (rolls)."""
 
         free_surface_lines = Hook[List[LineString]]()
         """List of lines that are not in contact with tooling (rolls)."""
@@ -91,7 +86,6 @@ class DeformationUnit(Unit):
 
         contact_depth = Hook[float]()
         """Projected depth of contact lines."""
-
 
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a deformation unit."""
