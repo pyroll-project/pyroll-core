@@ -29,6 +29,16 @@ def exit_point(self: RollPass.OutProfile):
     return 0
 
 
+@RollPass.InProfile.roll_angle
+def profile_entry_point(self: RollPass.InProfile):
+    return self.roll_pass.entry_angle
+
+
+@RollPass.OutProfile.roll_angle
+def profile_exit_angle(self: RollPass.OutProfile):
+    return self.roll_pass.exit_angle
+
+
 @RollPass.OutProfile.strain
 def strain(self: RollPass.OutProfile):
     return self.roll_pass.in_profile.strain + self.roll_pass.strain
