@@ -1,3 +1,4 @@
+import numpy as np
 from .disk_element_unit import DiskElementUnit
 
 
@@ -24,3 +25,4 @@ def in_x(self: DiskElementUnit.DiskElement.InProfile):
     except IndexError:
         # is first disk: get from parent in_profile
         return self.disk_element.parent.in_profile.x
+
