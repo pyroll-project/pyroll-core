@@ -116,7 +116,4 @@ def contact_contour_angles(self: DeformationUnit.Profile):
 
         return angles
 
-    upper_groove_cl_angles = calculate_angles(self.contact_lines[0])
-    lower_groove_cl_angles = calculate_angles(self.contact_lines[1])
-
-    return [upper_groove_cl_angles, lower_groove_cl_angles]
+    return [calculate_angles(line) for line in self.contact_contour_lines]
