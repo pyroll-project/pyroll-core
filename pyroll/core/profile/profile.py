@@ -24,6 +24,9 @@ class Profile(HookHost):
     x = Hook[float]()
     """Spacial coordinate in rolling direction."""
 
+    roll_angle = Hook[float]()
+    """Angle between profile and tooling (roll) in rolling (x) direction."""
+
     t = Hook[float]()
     """Temporal coordinate."""
 
@@ -112,7 +115,6 @@ class Profile(HookHost):
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
 
-
     longitudinal_stress = Hook[float]()
     """Normal stress (principal stress) in rolling (x) direction. Positive means tension, negative pressure."""
 
@@ -160,7 +162,6 @@ class Profile(HookHost):
 
     vickers_hardness = Hook[float]()
     """Vickers hardness of the cold profile material."""
-    
 
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
