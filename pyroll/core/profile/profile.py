@@ -112,7 +112,6 @@ class Profile(HookHost):
     scale_thickness = Hook[float]()
     """Thickness of the scale covering the profile."""
 
-
     longitudinal_stress = Hook[float]()
     """Normal stress (principal stress) in rolling (x) direction. Positive means tension, negative pressure."""
 
@@ -137,6 +136,15 @@ class Profile(HookHost):
     equivalent_stress = Hook[float]()
     """Equivalent Stress."""
 
+    normal_stress = Hook[float]()
+    """Normal Stress acting between profile and tooling."""
+
+    longitudinal_contact_friction = Hook[float]()
+    """Contact friction between profile and tooling in rolling (x) direction."""
+
+    latitudinal_contact_friction = Hook[float]()
+    """Contact friction between profile and tooling in width (z) direction."""
+
     deformation_activation_energy = Hook[float]()
     """Activation energy of deformation especially for calculation of Zener-Holomon-Parameter."""
 
@@ -160,7 +168,6 @@ class Profile(HookHost):
 
     vickers_hardness = Hook[float]()
     """Vickers hardness of the cold profile material."""
-    
 
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
