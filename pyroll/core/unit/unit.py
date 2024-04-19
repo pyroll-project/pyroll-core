@@ -143,6 +143,14 @@ class Unit(HookHost):
     def __init_subclass__(cls, **kwargs):
         cls.additional_inits = []
 
+    def _execute_additional_inits(self):
+        for s in reversed(type(self).__mro__):
+            inits = getattr(s, "additional_inits", None)
+
+            if inits is not None:
+                for init in inits:
+                    init(self)
+
     def get_root_hook_results(self):
         in_profile_results = self.in_profile.evaluate_and_set_hooks()
         out_profile_results = self.out_profile.evaluate_and_set_hooks()
@@ -171,9 +179,7 @@ class Unit(HookHost):
         self.logger.info(f"Started solving of {self}.")
         start = timer()
         self.init_solve(in_profile)
-
-        for init in self.additional_inits:
-            init(self)
+        self._execute_additional_inits()
 
         for i in range(1, self.max_iteration_count):
             self.in_profile.reevaluate_cache()
