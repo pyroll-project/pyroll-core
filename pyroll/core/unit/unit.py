@@ -1,6 +1,6 @@
 import copy
 import weakref
-from typing import Optional, Sequence, List, Iterable, SupportsIndex, Union
+from typing import Optional, Sequence, List, Iterable, SupportsIndex, Union, Callable
 
 import numpy as np
 
@@ -136,6 +136,13 @@ class Unit(HookHost):
         if not self.out_profile:
             self.out_profile = self.OutProfile(self, in_profile)
 
+    additional_inits: List[Callable] = []
+    """A list of additional init methods for solution procedure which are directly called after init_solve. 
+    Callables shall only take one parameter which is the unit instance (self)."""
+
+    def __init_subclass__(cls, **kwargs):
+        cls.additional_inits = []
+
     def get_root_hook_results(self):
         in_profile_results = self.in_profile.evaluate_and_set_hooks()
         out_profile_results = self.out_profile.evaluate_and_set_hooks()
@@ -164,6 +171,9 @@ class Unit(HookHost):
         self.logger.info(f"Started solving of {self}.")
         start = timer()
         self.init_solve(in_profile)
+
+        for init in self.additional_inits:
+            init(self)
 
         for i in range(1, self.max_iteration_count):
             self.in_profile.reevaluate_cache()
