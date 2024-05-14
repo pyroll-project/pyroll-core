@@ -1,0 +1,55 @@
+cff-version: 1.2.0
+title: PyRolL
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Max
+    family-names: Weiner
+    orcid: 'https://orcid.org/0000-0002-8232-6877'
+    email: max.weiner@imf.tu-freiberg.de
+    affiliation: TU Bergakademie Freiberg
+  - given-names: Christoph
+    family-names: Renzing
+    email: christoph.renzing@imf.tu-freiberg.de
+    affiliation: TU Bergakademie Freiberg
+    orcid: 'https://orcid.org/0000-0002-9250-4358'
+  - given-names: Max
+    family-names: Stirl
+    email: max.stirl@imf.tu-freiberg.de
+    affiliation: TU Bergakademie Freiberg
+    orcid: 'https://orcid.org/0000-0003-3484-9849'
+  - given-names: Matthias
+    family-names: Schmidtchen
+    email: matthias.schmidtchen@imf.tu-freiberg.de
+    affiliation: TU Bergakademie Freiberg
+    orcid: 'https://orcid.org/0000-0002-2064-4124'
+  - given-names: Ulrich
+    family-names: Prahl
+    email: ulrich.prahl@imf.tu-freiberg.de
+    affiliation: TU Bergakademie Freiberg
+    orcid: 'https://orcid.org/0000-0001-6978-5721'
+identifiers:
+  - type: doi
+    value: 10.21105/joss.06200
+    description: JOSS Paper
+repository-code: 'https://github.com/pyroll-project'
+abstract: >-
+  PyRolL is an OpenSource rolling framework, aimed to
+  provide a fast and extensible base for rolling simulation.
+  The current focus lies on groove rolling using models
+  build on analytical solutions in elongation grooves. The
+  project is structured in numerous repositories, where
+  every repository either contains an extension or a plugin
+  to the framework.
+keywords:
+  - metal-forming
+  - rolling
+  - simulation
+  - python
+  - material-engineering
+  - material-science
+license: BSD-3-Clause
+version: 2.1.6
+date-released: '2024-04-19'
