@@ -34,9 +34,23 @@ root_hooks.extend(
 )
 
 # determine available plotting backend, plotly is preferred
+
+import platform
+
 try:
     import plotly as _
     PLOTTING_BACKEND = "plotly"
+
+    try:
+        import kaleido
+        try:
+            if platform.system() == 'Windows':
+                if kaleido.__version__ != '0.1.0.post1':
+                    raise ValueError("Kaleido Version 0.1.0.post1 is required to use plotly on Windows machines")
+        except AttributeError:
+            pass
+    except ImportError:
+        print("The kaleido package is required if plotly is to be used")
 
 except ImportError:
     try:

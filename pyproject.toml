@@ -52,7 +52,8 @@ matplotlib = [
 plotly = [
     "plotly ~= 5.18",
     "pandas ~= 2.0",
-    "kaleido"
+    "kaleido; platform_system != 'Windows'",
+    "kaleido == 0.1.0.post1; platform_system == 'Windows'"
 ]
 
 [project.urls]
