@@ -14,6 +14,9 @@ class Roll(HookHost):
     nominal_radius = Hook[float]()
     """Nominal radius."""
 
+    nominal_diameter = Hook[float]()
+    """Nominal diameter."""
+
     working_radius = Hook[float]()
     """Effective working radius (equivalent flat rolling)."""
 
