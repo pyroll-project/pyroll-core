@@ -79,4 +79,11 @@ def thermal_diffusivity(self: Roll):
 
 @Roll.nominal_radius
 def nominal_radius(self: Roll):
-    return self.nominal_diameter / 2
+    if self.has_set("nominal_diameter"):
+        return self.nominal_diameter / 2
+
+
+@Roll.nominal_diameter
+def nominal_diameter(self: Roll):
+    if self.has_set("nominal_radius"):
+        return self.nominal_radius * 2
