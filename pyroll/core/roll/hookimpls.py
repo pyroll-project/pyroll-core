@@ -75,3 +75,15 @@ def heat_penetration_number(self: Roll):
 def thermal_diffusivity(self: Roll):
     if hasattr(self, "thermal_conductivity") and hasattr(self, "density") and hasattr(self, "specific_heat_capacity"):
         return self.thermal_conductivity / (self.density * self.specific_heat_capacity)
+
+
+@Roll.nominal_radius
+def nominal_radius(self: Roll):
+    if self.has_set("nominal_diameter"):
+        return self.nominal_diameter / 2
+
+
+@Roll.nominal_diameter
+def nominal_diameter(self: Roll):
+    if self.has_set("nominal_radius"):
+        return self.nominal_radius * 2
