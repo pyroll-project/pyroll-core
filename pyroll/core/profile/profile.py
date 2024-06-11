@@ -24,9 +24,6 @@ class Profile(HookHost):
     x = Hook[float]()
     """Spacial coordinate in rolling direction."""
 
-    roll_angle = Hook[float]()
-    """Angle between profile and tooling (roll) in rolling (x) direction."""
-
     t = Hook[float]()
     """Temporal coordinate."""
 
