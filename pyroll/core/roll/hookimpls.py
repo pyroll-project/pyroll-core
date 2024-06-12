@@ -31,7 +31,7 @@ def surface_velocity(self: Roll):
 
 @Roll.rotational_frequency
 def rotational_frequency(self: Roll):
-    return self.surface_velocity / self.nominal_radius
+    return self.surface_velocity / self.working_radius
 
 
 @Roll.width
