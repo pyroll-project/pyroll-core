@@ -14,7 +14,7 @@ dependencies = [
     "pyroll-report ~= 2.0.0",
     "jupyter",
 ]
-features = ["plotly", "matplotlib"]
+features = ["plotly"]
 
 [envs.test]
 path = ""
