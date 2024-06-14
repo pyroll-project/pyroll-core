@@ -262,7 +262,12 @@ class RollPass(DiskElementUnit, DeformationUnit):
         if PLOTTING_BACKEND == "matplotlib":
             import matplotlib.pyplot as plt
 
-            fig: plt.Figure = plt.figure(**kwargs)
+            fig: plt.Figure = plt.figure(
+                **dict(
+                    width=640,
+                    height=480,
+                ) | kwargs
+            )
             ax: plt.Axes
             axl: plt.Axes
             ax = fig.subplots()
@@ -325,7 +330,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
                     scaleratio=1
                 ),
                 title=f"Roll Pass '{self.label}'" if self.label else None,
-                template="simple_white"
+                template="simple_white",
+                width=640,
+                height=480,
             ))
 
             if self.in_profile:
@@ -378,5 +385,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
                     showlegend=show_in_legend
                 ))
                 show_in_legend = False
+
+            fig.update(
+                **kwargs
+            )
 
             return fig

@@ -76,21 +76,19 @@ class ReprMixin(ABC):
                 import matplotlib.pyplot as plt
                 with StringIO() as sio:
                     plot.savefig(sio, format="svg")
-                    svg = sio.getvalue()
+                image = sio.getvalue()
                 plt.close(plot)
-
             if PLOTTING_BACKEND == "plotly":
-                from plotly.io import to_image
-                svg = to_image(
+                from plotly.io import to_html
+                image = to_html(
                     plot,
-                    format="svg",
-                    width=600,
-                    height=400
-                ).decode("utf-8")
+                    full_html=False,
+                    include_plotlyjs="cdn",
+                )
 
             return (
                     "<table>"
-                    + "<tr><td style='text-align: center'>" + svg + "</td></tr>"
+                    + "<tr><td style='text-align: center'>" + image + "</td></tr>"
                     + "<tr><td style='text-align: left'>" + table + "</td></tr>"
                     + "</table>"
             )

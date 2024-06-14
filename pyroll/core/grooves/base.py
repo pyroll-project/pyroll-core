@@ -75,7 +75,12 @@ class GrooveBase(ReprMixin):
         if PLOTTING_BACKEND == "matplotlib":
             import matplotlib.pyplot as plt
 
-            fig: plt.Figure = plt.figure(**kwargs)
+            fig: plt.Figure = plt.figure(
+                **dict(
+                    width=640,
+                    height=480,
+                ) | kwargs
+            )
             ax: plt.Axes = fig.subplots()
 
             ax.set_ylabel("y")
@@ -95,6 +100,8 @@ class GrooveBase(ReprMixin):
                 y=self.contour_line.xy[1],
                 labels={"y": "y", "x": "z"},
                 template="simple_white",
+                width=640,
+                height=480,
             )
 
             fig.update_traces(line_color="black")
@@ -104,5 +111,8 @@ class GrooveBase(ReprMixin):
                 scaleratio=1
             )
 
-            return fig
+            fig.update(
+                **kwargs
+            )
 
+            return fig
