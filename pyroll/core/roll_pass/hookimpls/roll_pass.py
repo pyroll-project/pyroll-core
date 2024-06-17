@@ -257,6 +257,11 @@ def entry_point(self: RollPass):
 
 @RollPass.entry_angle
 def entry_angle(self: RollPass):
+    if "square" in self.in_profile.classifiers and "oval" in self.classifiers:
+        depth = self.roll.groove.local_depth(self.in_profile.width / 2)
+        radius = self.roll.max_radius - depth
+        return np.arcsin(self.entry_point / radius)
+
     return np.arcsin(self.entry_point / self.roll.min_radius)
 
 
