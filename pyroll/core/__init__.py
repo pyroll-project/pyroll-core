@@ -3,6 +3,7 @@ from . import shapes as _
 from .grooves import *
 from .transport import Transport, CoolingPipe
 from .roll_pass import RollPass, DeformationUnit, ThreeRollPass
+from .power_train import PowerTrain, DCMotor
 from .unit import Unit
 from .roll import Roll
 from .profile import *
