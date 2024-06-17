@@ -1,3 +1,4 @@
+import numpy as np
 from ..roll_pass import RollPass
 
 
@@ -14,3 +15,8 @@ def disk_velocity(self: RollPass.DiskElement):
 @RollPass.DiskElement.duration
 def disk_duration(self: RollPass.DiskElement):
     return self.length / self.velocity
+
+
+@RollPass.DiskElement.Profile.longitudinal_angle
+def longitudinal_angle(self: RollPass.DiskElement):
+    return np.arcsin(self.x / self.roll_pass.roll.working_radius)

@@ -87,6 +87,9 @@ class DeformationUnit(Unit):
         contact_depth = Hook[float]()
         """Projected depth of contact lines."""
 
+        longitudinal_angle = Hook[float]()
+        """Longitudinal angle between the deformation unit and the workpiece."""
+
     class InProfile(Profile, Unit.InProfile):
         """Represents an incoming profile of a deformation unit."""
 
