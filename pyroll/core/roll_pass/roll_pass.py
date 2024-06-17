@@ -9,7 +9,7 @@ from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 from ..roll import Roll as BaseRoll
-from ..engine import Engine as BaseEngine
+from ..power_train import PowerTrain as BasePowerTrain
 from ..rotator import Rotator
 from .deformation_unit import DeformationUnit
 
@@ -101,12 +101,15 @@ class RollPass(DiskElementUnit, DeformationUnit):
     """Coordinate of the passes high point in rolling direction."""
 
     idle_torque = Hook[float]()
-    """Resulting idle torque of the whole roll pass."""
+    """Resulting idle torque of the whole roll pass resulting from it's weight."""
+
+    roll_torque = Hook[float]()
+    """All roll torques of the roll pass."""
 
     def __init__(
             self,
             roll: BaseRoll,
-            engine: BaseEngine,
+            power_train: BasePowerTrain,
             label: str = "",
             **kwargs
     ):
@@ -122,8 +125,8 @@ class RollPass(DiskElementUnit, DeformationUnit):
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (equal upper and lower)."""
 
-        self.engine = self.Engine(engine, self)
-        """The engine of this pass."""
+        self.power_train = self.PowerTrain(power_train, self)
+        """The power_train of this pass."""
 
         self._contour_lines = None
 
@@ -219,10 +222,10 @@ class RollPass(DiskElementUnit, DeformationUnit):
             """Reference to the roll pass this roll is used in."""
             return self._roll_pass()
 
-    class Engine(BaseEngine):
+    class PowerTrain(BasePowerTrain):
         """Represents an engine applied in a :py:class:`RollPass`."""
 
-        def __init__(self, template: BaseEngine, roll_pass: 'RollPass'):
+        def __init__(self, template: BasePowerTrain, roll_pass: 'RollPass'):
             kwargs = dict(
                 e for e in template.__dict__.items()
                 if not e[0].startswith("_")
