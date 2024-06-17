@@ -1,6 +1,6 @@
 import numpy as np
 
-from .dc_motor import DCMotor
+from pyroll.core.power_train.dc_motor import DCMotor
 
 
 @DCMotor.torque

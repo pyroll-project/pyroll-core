@@ -34,18 +34,3 @@ class DCMotor(PowerTrain):
 
     gearbox_efficiency = Hook[float]()
     """Efficiency of the used gearbox bearings."""
-
-    def __init__(
-            self,
-
-            **kwargs
-    ):
-        """
-        :param kwargs: additional hook values as keyword arguments to set explicitly
-        """
-        self.__dict__.update(kwargs)
-
-        super().__init__()
-
-    def reevaluate_cache(self):
-        super().reevaluate_cache()
