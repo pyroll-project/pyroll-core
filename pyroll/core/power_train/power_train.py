@@ -8,10 +8,10 @@ class PowerTrain(HookHost):
     """Torque of the power train."""
 
     power = Hook[float]()
-    """Power output of the engine."""
+    """Power output of the power train."""
 
     rotational_frequency = Hook[float]()
-    """Rotational frequency of the engine."""
+    """Rotational frequency of the power train."""
 
     def __init__(
             self,
