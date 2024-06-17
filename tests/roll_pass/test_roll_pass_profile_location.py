@@ -71,5 +71,5 @@ def test_cylindrical_positions(tmp_path: Path, caplog):
 
     rp.solve(in_profile)
 
-    assert np.isclose(rp.in_profile.roll_angle, rp.entry_angle)
-    assert np.isclose(rp.out_profile.roll_angle, rp.exit_angle)
+    assert np.isclose(rp.in_profile.longitudinal_angle, rp.entry_angle)
+    assert np.isclose(rp.out_profile.longitudinal_angle, rp.exit_angle)

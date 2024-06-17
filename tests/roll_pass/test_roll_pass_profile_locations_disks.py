@@ -85,7 +85,7 @@ def test_cylindrical_positions(tmp_path: Path, caplog, monkeypatch):
         print("\nLog:")
         print(caplog.text)
 
-    ip_angle = [de.in_profile.roll_angle for de in rp.disk_elements]
-    op_angle = [de.out_profile.roll_angle for de in rp.disk_elements]
+    ip_angle = [de.in_profile.longitudinal_angle for de in rp.disk_elements]
+    op_angle = [de.out_profile.longitudinal_angle for de in rp.disk_elements]
     assert np.isclose(ip_angle, [-0.2739, -0.2181, -0.1630, -0.1084, -0.0541], rtol=1e-3).all()
     assert np.isclose(op_angle, [-0.2181, -0.1630, -0.1084, -0.0541, 0], rtol=1e-3).all()

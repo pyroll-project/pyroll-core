@@ -260,6 +260,9 @@ def entry_angle(self: RollPass):
     return np.arcsin(self.entry_point / self.roll.working_radius)
 
 
+## minimaler, außer für Quadrat - Oval, da Radius an der Breite
+
+
 @RollPass.exit_point
 def exit_point(self: RollPass):
     return 0
@@ -268,3 +271,13 @@ def exit_point(self: RollPass):
 @RollPass.exit_angle
 def exit_angle(self: RollPass):
     return np.arcsin(self.exit_point / self.roll.working_radius)
+
+
+@RollPass.InProfile.longitudinal_angle
+def longitudinal_angle(self: RollPass.InProfile):
+    return self.roll_pass.entry_angle
+
+
+@RollPass.OutProfile.longitudinal_angle
+def longitudinal_angle(self: RollPass.OutProfile):
+    return self.roll_pass.exit_angle
