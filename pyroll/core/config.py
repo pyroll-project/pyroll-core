@@ -174,7 +174,7 @@ class Config:
 
     BOLTZMANN_CONSTANT = 1.380649e-23
     """Boltzmann constant kB."""
-    
+
     STEFAN_BOLTZMANN_CONSTANT = 5.670374419e-8
     """Stefan-Boltzmann radiation constant σ."""
 
@@ -190,3 +190,12 @@ class Config:
 
     GROOVE_RADIUS_POINT_COUNT = 20
     """Count of points used to represent the radii in a generic elongation groove as line string."""
+
+    PLOT_WIDTH = 640
+    """Width of plots (using ReprMixin) in pixels."""
+
+    PLOT_HEIGHT = 480
+    """Height of plots (using ReprMixin) in pixels."""
+
+    PLOT_RESOLUTION = 100
+    """Resolution of plots in dots per inches (dpi)."""

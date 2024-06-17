@@ -236,158 +236,141 @@ class RollPass(DiskElementUnit, DeformationUnit):
         class OutProfile(Profile, DiskElementUnit.DiskElement.OutProfile, DeformationUnit.OutProfile):
             """Represents an outgoing profile of a disk element unit."""
 
-    def plot(self, **kwargs):
-        from pyroll.core import PLOTTING_BACKEND
-        if PLOTTING_BACKEND is None:
-            raise RuntimeError(
-                "This method is only available if matplotlib or plotly is installed in the environment. "
-                "You may install one of them using the 'plot', 'matplotlib' or 'plotly' extras of pyroll-core."
+    def _get_oriented_geom(self, geom):
+        orientation = self.orientation
+
+        if isinstance(orientation, str):
+            if orientation.lower() in ["horizontal", "h", "y"]:
+                orientation = 0
+            elif orientation.lower() in ["vertical", "v"]:
+                orientation = 90
+            elif orientation.lower() in ["antiy", "ay"]:
+                orientation = 180
+
+        if orientation != 0:
+            return rotate(geom, orientation, (0, 0))
+        return geom
+
+    def _plot_matplotlib_(self):
+        import matplotlib.pyplot as plt
+
+        fig: plt.Figure = plt.figure()
+        ax: plt.Axes
+        axl: plt.Axes
+        ax = fig.subplots()
+
+        if self.label:
+            ax.set_title(f"Roll Pass '{self.label}'")
+
+        ax.set_ylabel("y")
+        ax.set_xlabel("z")
+
+        ax.set_aspect("equal", "datalim")
+        ax.grid(lw=0.5)
+
+        artists = []
+
+        if self.in_profile:
+            artists += ax.fill(
+                *self._get_oriented_geom(self.in_profile.cross_section.boundary).xy,
+                alpha=0.5, color="red", label="in profile"
+            )
+            artists += ax.fill(
+                *self._get_oriented_geom(self.in_profile.equivalent_rectangle.boundary).xy,
+                fill=False, color="red", ls="--", label="in eq. rectangle"
             )
 
-        def oriented(geom):
-            orientation = self.orientation
-
-            if isinstance(orientation, str):
-                if orientation.lower() in ["horizontal", "h", "y"]:
-                    orientation = 0
-                elif orientation.lower() in ["vertical", "v"]:
-                    orientation = 90
-                elif orientation.lower() in ["antiy", "ay"]:
-                    orientation = 180
-
-            if orientation != 0:
-                return rotate(geom, orientation, (0, 0))
-            return geom
-
-        if PLOTTING_BACKEND == "matplotlib":
-            import matplotlib.pyplot as plt
-
-            fig: plt.Figure = plt.figure(
-                **dict(
-                    width=640,
-                    height=480,
-                ) | kwargs
+        if self.out_profile:
+            artists += ax.fill(
+                *self._get_oriented_geom(self.out_profile.cross_section.boundary).xy,
+                alpha=0.5, color="blue", label="out profile"
             )
-            ax: plt.Axes
-            axl: plt.Axes
-            ax = fig.subplots()
+            artists += ax.fill(
+                *self._get_oriented_geom(self.out_profile.equivalent_rectangle.boundary).xy,
+                fill=False, color="blue", ls="--", label="out eq. rectangle"
+            )
 
-            if self.label:
-                ax.set_title(f"Roll Pass '{self.label}'")
+        c = None
+        for cl in self.contour_lines:
+            c = ax.plot(*self._get_oriented_geom(cl).xy, color="k", label="roll surface")
 
-            ax.set_ylabel("y")
-            ax.set_xlabel("z")
+        if c is not None:
+            artists += c
 
-            ax.set_aspect("equal", "datalim")
-            ax.grid(lw=0.5)
+        ncols = len(artists) // 2 + 1
 
-            artists = []
+        ax.legend(handles=artists, ncols=ncols, loc='lower center')
+        fig.set_layout_engine('constrained')
 
-            if self.in_profile:
-                artists += ax.fill(
-                    *oriented(self.in_profile.cross_section.boundary).xy,
-                    alpha=0.5, color="red", label="in profile"
-                )
-                artists += ax.fill(
-                    *oriented(self.in_profile.equivalent_rectangle.boundary).xy,
-                    fill=False, color="red", ls="--", label="in eq. rectangle"
-                )
+        return fig
 
-            if self.out_profile:
-                artists += ax.fill(
-                    *oriented(self.out_profile.cross_section.boundary).xy,
-                    alpha=0.5, color="blue", label="out profile"
-                )
-                artists += ax.fill(
-                    *oriented(self.out_profile.equivalent_rectangle.boundary).xy,
-                    fill=False, color="blue", ls="--", label="out eq. rectangle"
-                )
+    def _plot_plotly_(self):
+        import plotly.graph_objects as go
 
-            c = None
-            for cl in self.contour_lines:
-                c = ax.plot(*oriented(cl).xy, color="k", label="roll surface")
+        fig = go.Figure(layout=go.Layout(
+            xaxis=dict(
+                title="z",
+            ),
+            yaxis=dict(
+                title="y",
+                scaleanchor="x",
+                scaleratio=1
+            ),
+            title=f"Roll Pass '{self.label}'" if self.label else None,
+            template="simple_white",
+            width=640,
+            height=480,
+        ))
 
-            if c is not None:
-                artists += c
-
-            ncols = len(artists) // 2 + 1
-
-            ax.legend(handles=artists, ncols=ncols, loc='lower center')
-            fig.set_layout_engine('constrained')
-
-            return fig
-
-        if PLOTTING_BACKEND == "plotly":
-            import plotly.graph_objects as go
-
-            fig = go.Figure(layout=go.Layout(
-                xaxis=dict(
-                    title="z",
-                ),
-                yaxis=dict(
-                    title="y",
-                    scaleanchor="x",
-                    scaleratio=1
-                ),
-                title=f"Roll Pass '{self.label}'" if self.label else None,
-                template="simple_white",
-                width=640,
-                height=480,
+        if self.in_profile:
+            coords = self._get_oriented_geom(self.in_profile.cross_section.boundary).xy
+            fig.add_trace(go.Scatter(
+                x=np.array(coords[0]),
+                y=np.array(coords[1]),
+                mode="lines",
+                fill="toself",
+                line=dict(color="red"),
+                name="in profile"
+            ))
+            coords = self._get_oriented_geom(self.in_profile.equivalent_rectangle.boundary).xy
+            fig.add_trace(go.Scatter(
+                x=np.array(coords[0]),
+                y=np.array(coords[1]),
+                mode="lines",
+                line=dict(color="red", dash="dash"),
+                name="in eq. rectangle"
             ))
 
-            if self.in_profile:
-                coords = oriented(self.in_profile.cross_section.boundary).xy
-                fig.add_trace(go.Scatter(
-                    x=np.array(coords[0]),
-                    y=np.array(coords[1]),
-                    mode="lines",
-                    fill="toself",
-                    line=dict(color="red"),
-                    name="in profile"
-                ))
-                coords = oriented(self.in_profile.equivalent_rectangle.boundary).xy
-                fig.add_trace(go.Scatter(
-                    x=np.array(coords[0]),
-                    y=np.array(coords[1]),
-                    mode="lines",
-                    line=dict(color="red", dash="dash"),
-                    name="in eq. rectangle"
-                ))
+        if self.out_profile:
+            coords = self._get_oriented_geom(self.out_profile.cross_section.boundary).xy
+            fig.add_trace(go.Scatter(
+                x=np.array(coords[0]),
+                y=np.array(coords[1]),
+                mode="lines",
+                fill="toself",
+                line=dict(color="blue"),
+                name="out profile"
+            ))
+            coords = self._get_oriented_geom(self.out_profile.equivalent_rectangle.boundary).xy
+            fig.add_trace(go.Scatter(
+                x=np.array(coords[0]),
+                y=np.array(coords[1]),
+                mode="lines",
+                line=dict(color="blue", dash="dash"),
+                name="out eq. rectangle"
+            ))
 
-            if self.out_profile:
-                coords = oriented(self.out_profile.cross_section.boundary).xy
-                fig.add_trace(go.Scatter(
-                    x=np.array(coords[0]),
-                    y=np.array(coords[1]),
-                    mode="lines",
-                    fill="toself",
-                    line=dict(color="blue"),
-                    name="out profile"
-                ))
-                coords = oriented(self.out_profile.equivalent_rectangle.boundary).xy
-                fig.add_trace(go.Scatter(
-                    x=np.array(coords[0]),
-                    y=np.array(coords[1]),
-                    mode="lines",
-                    line=dict(color="blue", dash="dash"),
-                    name="out eq. rectangle"
-                ))
+        show_in_legend = True
+        for cl in self.contour_lines:
+            coords = self._get_oriented_geom(cl).xy
+            fig.add_trace(go.Scatter(
+                x=np.array(coords[0]),
+                y=np.array(coords[1]),
+                mode="lines",
+                line=dict(color="black"),
+                name="roll surface",
+                showlegend=show_in_legend
+            ))
+            show_in_legend = False
 
-            show_in_legend = True
-            for cl in self.contour_lines:
-                coords = oriented(cl).xy
-                fig.add_trace(go.Scatter(
-                    x=np.array(coords[0]),
-                    y=np.array(coords[1]),
-                    mode="lines",
-                    line=dict(color="black"),
-                    name="roll surface",
-                    showlegend=show_in_legend
-                ))
-                show_in_legend = False
-
-            fig.update(
-                **kwargs
-            )
-
-            return fig
+        return fig
