@@ -2,9 +2,7 @@ import logging
 import webbrowser
 from pathlib import Path
 
-import numpy as np
-
-from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, SquareGroove
+from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, DCMotor
 
 
 def flow_stress(self: RollPass.Profile):
@@ -38,7 +36,6 @@ def test_solve(tmp_path: Path, caplog):
                     neutral_point=-20e-3
                 ),
                 gap=2e-3,
-
             ),
             Transport(
                 label="I => II",

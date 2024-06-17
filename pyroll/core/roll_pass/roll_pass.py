@@ -109,7 +109,7 @@ class RollPass(DiskElementUnit, DeformationUnit):
     def __init__(
             self,
             roll: BaseRoll,
-            power_train: BasePowerTrain,
+            power_train: BasePowerTrain = None,
             label: str = "",
             **kwargs
     ):
