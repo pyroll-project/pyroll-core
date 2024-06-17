@@ -1,7 +1,7 @@
 import math
 
 import numpy as np
-from shapely import MultiPolygon, Polygon, difference, clip_by_rect
+from shapely import Polygon, difference, clip_by_rect
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
@@ -240,6 +240,16 @@ def target_cross_section_filling_ratio_from_target_cross_section_area(self: Roll
         return self.target_cross_section_area / self.usable_cross_section.area
 
 
+@RollPass.roll_torque
+def roll_torque(self: RollPass):
+    return 2 * self.roll.roll_torque
+
+
+@ThreeRollPass.roll_torque
+def roll_torque(self: ThreeRollPass):
+    return 3 * self.roll.roll_torque
+
+
 @RollPass.power
 def roll_power(self: RollPass):
     return 2 * self.roll.roll_power
@@ -268,3 +278,8 @@ def exit_point(self: RollPass):
 @RollPass.exit_angle
 def exit_angle(self: RollPass):
     return np.arcsin(self.exit_point / self.roll.working_radius)
+
+
+@RollPass.idle_torque
+def idle_torque(self: RollPass):
+    return self.roll_torque * 0.05
