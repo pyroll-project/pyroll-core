@@ -29,6 +29,7 @@ root_hooks.extend(
         RollPass.OutProfile.cross_section_filling_ratio,
         RollPass.OutProfile.filling_error,
         RollPass.OutProfile.cross_section_error,
+        RollPass.OutProfile.velocity,
         PassSequence.log_elongation,
     ]
 )
