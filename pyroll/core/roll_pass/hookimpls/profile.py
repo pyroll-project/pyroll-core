@@ -89,3 +89,8 @@ def cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
 @RollPass.OutProfile.classifiers
 def classifiers(self: RollPass.OutProfile):
     return set(self.roll_pass.classifiers)
+
+
+@RollPass.OutProfile.velocity
+def velocity(self: RollPass.OutProfile):
+    return self.roll_pass.velocity
