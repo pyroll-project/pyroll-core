@@ -23,8 +23,9 @@ class ThreeRollPass(RollPass):
         shift = self.roll.groove.usable_width / 2 / np.sqrt(3) + self.gap / np.sqrt(3)
         upper = translate(self.roll.contour_line, yoff=shift)
         upper = LineString(upper.coords[::-1])  # get back coordinate order
-        right = rotate(upper, angle=-120, origin=(0, 0))
-        left = rotate(upper, angle=120, origin=(0, 0))
+        right = rotate(upper, angle=-60, origin=(0, 0))
+        left = rotate(upper, angle=60, origin=(0, 0))
+        upper = rotate(upper, angle=180, origin=(0, 0))
 
         self._contour_lines = [right, upper, left]
         return self._contour_lines
