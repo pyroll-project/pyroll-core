@@ -169,7 +169,8 @@ def velocity(self: RollPass):
     if self.roll.has_value("neutral_angle"):
         return self.roll.surface_velocity * np.cos(self.roll.neutral_angle)
     else:
-        return self.roll.rotational_frequency * self.roll.working_radius * 2 * np.pi
+        return self.roll.surface_velocity * np.cos(0)
+
 
 @RollPass.duration
 def duration(self: RollPass):
