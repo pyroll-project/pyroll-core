@@ -36,7 +36,7 @@ def center(self: RollPass.Roll):
 @RollPass.Roll.neutral_angle
 def neutral_angle(self: RollPass.Roll):
     if self.has_value("neutral_point"):
-        return np.arcsin(self.neutral_point / self.working_radius)
+        return - np.arcsin(self.neutral_point / self.working_radius)
 
 
 @RollPass.Roll.neutral_point
