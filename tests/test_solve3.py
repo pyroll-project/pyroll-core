@@ -33,6 +33,7 @@ def test_solve3(tmp_path: Path, caplog):
                 rotational_frequency=1
             ),
             gap=2e-3,
+            orientation="y"
         ),
         Transport(
             label="I => II",
@@ -51,6 +52,7 @@ def test_solve3(tmp_path: Path, caplog):
                 rotational_frequency=1
             ),
             gap=2e-3,
+            orientation="antiy"
         ),
     ])
 
@@ -66,7 +68,7 @@ def test_solve3(tmp_path: Path, caplog):
         report = pyroll.report.report(sequence)
 
         report_file = tmp_path / "report.html"
-        report_file.write_text(report)
+        report_file.write_text(report, encoding="utf-8")
         print(report_file)
         webbrowser.open(report_file.as_uri())
 
