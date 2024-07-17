@@ -139,7 +139,7 @@ def height3(self):
         self.roll.groove.usable_width / 2,
         math.inf
     )
-    return 2 * usable_contour.bounds[1]
+    return abs(2 * usable_contour.bounds[1])
 
 
 @RollPass.volume
