@@ -27,7 +27,7 @@ class ThreeRollPass(RollPass):
         left = rotate(lower, angle=60, origin=(0, 0))
         lower = rotate(lower, angle=180, origin=(0, 0))
 
-        self._contour_lines = [right, left, lower]
+        self._contour_lines = [left, lower, right]
         return self._contour_lines
 
     @property
