@@ -33,7 +33,6 @@ def test_solve3(tmp_path: Path, caplog):
                 rotational_frequency=1
             ),
             gap=2e-3,
-            orientation="y"
         ),
         Transport(
             label="I => II",
@@ -52,7 +51,6 @@ def test_solve3(tmp_path: Path, caplog):
                 rotational_frequency=1
             ),
             gap=2e-3,
-            orientation="antiy"
         ),
     ])
 
