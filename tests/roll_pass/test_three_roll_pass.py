@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 import shapely
 
-from pyroll.core import ThreeRollPass, Roll, CircularOvalGroove, BoxGroove
+from pyroll.core import ThreeRollPass, Roll, CircularOvalGroove, BoxGroove, RoundGroove
 
 
 @pytest.mark.parametrize(
@@ -31,6 +31,18 @@ from pyroll.core import ThreeRollPass, Roll, CircularOvalGroove, BoxGroove
         ),
         CircularOvalGroove(
             r1=25, r2=40, depth=10,
+            pad_angle=30
+        ),
+        CircularOvalGroove(
+            depth=8,
+            r1=6,
+            r2=40,
+            pad_angle=30
+        ),
+        RoundGroove(
+            r1=3,
+            r2=25,
+            depth=11,
             pad_angle=30
         )
     ]
