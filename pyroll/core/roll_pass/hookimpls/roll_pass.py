@@ -275,11 +275,4 @@ def exit_angle(self: RollPass):
     return np.arcsin(self.exit_point / self.roll.working_radius)
 
 
-@RollPass.InProfile.longitudinal_angle
-def longitudinal_angle(self: RollPass.InProfile):
-    return self.roll_pass.entry_angle
 
-
-@RollPass.OutProfile.longitudinal_angle
-def longitudinal_angle(self: RollPass.OutProfile):
-    return self.roll_pass.exit_angle

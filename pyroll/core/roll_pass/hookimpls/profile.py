@@ -19,14 +19,14 @@ def exit_point(self: RollPass.OutProfile):
     return 0
 
 
-@RollPass.InProfile.x
-def entry_point(self: RollPass.InProfile):
-    return -self.roll_pass.roll.contact_length
+@RollPass.InProfile.longitudinal_angle
+def longitudinal_angle(self: RollPass.InProfile):
+    return self.roll_pass.entry_angle
 
 
-@RollPass.OutProfile.x
-def exit_point(self: RollPass.OutProfile):
-    return 0
+@RollPass.OutProfile.longitudinal_angle
+def longitudinal_angle(self: RollPass.OutProfile):
+    return self.roll_pass.exit_angle
 
 
 @RollPass.OutProfile.strain
