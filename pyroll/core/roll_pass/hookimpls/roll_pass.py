@@ -260,9 +260,9 @@ def entry_angle(self: RollPass):
     if "square" in self.in_profile.classifiers and "oval" in self.classifiers:
         depth = self.roll.groove.local_depth(self.in_profile.width / 2)
         radius = self.roll.max_radius - depth
-        return - np.arcsin(self.entry_point / radius)
+        return np.arcsin(self.entry_point / radius)
 
-    return - np.arcsin(self.entry_point / self.roll.min_radius)
+    return np.arcsin(self.entry_point / self.roll.min_radius)
 
 
 @RollPass.exit_point
@@ -272,14 +272,7 @@ def exit_point(self: RollPass):
 
 @RollPass.exit_angle
 def exit_angle(self: RollPass):
-    return - np.arcsin(self.exit_point / self.roll.working_radius)
+    return np.arcsin(self.exit_point / self.roll.working_radius)
 
 
-@RollPass.InProfile.longitudinal_angle
-def longitudinal_angle(self: RollPass.InProfile):
-    return self.roll_pass.entry_angle
 
-
-@RollPass.OutProfile.longitudinal_angle
-def longitudinal_angle(self: RollPass.OutProfile):
-    return self.roll_pass.exit_angle
