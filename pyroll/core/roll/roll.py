@@ -32,6 +32,9 @@ class Roll(HookHost):
     surface_velocity = Hook[float]()
     """Tangential velocity of the outer roll surface (at nominal radius)."""
 
+    working_velocity = Hook[float]()
+    """Tangential velocity of the roll surface (at working radius)."""
+
     contour_points = Hook[LineString]()
     """Points of the contour line in the z-y-plane."""
 

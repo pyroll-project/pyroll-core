@@ -24,6 +24,11 @@ def roll_power(self: Roll):
     return self.roll_torque * self.rotational_frequency * 2 * np.pi
 
 
+@Roll.working_velocity
+def working_velocity(self: Roll):
+    return self.rotational_frequency * self.working_radius * 2 * np.pi
+
+
 @Roll.surface_velocity
 def surface_velocity(self: Roll):
     return self.rotational_frequency * self.nominal_radius * 2 * np.pi
@@ -31,7 +36,7 @@ def surface_velocity(self: Roll):
 
 @Roll.rotational_frequency
 def rotational_frequency(self: Roll):
-    return self.surface_velocity / self.nominal_radius
+    return self.surface_velocity / (2 * np.pi * self.nominal_radius)
 
 
 @Roll.width
