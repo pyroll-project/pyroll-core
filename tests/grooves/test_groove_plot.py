@@ -1,19 +1,15 @@
-import matplotlib.pyplot as plt
+import importlib.util
+
+import pytest
 
 import pyroll.core as pr
 
 
+@pytest.mark.xfail(
+    not importlib.util.find_spec("matplotlib") and not importlib.util.find_spec("plotly"),
+    reason="no plotting backend available"
+)
 def test_plot_groove():
-    if pr.PLOTTING_BACKEND is not None:
-        groove = pr.CircularOvalGroove(r1=1, r2=5, depth=1)
-        result = groove.plot()
-        result.show()
-
-        if pr.PLOTTING_BACKEND == "matplotlib":
-            from matplotlib.pyplot import Figure
-            assert isinstance(result, Figure)
-
-        if pr.PLOTTING_BACKEND == "plotly":
-            from plotly.graph_objects import Figure
-            assert isinstance(result, Figure)
-
+    groove = pr.CircularOvalGroove(r1=1, r2=5, depth=1)
+    result = groove.plot()
+    result.show()

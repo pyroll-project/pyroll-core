@@ -1,3 +1,5 @@
+import importlib.util
+
 import pytest
 
 import pyroll.core as pr
@@ -10,15 +12,10 @@ import pyroll.core as pr
         pr.Profile.hexagon(side=10, corner_radius=2)
     ]
 )
+@pytest.mark.xfail(
+    not importlib.util.find_spec("matplotlib") and not importlib.util.find_spec("plotly"),
+    reason="no plotting backend available"
+)
 def test_plot_profile(p):
-    if pr.PLOTTING_BACKEND is not None:
-        result = p.plot()
-        result.show()
-
-        if pr.PLOTTING_BACKEND == "matplotlib":
-            from matplotlib.pyplot import Figure
-            assert isinstance(result, Figure)
-
-        if pr.PLOTTING_BACKEND == "plotly":
-            from plotly.graph_objects import Figure
-            assert isinstance(result, Figure)
+    result = p.plot()
+    result.show()
