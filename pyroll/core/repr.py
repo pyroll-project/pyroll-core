@@ -1,6 +1,8 @@
 import html
 from abc import ABC, abstractmethod
 from io import StringIO
+from .config import Config
+from .log import global_logger
 
 
 class ReprMixin(ABC):
@@ -12,16 +14,46 @@ class ReprMixin(ABC):
     def __attrs__(self):
         raise NotImplementedError()
 
-    def plot(self, **kwargs):
-        """
-        Returns a matplotlib figure visualizing this instance.
-        It is not required to implement this method.
-        :param kwargs: keyword arguments passed to the figure constructor
+    def _plot_plotly_(self):
+        raise NotImplementedError("Plotting using plotly not available on this type.")
 
-        :raises RuntimeError: if matplotlib is not importable
-        :raises TypeError: if the current type does not support plotting
+    def _plot_matplotlib_(self):
+        raise NotImplementedError("Plotting using matplotlib not available on this type.")
+
+    def plot_plotly(self):
         """
-        raise TypeError("This type does not support plotting.")
+        Create a plot of the current object using plotly.
+        :return: a plotly figure object
+        """
+        plot = self._plot_plotly_()
+        plot.update_layout(
+            width=Config.PLOT_WIDTH,
+            height=Config.PLOT_HEIGHT,
+        )
+        return plot
+
+    def plot_matplotlib(self):
+        """
+        Create a plot of the current object using matplotlib.
+        :return: a matplotlib figure object
+        """
+        plot = self._plot_matplotlib_()
+        plot.set_size_inches(Config.PLOT_WIDTH / Config.PLOT_RESOLUTION,
+                             Config.PLOT_HEIGHT / Config.PLOT_RESOLUTION)
+        plot.set_dpi(Config.PLOT_RESOLUTION)
+        return plot
+
+    def plot(self):
+        """
+        Create a plot of the current object using an available backend.
+
+        :returns: either a plotly or matplotlib figure object
+        """
+
+        try:
+            return self.plot_plotly()
+        except (NotImplementedError, ImportError):
+            return self.plot_matplotlib()
 
     def __str__(self):
         return type(self).__qualname__
@@ -69,28 +101,26 @@ class ReprMixin(ABC):
 
         try:
             plot = self.plot()
+            ns = type(plot).__module__.split(".", 1)[0]
 
-            from pyroll.core import PLOTTING_BACKEND
-
-            if PLOTTING_BACKEND == "matplotlib":
+            if ns == "matplotlib":
                 import matplotlib.pyplot as plt
                 with StringIO() as sio:
                     plot.savefig(sio, format="svg")
-                    svg = sio.getvalue()
+                    image = sio.getvalue()
                 plt.close(plot)
 
-            if PLOTTING_BACKEND == "plotly":
-                from plotly.io import to_image
-                svg = to_image(
+            if ns == "plotly":
+                from plotly.io import to_html
+                image = to_html(
                     plot,
-                    format="svg",
-                    width=600,
-                    height=400
-                ).decode("utf-8")
+                    full_html=False,
+                    include_plotlyjs="cdn",
+                )
 
             return (
                     "<table>"
-                    + "<tr><td style='text-align: center'>" + svg + "</td></tr>"
+                    + "<tr><td style='text-align: center'>" + image + "</td></tr>"
                     + "<tr><td style='text-align: left'>" + table + "</td></tr>"
                     + "</table>"
             )
