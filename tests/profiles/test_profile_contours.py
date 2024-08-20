@@ -37,7 +37,7 @@ def test_plot_profile_contact_contours():
     plt.figure(dpi=300)
     plt.axes().set_aspect("equal")
     for ccl in rp.out_profile.contact_lines:
-        plt.plot(*rp.out_profile.contact_lines[0].xy, color='C0')
+        plt.plot(*ccl.xy, color='C0')
     plt.show()
     plt.close()
 
