@@ -103,9 +103,15 @@ def test_plot_contact_areas(g1, g2, ip, main_fig, subplot_index):
 
     assert np.isclose(roll_contact_area, ca.area, rtol=1e-3)
 
+    y_coords = [point[1] for point in ps[-1].in_profile.cross_section.exterior.coords[:-1]]
+    sorted_y_coords = sorted(y_coords)
+    lowest_two_y = sorted_y_coords[:2]
+    diff = lowest_two_y[1] - lowest_two_y[0]
+    print(f"Two lowest y-coords: [{lowest_two_y[0]:.30f}, {lowest_two_y[1]:.30f}] \t diff: {diff:.30f}")
+
 
 def contact_area(rp):
-    in_profile_local_width = rp.in_profile.local_width(-rp.in_profile.height / 2 * 0.999)
+    in_profile_local_width = rp.in_profile.local_width(-rp.in_profile.height / 2)
 
     x1 = -rp.out_profile.contact_lines[1].width / 2
     x2 = rp.out_profile.contact_lines[1].width / 2
