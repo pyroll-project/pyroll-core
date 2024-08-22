@@ -412,7 +412,9 @@ class Profile(HookHost):
             coords
         )
 
-        intersection = vline.intersection(self.cross_section)
+        tolerance = 1e-12
+
+        intersection = vline.intersection(self.cross_section.buffer(tolerance))
 
         return intersection.length
 
@@ -423,7 +425,9 @@ class Profile(HookHost):
             coords
         )
 
-        intersection = hline.intersection(self.cross_section)
+        tolerance = 1e-12
+
+        intersection = hline.intersection(self.cross_section.buffer(tolerance))
 
         return intersection.length
 
