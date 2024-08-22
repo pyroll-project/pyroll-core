@@ -2,7 +2,7 @@ from . import shapes as _
 
 from .grooves import *
 from .transport import Transport, CoolingPipe
-from .roll_pass import RollPass, DeformationUnit, ThreeRollPass
+from .roll_pass import BaseRollPass, RollPass, DeformationUnit, ThreeRollPass
 from .unit import Unit
 from .roll import Roll
 from .profile import *
@@ -16,21 +16,21 @@ VERSION = "2.2.0a0"
 
 root_hooks.extend(
     [
-        RollPass.roll_force,
-        RollPass.Roll.roll_torque,
-        RollPass.elongation_efficiency,
+        BaseRollPass.roll_force,
+        BaseRollPass.Roll.roll_torque,
+        BaseRollPass.elongation_efficiency,
         Unit.power,
         Unit.OutProfile.cross_section,
         Unit.OutProfile.classifiers,
         Unit.OutProfile.strain,
         Unit.OutProfile.length,
         Unit.OutProfile.t,
-        RollPass.strain_rate,
-        RollPass.OutProfile.filling_ratio,
-        RollPass.OutProfile.cross_section_filling_ratio,
-        RollPass.OutProfile.filling_error,
-        RollPass.OutProfile.cross_section_error,
-        RollPass.OutProfile.velocity,
+        BaseRollPass.strain_rate,
+        BaseRollPass.OutProfile.filling_ratio,
+        BaseRollPass.OutProfile.cross_section_filling_ratio,
+        BaseRollPass.OutProfile.filling_error,
+        BaseRollPass.OutProfile.cross_section_error,
+        BaseRollPass.OutProfile.velocity,
         PassSequence.log_elongation,
     ]
 )

@@ -25,12 +25,6 @@ class RollPass(BaseRollPass):
         return self._contour_lines
 
     @property
-    def classifiers(self):
-        """A tuple of keywords to specify the shape type classifiers of this roll pass.
-        Shortcut to ``self.groove.classifiers``."""
-        return set(self.roll.groove.classifiers) | {"3fold"}
-
-    @property
     def disk_elements(self) -> List['RollPass.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)

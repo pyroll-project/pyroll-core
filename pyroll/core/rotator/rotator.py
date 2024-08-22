@@ -19,12 +19,12 @@ class Rotator(Unit):
 
         :raises ValueError: if this unit has no parent unit
         """
-        from ..roll_pass import RollPass
+        from ..roll_pass.base import BaseRollPass
 
-        if isinstance(self.parent, RollPass):
-            return self.parent.prev_of(RollPass)
+        if isinstance(self.parent, BaseRollPass):
+            return self.parent.prev_of(BaseRollPass)
 
-        return self.prev_of(RollPass)
+        return self.prev_of(BaseRollPass)
 
     @property
     def next_roll_pass(self):
@@ -34,12 +34,12 @@ class Rotator(Unit):
 
         :raises ValueError: if this unit has no parent unit
         """
-        from ..roll_pass import RollPass
+        from ..roll_pass.base import BaseRollPass
 
-        if isinstance(self.parent, RollPass):
+        if isinstance(self.parent, BaseRollPass):
             return self.parent
 
-        return self.next_of(RollPass)
+        return self.next_of(BaseRollPass)
 
     class Profile(Unit.Profile):
         """Represents a profile in context of a rotator."""
