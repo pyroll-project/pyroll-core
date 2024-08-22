@@ -98,7 +98,7 @@ def test_solve(tmp_path: Path, caplog):
         report = pyroll.report.report(sequence)
 
         report_file = tmp_path / "report.html"
-        report_file.write_text(report)
+        report_file.write_text(report, encoding="utf-8")
         print(report_file)
         webbrowser.open(report_file.as_uri())
 

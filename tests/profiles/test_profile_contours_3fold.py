@@ -8,28 +8,27 @@ from shapely.geometry import LineString
 
 def test_plot_profile_contact_contours():
     ip = pr.Profile.round(
-        diameter=30e-3,
+        diameter=55e-3,
         temperature=1200 + 273.15,
+        strain=0,
         material=["C45", "steel"],
+        flow_stress=100e6,
         length=1,
-        flow_stress=100e6
     )
 
-    rp = pr.RollPass(
+    rp = pr.ThreeRollPass(
         label="Oval I",
         roll=pr.Roll(
             groove=pr.CircularOvalGroove(
                 depth=8e-3,
                 r1=6e-3,
                 r2=40e-3,
-                rel_pad=0.2
+                pad_angle=30
             ),
             nominal_radius=160e-3,
-            rotational_frequency=1,
-            neutral_point=-20e-3
+            rotational_frequency=1
         ),
         gap=2e-3,
-
     )
 
     rp.solve(ip)
