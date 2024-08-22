@@ -27,7 +27,7 @@ def contact_length_square_oval(self: RollPass.Roll):
 @RollPass.Roll.contact_area
 def contact_area(self: RollPass.Roll):
     if "3fold" in self.roll_pass.classifiers:
-        in_profile_local_width = self.roll_pass.in_profile.local_width(-self.roll_pass.in_profile.height / 2 * 0.999)
+        in_profile_local_width = self.roll_pass.in_profile.local_width(-self.roll_pass.in_profile.height / 2)
         return (in_profile_local_width + self.roll_pass.out_profile.contact_lines[1].width) / 2 * self.contact_length
     else:
         return (self.roll_pass.in_profile.width + self.roll_pass.out_profile.width) / 2 * self.contact_length
