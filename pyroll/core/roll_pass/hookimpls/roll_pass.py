@@ -1,10 +1,11 @@
 import math
 
 import numpy as np
-from shapely import MultiPolygon, Polygon, difference, clip_by_rect
+from shapely import Polygon, difference, clip_by_rect
 
-from ..roll_pass import RollPass
+from ..base import BaseRollPass
 from ..three_roll_pass import ThreeRollPass
+from ..roll_pass import RollPass
 from ...rotator import Rotator
 from ...grooves import GenericElongationGroove
 
@@ -12,13 +13,13 @@ from ...config import Config
 from . import helpers
 
 
-@RollPass.rotation
-def auto_rotation(self: RollPass):
+@BaseRollPass.rotation
+def auto_rotation(self: BaseRollPass):
     return Config.ROLL_PASS_AUTO_ROTATION
 
 
-@RollPass.rotation
-def detect_already_rotated(self: RollPass):
+@BaseRollPass.rotation
+def detect_already_rotated(self: BaseRollPass):
     if Config.ROLL_PASS_AUTO_ROTATION and self.parent is not None:
         try:
             prev = self.prev
@@ -26,7 +27,7 @@ def detect_already_rotated(self: RollPass):
             return True
 
         while True:
-            if isinstance(prev, RollPass):
+            if isinstance(prev, BaseRollPass):
                 return True
             if isinstance(prev, Rotator):
                 return False
@@ -36,13 +37,13 @@ def detect_already_rotated(self: RollPass):
                 return True
 
 
-@RollPass.orientation
-def default_orientation(self: RollPass):
+@BaseRollPass.orientation
+def default_orientation(self: BaseRollPass):
     return 0
 
 
-@RollPass.roll_force
-def roll_force(self: RollPass):
+@BaseRollPass.roll_force
+def roll_force(self: BaseRollPass):
     return (self.in_profile.flow_stress + 2 * self.out_profile.flow_stress) / 3 * self.roll.contact_area
 
 
@@ -52,7 +53,7 @@ def usable_width(self: RollPass):
 
 
 @ThreeRollPass.usable_width
-def usable_width3(self: RollPass):
+def usable_width3(self: BaseRollPass):
     return 2 / 3 * np.sqrt(3) * (self.roll.groove.usable_width + self.gap / 2)
 
 
@@ -142,14 +143,14 @@ def height3(self):
     return abs(2 * usable_contour.bounds[1])
 
 
-@RollPass.volume
-def volume(self: RollPass):
+@BaseRollPass.volume
+def volume(self: BaseRollPass):
     return (self.in_profile.cross_section.area + 2 * self.out_profile.cross_section.area
             ) / 3 * self.length
 
 
-@RollPass.surface_area
-def surface_area(self: RollPass):
+@BaseRollPass.surface_area
+def surface_area(self: BaseRollPass):
     return (self.in_profile.cross_section.perimeter + 2 * self.out_profile.cross_section.perimeter
             ) / 3 * self.length
 
@@ -164,52 +165,52 @@ def contact_area3(self: ThreeRollPass):
     return 3 * self.roll.contact_area
 
 
-@RollPass.velocity
-def velocity(self: RollPass):
+@BaseRollPass.velocity
+def velocity(self: BaseRollPass):
     if self.roll.has_value("neutral_angle"):
         return self.roll.working_velocity * np.cos(self.roll.neutral_angle)
     else:
         return self.roll.rotational_frequency * self.roll.working_radius * 2 * np.pi
 
 
-@RollPass.duration
-def duration(self: RollPass):
+@BaseRollPass.duration
+def duration(self: BaseRollPass):
     return self.length / self.velocity
 
 
-@RollPass.length
-def length(self: RollPass):
+@BaseRollPass.length
+def length(self: BaseRollPass):
     return self.roll.contact_length
 
 
-@RollPass.displaced_cross_section
-def displaced_cross_section(self: RollPass):
+@BaseRollPass.displaced_cross_section
+def displaced_cross_section(self: BaseRollPass):
     return difference(self.in_profile.cross_section, self.usable_cross_section)
 
 
-@RollPass.reappearing_cross_section
-def reappearing_cross_section(self: RollPass):
+@BaseRollPass.reappearing_cross_section
+def reappearing_cross_section(self: BaseRollPass):
     return difference(self.out_profile.cross_section, self.in_profile.cross_section)
 
 
-@RollPass.elongation_efficiency
-def elongation_efficiency(self: RollPass):
+@BaseRollPass.elongation_efficiency
+def elongation_efficiency(self: BaseRollPass):
     return 1 - self.reappearing_cross_section.area / self.displaced_cross_section.area
 
 
-@RollPass.target_filling_ratio(trylast=True)
-def default_target_filling(self: RollPass):
+@BaseRollPass.target_filling_ratio(trylast=True)
+def default_target_filling(self: BaseRollPass):
     return 1
 
 
-@RollPass.target_width
-def target_width_from_target_filling_ratio(self: RollPass):
+@BaseRollPass.target_width
+def target_width_from_target_filling_ratio(self: BaseRollPass):
     if self.has_value("target_filling_ratio"):
         return self.target_filling_ratio * self.usable_width
 
 
-@RollPass.target_filling_ratio
-def target_filling_ratio_from_target_width(self: RollPass):
+@BaseRollPass.target_filling_ratio
+def target_filling_ratio_from_target_width(self: BaseRollPass):
     if self.has_set_or_cached("target_width"):
         return self.target_width / self.usable_width
 
@@ -228,14 +229,14 @@ def target_cross_section_area_from_target_width3(self: ThreeRollPass):
         return target_cross_section.area
 
 
-@RollPass.target_cross_section_area
-def target_cross_section_area_from_target_cross_section_filling_ratio(self: RollPass):
+@BaseRollPass.target_cross_section_area
+def target_cross_section_area_from_target_cross_section_filling_ratio(self: BaseRollPass):
     if self.has_set_or_cached("target_cross_section_filling_ratio"):
         return self.target_cross_section_filling_ratio * self.usable_cross_section.area
 
 
-@RollPass.target_cross_section_filling_ratio
-def target_cross_section_filling_ratio_from_target_cross_section_area(self: RollPass):
+@BaseRollPass.target_cross_section_filling_ratio
+def target_cross_section_filling_ratio_from_target_cross_section_area(self: BaseRollPass):
     if self.has_value("target_cross_section_area"):  # important has_value for computing from target_width
         return self.target_cross_section_area / self.usable_cross_section.area
 
@@ -250,13 +251,13 @@ def roll_power_3(self: ThreeRollPass):
     return 3 * self.roll.roll_power
 
 
-@RollPass.entry_point
-def entry_point(self: RollPass):
+@BaseRollPass.entry_point
+def entry_point(self: BaseRollPass):
     return - self.roll.contact_length
 
 
-@RollPass.entry_angle
-def entry_angle(self: RollPass):
+@BaseRollPass.entry_angle
+def entry_angle(self: BaseRollPass):
     if "square" in self.in_profile.classifiers and "oval" in self.classifiers:
         depth = self.roll.groove.local_depth(self.in_profile.width / 2)
         radius = self.roll.max_radius - depth
@@ -265,13 +266,13 @@ def entry_angle(self: RollPass):
     return np.arcsin(self.entry_point / self.roll.min_radius)
 
 
-@RollPass.exit_point
-def exit_point(self: RollPass):
+@BaseRollPass.exit_point
+def exit_point(self: BaseRollPass):
     return 0
 
 
-@RollPass.exit_angle
-def exit_angle(self: RollPass):
+@BaseRollPass.exit_angle
+def exit_angle(self: BaseRollPass):
     return np.arcsin(self.exit_point / self.roll.working_radius)
 
 
