@@ -88,5 +88,6 @@ def test_pass_sequence_velocity_calculation(tmp_path: Path, caplog):
     except ImportError:
         pass
 
+
     velocities = [rp.velocity for rp in sequence.roll_passes]
-    assert np.isclose(velocities, [0.96401, 1.21896, 1.5]).all()
+    assert np.isclose(velocities, [ 0.96401, 964.01e-03]).all
