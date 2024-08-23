@@ -1,7 +1,7 @@
 import numpy as np
 
 from ..base import BaseRollPass
-from ..roll_pass import RollPass
+from ..two_roll_pass import TwoRollPass
 from ..three_roll_pass import ThreeRollPass
 
 
@@ -12,21 +12,11 @@ def roll_torque(self: BaseRollPass.Roll):
 
 @BaseRollPass.Roll.contact_length
 def contact_length(self: BaseRollPass.Roll):
-    height_change = self.roll_pass.in_profile.height - self.roll_pass.height
-    return np.sqrt(self.min_radius * height_change - height_change ** 2 / 4)
+    return self.roll_pass.exit_point - self.roll_pass.entry_point
 
 
-@BaseRollPass.Roll.contact_length
-def contact_length_square_oval(self: BaseRollPass.Roll):
-    if "square" in self.roll_pass.in_profile.classifiers and "oval" in self.roll_pass.classifiers:
-        depth = self.groove.local_depth(self.roll_pass.in_profile.width / 2)
-        height_change = self.roll_pass.in_profile.height - self.roll_pass.gap - 2 * depth
-        radius = self.max_radius - depth
-        return np.sqrt(radius * height_change - height_change ** 2 / 4)
-
-
-@RollPass.Roll.contact_area
-def contact_area(self: RollPass.Roll):
+@BaseRollPass.Roll.contact_area
+def contact_area(self: TwoRollPass.Roll):
     return (self.roll_pass.in_profile.width + self.roll_pass.out_profile.width) / 2 * self.contact_length
 
 
@@ -60,3 +50,13 @@ def surface_velocity(self: BaseRollPass.Roll):
             return self.roll_pass.velocity / np.cos(self.neutral_angle)
         else:
             return self.roll_pass.velocity / np.cos(self.roll_pass.exit_angle)
+
+
+@BaseRollPass.Roll.entry_angle
+def entry_angle(self: BaseRollPass.Roll):
+    return np.arcsin(self.roll_pass.entry_point / self.working_radius)
+
+
+@BaseRollPass.Roll.exit_angle
+def exit_angle(self: BaseRollPass.Roll):
+    return np.arcsin(self.roll_pass.exit_point / self.working_radius)

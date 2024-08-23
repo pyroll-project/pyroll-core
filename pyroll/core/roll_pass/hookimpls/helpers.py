@@ -1,17 +1,19 @@
 import math
 
 import numpy as np
+import shapely
 from shapely import Polygon, clip_by_rect
 from shapely.affinity import rotate
 
-from ..roll_pass import RollPass
+from ..two_roll_pass import TwoRollPass
 from ..three_roll_pass import ThreeRollPass
 from ...profile.profile import refine_cross_section
 
 
-def out_cross_section(rp: RollPass, width: float) -> Polygon:
+def out_cross_section(rp: TwoRollPass, width: float) -> Polygon:
     poly = Polygon(np.concatenate([cl.coords for cl in rp.contour_lines]))
-    return refine_cross_section(clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf))
+    poly = clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
+    return refine_cross_section(poly)
 
 
 def out_cross_section3(rp: ThreeRollPass, width: float) -> Polygon:
