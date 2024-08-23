@@ -1,22 +1,22 @@
 import numpy as np
-from ..roll_pass import RollPass
+from ..base import BaseRollPass
 
 
-@RollPass.DiskElement.length
-def length(self: RollPass.DiskElement):
+@BaseRollPass.DiskElement.length
+def length(self: BaseRollPass.DiskElement):
     return self.roll_pass.roll.contact_length / self.roll_pass.disk_element_count
 
 
-@RollPass.DiskElement.velocity
-def disk_velocity(self: RollPass.DiskElement):
+@BaseRollPass.DiskElement.velocity
+def disk_velocity(self: BaseRollPass.DiskElement):
     return self.roll_pass.velocity
 
 
-@RollPass.DiskElement.duration
-def disk_duration(self: RollPass.DiskElement):
+@BaseRollPass.DiskElement.duration
+def disk_duration(self: BaseRollPass.DiskElement):
     return self.length / self.velocity
 
 
-@RollPass.DiskElement.Profile.longitudinal_angle
-def longitudinal_angle(self: RollPass.DiskElement):
+@BaseRollPass.DiskElement.Profile.longitudinal_angle
+def longitudinal_angle(self: BaseRollPass.DiskElement.Profile):
     return np.arcsin(self.x / self.roll_pass.roll.working_radius)

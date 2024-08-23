@@ -1,71 +1,68 @@
-import numpy as np
 from shapely.geometry import Polygon
-from shapely.affinity import translate, rotate
-from shapely.ops import linemerge
 
-from ..roll_pass import RollPass
+from ..base import BaseRollPass
 from ..three_roll_pass import ThreeRollPass
 
 from . import helpers
 
 
-@RollPass.InProfile.x
-def entry_point(self: RollPass.InProfile):
+@BaseRollPass.InProfile.x
+def entry_point(self: BaseRollPass.InProfile):
     return -self.roll_pass.roll.contact_length
 
 
-@RollPass.OutProfile.x
-def exit_point(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.x
+def exit_point(self: BaseRollPass.OutProfile):
     return 0
 
 
-@RollPass.InProfile.longitudinal_angle
-def longitudinal_angle(self: RollPass.InProfile):
+@BaseRollPass.InProfile.longitudinal_angle
+def longitudinal_angle(self: BaseRollPass.InProfile):
     return self.roll_pass.entry_angle
 
 
-@RollPass.OutProfile.longitudinal_angle
-def longitudinal_angle(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.longitudinal_angle
+def longitudinal_angle(self: BaseRollPass.OutProfile):
     return self.roll_pass.exit_angle
 
 
-@RollPass.OutProfile.strain
-def strain(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.strain
+def strain(self: BaseRollPass.OutProfile):
     return self.roll_pass.in_profile.strain + self.roll_pass.strain
 
 
-@RollPass.OutProfile.width
-def width(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.width
+def width(self: BaseRollPass.OutProfile):
     return self.roll_pass.usable_width
 
 
-@RollPass.OutProfile.length
-def length(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.length
+def length(self: BaseRollPass.OutProfile):
     return self.roll_pass.elongation * self.roll_pass.in_profile.length
 
 
-@RollPass.OutProfile.filling_ratio
-def filling_ratio(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.filling_ratio
+def filling_ratio(self: BaseRollPass.OutProfile):
     return self.width / self.roll_pass.usable_width
 
 
-@RollPass.OutProfile.cross_section_filling_ratio
-def cross_section_filling_ratio(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.cross_section_filling_ratio
+def cross_section_filling_ratio(self: BaseRollPass.OutProfile):
     return self.cross_section.area / self.roll_pass.usable_cross_section.area
 
 
-@RollPass.OutProfile.filling_error
-def filling_error(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.filling_error
+def filling_error(self: BaseRollPass.OutProfile):
     return self.width / self.roll_pass.target_width - 1
 
 
-@RollPass.OutProfile.cross_section_error
-def cross_section_error(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.cross_section_error
+def cross_section_error(self: BaseRollPass.OutProfile):
     return self.cross_section.area / self.roll_pass.target_cross_section_area - 1
 
 
-@RollPass.OutProfile.cross_section
-def cross_section(self: RollPass.OutProfile) -> Polygon:
+@BaseRollPass.OutProfile.cross_section
+def cross_section(self: BaseRollPass.OutProfile) -> Polygon:
     cs = helpers.out_cross_section(self.roll_pass, self.width)
     if cs.width * 1.01 < self.width:
         raise ValueError(
@@ -86,11 +83,11 @@ def cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
     return cs
 
 
-@RollPass.OutProfile.classifiers
-def classifiers(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.classifiers
+def classifiers(self: BaseRollPass.OutProfile):
     return set(self.roll_pass.classifiers)
 
 
-@RollPass.OutProfile.velocity
-def velocity(self: RollPass.OutProfile):
+@BaseRollPass.OutProfile.velocity
+def velocity(self: BaseRollPass.OutProfile):
     return self.roll_pass.velocity
