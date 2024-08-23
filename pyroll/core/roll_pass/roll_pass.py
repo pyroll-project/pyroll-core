@@ -236,6 +236,13 @@ class RollPass(DiskElementUnit, DeformationUnit):
         class OutProfile(Profile, DiskElementUnit.DiskElement.OutProfile, DeformationUnit.OutProfile):
             """Represents an outgoing profile of a disk element unit."""
 
+    @property
+    def __attrs__(self):
+        return super().__attrs__ | {
+            "contour_lines": self.contour_lines,
+            "classifiers": self.classifiers,
+        }
+
     def _get_oriented_geom(self, geom):
         orientation = self.orientation
 
