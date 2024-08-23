@@ -275,4 +275,11 @@ def exit_angle(self: RollPass):
     return np.arcsin(self.exit_point / self.roll.working_radius)
 
 
+@RollPass.front_tension
+def default_front_tension(self: RollPass):
+    return 0
 
+
+@RollPass.back_tension
+def default_back_tension(self: RollPass):
+    return 0
