@@ -2,6 +2,7 @@ import math
 
 import numpy as np
 from shapely import Polygon, difference, clip_by_rect
+from shapely.ops import linemerge
 
 from ..base import BaseRollPass
 from ..three_roll_pass import ThreeRollPass
@@ -274,6 +275,12 @@ def exit_point(self: BaseRollPass):
 @BaseRollPass.exit_angle
 def exit_angle(self: BaseRollPass):
     return np.arcsin(self.exit_point / self.roll.working_radius)
+
+
+@BaseRollPass.Profile.contact_lines
+def contact_contour_lines(self: BaseRollPass.Profile):
+    rp = self.roll_pass
+    return [linemerge(cl.intersection(self.cross_section.exterior.buffer(1e-9))) for cl in rp.contour_lines]
 
 
 @RollPass.front_tension

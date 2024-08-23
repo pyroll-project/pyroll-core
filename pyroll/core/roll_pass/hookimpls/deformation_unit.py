@@ -91,28 +91,6 @@ def zener_holomon_parameter(self: DeformationUnit):
     ))
 
 
-@DeformationUnit.Profile.contact_lines
-def contact_contour_lines(self: DeformationUnit.Profile):
-    if isinstance(self.unit, RollPass):
-        rp = self.unit
-        tolerance = 1e-9
-
-        if "3fold" in self.classifiers:
-            left_contact_contour = rp.contour_lines[0].intersection(self.cross_section.exterior.buffer(tolerance))
-            lower_contact_contour = rp.contour_lines[1].intersection(self.cross_section.exterior.buffer(tolerance))
-            right_contact_contour = rp.contour_lines[2].intersection(self.cross_section.exterior.buffer(tolerance))
-
-            return [left_contact_contour, lower_contact_contour, right_contact_contour]
-
-        else:
-            upper_contact_contour = rp.contour_lines[0].intersection(self.cross_section.exterior.buffer(tolerance))
-            lower_contact_contour = rp.contour_lines[1].intersection(self.cross_section.exterior.buffer(tolerance))
-
-            return [upper_contact_contour, lower_contact_contour]
-    else:
-        return None
-
-
 @DeformationUnit.Profile.contact_angles
 def contact_contour_angles(self: DeformationUnit.Profile):
     def calculate_angles(contour_line: LineString):
