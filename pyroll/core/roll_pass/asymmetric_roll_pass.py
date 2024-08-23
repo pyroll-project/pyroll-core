@@ -8,19 +8,23 @@ from ..hooks import Hook
 from ..roll import Roll as BaseRoll
 
 
-class RollPass(BaseRollPass):
+class AsymmetricRollPass(BaseRollPass):
     """Represents a symmetric roll pass with equal upper and lower working roll."""
 
     def __init__(
             self,
-            roll: BaseRoll,
+            upper_roll: BaseRoll,
+            lower_roll: BaseRoll,
             label: str = "",
             **kwargs
     ):
         super().__init__(label, **kwargs)
 
-        self.roll = self.Roll(roll, self)
-        """The working roll of this pass (equal upper and lower)."""
+        self.upper_roll = self.Roll(upper_roll, self)
+        """The upper working roll of this pass."""
+
+        self.lower_roll = self.Roll(lower_roll, self)
+        """The upper working roll of this pass."""
 
 
     @property

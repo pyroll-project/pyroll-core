@@ -6,12 +6,24 @@ from shapely.geometry import LineString
 
 from ..hooks import Hook
 from .base import BaseRollPass
+from ..roll import Roll as BaseRoll
 
 class ThreeRollPass(BaseRollPass):
     """Represents a roll pass with three working rolls and 3-fold symmetry."""
 
     inscribed_circle_diameter = Hook[float]()
     """Diameter of inscribed circle between roll barrels as alternative to roll gap definition."""
+
+    def __init__(
+            self,
+            roll: BaseRoll,
+            label: str = "",
+            **kwargs
+    ):
+        super().__init__(label, **kwargs)
+
+        self.roll = self.Roll(roll, self)
+        """The working roll of this pass (all three equal)."""
 
     @property
     def contour_lines(self) -> List[LineString]:

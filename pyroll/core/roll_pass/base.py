@@ -101,7 +101,6 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
 
     def __init__(
             self,
-            roll: BaseRoll,
             label: str = "",
             **kwargs
     ):
@@ -112,9 +111,6 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
         """
 
         super().__init__(label=label, **kwargs)
-
-        self.roll = self.Roll(roll, self)
-        """The working roll of this pass (equal upper and lower)."""
 
         self._contour_lines = None
 
