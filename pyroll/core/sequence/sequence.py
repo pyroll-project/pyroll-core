@@ -1,5 +1,3 @@
-import numpy as np
-
 from collections.abc import Sequence
 from typing import overload, List, cast
 
@@ -120,42 +118,4 @@ class PassSequence(Unit, Sequence[Unit]):
         }
 
     def _ipython_key_completions_(self):
-        return [u.label for u in self._subunits]  #
-
-    def solve_velocities(self, in_profile: Profile, final_speed: float, final_cross_section: float):
-        """Solve method, that calculates all velocities of the roll pass units of the sequence."""
-
-        def calculate_velocities_array(velocities: np.ndarray[float], cross_sections_areas: np.ndarray[float]):
-            for i in range(len(cross_sections_areas) - 2, -1, -1):
-                velocities[i] = velocities[i + 1] * cross_sections_areas[i + 1] / cross_sections_areas[i]
-
-        def set_velocities_to_roll_passes(roll_passes: List[RollPass], velocities: np.ndarray[float]):
-            for roll_pass, velocity in zip(roll_passes, velocities):
-                roll_pass.velocity = velocity
-
-        usable_cross_section_areas = np.asarray([roll_pass.usable_cross_section.area for roll_pass in self.roll_passes])
-        initial_velocities = np.zeros_like(usable_cross_section_areas, dtype=float)
-
-        initial_velocities[-1] = final_speed
-        usable_cross_section_areas[-1] = final_cross_section
-
-        calculate_velocities_array(velocities=initial_velocities, cross_sections_areas=usable_cross_section_areas)
-        set_velocities_to_roll_passes(roll_passes=self.roll_passes, velocities=initial_velocities)
-
-        self.solve(in_profile)
-
-        for i in range(self.max_iteration_count):
-
-            prior_velocities = np.asarray([roll_pass.velocity for roll_pass in self.roll_passes])
-            current_velocities = prior_velocities.copy()
-            profile_areas = [roll_pass.out_profile.cross_section.area for roll_pass in self.roll_passes]
-
-            calculate_velocities_array(velocities=current_velocities, cross_sections_areas=profile_areas)
-            set_velocities_to_roll_passes(roll_passes=self.roll_passes, velocities=current_velocities)
-
-            self.solve(in_profile)
-
-            difference = np.abs(prior_velocities - current_velocities)
-
-            if np.all(difference < 0.01):
-                break
+        return [u.label for u in self._subunits]
