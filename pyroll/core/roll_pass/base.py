@@ -112,6 +112,12 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
 
         self._contour_lines = None
 
+        self.given_in_profile: BaseProfile | None = None
+        """The incoming profile as was given to the ``solve`` method."""
+
+        self.rotated_in_profile: BaseProfile | None = None
+        """The incoming profile after rotation."""
+
     @property
     @abstractmethod
     def contour_lines(self):
@@ -131,6 +137,8 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
         return list(self._subunits)
 
     def init_solve(self, in_profile: BaseProfile):
+        self.given_in_profile = in_profile
+
         if self.rotation:
             rotator = Rotator(
                 # make True determining from hook functions
@@ -139,14 +147,15 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
                 duration=0, length=0, parent=self
             )
             rotator.solve(in_profile)
-            in_profile = rotator.out_profile
+            self.rotated_in_profile = rotator.out_profile
+        else:
+            self.rotated_in_profile = in_profile
 
-        super().init_solve(in_profile)
+        super().init_solve(self.rotated_in_profile)
         self.out_profile.cross_section = self.usable_cross_section
 
     def reevaluate_cache(self):
         super().reevaluate_cache()
-        self.roll.reevaluate_cache()
         self._contour_lines = None
 
     class Profile(DiskElementUnit.Profile, DeformationUnit.Profile):
