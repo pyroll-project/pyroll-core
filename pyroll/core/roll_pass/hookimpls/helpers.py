@@ -6,10 +6,11 @@ from shapely.affinity import rotate
 
 from ..two_roll_pass import TwoRollPass
 from ..three_roll_pass import ThreeRollPass
+from ..asymmetric_two_roll_pass import AsymmetricTwoRollPass
 from ...profile.profile import refine_cross_section
 
 
-def out_cross_section(rp: TwoRollPass, width: float) -> Polygon:
+def out_cross_section(rp: TwoRollPass | AsymmetricTwoRollPass, width: float) -> Polygon:
     poly = Polygon(np.concatenate([cl.coords for cl in rp.contour_lines.geoms]))
     poly = clip_by_rect(poly, -width / 2, -math.inf, width / 2, math.inf)
     return refine_cross_section(poly)
