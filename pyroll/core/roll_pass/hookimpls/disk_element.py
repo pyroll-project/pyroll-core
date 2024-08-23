@@ -18,5 +18,5 @@ def disk_duration(self: BaseRollPass.DiskElement):
 
 
 @BaseRollPass.DiskElement.Profile.longitudinal_angle
-def longitudinal_angle(self: BaseRollPass.DiskElement):
-    return np.arcsin(self.in_profile.x / self.roll_pass.roll.working_radius)
+def longitudinal_angle(self: BaseRollPass.DiskElement.Profile):
+    return np.arcsin(self.x / self.roll_pass.roll.working_radius)
