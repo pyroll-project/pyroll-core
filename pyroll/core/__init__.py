@@ -25,6 +25,7 @@ root_hooks.extend(
         Unit.OutProfile.strain,
         Unit.OutProfile.length,
         Unit.OutProfile.t,
+        RollPass.strain_rate,
         RollPass.OutProfile.filling_ratio,
         RollPass.OutProfile.cross_section_filling_ratio,
         RollPass.OutProfile.filling_error,
