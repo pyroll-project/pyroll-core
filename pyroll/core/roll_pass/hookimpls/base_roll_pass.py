@@ -1,4 +1,3 @@
-import numpy as np
 from shapely import difference
 from shapely.ops import linemerge
 
@@ -36,11 +35,6 @@ def default_orientation(self: BaseRollPass):
     return 0
 
 
-@BaseRollPass.roll_force
-def roll_force(self: BaseRollPass):
-    return (self.in_profile.flow_stress + 2 * self.out_profile.flow_stress) / 3 * self.roll.contact_area
-
-
 @BaseRollPass.volume
 def volume(self: BaseRollPass):
     return (self.in_profile.cross_section.area + 2 * self.out_profile.cross_section.area
@@ -53,14 +47,6 @@ def surface_area(self: BaseRollPass):
             ) / 3 * self.length
 
 
-@BaseRollPass.velocity
-def velocity(self: BaseRollPass):
-    if self.roll.has_value("neutral_angle"):
-        return self.roll.working_velocity * np.cos(self.roll.neutral_angle)
-    else:
-        return self.roll.rotational_frequency * self.roll.working_radius * 2 * np.pi
-
-
 @BaseRollPass.duration
 def duration(self: BaseRollPass):
     return self.length / self.velocity
@@ -68,7 +54,7 @@ def duration(self: BaseRollPass):
 
 @BaseRollPass.length
 def length(self: BaseRollPass):
-    return self.roll.contact_length
+    return -self.entry_point + self.exit_point
 
 
 @BaseRollPass.displaced_cross_section
@@ -115,32 +101,24 @@ def target_cross_section_filling_ratio_from_target_cross_section_area(self: Base
         return self.target_cross_section_area / self.usable_cross_section.area
 
 
-@BaseRollPass.entry_point
-def entry_point(self: BaseRollPass):
-    return - self.roll.contact_length
-
-
-@BaseRollPass.entry_angle
-def entry_angle(self: BaseRollPass):
-    if "square" in self.in_profile.classifiers and "oval" in self.classifiers:
-        depth = self.roll.groove.local_depth(self.in_profile.width / 2)
-        radius = self.roll.max_radius - depth
-        return np.arcsin(self.entry_point / radius)
-
-    return np.arcsin(self.entry_point / self.roll.min_radius)
-
-
 @BaseRollPass.exit_point
 def exit_point(self: BaseRollPass):
     return 0
-
-
-@BaseRollPass.exit_angle
-def exit_angle(self: BaseRollPass):
-    return np.arcsin(self.exit_point / self.roll.working_radius)
 
 
 @BaseRollPass.Profile.contact_lines
 def contact_contour_lines(self: BaseRollPass.Profile):
     rp = self.roll_pass
     return [linemerge(cl.intersection(self.cross_section.exterior.buffer(1e-9))) for cl in rp.contour_lines]
+
+
+@BaseRollPass.front_tension
+def default_front_tension(self: BaseRollPass):
+    return 0
+
+
+@BaseRollPass.back_tension
+def default_back_tension(self: BaseRollPass):
+    return 0
+
+

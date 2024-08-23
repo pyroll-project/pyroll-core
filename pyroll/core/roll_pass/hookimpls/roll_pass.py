@@ -56,11 +56,29 @@ def roll_power(self: RollPass):
     return 2 * self.roll.roll_power
 
 
-@RollPass.front_tension
-def default_front_tension(self: RollPass):
-    return 0
+@RollPass.entry_point
+def entry_point(self: RollPass):
+    height_change = self.in_profile.height - self.height
+    return np.sqrt(self.roll.min_radius * height_change - height_change ** 2 / 4)
 
 
-@RollPass.back_tension
-def default_back_tension(self: RollPass):
-    return 0
+@RollPass.entry_point
+def entry_point_square_oval(self: RollPass):
+    if "square" in self.in_profile.classifiers and "oval" in self.classifiers:
+        depth = self.roll.groove.local_depth(self.in_profile.width / 2)
+        height_change = self.in_profile.height - self.gap - 2 * depth
+        radius = self.roll.max_radius - depth
+        return np.sqrt(radius * height_change - height_change ** 2 / 4)
+
+
+@RollPass.velocity
+def velocity(self: RollPass):
+    if self.roll.has_value("neutral_angle"):
+        return self.roll.working_velocity * np.cos(self.roll.neutral_angle)
+    else:
+        return self.roll.working_velocity
+
+
+@RollPass.roll_force
+def roll_force(self: RollPass):
+    return (self.in_profile.flow_stress + 2 * self.out_profile.flow_stress) / 3 * self.roll.contact_area

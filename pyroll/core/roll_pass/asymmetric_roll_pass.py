@@ -1,6 +1,6 @@
 from typing import List, cast
 
-from shapely.affinity import translate, rotate
+from shapely.affinity import translate, scale
 from shapely.geometry import LineString
 
 from .base import BaseRollPass
@@ -32,14 +32,17 @@ class AsymmetricRollPass(BaseRollPass):
         if self._contour_lines:
             return self._contour_lines
 
-        upper = translate(self.roll.contour_line, yoff=self.gap / 2)
-        lower = rotate(upper, angle=180, origin=(0, 0))
+        upper = translate(self.upper_roll.contour_line, yoff=self.gap / 2)
+        lower = scale(
+            translate(self.lower_roll.contour_line, yoff=self.gap / 2),
+            xfact=1, yfact=-1, origin=(0, 0)
+        )
 
         self._contour_lines = [upper, lower]
         return self._contour_lines
 
     @property
-    def disk_elements(self) -> List['RollPass.DiskElement']:
+    def disk_elements(self) -> List['AsymmetricRollPass.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -47,9 +50,9 @@ class AsymmetricRollPass(BaseRollPass):
         """Represents a profile in context of a roll pass."""
 
         @property
-        def roll_pass(self) -> 'RollPass':
+        def roll_pass(self) -> 'AsymmetricRollPass':
             """Reference to the roll pass. Alias for ``self.unit``."""
-            return cast(RollPass, self.unit)
+            return cast(AsymmetricRollPass, self.unit)
 
     class InProfile(Profile, BaseRollPass.InProfile):
         """Represents an incoming profile of a roll pass."""
@@ -63,25 +66,25 @@ class AsymmetricRollPass(BaseRollPass):
         """Represents a roll applied in a :py:class:`RollPass`."""
 
         @property
-        def roll_pass(self) -> 'RollPass':
+        def roll_pass(self) -> 'AsymmetricRollPass':
             """Reference to the roll pass."""
-            return cast(RollPass, self._roll_pass())
+            return cast(AsymmetricRollPass, self._roll_pass())
 
     class DiskElement(BaseRollPass.DiskElement):
         """Represents a disk element in a roll pass."""
 
         @property
-        def roll_pass(self) -> 'RollPass':
+        def roll_pass(self) -> 'AsymmetricRollPass':
             """Reference to the roll pass. Alias for ``self.parent``."""
-            return cast(RollPass, self.parent)
+            return cast(AsymmetricRollPass, self.parent)
 
         class Profile(BaseRollPass.DiskElement.Profile):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'RollPass.DiskElement':
+            def disk_element(self) -> 'AsymmetricRollPass.DiskElement':
                 """Reference to the disk element. Alias for ``self.unit``"""
-                return cast(RollPass.DiskElement, self.unit)
+                return cast(AsymmetricRollPass.DiskElement, self.unit)
 
         class InProfile(Profile, BaseRollPass.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""
