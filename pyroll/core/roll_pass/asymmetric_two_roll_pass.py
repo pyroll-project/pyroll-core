@@ -8,7 +8,7 @@ from ..hooks import Hook
 from ..roll import Roll as BaseRoll
 
 
-class AsymmetricRollPass(BaseRollPass):
+class AsymmetricTwoRollPass(BaseRollPass):
     """Represents a symmetric roll pass with equal upper and lower working roll."""
 
     def __init__(
@@ -26,7 +26,6 @@ class AsymmetricRollPass(BaseRollPass):
         self.lower_roll = self.Roll(lower_roll, self)
         """The upper working roll of this pass."""
 
-
     @property
     def contour_lines(self) -> List[LineString]:
         if self._contour_lines:
@@ -42,7 +41,13 @@ class AsymmetricRollPass(BaseRollPass):
         return self._contour_lines
 
     @property
-    def disk_elements(self) -> List['AsymmetricRollPass.DiskElement']:
+    def classifiers(self):
+        """A tuple of keywords to specify the shape type classifiers of this roll pass.
+        Shortcut to ``self.groove.classifiers``."""
+        return set(self.upper_roll.groove.classifiers) | set(self.lower_roll.groove.classifiers) | {"asymmetric"}
+
+    @property
+    def disk_elements(self) -> List['AsymmetricTwoRollPass.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -50,12 +55,14 @@ class AsymmetricRollPass(BaseRollPass):
         """Represents a profile in context of a roll pass."""
 
         @property
-        def roll_pass(self) -> 'AsymmetricRollPass':
+        def roll_pass(self) -> 'AsymmetricTwoRollPass':
             """Reference to the roll pass. Alias for ``self.unit``."""
-            return cast(AsymmetricRollPass, self.unit)
+            return cast(AsymmetricTwoRollPass, self.unit)
 
     class InProfile(Profile, BaseRollPass.InProfile):
         """Represents an incoming profile of a roll pass."""
+
+        vertical_displacement = Hook[float]
 
     class OutProfile(Profile, BaseRollPass.OutProfile):
         """Represents an outgoing profile of a roll pass."""
@@ -66,25 +73,25 @@ class AsymmetricRollPass(BaseRollPass):
         """Represents a roll applied in a :py:class:`RollPass`."""
 
         @property
-        def roll_pass(self) -> 'AsymmetricRollPass':
+        def roll_pass(self) -> 'AsymmetricTwoRollPass':
             """Reference to the roll pass."""
-            return cast(AsymmetricRollPass, self._roll_pass())
+            return cast(AsymmetricTwoRollPass, self._roll_pass())
 
     class DiskElement(BaseRollPass.DiskElement):
         """Represents a disk element in a roll pass."""
 
         @property
-        def roll_pass(self) -> 'AsymmetricRollPass':
+        def roll_pass(self) -> 'AsymmetricTwoRollPass':
             """Reference to the roll pass. Alias for ``self.parent``."""
-            return cast(AsymmetricRollPass, self.parent)
+            return cast(AsymmetricTwoRollPass, self.parent)
 
         class Profile(BaseRollPass.DiskElement.Profile):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'AsymmetricRollPass.DiskElement':
+            def disk_element(self) -> 'AsymmetricTwoRollPass.DiskElement':
                 """Reference to the disk element. Alias for ``self.unit``"""
-                return cast(AsymmetricRollPass.DiskElement, self.unit)
+                return cast(AsymmetricTwoRollPass.DiskElement, self.unit)
 
         class InProfile(Profile, BaseRollPass.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""

@@ -1,10 +1,12 @@
 from .base import BaseRollPass
-from .roll_pass import RollPass
-from .asymmetric_roll_pass import AsymmetricRollPass
+from .two_roll_pass import TwoRollPass
+from .asymmetric_two_roll_pass import AsymmetricTwoRollPass
 from .three_roll_pass import ThreeRollPass
 from .deformation_unit import DeformationUnit
 
 from . import hookimpls
+
+RollPass = TwoRollPass
 
 
 
