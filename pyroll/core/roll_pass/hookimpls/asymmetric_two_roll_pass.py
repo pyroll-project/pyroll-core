@@ -1,4 +1,6 @@
 import numpy as np
+import scipy.optimize
+import shapely.affinity
 from shapely import Polygon
 
 from . import helpers
@@ -61,37 +63,6 @@ def roll_power(self: AsymmetricTwoRollPass):
     return self.upper_roll.roll_power + self.lower_roll.roll_power
 
 
-@AsymmetricTwoRollPass.entry_point
-def entry_point(self: AsymmetricTwoRollPass):
-    height_change = self.in_profile.height - self.height
-    return (
-        np.sqrt(height_change)
-        * np.sqrt(
-            (2 * self.upper_roll.min_radius - height_change)
-            * (2 * self.lower_roll.min_radius - height_change)
-            * (2 * self.upper_roll.min_radius + 2 * self.lower_roll.min_radius - height_change)
-        )
-    ) / (2 * (self.upper_roll.min_radius + self.lower_roll.min_radius - height_change))
-
-
-@AsymmetricTwoRollPass.entry_point
-def entry_point_square_oval(self: AsymmetricTwoRollPass):
-    if "square" in self.in_profile.classifiers and "oval" in self.classifiers:
-        upper_depth = self.upper_roll.groove.local_depth(self.in_profile.width / 2)
-        lower_depth = self.lower_roll.groove.local_depth(self.in_profile.width / 2)
-        height_change = self.in_profile.height - self.gap - upper_depth - lower_depth
-        upper_radius = self.upper_roll.max_radius - upper_depth
-        lower_radius = self.lower_roll.max_radius - lower_depth
-        return (
-                np.sqrt(height_change)
-                * np.sqrt(
-            (2 * upper_radius - height_change)
-            * (2 * lower_radius - height_change)
-            * (2 * upper_radius + 2 * lower_radius - height_change)
-        )
-        ) / (2 * (upper_radius + lower_radius - height_change))
-
-
 @AsymmetricTwoRollPass.velocity
 def velocity(self: AsymmetricTwoRollPass):
     if self.upper_roll.has_value("neutral_angle") and self.lower_roll.has_value("neutral_angle"):
@@ -111,3 +82,59 @@ def roll_force(self: AsymmetricTwoRollPass):
         * (self.upper_roll.contact_area + self.lower_roll.contact_area)
         / 2
     )
+
+
+@AsymmetricTwoRollPass.InProfile.pass_line
+def pass_line(self: AsymmetricTwoRollPass.InProfile) -> tuple[float, float, float]:
+    rp = self.roll_pass
+
+    if not self.has_set("pass_line"):
+        height_change = self.height - rp.height
+        x_guess = -(
+            np.sqrt(height_change)
+            * np.sqrt(
+                (2 * rp.upper_roll.min_radius - height_change)
+                * (2 * rp.lower_roll.min_radius - height_change)
+                * (2 * rp.upper_roll.min_radius + 2 * rp.lower_roll.min_radius - height_change)
+            )
+        ) / (2 * (rp.upper_roll.min_radius + rp.lower_roll.min_radius - height_change))
+        y_guess = 0
+    else:
+        x_guess, y_guess, _ = self.pass_line
+
+    def contact_objective(xy):
+        shifted_cross_section = shapely.affinity.translate(rp.rotated_in_profile.cross_section, yoff=xy[1])
+
+        upper_contour = shapely.geometry.LineString(np.stack([
+            rp.upper_roll.surface_z,
+            rp.upper_roll.surface_interpolation(xy[0], rp.upper_roll.surface_z).squeeze(axis=1)
+        ], axis=1))
+        upper_contour = shapely.affinity.translate(upper_contour,yoff=self.roll_pass.gap / 2)
+        lower_contour = shapely.geometry.LineString(np.stack([
+            rp.lower_roll.surface_z,
+            rp.lower_roll.surface_interpolation(xy[0], rp.lower_roll.surface_z).squeeze(axis=1)
+        ], axis=1))
+        lower_contour = shapely.affinity.scale(shapely.affinity.translate(lower_contour, yoff=self.roll_pass.gap / 2), xfact=1, yfact=-1, origin=(0,0))
+
+        upper_intersection = shapely.intersection(upper_contour, shifted_cross_section)
+        lower_intersection = shapely.intersection(lower_contour, shifted_cross_section)
+
+        upper_value = upper_intersection.length if not upper_intersection.is_empty else shapely.shortest_line(upper_contour, shifted_cross_section).length
+        lower_value = lower_intersection.length if not lower_intersection.is_empty else shapely.shortest_line(lower_contour, shifted_cross_section).length
+
+        return upper_value ** 2 + lower_value ** 2
+
+    sol = scipy.optimize.minimize(contact_objective, (x_guess, y_guess), method="BFGS", options=dict(xrtol=1e-2))
+
+    return sol.x[0], sol.x[1], 0
+
+
+@AsymmetricTwoRollPass.InProfile.cross_section
+def in_cross_section(self:AsymmetricTwoRollPass.InProfile):
+    return shapely.affinity.translate(self.roll_pass.rotated_in_profile.cross_section, xoff=self.pass_line[2], yoff=self.pass_line[1])
+
+
+@AsymmetricTwoRollPass.entry_point
+def entry_point(self: AsymmetricTwoRollPass):
+    return self.in_profile.pass_line[0]
+

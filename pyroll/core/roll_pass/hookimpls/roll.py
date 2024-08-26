@@ -1,7 +1,7 @@
 import numpy as np
 
 from ..base import BaseRollPass
-from ..roll_pass import RollPass
+from ..two_roll_pass import TwoRollPass
 from ..three_roll_pass import ThreeRollPass
 
 
@@ -15,8 +15,8 @@ def contact_length(self: BaseRollPass.Roll):
     return self.roll_pass.exit_point - self.roll_pass.entry_point
 
 
-@RollPass.Roll.contact_area
-def contact_area(self: RollPass.Roll):
+@BaseRollPass.Roll.contact_area
+def contact_area(self: TwoRollPass.Roll):
     return (self.roll_pass.in_profile.width + self.roll_pass.out_profile.width) / 2 * self.contact_length
 
 

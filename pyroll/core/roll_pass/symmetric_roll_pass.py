@@ -37,6 +37,11 @@ class SymmetricRollPass(BaseRollPass, ABC):
 
         return np.concatenate([super_results, roll_results], axis=0)
 
+    def reevaluate_cache(self):
+        super().reevaluate_cache()
+        self.roll.reevaluate_cache()
+        self._contour_lines = None
+
     class Profile(BaseRollPass.Profile):
         """Represents a profile in context of a roll pass."""
 

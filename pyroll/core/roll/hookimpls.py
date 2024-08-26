@@ -51,7 +51,7 @@ def contour_points(self: Roll):
 
 @Roll.surface_x
 def surface_x(self: Roll):
-    padded_contact_angle = np.arcsin(1.1 * self.contact_length / self.min_radius)
+    padded_contact_angle = np.arcsin(1.1 * self.contact_length / self.min_radius) if self.has_set_or_cached("contact_length") else np.pi / 4
     points = np.concatenate([
         np.linspace(0, padded_contact_angle, Config.ROLL_SURFACE_DISCRETIZATION_COUNT, endpoint=False),
         np.linspace(padded_contact_angle, np.pi / 2, Config.ROLL_SURFACE_DISCRETIZATION_COUNT),

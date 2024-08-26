@@ -1,5 +1,6 @@
 from typing import List, cast
 
+import numpy as np
 from shapely.affinity import translate, scale
 from shapely.geometry import LineString
 
@@ -33,7 +34,7 @@ class AsymmetricTwoRollPass(BaseRollPass):
 
         upper = translate(self.upper_roll.contour_line, yoff=self.gap / 2)
         lower = scale(
-            translate(self.lower_roll.contour_line, yoff=self.gap / 2),
+            translate(self.lower_roll.contour_line.reverse(), yoff=self.gap / 2),
             xfact=1, yfact=-1, origin=(0, 0)
         )
 
@@ -51,6 +52,18 @@ class AsymmetricTwoRollPass(BaseRollPass):
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
+    def get_root_hook_results(self):
+        super_results = super().get_root_hook_results()
+        upper_roll_results = self.upper_roll.evaluate_and_set_hooks()
+        lower_roll_results = self.lower_roll.evaluate_and_set_hooks()
+        return np.concatenate([super_results, upper_roll_results, lower_roll_results], axis=0)
+
+    def reevaluate_cache(self):
+        super().reevaluate_cache()
+        self.upper_roll.reevaluate_cache()
+        self.lower_roll.reevaluate_cache()
+        self._contour_lines = None
+
     class Profile(BaseRollPass.Profile):
         """Represents a profile in context of a roll pass."""
 
@@ -62,7 +75,8 @@ class AsymmetricTwoRollPass(BaseRollPass):
     class InProfile(Profile, BaseRollPass.InProfile):
         """Represents an incoming profile of a roll pass."""
 
-        vertical_displacement = Hook[float]
+        pass_line = Hook[tuple[float, float, float]]()
+        """Point (x, y, z) where the incoming profile centroid enters the roll pass."""
 
     class OutProfile(Profile, BaseRollPass.OutProfile):
         """Represents an outgoing profile of a roll pass."""
