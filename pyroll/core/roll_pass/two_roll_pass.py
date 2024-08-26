@@ -1,15 +1,15 @@
 from typing import List, cast
 
+import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString
 
-from .base import BaseRollPass
-from ..hooks import Hook
+from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
 
 
-class RollPass(BaseRollPass):
-    """Represents a symmetric roll pass with equal upper and lower working roll."""
+class TwoRollPass(SymmetricRollPass):
+    """Represents a symmetric two-roll pass with equal upper and lower working roll."""
 
     def __init__(
             self,
@@ -17,11 +17,7 @@ class RollPass(BaseRollPass):
             label: str = "",
             **kwargs
     ):
-        super().__init__(label, **kwargs)
-
-        self.roll = self.Roll(roll, self)
-        """The working roll of this pass (equal upper and lower)."""
-
+        super().__init__(roll, label, **kwargs)
 
     @property
     def contour_lines(self) -> List[LineString]:
@@ -35,52 +31,56 @@ class RollPass(BaseRollPass):
         return self._contour_lines
 
     @property
-    def disk_elements(self) -> List['RollPass.DiskElement']:
+    def disk_elements(self) -> List['TwoRollPass.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
-    class Profile(BaseRollPass.Profile):
+    def get_root_hook_results(self):
+        super_results = super().get_root_hook_results()
+        roll_results = self.roll.evaluate_and_set_hooks()
+
+        return np.concatenate([super_results, roll_results], axis=0)
+
+    class Profile(SymmetricRollPass.Profile):
         """Represents a profile in context of a roll pass."""
 
         @property
-        def roll_pass(self) -> 'RollPass':
+        def roll_pass(self) -> 'TwoRollPass':
             """Reference to the roll pass. Alias for ``self.unit``."""
-            return cast(RollPass, self.unit)
+            return cast(TwoRollPass, self.unit)
 
-    class InProfile(Profile, BaseRollPass.InProfile):
+    class InProfile(Profile, SymmetricRollPass.InProfile):
         """Represents an incoming profile of a roll pass."""
 
-    class OutProfile(Profile, BaseRollPass.OutProfile):
+    class OutProfile(Profile, SymmetricRollPass.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
-        filling_ratio = Hook[float]()
-
-    class Roll(BaseRollPass.Roll):
-        """Represents a roll applied in a :py:class:`RollPass`."""
+    class Roll(SymmetricRollPass.Roll):
+        """Represents a roll applied in a :py:class:`TwoRollPass`."""
 
         @property
-        def roll_pass(self) -> 'RollPass':
+        def roll_pass(self) -> 'TwoRollPass':
             """Reference to the roll pass."""
-            return cast(RollPass, self._roll_pass())
+            return cast(TwoRollPass, self._roll_pass())
 
-    class DiskElement(BaseRollPass.DiskElement):
+    class DiskElement(SymmetricRollPass.DiskElement):
         """Represents a disk element in a roll pass."""
 
         @property
-        def roll_pass(self) -> 'RollPass':
+        def roll_pass(self) -> 'TwoRollPass':
             """Reference to the roll pass. Alias for ``self.parent``."""
-            return cast(RollPass, self.parent)
+            return cast(TwoRollPass, self.parent)
 
-        class Profile(BaseRollPass.DiskElement.Profile):
+        class Profile(SymmetricRollPass.DiskElement.Profile):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'RollPass.DiskElement':
+            def disk_element(self) -> 'TwoRollPass.DiskElement':
                 """Reference to the disk element. Alias for ``self.unit``"""
-                return cast(RollPass.DiskElement, self.unit)
+                return cast(TwoRollPass.DiskElement, self.unit)
 
-        class InProfile(Profile, BaseRollPass.DiskElement.InProfile):
+        class InProfile(Profile, SymmetricRollPass.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""
 
-        class OutProfile(Profile, BaseRollPass.DiskElement.OutProfile):
+        class OutProfile(Profile, SymmetricRollPass.DiskElement.OutProfile):
             """Represents an outgoing profile of a disk element unit."""

@@ -5,10 +5,11 @@ from shapely.affinity import translate, rotate
 from shapely.geometry import LineString
 
 from ..hooks import Hook
-from .base import BaseRollPass
+from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
 
-class ThreeRollPass(BaseRollPass):
+
+class ThreeRollPass(SymmetricRollPass):
     """Represents a roll pass with three working rolls and 3-fold symmetry."""
 
     inscribed_circle_diameter = Hook[float]()
@@ -20,10 +21,7 @@ class ThreeRollPass(BaseRollPass):
             label: str = "",
             **kwargs
     ):
-        super().__init__(label, **kwargs)
-
-        self.roll = self.Roll(roll, self)
-        """The working roll of this pass (all three equal)."""
+        super().__init__(roll, label, **kwargs)
 
     @property
     def contour_lines(self) -> List[LineString]:
@@ -51,7 +49,7 @@ class ThreeRollPass(BaseRollPass):
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
-    class Profile(BaseRollPass.Profile):
+    class Profile(SymmetricRollPass.Profile):
         """Represents a profile in context of a roll pass."""
 
         @property
@@ -59,15 +57,15 @@ class ThreeRollPass(BaseRollPass):
             """Reference to the roll pass. Alias for ``self.unit``."""
             return cast(ThreeRollPass, self.unit)
 
-    class InProfile(Profile, BaseRollPass.InProfile):
+    class InProfile(Profile, SymmetricRollPass.InProfile):
         """Represents an incoming profile of a roll pass."""
 
-    class OutProfile(Profile, BaseRollPass.OutProfile):
+    class OutProfile(Profile, SymmetricRollPass.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
         filling_ratio = Hook[float]()
 
-    class Roll(BaseRollPass.Roll):
+    class Roll(SymmetricRollPass.Roll):
         """Represents a roll applied in a :py:class:`ThreeRollPass`."""
 
         @property
@@ -75,7 +73,7 @@ class ThreeRollPass(BaseRollPass):
             """Reference to the roll pass."""
             return cast(ThreeRollPass, self._roll_pass())
 
-    class DiskElement(BaseRollPass.DiskElement):
+    class DiskElement(SymmetricRollPass.DiskElement):
         """Represents a disk element in a roll pass."""
 
         @property
@@ -83,7 +81,7 @@ class ThreeRollPass(BaseRollPass):
             """Reference to the roll pass. Alias for ``self.parent``."""
             return cast(ThreeRollPass, self.parent)
 
-        class Profile(BaseRollPass.DiskElement.Profile):
+        class Profile(SymmetricRollPass.DiskElement.Profile):
             """Represents a profile in context of a disk element unit."""
 
             @property
@@ -91,8 +89,8 @@ class ThreeRollPass(BaseRollPass):
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(ThreeRollPass.DiskElement, self.unit)
 
-        class InProfile(Profile, BaseRollPass.DiskElement.InProfile):
+        class InProfile(Profile, SymmetricRollPass.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""
 
-        class OutProfile(Profile, BaseRollPass.DiskElement.OutProfile):
+        class OutProfile(Profile, SymmetricRollPass.DiskElement.OutProfile):
             """Represents an outgoing profile of a disk element unit."""

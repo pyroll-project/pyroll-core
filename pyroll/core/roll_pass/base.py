@@ -1,4 +1,5 @@
 import weakref
+from abc import abstractmethod, ABC
 from typing import List, Union, cast
 
 import numpy as np
@@ -13,7 +14,7 @@ from ..rotator import Rotator
 from .deformation_unit import DeformationUnit
 
 
-class BaseRollPass(DiskElementUnit, DeformationUnit):
+class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
     """Represents a roll pass with two symmetric working rolls."""
 
     rotation = Hook[Union[bool, float]]()
@@ -109,15 +110,17 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
         self._contour_lines = None
 
     @property
+    @abstractmethod
     def contour_lines(self):
         """List of line strings bounding the roll pass at the high point."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
+    @abstractmethod
     def classifiers(self):
         """A tuple of keywords to specify the shape type classifiers of this roll pass.
         Shortcut to ``self.groove.classifiers``."""
-        return set(self.roll.groove.classifiers)
+        raise NotImplementedError()
 
     @property
     def disk_elements(self) -> List['BaseRollPass.DiskElement']:
@@ -137,12 +140,6 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
 
         super().init_solve(in_profile)
         self.out_profile.cross_section = self.usable_cross_section
-
-    def get_root_hook_results(self):
-        super_results = super().get_root_hook_results()
-        roll_results = self.roll.evaluate_and_set_hooks()
-
-        return np.concatenate([super_results, roll_results], axis=0)
 
     def reevaluate_cache(self):
         super().reevaluate_cache()
