@@ -55,30 +55,3 @@ def target_cross_section_area_from_target_width(self: TwoRollPass):
 def roll_power(self: TwoRollPass):
     return 2 * self.roll.roll_power
 
-
-@TwoRollPass.entry_point
-def entry_point(self: TwoRollPass):
-    height_change = self.in_profile.height - self.height
-    return np.sqrt(self.roll.min_radius * height_change - height_change ** 2 / 4)
-
-
-@TwoRollPass.entry_point
-def entry_point_square_oval(self: TwoRollPass):
-    if "square" in self.in_profile.classifiers and "oval" in self.classifiers:
-        depth = self.roll.groove.local_depth(self.in_profile.width / 2)
-        height_change = self.in_profile.height - self.gap - 2 * depth
-        radius = self.roll.max_radius - depth
-        return np.sqrt(radius * height_change - height_change ** 2 / 4)
-
-
-@TwoRollPass.velocity
-def velocity(self: TwoRollPass):
-    if self.roll.has_value("neutral_angle"):
-        return self.roll.working_velocity * np.cos(self.roll.neutral_angle)
-    else:
-        return self.roll.working_velocity
-
-
-@TwoRollPass.roll_force
-def roll_force(self: TwoRollPass):
-    return (self.in_profile.flow_stress + 2 * self.out_profile.flow_stress) / 3 * self.roll.contact_area
