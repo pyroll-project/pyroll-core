@@ -3,7 +3,7 @@ from typing import List, Union, cast
 
 import numpy as np
 from shapely.affinity import rotate
-from shapely.geometry import Polygon, MultiPolygon
+from shapely.geometry import Polygon, MultiPolygon, LineString, MultiLineString
 
 from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
@@ -98,6 +98,9 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
 
     location = Hook[float]()
     """Coordinate of the passes high point in rolling direction."""
+
+    technologically_orientated_contour_lines = Hook[MultiLineString]()
+    """Contour line of the roll pass with technologically correct orientation."""
 
     def __init__(
             self,
@@ -236,8 +239,9 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
             "classifiers": self.classifiers,
         }
 
-    def _get_oriented_geom(self, geom):
-        orientation = self.orientation
+    def _get_oriented_geom(self, geom, orientation=None):
+        if orientation is None:
+            orientation = self.orientation
 
         if isinstance(orientation, str):
             if orientation.lower() in ["horizontal", "h", "y"]:
