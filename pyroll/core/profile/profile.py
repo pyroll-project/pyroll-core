@@ -18,6 +18,9 @@ class Profile(HookHost):
     cross_section = Hook[Polygon]()
     """Shape of the profile's cross-section."""
 
+    technologically_orientated_cross_section = Hook[Polygon]()
+    """Shape of the profile's cross-section with technologically correct orientation."""
+
     classifiers = Hook[Set[str]]()
     """Classifiers of the profile's shape's type."""
 
