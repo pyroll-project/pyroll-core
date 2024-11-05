@@ -3,7 +3,7 @@ from typing import List, Union, cast
 
 import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import LineString, Polygon, MultiPolygon
+from shapely.geometry import LineString, Polygon, MultiPolygon, MultiLineString
 
 from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
@@ -239,7 +239,7 @@ class RollPass(DiskElementUnit, DeformationUnit):
     @property
     def __attrs__(self):
         return super().__attrs__ | {
-            "contour_lines": self.contour_lines,
+            "contour_lines": MultiLineString(self.contour_lines),
             "classifiers": self.classifiers,
         }
 
