@@ -280,7 +280,7 @@ def exit_angle(self: BaseRollPass):
 @BaseRollPass.Profile.contact_lines
 def contact_contour_lines(self: BaseRollPass.Profile):
     rp = self.roll_pass
-    return [linemerge(cl.intersection(self.cross_section.exterior.buffer(1e-9))) for cl in rp.contour_lines]
+    return [cl.intersection(self.cross_section.exterior.buffer(1e-9)) for cl in rp.contour_lines]
 
 
 @RollPass.front_tension
