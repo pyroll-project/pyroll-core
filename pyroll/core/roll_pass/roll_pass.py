@@ -99,6 +99,9 @@ class RollPass(DiskElementUnit, DeformationUnit):
     location = Hook[float]()
     """Coordinate of the passes high point in rolling direction."""
 
+    technologically_orientated_contour_lines = Hook[MultiLineString]()
+    """Contour line of the roll pass with technologically correct orientation."""
+
     def __init__(
             self,
             roll: BaseRoll,

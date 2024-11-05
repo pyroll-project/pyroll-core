@@ -1,7 +1,7 @@
 import math
 
 import numpy as np
-from shapely import MultiPolygon, Polygon, difference, clip_by_rect
+from shapely import Polygon, difference, clip_by_rect, MultiLineString
 
 from ..roll_pass import RollPass
 from ..three_roll_pass import ThreeRollPass
@@ -283,3 +283,14 @@ def default_front_tension(self: RollPass):
 @RollPass.back_tension
 def default_back_tension(self: RollPass):
     return 0
+
+
+@RollPass.technologically_orientated_contour_lines
+def technologically_correctly_orientated_contour_lines(self: RollPass):
+    return MultiLineString([self._get_oriented_geom(cl) for cl in self.contour_lines])
+
+
+@RollPass.OutProfile.technologically_orientated_cross_section
+def technologically_correctly_orientated_cross_section(self: RollPass.OutProfile):
+    return self.roll_pass._get_oriented_geom(self.cross_section)
+
