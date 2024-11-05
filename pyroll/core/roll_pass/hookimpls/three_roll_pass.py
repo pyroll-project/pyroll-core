@@ -62,7 +62,7 @@ def gap3_from_icd(self: ThreeRollPass) -> float:
 @ThreeRollPass.height
 def height3(self: ThreeRollPass) -> float:
     usable_contour = clip_by_rect(
-        self.contour_lines[1],
+        self.contour_lines.geoms[1],
         -self.roll.groove.usable_width / 2,
         -math.inf,
         self.roll.groove.usable_width / 2,

@@ -23,7 +23,7 @@ def contact_area(self: TwoRollPass.Roll):
 @ThreeRollPass.Roll.contact_area
 def contact_area3(self: ThreeRollPass.Roll):
     in_profile_local_width = self.roll_pass.in_profile.local_width(-self.roll_pass.in_profile.height / 2)
-    return (in_profile_local_width + self.roll_pass.out_profile.contact_lines[1].width) / 2 * self.contact_length
+    return (in_profile_local_width + self.roll_pass.out_profile.contact_lines.geoms[1].width) / 2 * self.contact_length
 
 
 @BaseRollPass.Roll.center

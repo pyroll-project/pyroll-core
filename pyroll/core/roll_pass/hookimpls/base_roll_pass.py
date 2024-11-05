@@ -108,7 +108,7 @@ def exit_point(self: BaseRollPass):
 @BaseRollPass.Profile.contact_lines
 def contact_contour_lines(self: BaseRollPass.Profile):
     rp = self.roll_pass
-    contact_contur_lines_possible_multilinestring = [cl.intersection(self.cross_section.exterior.buffer(1e-9)) for cl in rp.contour_lines]
+    contact_contur_lines_possible_multilinestring = [cl.intersection(self.cross_section.exterior.buffer(1e-9)) for cl in rp.contour_lines.geoms]
 
     contact_contour_lines_linestring = []
     for ccl in contact_contur_lines_possible_multilinestring:
@@ -118,7 +118,7 @@ def contact_contour_lines(self: BaseRollPass.Profile):
         else:
             contact_contour_lines_linestring.append(ccl)
 
-    return contact_contour_lines_linestring
+    return MultiLineString(contact_contour_lines_linestring)
 
 
 @BaseRollPass.front_tension
@@ -133,7 +133,7 @@ def default_back_tension(self: BaseRollPass):
 
 @BaseRollPass.technologically_orientated_contour_lines
 def technologically_correctly_orientated_contour_lines(self: BaseRollPass):
-    return MultiLineString([self._get_oriented_geom(cl) for cl in self.contour_lines])
+    return MultiLineString([self._get_oriented_geom(cl) for cl in self.contour_lines.geoms])
 
 
 @BaseRollPass.OutProfile.technologically_orientated_cross_section

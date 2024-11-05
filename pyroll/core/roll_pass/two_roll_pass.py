@@ -2,7 +2,7 @@ from typing import List, cast
 
 import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import LineString
+from shapely.geometry import LineString, MultiLineString
 
 from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
@@ -20,14 +20,14 @@ class TwoRollPass(SymmetricRollPass):
         super().__init__(roll, label, **kwargs)
 
     @property
-    def contour_lines(self) -> List[LineString]:
+    def contour_lines(self) -> MultiLineString:
         if self._contour_lines:
             return self._contour_lines
 
         upper = translate(self.roll.contour_line, yoff=self.gap / 2)
         lower = rotate(upper, angle=180, origin=(0, 0))
 
-        self._contour_lines = [upper, lower]
+        self._contour_lines = MultiLineString([upper, lower])
         return self._contour_lines
 
     @property

@@ -99,4 +99,4 @@ def contact_contour_angles(self: DeformationUnit.Profile):
 
         return angles
 
-    return [calculate_angles(line) for line in self.contact_lines]
+    return [calculate_angles(line) for line in self.contact_lines.geoms]
