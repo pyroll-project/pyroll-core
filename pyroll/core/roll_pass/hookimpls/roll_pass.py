@@ -1,9 +1,7 @@
 import math
 
 import numpy as np
-from shapely import Polygon, difference, clip_by_rect, MultiLineString
-from shapely.ops import linemerge
-
+from shapely import Polygon, difference, clip_by_rect, MultiLineString, line_merge
 from ..base import BaseRollPass
 from ..three_roll_pass import ThreeRollPass
 from ..roll_pass import RollPass
@@ -280,7 +278,17 @@ def exit_angle(self: BaseRollPass):
 @BaseRollPass.Profile.contact_lines
 def contact_contour_lines(self: BaseRollPass.Profile):
     rp = self.roll_pass
-    return [linemerge(cl.intersection(self.cross_section.exterior.buffer(1e-9))) for cl in rp.contour_lines]
+    contact_contur_lines_possible_multilinestring = [cl.intersection(self.cross_section.exterior.buffer(1e-9)) for cl in rp.contour_lines]
+
+    contact_contour_lines_linestring = []
+    for ccl in contact_contur_lines_possible_multilinestring:
+        if isinstance(ccl, MultiLineString):
+            merged_ccl = line_merge(ccl)
+            contact_contour_lines_linestring.append(merged_ccl)
+        else:
+            contact_contour_lines_linestring.append(ccl)
+
+    return contact_contour_lines_linestring
 
 
 @RollPass.front_tension
