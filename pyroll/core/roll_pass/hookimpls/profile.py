@@ -18,12 +18,12 @@ def exit_point(self: BaseRollPass.OutProfile):
 
 @BaseRollPass.InProfile.longitudinal_angle
 def longitudinal_angle(self: BaseRollPass.InProfile):
-    return self.roll_pass.entry_angle
+    return self.roll_pass.roll.entry_angle
 
 
 @BaseRollPass.OutProfile.longitudinal_angle
 def longitudinal_angle(self: BaseRollPass.OutProfile):
-    return self.roll_pass.exit_angle
+    return self.roll_pass.roll.exit_angle
 
 
 @BaseRollPass.OutProfile.strain
