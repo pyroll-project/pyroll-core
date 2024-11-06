@@ -1,8 +1,6 @@
 import pyroll.core as pr
 import pytest
 
-from pyroll.core.roll_pass.hookimpls.roll_pass import usable_width
-
 
 @pytest.mark.parametrize(["name", "args", "expected_class"],
     [

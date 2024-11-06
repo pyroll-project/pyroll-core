@@ -1,11 +1,8 @@
 import numpy as np
 
-from shapely.ops import linemerge
 from shapely.geometry import LineString
-from shapely.affinity import translate, rotate
 
 from ..deformation_unit import DeformationUnit
-from ..roll_pass import RollPass
 from ...config import Config
 
 
