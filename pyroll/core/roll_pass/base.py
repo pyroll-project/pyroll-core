@@ -1,4 +1,5 @@
 import weakref
+from abc import abstractmethod, ABC
 from typing import List, Union, cast
 
 import numpy as np
@@ -13,7 +14,7 @@ from ..rotator import Rotator
 from .deformation_unit import DeformationUnit
 
 
-class BaseRollPass(DiskElementUnit, DeformationUnit):
+class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
     """Represents a roll pass with two symmetric working rolls."""
 
     rotation = Hook[Union[bool, float]]()
@@ -63,14 +64,8 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
     entry_point = Hook[float]()
     """Point where the material enters the roll gap."""
 
-    entry_angle = Hook[float]()
-    """Angle at which the material enters the roll gap."""
-
     exit_point = Hook[float]()
     """Point where the material exits the roll gap."""
-
-    exit_angle = Hook[float]()
-    """Angle at which the material exits the roll gap."""
 
     front_tension = Hook[float]()
     """Front tension acting on the current roll pass."""
@@ -104,7 +99,6 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
 
     def __init__(
             self,
-            roll: BaseRoll,
             label: str = "",
             **kwargs
     ):
@@ -116,21 +110,26 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
 
         super().__init__(label=label, **kwargs)
 
-        self.roll = self.Roll(roll, self)
-        """The working roll of this pass (equal upper and lower)."""
-
         self._contour_lines = None
 
-    @property
-    def contour_lines(self):
-        """List of line strings bounding the roll pass at the high point."""
-        raise NotImplementedError
+        self.given_in_profile: BaseProfile | None = None
+        """The incoming profile as was given to the ``solve`` method."""
+
+        self.rotated_in_profile: BaseProfile | None = None
+        """The incoming profile after rotation."""
 
     @property
+    @abstractmethod
+    def contour_lines(self):
+        """List of line strings bounding the roll pass at the high point."""
+        raise NotImplementedError()
+
+    @property
+    @abstractmethod
     def classifiers(self):
         """A tuple of keywords to specify the shape type classifiers of this roll pass.
         Shortcut to ``self.groove.classifiers``."""
-        return set(self.roll.groove.classifiers)
+        raise NotImplementedError()
 
     @property
     def disk_elements(self) -> List['BaseRollPass.DiskElement']:
@@ -138,6 +137,8 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
         return list(self._subunits)
 
     def init_solve(self, in_profile: BaseProfile):
+        self.given_in_profile = in_profile
+
         if self.rotation:
             rotator = Rotator(
                 # make True determining from hook functions
@@ -146,20 +147,15 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
                 duration=0, length=0, parent=self
             )
             rotator.solve(in_profile)
-            in_profile = rotator.out_profile
+            self.rotated_in_profile = rotator.out_profile
+        else:
+            self.rotated_in_profile = in_profile
 
-        super().init_solve(in_profile)
+        super().init_solve(self.rotated_in_profile)
         self.out_profile.cross_section = self.usable_cross_section
-
-    def get_root_hook_results(self):
-        super_results = super().get_root_hook_results()
-        roll_results = self.roll.evaluate_and_set_hooks()
-
-        return np.concatenate([super_results, roll_results], axis=0)
 
     def reevaluate_cache(self):
         super().reevaluate_cache()
-        self.roll.reevaluate_cache()
         self._contour_lines = None
 
     class Profile(DiskElementUnit.Profile, DeformationUnit.Profile):
@@ -199,6 +195,12 @@ class BaseRollPass(DiskElementUnit, DeformationUnit):
             super().__init__(**kwargs)
 
             self._roll_pass = weakref.ref(roll_pass)
+
+        entry_angle = Hook[float]()
+        """Angle at which the material enters the roll gap."""
+
+        exit_angle = Hook[float]()
+        """Angle at which the material exits the roll gap."""
 
         @property
         def roll_pass(self):

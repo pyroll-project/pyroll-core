@@ -4,16 +4,12 @@ import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import LineString
 
-from ..hooks import Hook
 from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
 
 
-class ThreeRollPass(SymmetricRollPass):
-    """Represents a roll pass with three working rolls and 3-fold symmetry."""
-
-    inscribed_circle_diameter = Hook[float]()
-    """Diameter of inscribed circle between roll barrels as alternative to roll gap definition."""
+class TwoRollPass(SymmetricRollPass):
+    """Represents a symmetric two-roll pass with equal upper and lower working roll."""
 
     def __init__(
             self,
@@ -28,34 +24,30 @@ class ThreeRollPass(SymmetricRollPass):
         if self._contour_lines:
             return self._contour_lines
 
-        shift = self.roll.groove.usable_width / 2 / np.sqrt(3) + self.gap / np.sqrt(3)
-        lower = translate(self.roll.contour_line, yoff=shift)
-        lower = LineString(lower.coords[::-1])  # get back coordinate order
-        right = rotate(lower, angle=-60, origin=(0, 0))
-        left = rotate(lower, angle=60, origin=(0, 0))
-        lower = rotate(lower, angle=180, origin=(0, 0))
+        upper = translate(self.roll.contour_line, yoff=self.gap / 2)
+        lower = rotate(upper, angle=180, origin=(0, 0))
 
-        self._contour_lines = [left, lower, right]
+        self._contour_lines = [upper, lower]
         return self._contour_lines
 
     @property
-    def classifiers(self):
-        """A tuple of keywords to specify the shape type classifiers of this roll pass.
-        Shortcut to ``self.groove.classifiers``."""
-        return set(self.roll.groove.classifiers) | {"3fold"}
-
-    @property
-    def disk_elements(self) -> List['ThreeRollPass.DiskElement']:
+    def disk_elements(self) -> List['TwoRollPass.DiskElement']:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
+
+    def get_root_hook_results(self):
+        super_results = super().get_root_hook_results()
+        roll_results = self.roll.evaluate_and_set_hooks()
+
+        return np.concatenate([super_results, roll_results], axis=0)
 
     class Profile(SymmetricRollPass.Profile):
         """Represents a profile in context of a roll pass."""
 
         @property
-        def roll_pass(self) -> 'ThreeRollPass':
+        def roll_pass(self) -> 'TwoRollPass':
             """Reference to the roll pass. Alias for ``self.unit``."""
-            return cast(ThreeRollPass, self.unit)
+            return cast(TwoRollPass, self.unit)
 
     class InProfile(Profile, SymmetricRollPass.InProfile):
         """Represents an incoming profile of a roll pass."""
@@ -63,31 +55,29 @@ class ThreeRollPass(SymmetricRollPass):
     class OutProfile(Profile, SymmetricRollPass.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
-        filling_ratio = Hook[float]()
-
     class Roll(SymmetricRollPass.Roll):
-        """Represents a roll applied in a :py:class:`ThreeRollPass`."""
+        """Represents a roll applied in a :py:class:`TwoRollPass`."""
 
         @property
-        def roll_pass(self) -> 'ThreeRollPass':
+        def roll_pass(self) -> 'TwoRollPass':
             """Reference to the roll pass."""
-            return cast(ThreeRollPass, self._roll_pass())
+            return cast(TwoRollPass, self._roll_pass())
 
     class DiskElement(SymmetricRollPass.DiskElement):
         """Represents a disk element in a roll pass."""
 
         @property
-        def roll_pass(self) -> 'ThreeRollPass':
+        def roll_pass(self) -> 'TwoRollPass':
             """Reference to the roll pass. Alias for ``self.parent``."""
-            return cast(ThreeRollPass, self.parent)
+            return cast(TwoRollPass, self.parent)
 
         class Profile(SymmetricRollPass.DiskElement.Profile):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'ThreeRollPass.DiskElement':
+            def disk_element(self) -> 'TwoRollPass.DiskElement':
                 """Reference to the disk element. Alias for ``self.unit``"""
-                return cast(ThreeRollPass.DiskElement, self.unit)
+                return cast(TwoRollPass.DiskElement, self.unit)
 
         class InProfile(Profile, SymmetricRollPass.DiskElement.InProfile):
             """Represents an incoming profile of a disk element unit."""
