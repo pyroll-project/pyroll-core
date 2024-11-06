@@ -49,7 +49,7 @@ def surface_velocity(self: BaseRollPass.Roll):
         if self.has_value("neutral_angle"):
             return self.roll_pass.velocity / np.cos(self.neutral_angle)
         else:
-            return self.roll_pass.velocity / np.cos(self.roll_pass.exit_angle)
+            return self.roll_pass.velocity / np.cos(self.exit_angle)
 
 
 @BaseRollPass.Roll.entry_angle
