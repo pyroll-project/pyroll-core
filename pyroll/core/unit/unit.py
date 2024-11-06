@@ -141,6 +141,10 @@ class Unit(HookHost):
 
         for pre_processor_factory in self._yield_pre_processors():
             pre_processor = pre_processor_factory(self)
+
+            if pre_processor is None:
+                continue
+
             self.logger.debug(f"Running pre-processor '{pre_processor.label}'.")
             in_profile = pre_processor.solve(in_profile)
 
@@ -224,8 +228,12 @@ class Unit(HookHost):
             }
         )
 
-        for post_processor_factory in self._yield_pre_processors():
+        for post_processor_factory in self._yield_post_processors():
             post_processor = post_processor_factory(self)
+
+            if post_processor is None:
+                continue
+
             self.logger.debug(f"Running post-processor '{post_processor.label}'.")
             out_profile = post_processor.solve(out_profile)
 
