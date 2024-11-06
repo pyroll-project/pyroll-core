@@ -131,3 +131,11 @@ def default_back_tension(self: BaseRollPass):
     return 0
 
 
+@BaseRollPass.technologically_orientated_contour_lines
+def technologically_correctly_orientated_contour_lines(self: BaseRollPass):
+    return MultiLineString([self._get_oriented_geom(cl) for cl in self.contour_lines])
+
+
+@BaseRollPass.OutProfile.technologically_orientated_cross_section
+def technologically_correctly_orientated_cross_section(self: BaseRollPass.OutProfile):
+    return self.roll_pass._get_oriented_geom(self.cross_section, orientation=self.roll_pass.orientation)
