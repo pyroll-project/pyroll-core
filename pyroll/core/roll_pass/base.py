@@ -131,16 +131,6 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
         return list(self._subunits)
 
     def init_solve(self, in_profile: BaseProfile):
-        if self.rotation:
-            rotator = Rotator(
-                # make True determining from hook functions
-                rotation=self.rotation if self.rotation is not True else None,
-                label=f"Auto-Rotator for {self}",
-                duration=0, length=0, parent=self
-            )
-            rotator.solve(in_profile)
-            in_profile = rotator.out_profile
-
         super().init_solve(in_profile)
         self.out_profile.cross_section = self.usable_cross_section
 
@@ -371,3 +361,15 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
             show_in_legend = False
 
         return fig
+
+
+def rotator_factory(roll_pass: BaseRollPass):
+    if roll_pass.rotation:
+        return Rotator(
+            # make True determining from hook functions
+            rotation=roll_pass.rotation if roll_pass.rotation is not True else None,
+            label=f"Auto-Rotator for {roll_pass}",
+            duration=0, length=0, parent=roll_pass
+        )
+
+BaseRollPass.pre_processors.append(rotator_factory)
