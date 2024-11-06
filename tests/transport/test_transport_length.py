@@ -71,9 +71,9 @@ def test_transport_length_from_roll_pass_positions_with_shadow():
         pr.RollPass(
             roll=pr.Roll(
                 groove=None,
-                contact_length=10,
             ),
-            location=100
+            location=100,
+            entry_point=-10
         ),
         pr.Transport(length=5),
         pr.Transport(label="transport"),
@@ -81,9 +81,9 @@ def test_transport_length_from_roll_pass_positions_with_shadow():
         pr.RollPass(
             roll=pr.Roll(
                 groove=None,
-                contact_length=20,
             ),
-            location=200
+            location=200,
+            entry_point=-20
         ),
     ])
 
