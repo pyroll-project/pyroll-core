@@ -1,6 +1,6 @@
 import copy
 import weakref
-from typing import Optional, Sequence, List, Iterable, SupportsIndex, Union, Callable
+from typing import Optional, Sequence, List, Iterable, SupportsIndex, Union, Callable, Self
 
 import numpy as np
 
@@ -44,6 +44,12 @@ class Unit(HookHost):
 
     energy_consumption = Hook[float]()
     """Energy consumption of this unit per produced mass."""
+
+    pre_processors: list[Callable[[Self], 'Unit']] = []
+    """List of unit factories to use as pre-processors to modify the in-profile given to ``solve``."""
+
+    post_processors: list[Callable[[Self], 'Unit']] = []
+    """List of unit factories to use as post-processors to modify the out-profile returned by ``solve``."""
 
     def __init__(self, label: str = "", parent=None, **kwargs):
         super().__init__()
@@ -132,24 +138,33 @@ class Unit(HookHost):
 
         :param in_profile: the incoming state passed to :py:meth:`solve`
         """
+
+        for pre_processor_factory in self._yield_pre_processors():
+            pre_processor = pre_processor_factory(self)
+            self.logger.debug(f"Running pre-processor '{pre_processor.label}'.")
+            in_profile = pre_processor.solve(in_profile)
+
         self.in_profile = self.InProfile(self, in_profile)
         if not self.out_profile:
             self.out_profile = self.OutProfile(self, in_profile)
 
-    additional_inits: List[Callable] = []
-    """A list of additional init methods for solution procedure which are directly called after init_solve. 
-    Callables shall only take one parameter which is the unit instance (self)."""
-
     def __init_subclass__(cls, **kwargs):
-        cls.additional_inits = []
+        cls.pre_processors = []
+        cls.post_processors = []
 
-    def _execute_additional_inits(self):
+    def _yield_pre_processors(self):
         for s in reversed(type(self).__mro__):
-            inits = getattr(s, "additional_inits", None)
+            inits = getattr(s, "pre_processors", None)
 
             if inits is not None:
-                for init in inits:
-                    init(self)
+                yield from inits
+
+    def _yield_post_processors(self):
+        for s in reversed(type(self).__mro__):
+            inits = getattr(s, "post_processors", None)
+
+            if inits is not None:
+                yield from inits
 
     def get_root_hook_results(self):
         in_profile_results = self.in_profile.evaluate_and_set_hooks()
@@ -179,7 +194,6 @@ class Unit(HookHost):
         self.logger.info(f"Started solving of {self}.")
         start = timer()
         self.init_solve(in_profile)
-        self._execute_additional_inits()
 
         for i in range(1, self.max_iteration_count):
             self.in_profile.reevaluate_cache()
@@ -203,16 +217,22 @@ class Unit(HookHost):
                 f" Continuing anyway."
             )
 
-        end = timer()
-        self.logger.info(f"Solution took {end - start:.3f} s.")
-
-        result = BaseProfile(
+        out_profile = BaseProfile(
             **{
                 k: v for k, v in self.out_profile.__dict__.items()
                 if not k.startswith("_")
             }
         )
-        return result
+
+        for post_processor_factory in self._yield_pre_processors():
+            post_processor = post_processor_factory(self)
+            self.logger.debug(f"Running post-processor '{post_processor.label}'.")
+            out_profile = post_processor.solve(out_profile)
+
+        end = timer()
+        self.logger.info(f"Solution took {end - start:.3f} s.")
+
+        return out_profile
 
     @property
     def parent(self) -> Optional['Unit']:
