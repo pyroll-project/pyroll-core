@@ -54,8 +54,9 @@ def box_diamond_45(self: Rotator):
 
 @Rotator.rotation
 def flat_flat_0(self: Rotator):
-    if "flat" in self.in_profile.classifiers and "flat" in self.next_roll_pass.classifiers:
-        return 0
+    if "3fold" not in self.next_roll_pass.classifiers:
+        if "flat" in self.in_profile.classifiers and "flat" in self.next_roll_pass.classifiers:
+            return 0
 
 
 @Rotator.rotation
