@@ -3,6 +3,7 @@ from abc import abstractmethod, ABC
 from typing import List, Union, cast
 
 import numpy as np
+import shapely
 from shapely.affinity import rotate
 from shapely.geometry import Polygon, MultiPolygon, LineString, MultiLineString
 
@@ -114,7 +115,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
 
     @property
     @abstractmethod
-    def contour_lines(self):
+    def contour_lines(self) -> MultiLineString:
         """List of line strings bounding the roll pass at the high point."""
         raise NotImplementedError()
 
@@ -278,7 +279,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
             )
 
         c = None
-        for cl in self.contour_lines:
+        for cl in self.contour_lines.geoms:
             c = ax.plot(*self._get_oriented_geom(cl).xy, color="k", label="roll surface")
 
         if c is not None:
@@ -348,7 +349,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
             ))
 
         show_in_legend = True
-        for cl in self.contour_lines:
+        for cl in self.contour_lines.geoms:
             coords = self._get_oriented_geom(cl).xy
             fig.add_trace(go.Scatter(
                 x=np.array(coords[0]),

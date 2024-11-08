@@ -64,7 +64,7 @@ def test_contour_lines(g):
     plt.xticks(np.linspace(-50, 50, 11))
     plt.yticks(np.linspace(-50, 50, 11))
 
-    for c in rp.contour_lines:
+    for c in rp.contour_lines.geoms:
         plt.plot(*c.xy)
 
     plt.axvline(-rp.gap / 2, c="k", ls="--", lw=1)
