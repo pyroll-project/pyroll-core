@@ -20,7 +20,7 @@ features = ["plotly", "matplotlib"]
 path = ""
 dependencies = [
     "pytest ~= 7.0",
-    "pyroll-report ~= 2.0",
+    "pyroll-report ~= 3.0",
 ]
 
 [[envs.test.matrix]]
