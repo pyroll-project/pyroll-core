@@ -1,7 +1,10 @@
+import importlib.util
+
 import numpy as np
 from pyroll.core import SplineGroove
 from pathlib import Path
 import matplotlib.pyplot as plt
+import pytest
 
 points = [
     (-2, 0),
@@ -55,6 +58,7 @@ def test_spline_without_usable_width():
     assert "swedish_oval" in g.classifiers
 
 
+@pytest.mark.xfail(not importlib.util.find_spec("ezdxf_shapely"), reason="ezdxf not installed in current environment (extra)", raises=RuntimeError)
 def test_spline_from_dxf():
     script_dir = Path(__file__).resolve().parent
     dxf_file = "swedish_oval_test_groove.dxf"

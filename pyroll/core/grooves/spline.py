@@ -112,8 +112,11 @@ class SplineGroove(GrooveBase):
         :param dxf_query: query to filter the wanted geometries out of the dxf, see the ezdxf docs for details
         """
 
-        from ezdxf import readfile
-        from ezdxf_shapely import convert_all, line_merge
+        try:
+            from ezdxf import readfile
+            from ezdxf_shapely import convert_all, line_merge
+        except ImportError as e:
+            raise RuntimeError("ezdxf-shapely is required for DXF import, you may install it with the dxf extra") from e
         from shapely.affinity import translate
 
         dxf_doc = readfile(filepath)
