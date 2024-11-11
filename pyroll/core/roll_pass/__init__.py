@@ -5,8 +5,3 @@ from .deformation_unit import DeformationUnit
 from .symmetric_roll_pass import SymmetricRollPass
 
 from . import hookimpls
-
-RollPass = TwoRollPass
-
-
-

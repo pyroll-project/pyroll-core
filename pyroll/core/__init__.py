@@ -2,7 +2,8 @@ from . import shapes as _
 
 from .grooves import *
 from .transport import Transport, CoolingPipe
-from .roll_pass import BaseRollPass, RollPass, DeformationUnit, ThreeRollPass, SymmetricRollPass
+from .roll_pass import BaseRollPass, DeformationUnit, ThreeRollPass, SymmetricRollPass, TwoRollPass
+from .roll_pass import TwoRollPass as RollPass
 from .unit import Unit
 from .roll import Roll
 from .profile import *

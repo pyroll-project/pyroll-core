@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from typing import overload, List, cast
 
 from ..unit import Unit
-from ..roll_pass import RollPass
+from ..roll_pass import BaseRollPass
 from ..transport import Transport
 from ..hooks import Hook
 
@@ -104,9 +104,9 @@ class PassSequence(Unit, Sequence[Unit]):
         return list(self._subunits)
 
     @property
-    def roll_passes(self) -> List[RollPass]:
+    def roll_passes(self) -> List[BaseRollPass]:
         """Returns a list of all roll passes in this sequence."""
-        return list(u for u in self._subunits if isinstance(u, RollPass))
+        return list(u for u in self._subunits if isinstance(u, BaseRollPass))
 
     @property
     def transports(self) -> List[Transport]:
@@ -135,7 +135,7 @@ class PassSequence(Unit, Sequence[Unit]):
             for i in range(len(cross_sections_areas) - 2, -1, -1):
                 velocities[i] = velocities[i + 1] * cross_sections_areas[i + 1] / cross_sections_areas[i]
 
-        def set_velocities_to_roll_passes(roll_passes: List[RollPass], velocities: np.ndarray[float]):
+        def set_velocities_to_roll_passes(roll_passes: List[BaseRollPass], velocities: np.ndarray[float]):
             for roll_pass, velocity in zip(roll_passes, velocities):
                 roll_pass.velocity = velocity
 
@@ -179,7 +179,7 @@ class PassSequence(Unit, Sequence[Unit]):
             for i in range(1, len(usable_cross_section_areas)):
                 velocities[i] = velocities[i - 1] * cross_sections_areas[i - 1] / cross_sections_areas[i]
 
-        def set_velocities_to_roll_passes(roll_passes: List[RollPass], velocities: np.ndarray[float]):
+        def set_velocities_to_roll_passes(roll_passes: List[BaseRollPass], velocities: np.ndarray[float]):
             for roll_pass, velocity in zip(roll_passes, velocities):
                 roll_pass.velocity = velocity
 
