@@ -36,8 +36,7 @@ requires-python = ">=3.9"
 dependencies = [
     "numpy ~= 2.0",
     "scipy ~= 1.13",
-    "shapely ~= 2.0",
-    "ezdxf"
+    "shapely >= 2.0.6, <3.0",
 ]
 
 dynamic = ["version"]
@@ -52,6 +51,9 @@ matplotlib = [
 plotly = [
     "plotly ~= 5.18",
     "pandas ~= 2.0",
+]
+dxf = [
+    "ezdxf-shapely ~= 1.0",
 ]
 
 [project.urls]
