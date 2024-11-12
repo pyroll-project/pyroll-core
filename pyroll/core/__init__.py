@@ -13,7 +13,7 @@ from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
 from .config import Config, config
 
-VERSION = "3.0.0post3"
+VERSION = "3.0.0post4"
 
 root_hooks.extend(
     [
