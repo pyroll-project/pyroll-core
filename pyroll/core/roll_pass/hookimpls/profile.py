@@ -88,6 +88,11 @@ def classifiers(self: BaseRollPass.OutProfile):
     return set(self.roll_pass.classifiers)
 
 
+@BaseRollPass.InProfile.velocity
+def in_velocity(self: BaseRollPass.InProfile):
+    return self.roll_pass.out_profile.velocity * self.unit.out_profile.cross_section.area / self.cross_section.area
+
+
 @BaseRollPass.OutProfile.velocity
-def velocity(self: BaseRollPass.OutProfile):
+def out_velocity(self: BaseRollPass.OutProfile):
     return self.roll_pass.velocity

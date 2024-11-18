@@ -25,18 +25,27 @@ def roll_power(self: Roll):
 
 
 @Roll.working_velocity
-def working_velocity(self: Roll):
-    return self.rotational_frequency * self.working_radius * 2 * np.pi
+def working_velocity(self: Roll, cycle):
+    if not cycle:
+        return self.rotational_frequency * self.working_radius * 2 * np.pi
 
 
 @Roll.surface_velocity
-def surface_velocity(self: Roll):
-    return self.rotational_frequency * self.nominal_radius * 2 * np.pi
+def surface_velocity(self: Roll, cycle):
+    if not cycle:
+        return self.rotational_frequency * self.nominal_radius * 2 * np.pi
 
 
 @Roll.rotational_frequency
-def rotational_frequency(self: Roll):
-    return self.surface_velocity / (2 * np.pi * self.nominal_radius)
+def rotational_frequency(self: Roll, cycle):
+    if not cycle:
+        return self.surface_velocity / (2 * np.pi * self.nominal_radius)
+
+
+@Roll.rotational_frequency
+def rotational_frequency(self: Roll, cycle):
+    if not cycle:
+        return self.working_velocity / (2 * np.pi * self.working_radius)
 
 
 @Roll.width

@@ -32,6 +32,7 @@ root_hooks.extend(
         BaseRollPass.OutProfile.filling_error,
         BaseRollPass.OutProfile.cross_section_error,
         BaseRollPass.OutProfile.velocity,
+        BaseRollPass.InProfile.velocity,
         PassSequence.log_elongation,
         BaseRollPass.OutProfile.technologically_orientated_cross_section,
         BaseRollPass.technologically_orientated_contour_lines,
