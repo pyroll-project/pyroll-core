@@ -13,7 +13,7 @@ from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
 from .config import Config, config, PlottingBackend
 
-VERSION = "3.0.0post4"
+VERSION = "3.0.1"
 
 root_hooks.extend(
     [
