@@ -1,8 +1,8 @@
 import html
 from abc import ABC, abstractmethod
 from io import StringIO
-from .config import Config
-from .log import global_logger
+
+from .config import Config, PlottingBackend
 
 
 class ReprMixin(ABC):
@@ -49,11 +49,18 @@ class ReprMixin(ABC):
 
         :returns: either a plotly or matplotlib figure object
         """
+        if Config.PREFERRED_PLOTTING_BACKEND == PlottingBackend.PLOTLY:
+            try:
+                return self.plot_plotly()
+            except (NotImplementedError, ImportError):
+                return self.plot_matplotlib()
+        elif Config.PREFERRED_PLOTTING_BACKEND == PlottingBackend.MATPLOTLIB:
+            try:
+                return self.plot_matplotlib()
+            except (NotImplementedError, ImportError):
+                return self.plot_plotly()
 
-        try:
-            return self.plot_plotly()
-        except (NotImplementedError, ImportError):
-            return self.plot_matplotlib()
+        raise ValueError("Invalid value given for 'Config.PREFERRED_PLOTTING_BACKEND'. Value must be a member of the pyroll.core.PlottingBackend enumeration.")
 
     def __str__(self):
         return type(self).__qualname__
