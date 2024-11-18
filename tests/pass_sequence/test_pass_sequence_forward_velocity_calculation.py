@@ -22,7 +22,7 @@ def width(self: RollPass.OutProfile, cycle):
     if cycle:
         return None
 
-    return self.roll_pass.in_profile.width * self.roll_pass.draught**-0.5
+    return self.roll_pass.in_profile.width * self.roll_pass.draught ** -0.5
 
 
 # noinspection DuplicatedCode
@@ -86,18 +86,18 @@ def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
             root_hooks.remove_last(RollPass.OutProfile.width)
             root_hooks.remove_last(Rotator.OutProfile.width)
 
-    # try:
-    #     import pyroll.report
-    #
-    #     report = pyroll.report.report(sequence)
-    #
-    #     report_file = tmp_path / "report.html"
-    #     report_file.write_text(report, encoding="utf-8")
-    #     print(report_file)
-    #     webbrowser.open(report_file.as_uri())
-    #
-    # except ImportError:
-    #     pass
+    try:
+        import pyroll.report
+
+        report = pyroll.report.report(sequence)
+
+        report_file = tmp_path / "report.html"
+        report_file.write_text(report, encoding="utf-8")
+        print(report_file)
+        webbrowser.open(report_file.as_uri())
+
+    except ImportError:
+        pass
 
     velocities = [rp.velocity for rp in sequence.roll_passes]
     assert np.isclose(velocities[0], 1)
