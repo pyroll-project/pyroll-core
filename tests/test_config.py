@@ -1,13 +1,19 @@
 import os
 
+import pytest
+
 from pyroll.core import config
 from pyroll.core.config import ConfigValue
+from enum import Enum
 
 
 class CustomData:
     def __init__(self, value: int):
         self.value = value
 
+class CustomEnum(Enum):
+    A = 1
+    B = 2
 
 @config("PYROLL_TEST")
 class Config:
@@ -22,6 +28,7 @@ class Config:
     VAR_TUPLE = ("a", "b")
     VAR_STR = "abc"
     VAR_DICT = {}
+    VAR_ENUM = CustomEnum.A
     PARSED = ConfigValue(CustomData(42), parser=lambda v: CustomData(int(v)))
     SPEC_ENV = ConfigValue(42, env_var="P_SPEC_ENV")
 
@@ -70,6 +77,13 @@ def test_config_env_str(monkeypatch):
     monkeypatch.setenv("PYROLL_TEST_VAR_STR", "def")
 
     assert Config.VAR_STR == "def"
+
+
+@pytest.mark.parametrize("input", ["B", "2"])
+def test_config_env_enum(monkeypatch, input):
+    monkeypatch.setenv("PYROLL_TEST_VAR_ENUM", input)
+
+    assert Config.VAR_ENUM == CustomEnum.B
 
 
 def test_config_explicit():
