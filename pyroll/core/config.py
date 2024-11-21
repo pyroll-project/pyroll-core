@@ -1,3 +1,4 @@
+import enum
 import os
 from enum import Enum
 from pathlib import Path
@@ -49,7 +50,7 @@ class ConfigValue:
         value = os.getenv(self.env_var, None)
 
         if value is not None:
-            return self._parse(value)
+            return self.parse(value)
 
         return self.default
 
@@ -59,7 +60,7 @@ class ConfigValue:
     def __delete__(self, instance):
         delattr(instance, "_" + self.name)
 
-    def _parse(self, s: str):
+    def parse(self, s: str):
         """Parse value from string."""
         if self.parser:
             return self.parser(s)
@@ -73,6 +74,11 @@ class ConfigValue:
             return Path(s)
         if self.type is str:
             return s
+        if issubclass(self.type, enum.Enum):
+            try:
+                return self.type(int(s))
+            except ValueError:
+                return self.type[s.upper()]
         if issubclass(self.type, Mapping):
             return self.type((p2.strip() for p2 in p.strip().split("=")) for p in s.split(","))
         if issubclass(self.type, Iterable):
