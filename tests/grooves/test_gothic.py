@@ -23,4 +23,3 @@ def test_gothic():
     assert isclose(rad2deg(g.alpha3), 25.961430240625226)
 
     assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
-

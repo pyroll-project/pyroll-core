@@ -66,8 +66,7 @@ def cross_section(self: BaseRollPass.OutProfile) -> Polygon:
     cs = helpers.out_cross_section(self.roll_pass, self.width)
     if cs.width * 1.01 < self.width:
         raise ValueError(
-            "Profile's width can not be larger than its contour lines."
-            "May be caused by critical overfilling."
+            "Profile's width can not be larger than its contour lines." "May be caused by critical overfilling."
         )
     return cs
 
@@ -77,8 +76,7 @@ def cross_section3(self: ThreeRollPass.OutProfile) -> Polygon:
     cs = helpers.out_cross_section3(self.roll_pass, self.width)
     if (cs.bounds[3] + cs.centroid.y) * 2.02 < self.width:
         raise ValueError(
-            "Profile's width can not be larger than its contour lines."
-            "May be caused by critical overfilling."
+            "Profile's width can not be larger than its contour lines." "May be caused by critical overfilling."
         )
     return cs
 

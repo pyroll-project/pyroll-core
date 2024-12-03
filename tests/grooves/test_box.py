@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot as plt
-from numpy import pi, isclose, rad2deg
+from numpy import isclose, rad2deg
 
 from pyroll.core import BoxGroove
 
@@ -48,10 +48,7 @@ def test_box_uw_even():
 
 def test_box_ground_all():
     with pytest.raises(TypeError):
-        g = BoxGroove(
-            depth=52, r1=15, r2=18, usable_width=185.29, ground_width=157.62,
-            flank_angle=75.101163
-        )
+        BoxGroove(depth=52, r1=15, r2=18, usable_width=185.29, ground_width=157.62, flank_angle=75.101163)
 
 
 def test_box_usable_width_ground_width3():

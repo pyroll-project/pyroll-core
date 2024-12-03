@@ -9,13 +9,13 @@ class SquareGroove(DiamondGroove):
     """Represents a square-shaped groove (diamond with tip angle near 90°)."""
 
     def __init__(
-            self,
-            r1: float,
-            r2: float,
-            usable_width: Optional[float] = None,
-            tip_depth: Optional[float] = None,
-            tip_angle: Optional[float] = None,
-            pad_angle: float = 0
+        self,
+        r1: float,
+        r2: float,
+        usable_width: Optional[float] = None,
+        tip_depth: Optional[float] = None,
+        tip_angle: Optional[float] = None,
+        pad_angle: float = 0,
     ):
         """
         Exactly two of usable_width, tip_depth and tip_angle must be given.

@@ -23,4 +23,3 @@ def test_upset_oval():
     assert isclose(rad2deg(g.alpha3), 85.68728609 / 2)
 
     assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
-

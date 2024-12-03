@@ -10,20 +10,19 @@ class EquivalentRibbedGroove(GenericElongationGroove):
     """Represents a round-shaped groove approximating a ribbed groove using the same mean cross-section area."""
 
     def __init__(
-            self,
-            r1: float,
-            r3: float,
-            rib_distance: float,
-            rib_width: float,
-            rib_angle: float,
-            base_body_height: float,
-            nominal_outer_diameter: float,
-            usable_width: float,
-            depth: float,
-            rib_flank_angle: Optional[float] = None,
-
-            pad_angle: float = 0,
-            **kwargs
+        self,
+        r1: float,
+        r3: float,
+        rib_distance: float,
+        rib_width: float,
+        rib_angle: float,
+        base_body_height: float,
+        nominal_outer_diameter: float,
+        usable_width: float,
+        depth: float,
+        rib_flank_angle: Optional[float] = None,
+        pad_angle: float = 0,
+        **kwargs,
     ):
         """
         All angles are measured in ° (degree).
@@ -49,7 +48,6 @@ class EquivalentRibbedGroove(GenericElongationGroove):
         self.rib_width = rib_width
         self.rib_flank_angle = rib_flank_angle
 
-
         pad_angle = np.deg2rad(pad_angle)
         rib_angle = np.deg2rad(rib_angle)
 
@@ -62,19 +60,28 @@ class EquivalentRibbedGroove(GenericElongationGroove):
         equivalent_circle_segment_height = ribbed_circle_segment_height * width_distance_ratio
 
         base_body_diagonal_width = base_body_height * np.sqrt(2)
-        help_triangle_inner_angle = np.pi - (np.pi / 4 + (np.pi - np.arcsin(((base_body_diagonal_width / 2) *
-                                    np.sin(np.pi / 4)) / nominal_outer_radius)))
-        circle_segment_base_width = base_body_height - (2 * ((nominal_outer_radius *
-                                    np.sin(help_triangle_inner_angle)) / np.sin(np.pi / 4)))
-        r2 = (4 * equivalent_circle_segment_height ** 2 + circle_segment_base_width ** 2) / (
-            8 * equivalent_circle_segment_height)
+        help_triangle_inner_angle = np.pi - (
+            np.pi / 4 + (np.pi - np.arcsin(((base_body_diagonal_width / 2) * np.sin(np.pi / 4)) / nominal_outer_radius))
+        )
+        circle_segment_base_width = base_body_height - (
+            2 * ((nominal_outer_radius * np.sin(help_triangle_inner_angle)) / np.sin(np.pi / 4))
+        )
+        r2 = (4 * equivalent_circle_segment_height**2 + circle_segment_base_width**2) / (
+            8 * equivalent_circle_segment_height
+        )
 
         sol = solve_r123(r1=r1, r2=r2, r3=r3, depth=depth, width=usable_width, pad_angle=pad_angle)
 
         super().__init__(
-            r2=r2, depth=depth, usable_width=usable_width, r1=r1, pad_angle=pad_angle, r3=r3,
-            alpha3=sol["alpha3"], flank_angle=sol["flank_angle"],
-            **kwargs
+            r2=r2,
+            depth=depth,
+            usable_width=usable_width,
+            r1=r1,
+            pad_angle=pad_angle,
+            r3=r3,
+            alpha3=sol["alpha3"],
+            flank_angle=sol["flank_angle"],
+            **kwargs,
         )
 
     @property

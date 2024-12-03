@@ -1,3 +1,3 @@
 from .sequence import PassSequence
 
-from. import hookimpls
+from . import hookimpls

@@ -60,11 +60,17 @@ def contour_points(self: Roll):
 
 @Roll.surface_x
 def surface_x(self: Roll):
-    padded_contact_angle = np.arcsin(1.1 * self.contact_length / self.min_radius) if self.has_set_or_cached("contact_length") else np.pi / 4
-    points = np.concatenate([
-        np.linspace(0, padded_contact_angle, Config.ROLL_SURFACE_DISCRETIZATION_COUNT, endpoint=False),
-        np.linspace(padded_contact_angle, np.pi / 2, Config.ROLL_SURFACE_DISCRETIZATION_COUNT),
-    ])
+    padded_contact_angle = (
+        np.arcsin(1.1 * self.contact_length / self.min_radius)
+        if self.has_set_or_cached("contact_length")
+        else np.pi / 4
+    )
+    points = np.concatenate(
+        [
+            np.linspace(0, padded_contact_angle, Config.ROLL_SURFACE_DISCRETIZATION_COUNT, endpoint=False),
+            np.linspace(padded_contact_angle, np.pi / 2, Config.ROLL_SURFACE_DISCRETIZATION_COUNT),
+        ]
+    )
     return self.min_radius * np.sin(np.concatenate([-points[::-1], points[1:]]))
 
 
@@ -76,7 +82,7 @@ def surface_z(self: Roll):
 @Roll.surface_y
 def surface_y(self: Roll):
     local_radii = self.max_radius - self.contour_points[:, 1]
-    return self.max_radius - np.sqrt(local_radii.reshape(-1, 1) ** 2 - self.surface_x ** 2)
+    return self.max_radius - np.sqrt(local_radii.reshape(-1, 1) ** 2 - self.surface_x**2)
 
 
 @Roll.heat_penetration_number

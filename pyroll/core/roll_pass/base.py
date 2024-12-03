@@ -3,9 +3,8 @@ from abc import abstractmethod, ABC
 from typing import List, Union, cast
 
 import numpy as np
-import shapely
 from shapely.affinity import rotate
-from shapely.geometry import Polygon, MultiPolygon, LineString, MultiLineString
+from shapely.geometry import Polygon, MultiPolygon, MultiLineString
 
 from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
@@ -21,13 +20,13 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
     rotation = Hook[Union[bool, float]]()
     """
     Rotation applied to the incoming profile in ° (degree) before entry in this roll pass.
-    Alternatively, provide a boolean value: false equals 0, 
+    Alternatively, provide a boolean value: false equals 0,
     true means automatic determination from hook functions of ``Rotator.rotation``.
     """
 
     orientation = Hook[Union[int, str]]()
     """
-    Orientation of the roll pass for displaying purposes. 
+    Orientation of the roll pass for displaying purposes.
     Meaning of height and width always refer to standard horizontal orientation anyway.
     Commonly 0 (horizontal) or 90 (vertical) for two-roll passes. Other integer values are supported, too.
     """
@@ -98,11 +97,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
     technologically_orientated_contour_lines = Hook[MultiLineString]()
     """Contour line of the roll pass with technologically correct orientation."""
 
-    def __init__(
-            self,
-            label: str = "",
-            **kwargs
-    ):
+    def __init__(self, label: str = "", **kwargs):
         """
         :param roll: the roll object representing the equal working rolls of the pass
         :param label: label for human identification
@@ -127,7 +122,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
         raise NotImplementedError()
 
     @property
-    def disk_elements(self) -> List['BaseRollPass.DiskElement']:
+    def disk_elements(self) -> List["BaseRollPass.DiskElement"]:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -144,7 +139,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
         """Represents a profile in context of a roll pass."""
 
         @property
-        def roll_pass(self) -> 'BaseRollPass':
+        def roll_pass(self) -> "BaseRollPass":
             """Reference to the roll pass. Alias for ``self.unit``."""
             return cast(BaseRollPass, self.unit)
 
@@ -169,11 +164,8 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
     class Roll(BaseRoll):
         """Represents a roll applied in a :py:class:`RollPass`."""
 
-        def __init__(self, template: BaseRoll, roll_pass: 'BaseRollPass'):
-            kwargs = dict(
-                e for e in template.__dict__.items()
-                if not e[0].startswith("_")
-            )
+        def __init__(self, template: BaseRoll, roll_pass: "BaseRollPass"):
+            kwargs = dict(e for e in template.__dict__.items() if not e[0].startswith("_"))
             super().__init__(**kwargs)
 
             self._roll_pass = weakref.ref(roll_pass)
@@ -193,7 +185,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
         """Represents a disk element in a roll pass."""
 
         @property
-        def roll_pass(self) -> 'BaseRollPass':
+        def roll_pass(self) -> "BaseRollPass":
             """Reference to the roll pass. Alias for ``self.parent``."""
             return cast(BaseRollPass, self.parent)
 
@@ -201,12 +193,12 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'BaseRollPass.DiskElement':
+            def disk_element(self) -> "BaseRollPass.DiskElement":
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(BaseRollPass.DiskElement, self.unit)
 
             @property
-            def roll_pass(self) -> 'BaseRollPass':
+            def roll_pass(self) -> "BaseRollPass":
                 """Reference to the roll pass. Alias for ``self.unit.parent``"""
                 return cast(BaseRollPass, self.unit.parent)
 
@@ -261,21 +253,31 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
         if self.in_profile:
             artists += ax.fill(
                 *self._get_oriented_geom(self.in_profile.cross_section.boundary).xy,
-                alpha=0.5, color="red", label="in profile"
+                alpha=0.5,
+                color="red",
+                label="in profile",
             )
             artists += ax.fill(
                 *self._get_oriented_geom(self.in_profile.equivalent_rectangle.boundary).xy,
-                fill=False, color="red", ls="--", label="in eq. rectangle"
+                fill=False,
+                color="red",
+                ls="--",
+                label="in eq. rectangle",
             )
 
         if self.out_profile:
             artists += ax.fill(
                 *self._get_oriented_geom(self.out_profile.cross_section.boundary).xy,
-                alpha=0.5, color="blue", label="out profile"
+                alpha=0.5,
+                color="blue",
+                label="out profile",
             )
             artists += ax.fill(
                 *self._get_oriented_geom(self.out_profile.equivalent_rectangle.boundary).xy,
-                fill=False, color="blue", ls="--", label="out eq. rectangle"
+                fill=False,
+                color="blue",
+                ls="--",
+                label="out eq. rectangle",
             )
 
         c = None
@@ -287,78 +289,86 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
 
         ncols = len(artists) // 2 + 1
 
-        ax.legend(handles=artists, ncols=ncols, loc='lower center')
-        fig.set_layout_engine('constrained')
+        ax.legend(handles=artists, ncols=ncols, loc="lower center")
+        fig.set_layout_engine("constrained")
 
         return fig
 
     def _plot_plotly_(self):
         import plotly.graph_objects as go
 
-        fig = go.Figure(layout=go.Layout(
-            xaxis=dict(
-                title="z",
-            ),
-            yaxis=dict(
-                title="y",
-                scaleanchor="x",
-                scaleratio=1
-            ),
-            title=f"Roll Pass '{self.label}'" if self.label else None,
-            template="simple_white",
-            width=640,
-            height=480,
-        ))
+        fig = go.Figure(
+            layout=go.Layout(
+                xaxis=dict(
+                    title="z",
+                ),
+                yaxis=dict(title="y", scaleanchor="x", scaleratio=1),
+                title=f"Roll Pass '{self.label}'" if self.label else None,
+                template="simple_white",
+                width=640,
+                height=480,
+            )
+        )
 
         if self.in_profile:
             coords = self._get_oriented_geom(self.in_profile.cross_section.boundary).xy
-            fig.add_trace(go.Scatter(
-                x=np.array(coords[0]),
-                y=np.array(coords[1]),
-                mode="lines",
-                fill="toself",
-                line=dict(color="red"),
-                name="in profile"
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=np.array(coords[0]),
+                    y=np.array(coords[1]),
+                    mode="lines",
+                    fill="toself",
+                    line=dict(color="red"),
+                    name="in profile",
+                )
+            )
             coords = self._get_oriented_geom(self.in_profile.equivalent_rectangle.boundary).xy
-            fig.add_trace(go.Scatter(
-                x=np.array(coords[0]),
-                y=np.array(coords[1]),
-                mode="lines",
-                line=dict(color="red", dash="dash"),
-                name="in eq. rectangle"
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=np.array(coords[0]),
+                    y=np.array(coords[1]),
+                    mode="lines",
+                    line=dict(color="red", dash="dash"),
+                    name="in eq. rectangle",
+                )
+            )
 
         if self.out_profile:
             coords = self._get_oriented_geom(self.out_profile.cross_section.boundary).xy
-            fig.add_trace(go.Scatter(
-                x=np.array(coords[0]),
-                y=np.array(coords[1]),
-                mode="lines",
-                fill="toself",
-                line=dict(color="blue"),
-                name="out profile"
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=np.array(coords[0]),
+                    y=np.array(coords[1]),
+                    mode="lines",
+                    fill="toself",
+                    line=dict(color="blue"),
+                    name="out profile",
+                )
+            )
             coords = self._get_oriented_geom(self.out_profile.equivalent_rectangle.boundary).xy
-            fig.add_trace(go.Scatter(
-                x=np.array(coords[0]),
-                y=np.array(coords[1]),
-                mode="lines",
-                line=dict(color="blue", dash="dash"),
-                name="out eq. rectangle"
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=np.array(coords[0]),
+                    y=np.array(coords[1]),
+                    mode="lines",
+                    line=dict(color="blue", dash="dash"),
+                    name="out eq. rectangle",
+                )
+            )
 
         show_in_legend = True
         for cl in self.contour_lines.geoms:
             coords = self._get_oriented_geom(cl).xy
-            fig.add_trace(go.Scatter(
-                x=np.array(coords[0]),
-                y=np.array(coords[1]),
-                mode="lines",
-                line=dict(color="black"),
-                name="roll surface",
-                showlegend=show_in_legend
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=np.array(coords[0]),
+                    y=np.array(coords[1]),
+                    mode="lines",
+                    line=dict(color="black"),
+                    name="roll surface",
+                    showlegend=show_in_legend,
+                )
+            )
             show_in_legend = False
 
         return fig
@@ -370,7 +380,10 @@ def rotator_factory(roll_pass: BaseRollPass):
             # make True determining from hook functions
             rotation=roll_pass.rotation if roll_pass.rotation is not True else None,
             label=f"Auto-Rotator for {roll_pass}",
-            duration=0, length=0, parent=roll_pass
+            duration=0,
+            length=0,
+            parent=roll_pass,
         )
+
 
 BaseRollPass.pre_processors.append(rotator_factory)

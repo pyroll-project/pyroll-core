@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from numpy import pi, isclose, rad2deg
+from numpy import isclose
 
 from pyroll.core import EquivalentRibbedGroove
 
@@ -18,15 +18,19 @@ def check(g):
 
     assert isclose(g.r2, 24.0753)
 
-
     assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
 
 
 def test_equivalent_ribbed_groove_r2():
     g = EquivalentRibbedGroove(
-        r1=0.2, r3=3.45, rib_distance=8.4, rib_width=1.6, rib_angle=45, base_body_height=11.78,
-        nominal_outer_diameter=14, usable_width=13.6788, depth=5.5091
+        r1=0.2,
+        r3=3.45,
+        rib_distance=8.4,
+        rib_width=1.6,
+        rib_angle=45,
+        base_body_height=11.78,
+        nominal_outer_diameter=14,
+        usable_width=13.6788,
+        depth=5.5091,
     )
     check(g)
-
-

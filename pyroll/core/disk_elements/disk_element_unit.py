@@ -27,12 +27,7 @@ class DiskElementUnit(Unit):
         Use the specialized disk elements of the respective parent unit instead.
         """
 
-        def __init__(
-                self,
-                parent: 'Unit',
-                index: int,
-                **kwargs
-        ):
+        def __init__(self, parent: "Unit", index: int, **kwargs):
             """
             :param label: label for human identification
             :param kwargs: additional hook values as keyword arguments to set explicitly
@@ -44,7 +39,7 @@ class DiskElementUnit(Unit):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'DiskElementUnit.DiskElement':
+            def disk_element(self) -> "DiskElementUnit.DiskElement":
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(DiskElementUnit.DiskElement, self.unit)
 
@@ -55,19 +50,17 @@ class DiskElementUnit(Unit):
             """Represents an outgoing profile of a disk element unit."""
 
     @property
-    def disk_elements(self) -> List['DiskElement']:
+    def disk_elements(self) -> List["DiskElement"]:
         """A list of disk elements used to subdivide this unit."""
         return self._subunits
 
     @property
     def __attrs__(self):
-        return super().__attrs__ | {
-            "disk_elements": self.disk_elements
-        }
+        return super().__attrs__ | {"disk_elements": self.disk_elements}
 
     def init_solve(self, in_profile: BaseProfile):
         super().init_solve(in_profile)
         if not self._subunits:
             self._subunits = self._SubUnitsList(
                 self, [self.DiskElement(self, i) for i in range(self.disk_element_count)]
-                )
+            )

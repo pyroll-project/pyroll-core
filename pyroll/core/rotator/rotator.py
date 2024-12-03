@@ -45,7 +45,7 @@ class Rotator(Unit):
         """Represents a profile in context of a rotator."""
 
         @property
-        def rotator(self) -> 'Rotator':
+        def rotator(self) -> "Rotator":
             """Reference to the rotator. Alias for ``self.unit``."""
             return cast(Rotator, self.unit)
 

@@ -15,12 +15,7 @@ class ThreeRollPass(SymmetricRollPass):
     inscribed_circle_diameter = Hook[float]()
     """Diameter of inscribed circle between roll barrels as alternative to roll gap definition."""
 
-    def __init__(
-            self,
-            roll: BaseRoll,
-            label: str = "",
-            **kwargs
-    ):
+    def __init__(self, roll: BaseRoll, label: str = "", **kwargs):
         super().__init__(roll, label, **kwargs)
 
     @property
@@ -45,7 +40,7 @@ class ThreeRollPass(SymmetricRollPass):
         return set(self.roll.groove.classifiers) | {"3fold"}
 
     @property
-    def disk_elements(self) -> List['ThreeRollPass.DiskElement']:
+    def disk_elements(self) -> List["ThreeRollPass.DiskElement"]:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -53,7 +48,7 @@ class ThreeRollPass(SymmetricRollPass):
         """Represents a profile in context of a roll pass."""
 
         @property
-        def roll_pass(self) -> 'ThreeRollPass':
+        def roll_pass(self) -> "ThreeRollPass":
             """Reference to the roll pass. Alias for ``self.unit``."""
             return cast(ThreeRollPass, self.unit)
 
@@ -69,7 +64,7 @@ class ThreeRollPass(SymmetricRollPass):
         """Represents a roll applied in a :py:class:`ThreeRollPass`."""
 
         @property
-        def roll_pass(self) -> 'ThreeRollPass':
+        def roll_pass(self) -> "ThreeRollPass":
             """Reference to the roll pass."""
             return cast(ThreeRollPass, self._roll_pass())
 
@@ -77,7 +72,7 @@ class ThreeRollPass(SymmetricRollPass):
         """Represents a disk element in a roll pass."""
 
         @property
-        def roll_pass(self) -> 'ThreeRollPass':
+        def roll_pass(self) -> "ThreeRollPass":
             """Reference to the roll pass. Alias for ``self.parent``."""
             return cast(ThreeRollPass, self.parent)
 
@@ -85,7 +80,7 @@ class ThreeRollPass(SymmetricRollPass):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'ThreeRollPass.DiskElement':
+            def disk_element(self) -> "ThreeRollPass.DiskElement":
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(ThreeRollPass.DiskElement, self.unit)
 

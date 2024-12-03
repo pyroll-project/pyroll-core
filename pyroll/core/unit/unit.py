@@ -45,10 +45,10 @@ class Unit(HookHost):
     energy_consumption = Hook[float]()
     """Energy consumption of this unit per produced mass."""
 
-    pre_processors: list[Callable[[Self], 'Unit']] = []
+    pre_processors: list[Callable[[Self], "Unit"]] = []
     """List of unit factories to use as pre-processors to modify the in-profile given to ``solve``."""
 
-    post_processors: list[Callable[[Self], 'Unit']] = []
+    post_processors: list[Callable[[Self], "Unit"]] = []
     """List of unit factories to use as post-processors to modify the out-profile returned by ``solve``."""
 
     def __init__(self, label: str = "", parent=None, **kwargs):
@@ -207,8 +207,7 @@ class Unit(HookHost):
             current_results = self.get_root_hook_results()
 
             if np.all(
-                    np.abs(current_results - self._old_results)
-                    <= np.abs(self._old_results) * self.iteration_precision
+                np.abs(current_results - self._old_results) <= np.abs(self._old_results) * self.iteration_precision
             ):
                 self.logger.info(f"Finished solving of {self} after {i} iterations.")
                 break
@@ -221,12 +220,7 @@ class Unit(HookHost):
                 f" Continuing anyway."
             )
 
-        out_profile = BaseProfile(
-            **{
-                k: v for k, v in self.out_profile.__dict__.items()
-                if not k.startswith("_")
-            }
-        )
+        out_profile = BaseProfile(**{k: v for k, v in self.out_profile.__dict__.items() if not k.startswith("_")})
 
         for post_processor_factory in self._yield_post_processors():
             post_processor = post_processor_factory(self)
@@ -243,14 +237,14 @@ class Unit(HookHost):
         return out_profile
 
     @property
-    def parent(self) -> Optional['Unit']:
+    def parent(self) -> Optional["Unit"]:
         """Reference to the parent unit, if applicable, else None."""
         if self._parent is None:
             return None
         return self._parent()
 
     @parent.setter
-    def parent(self, value: 'Unit'):
+    def parent(self, value: "Unit"):
         """Sets Reference to the parent unit."""
         if value is None:
             self._parent = None
@@ -258,7 +252,7 @@ class Unit(HookHost):
             self._parent = weakref.ref(value)
 
     @property
-    def subunits(self) -> List['Unit']:
+    def subunits(self) -> List["Unit"]:
         """List of the subunits."""
         return self._subunits
 
@@ -279,16 +273,13 @@ class Unit(HookHost):
     class Profile(BaseProfile):
         """Represents a profile in context of a unit."""
 
-        def __init__(self, unit: 'Unit', template: BaseProfile):
-            kwargs = dict(
-                e for e in template.__dict__.items()
-                if not e[0].startswith("_")
-            )
+        def __init__(self, unit: "Unit", template: BaseProfile):
+            kwargs = dict(e for e in template.__dict__.items() if not e[0].startswith("_"))
             self._unit = weakref.ref(unit)
             super().__init__(**kwargs)
 
         @property
-        def unit(self) -> 'Unit':
+        def unit(self) -> "Unit":
             """Reference to the parent unit, if applicable, else None."""
             return self._unit()
 
@@ -307,26 +298,26 @@ class Unit(HookHost):
     class _SubUnitsList(list):
         """Specialized list for holding the units of a pass sequence."""
 
-        def __init__(self, owner: 'Unit', units: Sequence['Unit']):
+        def __init__(self, owner: "Unit", units: Sequence["Unit"]):
             super().__init__(units)
             self._owner = weakref.ref(owner)
             for u in self:
                 u.parent = owner
 
-        def append(self, unit: 'Unit') -> None:
+        def append(self, unit: "Unit") -> None:
             unit.parent = self._owner()
             super().append(unit)
 
-        def extend(self, units: Iterable['Unit']) -> None:
+        def extend(self, units: Iterable["Unit"]) -> None:
             for u in units:
                 u.parent = self._owner()
             super().extend(units)
 
-        def insert(self, i: Union[SupportsIndex, slice], unit: 'Unit') -> None:
+        def insert(self, i: Union[SupportsIndex, slice], unit: "Unit") -> None:
             unit.parent = self._owner()
             super().insert(i, unit)
 
-        def pop(self, i: Union[SupportsIndex, slice] = ...) -> 'Unit':
+        def pop(self, i: Union[SupportsIndex, slice] = ...) -> "Unit":
             unit = super().pop(i)
             unit.parent = None
             return unit
@@ -336,10 +327,10 @@ class Unit(HookHost):
                 u.parent = None
             super().clear()
 
-        def copy(self) -> 'Unit._SubUnitsList':
+        def copy(self) -> "Unit._SubUnitsList":
             return self.__init__(self._owner(), self)
 
-        def __setitem__(self, i: Union[SupportsIndex, slice], value: 'Unit'):
+        def __setitem__(self, i: Union[SupportsIndex, slice], value: "Unit"):
             current = self[i]
             if isinstance(current, list):
                 for u in current:

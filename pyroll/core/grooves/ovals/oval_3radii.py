@@ -7,14 +7,7 @@ class Oval3RadiiGroove(GenericElongationGroove):
     """Represents an oval-shaped groove with 3 main radii."""
 
     def __init__(
-            self,
-            r1: float,
-            r2: float,
-            r3: float,
-            depth: float,
-            usable_width: float,
-            pad_angle: float = 0,
-            **kwargs
+        self, r1: float, r2: float, r3: float, depth: float, usable_width: float, pad_angle: float = 0, **kwargs
     ):
         """
         Widths are always measured at the intersection of the extrapolated ground, face and flanks.
@@ -33,10 +26,15 @@ class Oval3RadiiGroove(GenericElongationGroove):
         sol = solve_r123(r1, r2, r3, depth, usable_width, pad_angle)
 
         super().__init__(
-            usable_width=usable_width, depth=depth,
-            r1=r1, r2=r2, r3=r3,
-            flank_angle=sol["flank_angle"], alpha3=sol["alpha3"], pad_angle=pad_angle,
-            **kwargs
+            usable_width=usable_width,
+            depth=depth,
+            r1=r1,
+            r2=r2,
+            r3=r3,
+            flank_angle=sol["flank_angle"],
+            alpha3=sol["alpha3"],
+            pad_angle=pad_angle,
+            **kwargs,
         )
 
     @property

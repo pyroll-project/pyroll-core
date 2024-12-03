@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot as plt
-from numpy import pi, isclose, rad2deg
+from numpy import isclose, rad2deg
 
 from pyroll.core import CircularOvalGroove
 

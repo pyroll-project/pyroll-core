@@ -68,7 +68,7 @@ def rel_elongation(self: DeformationUnit):
 
 @DeformationUnit.strain
 def strain(self: DeformationUnit):
-    return np.sqrt(2 / 3 * (self.log_elongation ** 2 + self.log_spread ** 2 + self.log_draught ** 2))
+    return np.sqrt(2 / 3 * (self.log_elongation**2 + self.log_spread**2 + self.log_draught**2))
 
 
 @DeformationUnit.strain_rate
@@ -83,9 +83,9 @@ def free_surface_area(self: DeformationUnit):
 
 @DeformationUnit.zener_holomon_parameter
 def zener_holomon_parameter(self: DeformationUnit):
-    return self.strain_rate * np.exp(self.in_profile.deformation_activation_energy / (
-            Config.UNIVERSAL_GAS_CONSTANT * self.in_profile.temperature
-    ))
+    return self.strain_rate * np.exp(
+        self.in_profile.deformation_activation_energy / (Config.UNIVERSAL_GAS_CONSTANT * self.in_profile.temperature)
+    )
 
 
 @DeformationUnit.Profile.contact_angles
