@@ -7,6 +7,8 @@ from shapely.geometry import MultiLineString
 from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
 
+__all__ = ["TwoRollPass"]
+
 
 class TwoRollPass(SymmetricRollPass):
     """Represents a symmetric two-roll pass with equal upper and lower working roll."""

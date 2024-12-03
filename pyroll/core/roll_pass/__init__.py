@@ -5,3 +5,12 @@ from .deformation_unit import DeformationUnit
 from .symmetric_roll_pass import SymmetricRollPass
 
 from . import hookimpls
+
+__all__ = [
+    "BaseRollPass",
+    "TwoRollPass",
+    "ThreeRollPass",
+    "DeformationUnit",
+    "SymmetricRollPass",
+    "hookimpls",
+]

@@ -5,6 +5,8 @@ import numpy as np
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_box_like
 
+__all__ = ["SwedishOvalGroove"]
+
 
 class SwedishOvalGroove(GenericElongationGroove):
     """Represents a hexagonal-shaped groove that is used like an oval groove (swedish oval)."""

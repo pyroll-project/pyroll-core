@@ -8,6 +8,8 @@ from ..hooks import Hook
 from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
 
+__all__ = ["ThreeRollPass"]
+
 
 class ThreeRollPass(SymmetricRollPass):
     """Represents a roll pass with three working rolls and 3-fold symmetry."""

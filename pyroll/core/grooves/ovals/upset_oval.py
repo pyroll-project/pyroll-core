@@ -2,6 +2,8 @@ import numpy as np
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r123
 
+__all__ = ["UpsetOvalGroove"]
+
 
 class UpsetOvalGroove(GenericElongationGroove):
     """Represents an upright oval-shaped groove."""

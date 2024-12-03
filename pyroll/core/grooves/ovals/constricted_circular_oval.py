@@ -3,6 +3,8 @@ import numpy as np
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r1234
 
+__all__ = ["ConstrictedCircularOvalGroove"]
+
 
 class ConstrictedCircularOvalGroove(GenericElongationGroove):
     """Represents an oval-shaped groove with one main radius."""

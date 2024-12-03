@@ -4,6 +4,8 @@ from ..unit import Unit
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 
+__all__ = ["DiskElementUnit"]
+
 
 class DiskElementUnit(Unit):
     """Base class for units that can be divided in disk elements."""

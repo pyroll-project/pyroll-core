@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 from io import StringIO
 from .config import Config
 
+__all__ = ["ReprMixin"]
+
 
 class ReprMixin(ABC):
     """Mixin class providing common functionality for ``__repr__``, ``__str__``,

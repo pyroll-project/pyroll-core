@@ -12,6 +12,8 @@ from .repr import ReprMixin
 
 T = TypeVar("T")
 
+__all__ = ["HookFunction", "HookHost", "Hook", "root_hooks"]
+
 
 class HookFunction:
     """

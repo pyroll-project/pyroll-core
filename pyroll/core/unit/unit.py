@@ -8,6 +8,8 @@ from ..hooks import HookHost, Hook
 from ..profile import Profile as BaseProfile
 from timeit import default_timer as timer
 
+__all__ = ["Unit"]
+
 
 class Unit(HookHost):
     """Base class for units."""

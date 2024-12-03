@@ -5,6 +5,8 @@ from numpy import deg2rad
 
 from ..generic_elongation import GenericElongationGroove
 
+__all__ = ["DiamondGroove"]
+
 
 class DiamondGroove(GenericElongationGroove):
     """Represent a diamond-shaped groove."""

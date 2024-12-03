@@ -6,6 +6,8 @@ from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_box_like
 from .box import BoxGroove
 
+__all__ = ["ConstrictedBoxGroove"]
+
 
 class ConstrictedBoxGroove(BoxGroove):
     """Represents a box-shaped groove with an indented ground."""

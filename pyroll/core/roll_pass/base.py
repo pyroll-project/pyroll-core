@@ -13,6 +13,8 @@ from ..roll import Roll as BaseRoll
 from ..rotator import Rotator
 from .deformation_unit import DeformationUnit
 
+__all__ = ["BaseRollPass"]
+
 
 class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
     """Represents a roll pass with two symmetric working rolls."""
@@ -236,7 +238,6 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
 
         fig: plt.Figure = plt.figure()
         ax: plt.Axes
-        axl: plt.Axes
         ax = fig.subplots()
 
         if self.label:

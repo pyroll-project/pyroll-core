@@ -2,6 +2,8 @@ import logging
 
 LOG_PREFIX = "pyroll.core"
 
+__all__ = ["LOG_PREFIX", "LogMixin"]
+
 
 class LogMixin:
     def __init_subclass__(cls, logger_prefix: str = LOG_PREFIX, **kwargs):

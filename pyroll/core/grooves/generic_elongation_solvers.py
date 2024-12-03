@@ -8,6 +8,8 @@ from scipy.optimize import root_scalar, root, fixed_point
 MIN_ANGLE = 1e-6
 MAX_ANGLE = np.pi / 2 - MIN_ANGLE
 
+__all__ = ["solve_box_like", "solve_r123", "solve_r124", "solve_r1234"]
+
 
 def solve_r124(
     r1: float,

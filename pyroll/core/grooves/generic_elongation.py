@@ -7,6 +7,8 @@ from pyroll.core.grooves import GrooveBase
 from pyroll.core.repr import ReprMixin
 from ..config import Config
 
+__all__ = ["GenericElongationGroove"]
+
 
 class GenericElongationGroove(GrooveBase, ReprMixin):
     """Represents a groove defined by the generic elongation groove geometry."""

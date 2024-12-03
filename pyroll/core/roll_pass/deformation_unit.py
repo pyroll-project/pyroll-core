@@ -5,6 +5,8 @@ from ..hooks import Hook
 from shapely.geometry import MultiLineString
 from typing import List
 
+__all__ = ["DeformationUnit"]
+
 
 class DeformationUnit(Unit):
     strain = Hook[float]()

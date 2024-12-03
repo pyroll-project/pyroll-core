@@ -6,6 +6,8 @@ from typing import Union, Tuple, Iterable, Optional
 
 from pyroll.core.grooves import GrooveBase
 
+__all__ = ["SplineGroove"]
+
 
 class SplineGroove(GrooveBase):
     """Represents a groove defined by a linear spline contour."""
