@@ -2,9 +2,8 @@ import logging
 import webbrowser
 from pathlib import Path
 
-import numpy as np
 
-from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, SquareGroove
+from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence
 
 
 def test_solve_disks(tmp_path: Path, caplog, monkeypatch):
@@ -21,41 +20,35 @@ def test_solve_disks(tmp_path: Path, caplog, monkeypatch):
         length=1,
     )
 
-    sequence = PassSequence([
-        RollPass(
-            label="Oval I",
-            roll=Roll(
-                groove=CircularOvalGroove(
-                    depth=8e-3,
-                    r1=6e-3,
-                    r2=40e-3
+    sequence = PassSequence(
+        [
+            RollPass(
+                label="Oval I",
+                roll=Roll(
+                    groove=CircularOvalGroove(depth=8e-3, r1=6e-3, r2=40e-3),
+                    nominal_radius=160e-3,
+                    rotational_frequency=1,
                 ),
-                nominal_radius=160e-3,
-                rotational_frequency=1
+                gap=2e-3,
+                disk_element_count=10,
             ),
-            gap=2e-3,
-            disk_element_count=10,
-        ),
-        Transport(
-            label="I => II",
-            duration=1,
-            disk_element_count=10,
-        ),
-        RollPass(
-            label="Round II",
-            roll=Roll(
-                groove=RoundGroove(
-                    r1=1e-3,
-                    r2=12.5e-3,
-                    depth=11.5e-3
+            Transport(
+                label="I => II",
+                duration=1,
+                disk_element_count=10,
+            ),
+            RollPass(
+                label="Round II",
+                roll=Roll(
+                    groove=RoundGroove(r1=1e-3, r2=12.5e-3, depth=11.5e-3),
+                    nominal_radius=160e-3,
+                    rotational_frequency=1,
                 ),
-                nominal_radius=160e-3,
-                rotational_frequency=1,
+                gap=2e-3,
+                disk_element_count=10,
             ),
-            gap=2e-3,
-            disk_element_count=10,
-        ),
-    ])
+        ]
+    )
 
     try:
         sequence.solve(in_profile)

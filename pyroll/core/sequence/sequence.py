@@ -43,7 +43,7 @@ class PassSequence(Unit, Sequence[Unit]):
         """Represents a profile in context of a pass sequence unit."""
 
         @property
-        def pass_sequence(self) -> 'PassSequence':
+        def pass_sequence(self) -> "PassSequence":
             """Reference to the pass sequence. Alias for ``self.unit``."""
             return cast(PassSequence, self.unit)
 
@@ -115,9 +115,7 @@ class PassSequence(Unit, Sequence[Unit]):
 
     @property
     def __attrs__(self):
-        return super().__attrs__ | {
-            "units": self.units
-        }
+        return super().__attrs__ | {"units": self.units}
 
     def _ipython_key_completions_(self):
         return [u.label for u in self._subunits]
@@ -151,7 +149,6 @@ class PassSequence(Unit, Sequence[Unit]):
         self.solve(in_profile)
 
         for i in range(self.max_iteration_count):
-
             prior_velocities = np.asarray([roll_pass.velocity for roll_pass in self.roll_passes])
             current_velocities = prior_velocities.copy()
             profile_areas = [roll_pass.out_profile.cross_section.area for roll_pass in self.roll_passes]
@@ -195,7 +192,6 @@ class PassSequence(Unit, Sequence[Unit]):
         self.solve(in_profile)
 
         for i in range(self.max_iteration_count):
-
             prior_velocities = np.asarray([roll_pass.velocity for roll_pass in self.roll_passes])
             current_velocities = prior_velocities.copy()
             profile_areas = [roll_pass.out_profile.cross_section.area for roll_pass in self.roll_passes]

@@ -19,57 +19,44 @@ def test_pass_sequence_velocity_calculation_backward(tmp_path: Path, caplog):
         flow_stress=100e6,
     )
 
-    sequence = PassSequence([
-        RollPass(
-            label="Oval I",
-            roll=Roll(
-                groove=CircularOvalGroove(
-                    depth=8e-3,
-                    r1=6e-3,
-                    r2=40e-3
+    sequence = PassSequence(
+        [
+            RollPass(
+                label="Oval I",
+                roll=Roll(
+                    groove=CircularOvalGroove(depth=8e-3, r1=6e-3, r2=40e-3),
+                    nominal_radius=160e-3,
                 ),
-                nominal_radius=160e-3,
+                gap=2e-3,
             ),
-            gap=2e-3,
-        ),
-        Transport(
-            label="I => II",
-            length=1,
-        ),
-        RollPass(
-            label="Round II",
-            roll=Roll(
-                groove=RoundGroove(
-                    r1=1e-3,
-                    r2=12.5e-3,
-                    depth=11.5e-3
+            Transport(
+                label="I => II",
+                length=1,
+            ),
+            RollPass(
+                label="Round II",
+                roll=Roll(
+                    groove=RoundGroove(r1=1e-3, r2=12.5e-3, depth=11.5e-3),
+                    nominal_radius=160e-3,
                 ),
-                nominal_radius=160e-3,
+                gap=2e-3,
             ),
-            gap=2e-3,
-        ),
-        Transport(
-            label="II => III",
-            length=1
-        ),
-        RollPass(
-            label="Oval III",
-            roll=Roll(
-                groove=CircularOvalGroove(
-                    depth=6e-3,
-                    r1=6e-3,
-                    r2=35e-3
+            Transport(label="II => III", length=1),
+            RollPass(
+                label="Oval III",
+                roll=Roll(
+                    groove=CircularOvalGroove(depth=6e-3, r1=6e-3, r2=35e-3),
+                    nominal_radius=160e-3,
                 ),
-                nominal_radius=160e-3,
+                gap=2e-3,
             ),
-            gap=2e-3,
-        ),
-    ])
+        ]
+    )
 
     try:
-        sequence.solve_velocities_backward(in_profile=in_profile,
-                                           final_speed=1.5,
-                                           final_cross_section_area=sequence[-1].usable_cross_section.area)
+        sequence.solve_velocities_backward(
+            in_profile=in_profile, final_speed=1.5, final_cross_section_area=sequence[-1].usable_cross_section.area
+        )
     finally:
         print("\nLog:")
         print(caplog.text)
@@ -101,52 +88,39 @@ def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
         flow_stress=100e6,
     )
 
-    sequence = PassSequence([
-        RollPass(
-            label="Oval I",
-            roll=Roll(
-                groove=CircularOvalGroove(
-                    depth=8e-3,
-                    r1=6e-3,
-                    r2=40e-3
+    sequence = PassSequence(
+        [
+            RollPass(
+                label="Oval I",
+                roll=Roll(
+                    groove=CircularOvalGroove(depth=8e-3, r1=6e-3, r2=40e-3),
+                    nominal_radius=160e-3,
                 ),
-                nominal_radius=160e-3,
+                gap=2e-3,
             ),
-            gap=2e-3,
-        ),
-        Transport(
-            label="I => II",
-            length=1,
-        ),
-        RollPass(
-            label="Round II",
-            roll=Roll(
-                groove=RoundGroove(
-                    r1=1e-3,
-                    r2=12.5e-3,
-                    depth=11.5e-3
+            Transport(
+                label="I => II",
+                length=1,
+            ),
+            RollPass(
+                label="Round II",
+                roll=Roll(
+                    groove=RoundGroove(r1=1e-3, r2=12.5e-3, depth=11.5e-3),
+                    nominal_radius=160e-3,
                 ),
-                nominal_radius=160e-3,
+                gap=2e-3,
             ),
-            gap=2e-3,
-        ),
-        Transport(
-            label="II => III",
-            length=1
-        ),
-        RollPass(
-            label="Oval III",
-            roll=Roll(
-                groove=CircularOvalGroove(
-                    depth=6e-3,
-                    r1=6e-3,
-                    r2=35e-3
+            Transport(label="II => III", length=1),
+            RollPass(
+                label="Oval III",
+                roll=Roll(
+                    groove=CircularOvalGroove(depth=6e-3, r1=6e-3, r2=35e-3),
+                    nominal_radius=160e-3,
                 ),
-                nominal_radius=160e-3,
+                gap=2e-3,
             ),
-            gap=2e-3,
-        ),
-    ])
+        ]
+    )
 
     try:
         sequence.solve_velocities_forward(in_profile=in_profile, initial_speed=1)

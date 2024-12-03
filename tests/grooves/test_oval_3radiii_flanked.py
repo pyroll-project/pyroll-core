@@ -26,32 +26,28 @@ def check(g):
 
 def test_oval3radii_flanked_fa():
     g = Oval3RadiiFlankedGroove(
-        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-        flank_angle=90 - 16.697244
+        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2, flank_angle=90 - 16.697244
     )
     check(g)
 
 
 def test_oval3radii_flanked_fh():
     g = Oval3RadiiFlankedGroove(
-        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-        flank_height=13.141969810727078
+        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2, flank_height=13.141969810727078
     )
     check(g)
 
 
 def test_oval3radii_flanked_fw():
     g = Oval3RadiiFlankedGroove(
-        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-        flank_width=3.9420908619510726
+        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2, flank_width=3.9420908619510726
     )
     check(g)
 
 
 def test_oval3radii_flanked_fl():
     g = Oval3RadiiFlankedGroove(
-        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-        flank_length=13.720475606550236
+        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2, flank_length=13.720475606550236
     )
     check(g)
 
@@ -77,31 +73,27 @@ def check3(g):
 
 def test_oval3radii_flanked_fa3():
     g = Oval3RadiiFlankedGroove(
-        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-        flank_angle=90 - 16.697244, pad_angle=30
+        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2, flank_angle=90 - 16.697244, pad_angle=30
     )
     check3(g)
 
 
 def test_oval3radii_flanked_fh3():
     g = Oval3RadiiFlankedGroove(
-        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-        flank_height=10.153779034948355, pad_angle=30
+        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2, flank_height=10.153779034948355, pad_angle=30
     )
     check3(g)
 
 
 def test_oval3radii_flanked_fw3():
     g = Oval3RadiiFlankedGroove(
-        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-        flank_width=3.0457473365422203, pad_angle=30
+        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2, flank_width=3.0457473365422203, pad_angle=30
     )
     check3(g)
 
 
 def test_oval3radii_flanked_fl3():
     g = Oval3RadiiFlankedGroove(
-        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2,
-        flank_length=10.600745517585581, pad_angle=30
+        depth=41.1, r1=6, r2=23.5, r3=183, usable_width=74.2506498 * 2, flank_length=10.600745517585581, pad_angle=30
     )
     check3(g)

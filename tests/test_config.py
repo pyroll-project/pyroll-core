@@ -1,5 +1,3 @@
-import os
-
 from pyroll.core import config
 from pyroll.core.config import ConfigValue
 
@@ -115,6 +113,3 @@ def test_env_var_override(monkeypatch):
     assert type(Config).SPEC_ENV.env_var == "P_SPEC_ENV"
     monkeypatch.setenv("P_SPEC_ENV", "21")
     assert Config.SPEC_ENV == 21
-
-
-

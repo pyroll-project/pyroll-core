@@ -178,9 +178,7 @@ def test_tryfirst_and_trylast():
     def fl2(self: Host):
         return 42
 
-    assert Host.hook1.functions == [
-        ff2, ff1, f2, f1, fl2, fl1
-    ]
+    assert Host.hook1.functions == [ff2, ff1, f2, f1, fl2, fl1]
 
 
 def test_tryfirst_and_trylast_inherited():
@@ -238,13 +236,9 @@ def test_tryfirst_and_trylast_inherited():
     def fl2(self: Host):
         return 42
 
-    assert Host.hook1.functions == [
-        ff2, ff1, f2, f1, fl2, fl1
-    ]
+    assert Host.hook1.functions == [ff2, ff1, f2, f1, fl2, fl1]
 
-    assert Host2.hook1.functions == [
-        ff22, ff12, ff2, ff1, f22, f12, f2, f1, fl22, fl12, fl2, fl1
-    ]
+    assert Host2.hook1.functions == [ff22, ff12, ff2, ff1, f22, f12, f2, f1, fl22, fl12, fl2, fl1]
 
 
 def test_context_manager():
@@ -276,7 +270,7 @@ def test_wrapper():
         return 21
 
     @Host.hook1(wrapper=True)
-    def f1(self: Host, cycle):
+    def f1w(self: Host, cycle):
         if cycle:
             return None
 
@@ -295,10 +289,10 @@ def test_wrapper_2yield():
         return 21
 
     @Host.hook1(wrapper=True)
-    def f1(self: Host, cycle):
+    def f1w(self: Host, cycle):
         if cycle:
             return None
-        b = (yield)
+        (yield)
         return 2 * (yield)
 
     host = Host()

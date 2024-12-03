@@ -15,7 +15,7 @@ from .ovals import (
     Oval3RadiiGroove,
     Oval3RadiiFlankedGroove,
     UpsetOvalGroove,
-    ConstrictedCircularOvalGroove
+    ConstrictedCircularOvalGroove,
 )
 
 from .rounds import RoundGroove, FalseRoundGroove
@@ -25,6 +25,7 @@ from .flat import FlatGroove
 from .hexagonal import HexagonalGroove
 
 from .equivalent_ripped_groove import EquivalentRibbedGroove
+
 
 def create_groove_by_type_name(type_name: str, **kwargs) -> GrooveBase:
     """
@@ -38,12 +39,13 @@ def create_groove_by_type_name(type_name: str, **kwargs) -> GrooveBase:
                    allowed arguments depend on the actual groove-type
     """
     import re
+
     type_name = re.sub(r"[\s\-_.]+(\w)", lambda m: m.group(1).capitalize(), type_name.title())
     type_name = type_name if type_name.endswith("Groove") else type_name + "Groove"
 
     import sys
 
-    groove_cls = getattr(sys.modules[__name__], type_name, None) # try to get classes of grooves package first
+    groove_cls = getattr(sys.modules[__name__], type_name, None)  # try to get classes of grooves package first
 
     # otherwise scan over all loaded modules
     if not groove_cls:
@@ -57,4 +59,3 @@ def create_groove_by_type_name(type_name: str, **kwargs) -> GrooveBase:
         raise ValueError(f"No groove class named {type_name} found in loaded modules.")
 
     return groove_cls(**kwargs)
-

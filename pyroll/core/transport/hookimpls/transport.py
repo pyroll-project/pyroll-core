@@ -32,6 +32,7 @@ def length_from_roll_pass_positions(self: Transport, cycle):
         return None
 
     from pyroll.core import RollPass
+
     next_pass = self.next_of(RollPass)
     prev_pass = self.prev_of(RollPass)
 
@@ -40,12 +41,12 @@ def length_from_roll_pass_positions(self: Transport, cycle):
         length = 0
 
         current = self
-        while not (current.next is next_pass):
+        while current.next is not next_pass:
             length += current.next.length
             current = current.next
 
         current = self
-        while not (current.prev is prev_pass):
+        while current.prev is not prev_pass:
             length += current.prev.length
             current = current.prev
 

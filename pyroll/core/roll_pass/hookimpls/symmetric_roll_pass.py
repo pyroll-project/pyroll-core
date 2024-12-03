@@ -6,7 +6,7 @@ from ..symmetric_roll_pass import SymmetricRollPass
 @SymmetricRollPass.entry_point
 def entry_point(self: SymmetricRollPass):
     height_change = self.in_profile.height - self.height
-    return -np.sqrt(self.roll.min_radius * height_change - height_change ** 2 / 4)
+    return -np.sqrt(self.roll.min_radius * height_change - height_change**2 / 4)
 
 
 @SymmetricRollPass.velocity

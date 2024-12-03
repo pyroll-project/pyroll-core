@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 from numpy import rad2deg, isclose
 
 from pyroll.core.grooves.ovals.swedish_oval import SwedishOvalGroove
@@ -16,26 +15,26 @@ def check(g):
     assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
 
 
-def test_haxagonal_fa():
+def test_hexagonal_fa():
     g = SwedishOvalGroove(depth=7.66025404, r1=3, r2=1, usable_width=18.84529946, ground_width=10)
     check(g)
 
 
-def test_haxagonal_gw():
+def test_hexagonal_gw():
     g = SwedishOvalGroove(depth=7.66025404, r1=3, r2=1, usable_width=18.84529946, flank_angle=60)
     check(g)
 
 
-def test_haxagonal_uw():
+def test_hexagonal_uw():
     g = SwedishOvalGroove(depth=7.66025404, r1=3, r2=1, ground_width=10, flank_angle=60)
     check(g)
 
 
-def test_haxagonal_fa():
+def test_hexagonal_fa_even():
     g = SwedishOvalGroove(depth=7.66025404, r1=3, r2=1, usable_width=18.84529946, even_ground_width=8.84529946)
     check(g)
 
 
-def test_haxagonal_uw():
+def test_hexagonal_uw_even():
     g = SwedishOvalGroove(depth=7.66025404, r1=3, r2=1, even_ground_width=8.84529946, flank_angle=60)
     check(g)

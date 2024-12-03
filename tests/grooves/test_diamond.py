@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot as plt
-from numpy import pi, isclose, rad2deg
+from numpy import isclose, rad2deg
 
 from pyroll.core import DiamondGroove
 
@@ -24,6 +24,7 @@ def test_diamond_usable_width_tip_depth():
     g = DiamondGroove(r1=5, r2=8, usable_width=40, tip_depth=11.54700538)
     check(g)
 
+
 def test_diamond_usable_width_tip_angle():
     g = DiamondGroove(r1=5, r2=8, usable_width=40, tip_angle=120)
     check(g)
@@ -36,12 +37,13 @@ def test_diamond_tip_depth_tip_angle():
 
 def test_diamond_all():
     with pytest.raises(ValueError):
-        g = DiamondGroove(r1=5, r2=8, usable_width=40, tip_depth=11.54700538, tip_angle=120)
+        DiamondGroove(r1=5, r2=8, usable_width=40, tip_depth=11.54700538, tip_angle=120)
 
 
 def test_diamond_usable_width_tip_depth3():
     g = DiamondGroove(r1=5, r2=8, usable_width=40, tip_depth=11.54700538, pad_angle=30)
     check(g)
+
 
 def test_diamond_usable_width_tip_angle3():
     g = DiamondGroove(r1=5, r2=8, usable_width=40, tip_angle=120, pad_angle=30)

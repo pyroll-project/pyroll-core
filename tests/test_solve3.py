@@ -2,9 +2,8 @@ import logging
 import webbrowser
 from pathlib import Path
 
-import numpy as np
 
-from pyroll.core import Profile, Roll, ThreeRollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence, SquareGroove
+from pyroll.core import Profile, Roll, ThreeRollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence
 
 
 def test_solve3(tmp_path: Path, caplog):
@@ -19,40 +18,29 @@ def test_solve3(tmp_path: Path, caplog):
         length=1,
     )
 
-    sequence = PassSequence([
-        ThreeRollPass(
-            label="Oval I",
-            roll=Roll(
-                groove=CircularOvalGroove(
-                    depth=8e-3,
-                    r1=6e-3,
-                    r2=40e-3,
-                    pad_angle=30
+    sequence = PassSequence(
+        [
+            ThreeRollPass(
+                label="Oval I",
+                roll=Roll(
+                    groove=CircularOvalGroove(depth=8e-3, r1=6e-3, r2=40e-3, pad_angle=30),
+                    nominal_radius=160e-3,
+                    rotational_frequency=1,
                 ),
-                nominal_radius=160e-3,
-                rotational_frequency=1
+                gap=2e-3,
             ),
-            gap=2e-3,
-        ),
-        Transport(
-            label="I => II",
-            duration=1
-        ),
-        ThreeRollPass(
-            label="Round II",
-            roll=Roll(
-                groove=RoundGroove(
-                    r1=3e-3,
-                    r2=25e-3,
-                    depth=11e-3,
-                    pad_angle=30
+            Transport(label="I => II", duration=1),
+            ThreeRollPass(
+                label="Round II",
+                roll=Roll(
+                    groove=RoundGroove(r1=3e-3, r2=25e-3, depth=11e-3, pad_angle=30),
+                    nominal_radius=160e-3,
+                    rotational_frequency=1,
                 ),
-                nominal_radius=160e-3,
-                rotational_frequency=1
+                gap=2e-3,
             ),
-            gap=2e-3,
-        ),
-    ])
+        ]
+    )
 
     try:
         sequence.solve(in_profile)

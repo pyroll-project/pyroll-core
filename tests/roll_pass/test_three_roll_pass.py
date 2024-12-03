@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 import shapely
 
-from pyroll.core import ThreeRollPass, Roll, CircularOvalGroove, BoxGroove, RoundGroove
+from pyroll.core import ThreeRollPass, Roll, CircularOvalGroove, RoundGroove
 
 
 @pytest.mark.parametrize(
@@ -21,39 +21,15 @@ from pyroll.core import ThreeRollPass, Roll, CircularOvalGroove, BoxGroove, Roun
         #     r1=6, r2=3, depth=15, usable_width=40, ground_width=35,
         #     pad_angle=30
         # ),
-        CircularOvalGroove(
-            r1=5, r2=40, depth=10,
-            pad_angle=30
-        ),
-        CircularOvalGroove(
-            r1=15, r2=40, depth=10,
-            pad_angle=30
-        ),
-        CircularOvalGroove(
-            r1=25, r2=40, depth=10,
-            pad_angle=30
-        ),
-        CircularOvalGroove(
-            depth=8,
-            r1=6,
-            r2=40,
-            pad_angle=30
-        ),
-        RoundGroove(
-            r1=3,
-            r2=25,
-            depth=11,
-            pad_angle=30
-        )
-    ]
+        CircularOvalGroove(r1=5, r2=40, depth=10, pad_angle=30),
+        CircularOvalGroove(r1=15, r2=40, depth=10, pad_angle=30),
+        CircularOvalGroove(r1=25, r2=40, depth=10, pad_angle=30),
+        CircularOvalGroove(depth=8, r1=6, r2=40, pad_angle=30),
+        RoundGroove(r1=3, r2=25, depth=11, pad_angle=30),
+    ],
 )
 def test_contour_lines(g):
-    rp = ThreeRollPass(
-        roll=Roll(
-            groove=g
-        ),
-        gap=2
-    )
+    rp = ThreeRollPass(roll=Roll(groove=g), gap=2)
 
     plt.figure(dpi=600)
     plt.axes().set_aspect("equal")
@@ -73,10 +49,10 @@ def test_contour_lines(g):
     plt.axline((g.z3, g.y3), slope=-np.tan(g.flank_angle), c="k", ls="--", lw=1)
 
     shift = g.usable_width / 2 / np.sqrt(3) + rp.gap / np.sqrt(3)
-    plt.axline((g.z3, -g.y3-shift), slope=np.tan(g.flank_angle), c="r", ls="--", lw=1)
-    plt.axline((g.z1, -g.y1-shift), slope=np.tan(-g.pad_angle), c="r", ls="--", lw=1)
+    plt.axline((g.z3, -g.y3 - shift), slope=np.tan(g.flank_angle), c="r", ls="--", lw=1)
+    plt.axline((g.z1, -g.y1 - shift), slope=np.tan(-g.pad_angle), c="r", ls="--", lw=1)
 
-    plt.plot(*shapely.Point(0,0).buffer(rp.inscribed_circle_diameter / 2).boundary.xy)
+    plt.plot(*shapely.Point(0, 0).buffer(rp.inscribed_circle_diameter / 2).boundary.xy)
 
     plt.show()
     plt.close()

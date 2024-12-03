@@ -1,5 +1,5 @@
 import numpy as np
-from numpy import pi, isclose, rad2deg
+from numpy import isclose, rad2deg
 
 from pyroll.core import ConstrictedSwedishOvalGroove
 
@@ -20,12 +20,10 @@ def test_constricted_swedish_oval_usable_width_ground_width():
 
 
 def test_constricted_swedish_oval_usable_width_flank_angle():
-    g = ConstrictedSwedishOvalGroove(depth=18, r1=5, r2=10, r4=5, usable_width=39 * 2, flank_angle=63.434949,
-                                     indent=3)
+    g = ConstrictedSwedishOvalGroove(depth=18, r1=5, r2=10, r4=5, usable_width=39 * 2, flank_angle=63.434949, indent=3)
     check(g)
 
 
 def test_constricted_swedish_oval_ground_width_flank_angle():
-    g = ConstrictedSwedishOvalGroove(depth=18, r1=5, r2=10, r4=5, ground_width=30 * 2, flank_angle=63.434949,
-                                     indent=3)
+    g = ConstrictedSwedishOvalGroove(depth=18, r1=5, r2=10, r4=5, ground_width=30 * 2, flank_angle=63.434949, indent=3)
     check(g)

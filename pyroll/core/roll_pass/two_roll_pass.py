@@ -2,7 +2,7 @@ from typing import List, cast
 
 import numpy as np
 from shapely.affinity import translate, rotate
-from shapely.geometry import LineString, MultiLineString
+from shapely.geometry import MultiLineString
 
 from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
@@ -11,12 +11,7 @@ from ..roll import Roll as BaseRoll
 class TwoRollPass(SymmetricRollPass):
     """Represents a symmetric two-roll pass with equal upper and lower working roll."""
 
-    def __init__(
-            self,
-            roll: BaseRoll,
-            label: str = "",
-            **kwargs
-    ):
+    def __init__(self, roll: BaseRoll, label: str = "", **kwargs):
         super().__init__(roll, label, **kwargs)
 
     @property
@@ -31,7 +26,7 @@ class TwoRollPass(SymmetricRollPass):
         return self._contour_lines
 
     @property
-    def disk_elements(self) -> List['TwoRollPass.DiskElement']:
+    def disk_elements(self) -> List["TwoRollPass.DiskElement"]:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -45,7 +40,7 @@ class TwoRollPass(SymmetricRollPass):
         """Represents a profile in context of a roll pass."""
 
         @property
-        def roll_pass(self) -> 'TwoRollPass':
+        def roll_pass(self) -> "TwoRollPass":
             """Reference to the roll pass. Alias for ``self.unit``."""
             return cast(TwoRollPass, self.unit)
 
@@ -59,7 +54,7 @@ class TwoRollPass(SymmetricRollPass):
         """Represents a roll applied in a :py:class:`TwoRollPass`."""
 
         @property
-        def roll_pass(self) -> 'TwoRollPass':
+        def roll_pass(self) -> "TwoRollPass":
             """Reference to the roll pass."""
             return cast(TwoRollPass, self._roll_pass())
 
@@ -67,7 +62,7 @@ class TwoRollPass(SymmetricRollPass):
         """Represents a disk element in a roll pass."""
 
         @property
-        def roll_pass(self) -> 'TwoRollPass':
+        def roll_pass(self) -> "TwoRollPass":
             """Reference to the roll pass. Alias for ``self.parent``."""
             return cast(TwoRollPass, self.parent)
 
@@ -75,7 +70,7 @@ class TwoRollPass(SymmetricRollPass):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'TwoRollPass.DiskElement':
+            def disk_element(self) -> "TwoRollPass.DiskElement":
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(TwoRollPass.DiskElement, self.unit)
 

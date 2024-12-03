@@ -37,7 +37,7 @@ def test_square_tip_depth_tip_angle():
 
 def test_square_all():
     with pytest.raises(ValueError):
-        g = SquareGroove(r1=5, r2=3, usable_width=30, tip_depth=14.74045895, tip_angle=91)
+        SquareGroove(r1=5, r2=3, usable_width=30, tip_depth=14.74045895, tip_angle=91)
 
 
 def test_square_large_tip_angle():

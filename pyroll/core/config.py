@@ -5,15 +5,15 @@ from typing import Optional, Iterable, Mapping, Any, Callable
 
 class ConfigValue:
     """Helper descriptor for storing configuration values, able to determine the value from explictly set values,
-     environment variables and default values."""
+    environment variables and default values."""
 
     def __init__(
-            self,
-            default,
-            *,
-            env_var: Optional[str] = None,
-            env_var_prefix: Optional[str] = None,
-            parser: Optional[Callable[[str], Any]] = None
+        self,
+        default,
+        *,
+        env_var: Optional[str] = None,
+        env_var_prefix: Optional[str] = None,
+        parser: Optional[Callable[[str], Any]] = None,
     ):
         self.default = default
         self.type = type(default)
@@ -26,7 +26,7 @@ class ConfigValue:
         self.owner = owner
         self.name = name
         if not self._env_var_prefix:
-            self._env_var_prefix = self.owner.__module__.upper().replace('.', '_')
+            self._env_var_prefix = self.owner.__module__.upper().replace(".", "_")
 
     @property
     def env_var(self):
@@ -83,11 +83,7 @@ class ConfigValue:
 class ConfigMeta(type):
     def to_dict(cls):
         """Return the config values of this class as dict."""
-        return {
-            n: v
-            for n, v in type(cls).__dict__.items()
-            if isinstance(v, ConfigValue)
-        }
+        return {n: v for n, v in type(cls).__dict__.items() if isinstance(v, ConfigValue)}
 
     def update(cls, d: dict[str, Any]):
         """
@@ -138,10 +134,7 @@ def config(env_var_prefix):
                 else:
                     # noinspection PyProtectedMember
                     meta_dict[n] = ConfigValue(
-                        default=v.default,
-                        env_var_prefix=env_var_prefix,
-                        env_var=v._env_var,
-                        parser=v.parser
+                        default=v.default, env_var_prefix=env_var_prefix, env_var=v._env_var, parser=v.parser
                     )
 
         meta = type(cls.__name__ + "Meta", (ConfigMeta,), meta_dict)
@@ -154,6 +147,7 @@ def config(env_var_prefix):
 @config("PYROLL_CORE")
 class Config:
     """Configuration class for ``pyroll.core``."""
+
     ROLL_PASS_AUTO_ROTATION = True
     """Whether to enable automatic rotation of incoming profiles in roll passes by default."""
 
@@ -185,7 +179,7 @@ class Config:
     """Standard acceleration of gravity g0."""
 
     PROFILE_CONTOUR_REFINEMENT = 0
-    """Refine the line string of profile contours with more intermediate points. 
+    """Refine the line string of profile contours with more intermediate points.
     Higher integers mean finer. Values < 1 disable this feature."""
 
     GROOVE_RADIUS_POINT_COUNT = 20

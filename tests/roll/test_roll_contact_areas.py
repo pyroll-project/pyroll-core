@@ -3,7 +3,6 @@ from plotly.subplots import make_subplots
 import numpy as np
 import pytest
 from shapely.geometry import Polygon
-import matplotlib.pyplot as plt
 
 import pyroll.core as pr
 
@@ -18,17 +17,33 @@ def main_fig():
 
 @pytest.fixture(scope="module", autouse=True)
 def subplot_index():
-    index = {'count': 0}
+    index = {"count": 0}
     yield index
 
 
 ips = {
-    "round": pr.Profile.round(diameter=30e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6),
-    "square": pr.Profile.square(side=30e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6),
-    "hexagon": pr.Profile.hexagon(height=30e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6),
-    "box": pr.Profile.box(height=30e-3, width=30e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6),
-    "diamond": pr.Profile.diamond(height=30e-3, width=50e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6),
-    "oval": pr.Profile.from_groove(pr.CircularOvalGroove(r1=1e-3, depth=12e-3, usable_width=45e-3), filling=1, height=26e-3, flow_stress=100e6, material=["C45", "Steel"])
+    "round": pr.Profile.round(
+        diameter=30e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6
+    ),
+    "square": pr.Profile.square(
+        side=30e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6
+    ),
+    "hexagon": pr.Profile.hexagon(
+        height=30e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6
+    ),
+    "box": pr.Profile.box(
+        height=30e-3, width=30e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6
+    ),
+    "diamond": pr.Profile.diamond(
+        height=30e-3, width=50e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6
+    ),
+    "oval": pr.Profile.from_groove(
+        pr.CircularOvalGroove(r1=1e-3, depth=12e-3, usable_width=45e-3),
+        filling=1,
+        height=26e-3,
+        flow_stress=100e6,
+        material=["C45", "Steel"],
+    ),
 }
 
 gs = {
@@ -52,7 +67,7 @@ combinations = [
     (gs["square"], ips["oval"]),
     (gs["round"], ips["square"]),
     (gs["round"], ips["diamond"]),
-    (gs["round"], ips["oval"])
+    (gs["round"], ips["oval"]),
 ]
 
 
@@ -69,7 +84,7 @@ def test_plot_contact_areas_two_rolls(g, ip, main_fig, subplot_index):
             nominal_radius=150e-3,
             rotational_frequency=1,
         ),
-        gap=gap
+        gap=gap,
     )
 
     rp.solve(ip)
@@ -82,21 +97,23 @@ def test_plot_contact_areas_two_rolls(g, ip, main_fig, subplot_index):
     x_coords = list(x_coords)
     y_coords = list(y_coords)
 
-    fig.add_trace(go.Scatter(
-        x=x_coords,
-        y=y_coords,
-        mode="lines",
-        fill="toself",
-        line=dict(color="green"),
-        fillcolor="rgba(0, 255, 0, 0.3)",
-        name="Contact Area"
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=x_coords,
+            y=y_coords,
+            mode="lines",
+            fill="toself",
+            line=dict(color="green"),
+            fillcolor="rgba(0, 255, 0, 0.3)",
+            name="Contact Area",
+        )
+    )
 
-    idx = subplot_index['count']
+    idx = subplot_index["count"]
     row = (idx // 5) + 1
     col = (idx % 5) + 1
 
-    subplot_index['count'] += 1
+    subplot_index["count"] += 1
 
     for trace in fig.data:
         main_fig.add_trace(trace, row=row, col=col)

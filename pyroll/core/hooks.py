@@ -2,7 +2,6 @@ import copy
 import inspect
 import weakref
 from abc import ABCMeta
-from copy import deepcopy
 from functools import partial
 from typing import overload, TypeVar, Generic, List, Generator, Union, Optional, Any, get_args
 
@@ -133,14 +132,12 @@ class Hook(Generic[T]):
         self.owner = owner
 
     @overload
-    def __get__(self, instance: None, owner: type) -> 'Hook[T]':
-        ...
+    def __get__(self, instance: None, owner: type) -> "Hook[T]": ...
 
     @overload
-    def __get__(self, instance: 'HookHost', owner: type) -> T:
-        ...
+    def __get__(self, instance: "HookHost", owner: type) -> T: ...
 
-    def __get__(self, instance: 'HookHost', owner: type) -> Union[T, 'Hook[T]']:
+    def __get__(self, instance: "HookHost", owner: type) -> Union[T, "Hook[T]"]:
         """
         Get the value of the hook if called on instance or the descriptor itself if called on class.
 
@@ -165,7 +162,7 @@ class Hook(Generic[T]):
         if instance is None:
             return self
 
-        self.owner.logger.debug(f"Hook %s.%s on %s: called.", self.owner.__qualname__, self.name, instance)
+        self.owner.logger.debug("Hook %s.%s on %s: called.", self.owner.__qualname__, self.name, instance)
 
         # try to get value explicitly set by user
         result = instance.__dict__.get(self.name, None)
@@ -177,14 +174,20 @@ class Hook(Generic[T]):
                     result = result(instance)
 
                 self.owner.logger.debug(
-                    f"Hook %s.%s on %s: resolved with explicit function result value %s.",
-                    self.owner.__qualname__, self.name, instance, result
+                    "Hook %s.%s on %s: resolved with explicit function result value %s.",
+                    self.owner.__qualname__,
+                    self.name,
+                    instance,
+                    result,
                 )
                 return result
 
             self.owner.logger.debug(
-                f"Hook %s.%s on %s: resolved with explicit value %s.",
-                self.owner.__qualname__, self.name, instance, result
+                "Hook %s.%s on %s: resolved with explicit value %s.",
+                self.owner.__qualname__,
+                self.name,
+                instance,
+                result,
             )
             return result
 
@@ -192,8 +195,7 @@ class Hook(Generic[T]):
         result = instance.__cache__.get(self.name, None)
         if result is not None:
             self.owner.logger.debug(
-                f"Hook %s.%s on %s: resolved with cached value %s.",
-                self.owner.__qualname__, self.name, instance, result
+                "Hook %s.%s on %s: resolved with cached value %s.", self.owner.__qualname__, self.name, instance, result
             )
             return result
 
@@ -277,14 +279,21 @@ class Hook(Generic[T]):
             result = f(instance)
             if result is not None:
                 self.owner.logger.debug(
-                    f"Hook %s.%s on %s: resolved from function %s with value %s.",
-                    self.owner.__qualname__, self.name, instance, f.qualname, result
+                    "Hook %s.%s on %s: resolved from function %s with value %s.",
+                    self.owner.__qualname__,
+                    self.name,
+                    instance,
+                    f.qualname,
+                    result,
                 )
                 return result
 
             self.owner.logger.debug(
-                f"Hook %s.%s on %s: function %s resulted in None.",
-                self.owner.__qualname__, self.name, instance, f.qualname
+                "Hook %s.%s on %s: function %s resulted in None.",
+                self.owner.__qualname__,
+                self.name,
+                instance,
+                f.qualname,
             )
 
     def add_function(self, func, tryfirst=False, trylast=False, wrapper=False):
@@ -403,11 +412,7 @@ class HookHost(ReprMixin, LogMixin, metaclass=_HookHostMeta):
         hooks = set()
         for s in cls.__mro__:
             hooks = hooks.union(
-                [
-                    name for name, value in s.__dict__.items()
-                    if not name.startswith("_")
-                    if isinstance(value, Hook)
-                ]
+                [name for name, value in s.__dict__.items() if not name.startswith("_") if isinstance(value, Hook)]
             )
         return hooks
 

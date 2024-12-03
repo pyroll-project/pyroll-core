@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from numpy import pi, isclose, rad2deg
+from numpy import isclose, rad2deg
 
 from pyroll.core import ConstrictedBoxGroove
 
@@ -25,18 +25,12 @@ def test_constricted_box_usable_width_ground_width():
 
 
 def test_constricted_box_usable_width_flank_angle():
-    g = ConstrictedBoxGroove(
-        depth=52, r1=15, r2=18, r4=10, usable_width=185.29, flank_angle=75.101163,
-        indent=10
-    )
+    g = ConstrictedBoxGroove(depth=52, r1=15, r2=18, r4=10, usable_width=185.29, flank_angle=75.101163, indent=10)
     check(g)
 
 
 def test_constricted_box_ground_width_flank_angle():
-    g = ConstrictedBoxGroove(
-        depth=52, r1=15, r2=18, r4=10, ground_width=157.62, flank_angle=75.101163,
-        indent=10
-    )
+    g = ConstrictedBoxGroove(depth=52, r1=15, r2=18, r4=10, ground_width=157.62, flank_angle=75.101163, indent=10)
     check(g)
 
 
@@ -49,15 +43,13 @@ def test_constricted_box_usable_width_ground_width3():
 
 def test_constricted_box_usable_width_flank_angle3():
     g = ConstrictedBoxGroove(
-        depth=52, r1=15, r2=18, r4=10, usable_width=185.29, flank_angle=75.101163,
-        indent=10, pad_angle=30
+        depth=52, r1=15, r2=18, r4=10, usable_width=185.29, flank_angle=75.101163, indent=10, pad_angle=30
     )
     check(g)
 
 
 def test_constricted_box_ground_width_flank_angle3():
     g = ConstrictedBoxGroove(
-        depth=52, r1=15, r2=18, r4=10, ground_width=157.62, flank_angle=75.101163,
-        indent=10, pad_angle=30
+        depth=52, r1=15, r2=18, r4=10, ground_width=157.62, flank_angle=75.101163, indent=10, pad_angle=30
     )
     check(g)

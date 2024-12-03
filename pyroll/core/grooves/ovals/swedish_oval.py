@@ -10,16 +10,16 @@ class SwedishOvalGroove(GenericElongationGroove):
     """Represents a hexagonal-shaped groove that is used like an oval groove (swedish oval)."""
 
     def __init__(
-            self,
-            r1: float,
-            r2: float,
-            depth: float,
-            ground_width: Optional[float] = None,
-            even_ground_width: Optional[float] = None,
-            usable_width: Optional[float] = None,
-            flank_angle: Optional[float] = None,
-            pad_angle: float = 0,
-            **kwargs
+        self,
+        r1: float,
+        r2: float,
+        depth: float,
+        ground_width: Optional[float] = None,
+        even_ground_width: Optional[float] = None,
+        usable_width: Optional[float] = None,
+        flank_angle: Optional[float] = None,
+        pad_angle: float = 0,
+        **kwargs,
     ):
         """
         Exactly two of ``ground_width``, ``even_ground_width``, ``usable_width`` and ``flank_angle`` must be given,
@@ -42,15 +42,17 @@ class SwedishOvalGroove(GenericElongationGroove):
             flank_angle = np.deg2rad(flank_angle)
 
         sol = solve_box_like(
-            r2=r2, r4=0, depth=depth, ground_width=ground_width, usable_width=usable_width, flank_angle=flank_angle,
-            indent=0, even_ground_width=even_ground_width
+            r2=r2,
+            r4=0,
+            depth=depth,
+            ground_width=ground_width,
+            usable_width=usable_width,
+            flank_angle=flank_angle,
+            indent=0,
+            even_ground_width=even_ground_width,
         )
 
-        super().__init__(
-            r1=r1, r2=r2, pad_angle=np.deg2rad(pad_angle),
-            **sol,
-            **kwargs
-        )
+        super().__init__(r1=r1, r2=r2, pad_angle=np.deg2rad(pad_angle), **sol, **kwargs)
 
     @property
     def classifiers(self):

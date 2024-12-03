@@ -1,9 +1,5 @@
-import pytest
-
 import pyroll.core as pr
 import matplotlib.pyplot as plt
-
-from shapely.geometry import LineString
 
 
 def test_plot_profile_contact_contours():
@@ -19,14 +15,9 @@ def test_plot_profile_contact_contours():
     rp = pr.ThreeRollPass(
         label="Oval I",
         roll=pr.Roll(
-            groove=pr.CircularOvalGroove(
-                depth=8e-3,
-                r1=6e-3,
-                r2=40e-3,
-                pad_angle=30
-            ),
+            groove=pr.CircularOvalGroove(depth=8e-3, r1=6e-3, r2=40e-3, pad_angle=30),
             nominal_radius=160e-3,
-            rotational_frequency=1
+            rotational_frequency=1,
         ),
         gap=2e-3,
     )
@@ -36,7 +27,7 @@ def test_plot_profile_contact_contours():
     plt.figure(dpi=300)
     plt.axes().set_aspect("equal")
     for ccl in rp.out_profile.contact_lines.geoms:
-        plt.plot(*ccl.xy, color='C0')
+        plt.plot(*ccl.xy, color="C0")
     plt.show()
     plt.close()
 

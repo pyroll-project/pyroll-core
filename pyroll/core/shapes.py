@@ -67,14 +67,9 @@ def polygon_plot_plotly(self: Polygon):
         labels={"y": "y", "x": "z"},
     )
 
-    fig.update_traces(
-        fill="toself"
-    )
+    fig.update_traces(fill="toself")
 
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1
-    )
+    fig.update_yaxes(scaleanchor="x", scaleratio=1)
 
     return fig
 
@@ -99,25 +94,21 @@ def multi_polygon_plot_matplotlib(self: MultiPolygon):
 
 def multi_polygon_plot_plotly(self: MultiPolygon):
     import plotly.graph_objects as pgo
-    from pandas import DataFrame
 
     fig = pgo.Figure()
 
     for g in self.geoms:
-        fig.add_trace(pgo.line(
-            x=[g.boundary.xy[0] for g in self.geoms],
-            y=[g.boundary.xy[1] for g in self.geoms],
-            labels={"y": "y", "x": "z"},
-        ))
+        fig.add_trace(
+            pgo.line(
+                x=[g.boundary.xy[0] for g in self.geoms],
+                y=[g.boundary.xy[1] for g in self.geoms],
+                labels={"y": "y", "x": "z"},
+            )
+        )
 
-    fig.update_traces(
-        fill="toself"
-    )
+    fig.update_traces(fill="toself")
 
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1
-    )
+    fig.update_yaxes(scaleanchor="x", scaleratio=1)
 
     return fig
 
@@ -149,10 +140,7 @@ def line_string_plot_plotly(self: LineString):
 
     fig.update_traces(line_color="black")
 
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1
-    )
+    fig.update_yaxes(scaleanchor="x", scaleratio=1)
 
     return fig
 
@@ -203,14 +191,7 @@ LineString._plot_matplotlib_ = line_string_plot_matplotlib
 # noinspection PyProtectedMember
 LineString._plot_plotly_ = line_string_plot_plotly
 
-_RECTANGLE_CORNERS = np.asarray(
-    [
-        (-0.5, -0.5),
-        (0.5, -0.5),
-        (0.5, 0.5),
-        (-0.5, 0.5)
-    ]
-)
+_RECTANGLE_CORNERS = np.asarray([(-0.5, -0.5), (0.5, -0.5), (0.5, 0.5), (-0.5, 0.5)])
 
 
 def rectangle(width: float, height: float):

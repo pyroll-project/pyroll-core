@@ -6,7 +6,7 @@ from pyroll.core import FalseRoundGroove
 
 FW = 3.2814933761920244
 FH = 7.037185254850074
-FL = np.sqrt(FW ** 2 + FH ** 2)
+FL = np.sqrt(FW**2 + FH**2)
 
 
 def check(g):

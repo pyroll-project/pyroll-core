@@ -10,18 +10,18 @@ class Oval3RadiiFlankedGroove(GenericElongationGroove):
     """Represents an oval-shaped groove with 3 main radii and a dedicated flank."""
 
     def __init__(
-            self,
-            r1: float,
-            r2: float,
-            r3: float,
-            depth: float,
-            usable_width: float,
-            flank_angle: Optional[float] = None,
-            flank_width: Optional[float] = None,
-            flank_height: Optional[float] = None,
-            flank_length: Optional[float] = None,
-            pad_angle: float = 0,
-            **kwargs
+        self,
+        r1: float,
+        r2: float,
+        r3: float,
+        depth: float,
+        usable_width: float,
+        flank_angle: Optional[float] = None,
+        flank_width: Optional[float] = None,
+        flank_height: Optional[float] = None,
+        flank_length: Optional[float] = None,
+        pad_angle: float = 0,
+        **kwargs,
     ):
         """
         Widths are always measured at the intersection of the extrapolated ground, face and flanks.
@@ -52,10 +52,15 @@ class Oval3RadiiFlankedGroove(GenericElongationGroove):
         )
 
         super().__init__(
-            usable_width=usable_width, depth=depth,
-            r1=r1, r2=r2, r3=r3,
-            flank_angle=sol["flank_angle"], alpha3=sol["alpha3"], pad_angle=pad_angle,
-            **kwargs
+            usable_width=usable_width,
+            depth=depth,
+            r1=r1,
+            r2=r2,
+            r3=r3,
+            flank_angle=sol["flank_angle"],
+            alpha3=sol["alpha3"],
+            pad_angle=pad_angle,
+            **kwargs,
         )
 
     @property

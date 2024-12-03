@@ -3,7 +3,6 @@ from plotly.subplots import make_subplots
 import numpy as np
 import pytest
 from shapely.geometry import Polygon
-import matplotlib.pyplot as plt
 
 import pyroll.core as pr
 
@@ -18,12 +17,14 @@ def main_fig():
 
 @pytest.fixture(scope="module", autouse=True)
 def subplot_index():
-    index = {'count': 0}
+    index = {"count": 0}
     yield index
 
 
 ips = {
-    "round": pr.Profile.round(diameter=20e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6)
+    "round": pr.Profile.round(
+        diameter=20e-3, temperature=1200 + 273.15, material=["C45", "Steel"], length=1, flow_stress=100e6
+    )
 }
 
 gs = {
@@ -48,29 +49,30 @@ combinations = [
 
 @pytest.mark.parametrize("g1, g2, ip", combinations)
 def test_plot_contact_areas(g1, g2, ip, main_fig, subplot_index):
-
-    ps = pr.PassSequence([
-        pr.ThreeRollPass(
-            label="Pass1",
-            roll=pr.Roll(
-                groove=g1,
-                nominal_radius=150e-3,
-                rotational_frequency=1,
+    ps = pr.PassSequence(
+        [
+            pr.ThreeRollPass(
+                label="Pass1",
+                roll=pr.Roll(
+                    groove=g1,
+                    nominal_radius=150e-3,
+                    rotational_frequency=1,
+                ),
+                inscribed_circle_diameter=18e-3,
             ),
-            inscribed_circle_diameter=18e-3
-        ),
-        pr.ThreeRollPass(
-            label="Pass2",
-            roll=pr.Roll(
-                groove=g2,
-                nominal_radius=150e-3,
-                rotational_frequency=1,
+            pr.ThreeRollPass(
+                label="Pass2",
+                roll=pr.Roll(
+                    groove=g2,
+                    nominal_radius=150e-3,
+                    rotational_frequency=1,
+                ),
+                inscribed_circle_diameter=17e-3,
             ),
-            inscribed_circle_diameter=17e-3
-        )
-    ])
+        ]
+    )
 
-    rp = ps.solve(ip)
+    ps.solve(ip)
 
     fig = ps[-1].plot()
 
@@ -80,21 +82,23 @@ def test_plot_contact_areas(g1, g2, ip, main_fig, subplot_index):
     x_coords = list(x_coords)
     y_coords = list(y_coords)
 
-    fig.add_trace(go.Scatter(
-        x=x_coords,
-        y=y_coords,
-        mode="lines",
-        fill="toself",
-        line=dict(color="green"),
-        fillcolor="rgba(0, 255, 0, 0.3)",
-        name="Contact Area"
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=x_coords,
+            y=y_coords,
+            mode="lines",
+            fill="toself",
+            line=dict(color="green"),
+            fillcolor="rgba(0, 255, 0, 0.3)",
+            name="Contact Area",
+        )
+    )
 
-    idx = subplot_index['count']
+    idx = subplot_index["count"]
     row = (idx // 4) + 1
     col = (idx % 4) + 1
 
-    subplot_index['count'] += 1
+    subplot_index["count"] += 1
 
     for trace in fig.data:
         main_fig.add_trace(trace, row=row, col=col)
