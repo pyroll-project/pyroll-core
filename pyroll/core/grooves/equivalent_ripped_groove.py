@@ -5,6 +5,8 @@ import numpy as np
 from .generic_elongation import GenericElongationGroove
 from .generic_elongation_solvers import solve_r123
 
+__all__ = ["EquivalentRibbedGroove"]
+
 
 class EquivalentRibbedGroove(GenericElongationGroove):
     """Represents a round-shaped groove approximating a ribbed groove using the same mean cross-section area."""

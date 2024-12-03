@@ -2,6 +2,8 @@ from numpy import deg2rad
 
 from .generic_elongation import GenericElongationGroove
 
+__all__ = ["FlatGroove"]
+
 
 class FlatGroove(GenericElongationGroove):
     """Represents a flat groove aka no groove."""

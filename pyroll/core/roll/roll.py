@@ -7,6 +7,8 @@ from shapely.geometry import LineString
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
 
+__all__ = ["Roll"]
+
 
 class Roll(HookHost):
     """Represents a roll."""

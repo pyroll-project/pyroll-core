@@ -4,6 +4,8 @@ import numpy as np
 
 from .diamond import DiamondGroove
 
+__all__ = ["SquareGroove"]
+
 
 class SquareGroove(DiamondGroove):
     """Represents a square-shaped groove (diamond with tip angle near 90°)."""

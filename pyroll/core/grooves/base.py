@@ -6,6 +6,8 @@ from shapely.geometry import Polygon, LineString
 
 from ..repr import ReprMixin
 
+__all__ = ["GrooveBase"]
+
 
 class GrooveBase(ReprMixin):
     """Abstract base class for all grooves."""

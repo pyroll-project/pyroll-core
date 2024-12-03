@@ -3,6 +3,8 @@ from typing import cast
 from ..hooks import Hook
 from ..unit import Unit
 
+__all__ = ["Rotator"]
+
 
 class Rotator(Unit):
     """Represents a unit rotating a profile around the rolling axis (mostly for feeding into next roll pass)."""

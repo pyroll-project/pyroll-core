@@ -5,6 +5,8 @@ import numpy as np
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_box_like
 
+__all__ = ["BoxGroove"]
+
 
 class BoxGroove(GenericElongationGroove):
     """Represents a box-shaped groove."""

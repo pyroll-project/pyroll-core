@@ -11,6 +11,14 @@ from ..config import Config
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
 
+__all__ = [
+    "Profile",
+    "RoundProfile",
+    "DiamondProfile",
+    "BoxProfile",
+    "SquareProfile",
+]
+
 
 class Profile(HookHost):
     """Represents a profile aka a workpiece state."""

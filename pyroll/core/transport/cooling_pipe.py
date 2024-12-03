@@ -3,6 +3,8 @@ from typing import List, cast
 from ..hooks import Hook
 from .transport import Transport
 
+__all__ = ["CoolingPipe"]
+
 
 class CoolingPipe(Transport):
     """Represents a smooth cooling pipe."""

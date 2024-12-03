@@ -3,6 +3,8 @@ import numpy as np
 from pyroll.core.repr import ReprMixin
 from shapely import Polygon, LineString, MultiPolygon, MultiLineString
 
+__all__ = ["rectangle"]
+
 
 @property
 def height(self) -> float:

@@ -5,6 +5,8 @@ import numpy as np
 from .base import BaseRollPass
 from ..roll import Roll as BaseRoll
 
+__all__ = ["SymmetricRollPass"]
+
 
 class SymmetricRollPass(BaseRollPass, ABC):
     """Represents a symmetric roll pass with equal upper and lower working roll."""

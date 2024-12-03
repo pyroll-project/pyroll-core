@@ -2,6 +2,8 @@ import numpy as np
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r123
 
+__all__ = ["Oval3RadiiGroove"]
+
 
 class Oval3RadiiGroove(GenericElongationGroove):
     """Represents an oval-shaped groove with 3 main radii."""

@@ -8,6 +8,8 @@ from ..roll_pass import BaseRollPass
 from ..transport import Transport
 from ..hooks import Hook
 
+__all__ = ["PassSequence"]
+
 
 class PassSequence(Unit, Sequence[Unit]):
     """

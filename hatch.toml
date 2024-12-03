@@ -30,5 +30,6 @@ features = ["matplotlib", "plotly"]
 all = "pytest tests"
 solve = "pytest tests/test_solve.py"
 
-[envs.hatc-static-analysis]
+#[envs.hatc-static-analysis]
+[format]
 config-path = "none"

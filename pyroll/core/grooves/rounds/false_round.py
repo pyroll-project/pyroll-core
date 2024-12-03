@@ -5,6 +5,8 @@ import numpy as np
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r124
 
+__all__ = ["FalseRoundGroove"]
+
 
 class FalseRoundGroove(GenericElongationGroove):
     """Represents a round-shaped groove with a dedicated flank (false round)."""
