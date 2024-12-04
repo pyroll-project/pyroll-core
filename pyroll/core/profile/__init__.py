@@ -1,6 +1,6 @@
 from .profile import Profile, RoundProfile, DiamondProfile, BoxProfile, SquareProfile
 
-from . import hookimpls
+from . import hookimpls  # noqa: F401
 
 __all__ = [
     "Profile",
@@ -8,5 +8,4 @@ __all__ = [
     "DiamondProfile",
     "BoxProfile",
     "SquareProfile",
-    "hookimpls",
 ]

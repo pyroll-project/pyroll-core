@@ -1,5 +1,5 @@
 from .unit import Unit
 
-from . import hookimpls
+from . import hookimpls  # noqa: F401
 
-__all__ = ["Unit", "hookimpls"]
+__all__ = ["Unit"]
