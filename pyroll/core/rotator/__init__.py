@@ -1,5 +1,5 @@
 from .rotator import Rotator
 
-from . import hookimpls
+from . import hookimpls  # noqa: F401
 
-__all__ = ["Rotator", "hookimpls"]
+__all__ = ["Rotator"]

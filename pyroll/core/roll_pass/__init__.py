@@ -4,7 +4,7 @@ from .three_roll_pass import ThreeRollPass
 from .deformation_unit import DeformationUnit
 from .symmetric_roll_pass import SymmetricRollPass
 
-from . import hookimpls
+from . import hookimpls  # noqa: F401
 
 __all__ = [
     "BaseRollPass",
@@ -12,5 +12,4 @@ __all__ = [
     "ThreeRollPass",
     "DeformationUnit",
     "SymmetricRollPass",
-    "hookimpls",
 ]

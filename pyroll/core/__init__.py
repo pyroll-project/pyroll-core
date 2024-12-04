@@ -1,4 +1,4 @@
-from . import shapes as _
+from . import shapes  # noqa: F401
 
 from .grooves import (
     GrooveBase,

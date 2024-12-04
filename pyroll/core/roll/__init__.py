@@ -1,5 +1,5 @@
 from .roll import Roll
 
-from . import hookimpls
+from . import hookimpls  # noqa: F401
 
-__all__ = ["Roll", "hookimpls"]
+__all__ = ["Roll"]

@@ -1,5 +1,5 @@
 from .sequence import PassSequence
 
-from . import hookimpls
+from . import hookimpls  # noqa: F401
 
-__all__ = ["PassSequence", "hookimpls"]
+__all__ = ["PassSequence"]
