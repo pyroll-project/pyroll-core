@@ -338,5 +338,5 @@ def test_hook_type():
         hook1 = Hook[float]()
         hook2 = Hook[str]()
 
-    assert Host.hook1.type == float
-    assert Host.hook2.type == str
+    assert Host.hook1.type is float
+    assert Host.hook2.type is str
