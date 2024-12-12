@@ -172,6 +172,9 @@ class Profile(HookHost):
     vickers_hardness = Hook[float]()
     """Vickers hardness of the cold profile material."""
 
+    meter_weight = Hook[float]()
+    """Weight of one meter of the profile."""
+
     def __init__(self, **kwargs):
         """Using the ``__init__`` is not recommended, use one of the factory class methods instead."""
         self.t = 0
