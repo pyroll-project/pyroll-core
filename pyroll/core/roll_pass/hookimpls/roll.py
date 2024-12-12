@@ -60,3 +60,11 @@ def entry_angle(self: BaseRollPass.Roll):
 @BaseRollPass.Roll.exit_angle
 def exit_angle(self: BaseRollPass.Roll):
     return np.arcsin(self.roll_pass.exit_point / self.working_radius)
+
+@BaseRollPass.Roll.contact_time
+def contact_time(self: BaseRollPass.Roll):
+    return self.contact_length / self.roll_pass.velocity
+
+@BaseRollPass.Roll.idle_time
+def idle_time(self: BaseRollPass.Roll):
+    return 1 / self.rotational_frequency - self.contact_time
