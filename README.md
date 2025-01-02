@@ -37,7 +37,6 @@ The documentation of version 1.0 can be found [here](https://pyroll.readthedocs.
 ## Versions
 
 The main branch of this repository contains the code of the version 3.x of PyRolL.
-
 Backport branches exist for older versions:
 
 - [v2.1.x](https://github.com/pyroll-project/pyroll-core/tree/v2.1_backport)
@@ -46,9 +45,26 @@ Backport branches exist for older versions:
 Versioning follows semantic versioning with the following rules:
 
 - breaking changes of core API only in major versions
-- feature releases with minor versions (enforced since 3.0)
-- bugfixes with micro versions (enforced since 3.0)
+- feature releases with minor versions
+- bugfixes with micro versions
 - plugin versioning shall follow the core in major versions (so plugin v2.x works with core v2.x)
+
+As breaking changes are considered:
+
+- removal of public API functions / classes
+- non backwards compatible signature changes of public API functions / classes
+- removal of hooks
+- removal of hook implementations in the core
+- changes in hook implementations that would likely break plugin implementations
+
+As features are considered:
+
+- new public API functions / classes
+- backwards compatible signature changes of public API functions / classes
+- new hooks on existing units / profiles
+- new hook implementations in the core
+
+All other changes not considered as breaking change or feature are considered as bugfixes.
 
 It is recommended to develop new plugins and extensions only for the latest major version.
 
