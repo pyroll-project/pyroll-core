@@ -1,6 +1,8 @@
 from .box import BoxGroove
 from .constricted_box import ConstrictedBoxGroove
 
+__all__ = ["UpsetBoxGroove", "ConstrictedUpsetBoxGroove"]
+
 
 class UpsetBoxGroove(BoxGroove):
     """Represents a box-shaped groove with a high height/width ratio."""

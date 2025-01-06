@@ -1,19 +1,115 @@
-from . import shapes as _
+from . import shapes  # noqa: F401
 
-from .grooves import *
+from .grooves import (
+    GrooveBase,
+    SplineGroove,
+    GenericElongationGroove,
+    BoxGroove,
+    ConstrictedBoxGroove,
+    UpsetBoxGroove,
+    ConstrictedUpsetBoxGroove,
+    DiamondGroove,
+    SquareGroove,
+    GothicGroove,
+    CircularOvalGroove,
+    FlatOvalGroove,
+    SwedishOvalGroove,
+    ConstrictedSwedishOvalGroove,
+    Oval3RadiiGroove,
+    Oval3RadiiFlankedGroove,
+    UpsetOvalGroove,
+    ConstrictedCircularOvalGroove,
+    RoundGroove,
+    FalseRoundGroove,
+    FlatGroove,
+    HexagonalGroove,
+    EquivalentRibbedGroove,
+    create_groove_by_type_name,
+)
 from .transport import Transport, CoolingPipe
 from .roll_pass import BaseRollPass, DeformationUnit, ThreeRollPass, SymmetricRollPass, TwoRollPass
 from .roll_pass import TwoRollPass as RollPass
 from .unit import Unit
 from .roll import Roll
-from .profile import *
+from .profile import (
+    Profile,
+    RoundProfile,
+    DiamondProfile,
+    BoxProfile,
+    SquareProfile,
+)
 from .rotator import Rotator
 from .sequence import PassSequence
 from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
-from .config import Config, config, PlottingBackend
+from .config import Config, config, PlottingBackend, ConfigValue, ConfigMeta
 
 VERSION = "3.0.1"
+
+__all__ = [
+    # grooves
+    "GrooveBase",
+    "SplineGroove",
+    "GenericElongationGroove",
+    "BoxGroove",
+    "ConstrictedBoxGroove",
+    "UpsetBoxGroove",
+    "ConstrictedUpsetBoxGroove",
+    "DiamondGroove",
+    "SquareGroove",
+    "GothicGroove",
+    "CircularOvalGroove",
+    "FlatOvalGroove",
+    "SwedishOvalGroove",
+    "ConstrictedSwedishOvalGroove",
+    "Oval3RadiiGroove",
+    "Oval3RadiiFlankedGroove",
+    "UpsetOvalGroove",
+    "ConstrictedCircularOvalGroove",
+    "RoundGroove",
+    "FalseRoundGroove",
+    "FlatGroove",
+    "HexagonalGroove",
+    "EquivalentRibbedGroove",
+    "create_groove_by_type_name",
+    # profile
+    "Profile",
+    "RoundProfile",
+    "DiamondProfile",
+    "BoxProfile",
+    "SquareProfile",
+    # unit
+    "Unit",
+    # transport
+    "Transport",
+    "CoolingPipe",
+    # roll_pass
+    "RollPass",
+    "BaseRollPass",
+    "TwoRollPass",
+    "ThreeRollPass",
+    "DeformationUnit",
+    "SymmetricRollPass",
+    # roll
+    "Roll",
+    # sequence
+    "PassSequence",
+    # rotator
+    "Rotator",
+    # disk_elements
+    "DiskElementUnit",
+    # hooks
+    "HookFunction",
+    "HookHost",
+    "Hook",
+    "root_hooks",
+    # config
+    "Config",
+    "ConfigValue",
+    "config",
+    "ConfigMeta",
+    "PlottingBackend",
+]
 
 root_hooks.extend(
     [

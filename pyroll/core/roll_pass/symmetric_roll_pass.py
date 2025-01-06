@@ -5,23 +5,20 @@ import numpy as np
 from .base import BaseRollPass
 from ..roll import Roll as BaseRoll
 
+__all__ = ["SymmetricRollPass"]
+
 
 class SymmetricRollPass(BaseRollPass, ABC):
     """Represents a symmetric roll pass with equal upper and lower working roll."""
 
-    def __init__(
-            self,
-            roll: BaseRoll,
-            label: str = "",
-            **kwargs
-    ):
+    def __init__(self, roll: BaseRoll, label: str = "", **kwargs):
         super().__init__(label, **kwargs)
 
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (all equal)."""
 
     @property
-    def disk_elements(self) -> List['SymmetricRollPass.DiskElement']:
+    def disk_elements(self) -> List["SymmetricRollPass.DiskElement"]:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -46,7 +43,7 @@ class SymmetricRollPass(BaseRollPass, ABC):
         """Represents a profile in context of a roll pass."""
 
         @property
-        def roll_pass(self) -> 'SymmetricRollPass':
+        def roll_pass(self) -> "SymmetricRollPass":
             """Reference to the roll pass. Alias for ``self.unit``."""
             return cast(SymmetricRollPass, self.unit)
 
@@ -60,7 +57,7 @@ class SymmetricRollPass(BaseRollPass, ABC):
         """Represents a roll applied in a :py:class:`RollPass`."""
 
         @property
-        def roll_pass(self) -> 'SymmetricRollPass':
+        def roll_pass(self) -> "SymmetricRollPass":
             """Reference to the roll pass."""
             return cast(SymmetricRollPass, self._roll_pass())
 
@@ -68,7 +65,7 @@ class SymmetricRollPass(BaseRollPass, ABC):
         """Represents a disk element in a roll pass."""
 
         @property
-        def roll_pass(self) -> 'SymmetricRollPass':
+        def roll_pass(self) -> "SymmetricRollPass":
             """Reference to the roll pass. Alias for ``self.parent``."""
             return cast(SymmetricRollPass, self.parent)
 
@@ -76,7 +73,7 @@ class SymmetricRollPass(BaseRollPass, ABC):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'SymmetricRollPass.DiskElement':
+            def disk_element(self) -> "SymmetricRollPass.DiskElement":
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(SymmetricRollPass.DiskElement, self.unit)
 

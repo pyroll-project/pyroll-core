@@ -6,23 +6,25 @@ from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_box_like
 from .box import BoxGroove
 
+__all__ = ["ConstrictedBoxGroove"]
+
 
 class ConstrictedBoxGroove(BoxGroove):
     """Represents a box-shaped groove with an indented ground."""
 
     def __init__(
-            self,
-            r1: float,
-            r2: float,
-            r4: float,
-            depth: float,
-            indent: float,
-            ground_width: Optional[float] = None,
-            even_ground_width: Optional[float] = None,
-            usable_width: Optional[float] = None,
-            flank_angle: Optional[float] = None,
-            pad_angle: float = 0,
-            **kwargs
+        self,
+        r1: float,
+        r2: float,
+        r4: float,
+        depth: float,
+        indent: float,
+        ground_width: Optional[float] = None,
+        even_ground_width: Optional[float] = None,
+        usable_width: Optional[float] = None,
+        flank_angle: Optional[float] = None,
+        pad_angle: float = 0,
+        **kwargs,
     ):
         """
         Exactly two of ``ground_width``, ``even_ground_width``, ``usable_width`` and ``flank_angle`` must be given,
@@ -47,15 +49,18 @@ class ConstrictedBoxGroove(BoxGroove):
             flank_angle = np.deg2rad(flank_angle)
 
         sol = solve_box_like(
-            r2=r2, r4=r4, depth=depth, ground_width=ground_width, usable_width=usable_width, flank_angle=flank_angle,
-            indent=indent, even_ground_width=even_ground_width
+            r2=r2,
+            r4=r4,
+            depth=depth,
+            ground_width=ground_width,
+            usable_width=usable_width,
+            flank_angle=flank_angle,
+            indent=indent,
+            even_ground_width=even_ground_width,
         )
 
         GenericElongationGroove.__init__(
-            self,
-            r1=r1, r2=r2, r4=r4, pad_angle=np.deg2rad(pad_angle), indent=indent,
-            **sol,
-            **kwargs
+            self, r1=r1, r2=r2, r4=r4, pad_angle=np.deg2rad(pad_angle), indent=indent, **sol, **kwargs
         )
 
     @property

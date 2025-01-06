@@ -11,7 +11,7 @@ def inner_radius(self: CoolingPipe):
 @CoolingPipe.cross_section_area
 def cross_section_area(self: CoolingPipe):
     if self.has_set_or_cached("inner_radius"):
-        return self.inner_radius ** 2 * np.pi
+        return self.inner_radius**2 * np.pi
 
 
 @CoolingPipe.coolant_flow_cross_section

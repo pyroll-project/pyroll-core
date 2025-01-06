@@ -16,9 +16,8 @@ def usable_width3(self: ThreeRollPass) -> float:
 @ThreeRollPass.tip_width
 def tip_width3(self: ThreeRollPass) -> float:
     if isinstance(self.roll.groove, GenericElongationGroove):
-        return (
-                2 / 3 * np.sqrt(3) * (self.roll.groove.usable_width + self.gap / 2)
-                + self.gap / np.sqrt(3) * np.cos(self.roll.groove.flank_angle)
+        return 2 / 3 * np.sqrt(3) * (self.roll.groove.usable_width + self.gap / 2) + self.gap / np.sqrt(3) * np.cos(
+            self.roll.groove.flank_angle
         )
 
 
@@ -42,20 +41,14 @@ def inscribed_circle_diameter_from_gap(self: ThreeRollPass) -> float:
 @ThreeRollPass.gap
 def gap3_from_height(self: ThreeRollPass) -> float:
     if self.has_set_or_cached("height"):
-        return (
-                self.height / 2
-                - self.roll.groove.usable_width / 2 / np.sqrt(3)
-                - self.roll.groove.depth
-        ) * np.sqrt(3)
+        return (self.height / 2 - self.roll.groove.usable_width / 2 / np.sqrt(3) - self.roll.groove.depth) * np.sqrt(3)
 
 
 @ThreeRollPass.gap
 def gap3_from_icd(self: ThreeRollPass) -> float:
     if self.has_set_or_cached("inscribed_circle_diameter"):
         return (
-                self.inscribed_circle_diameter / 2
-                - self.roll.groove.usable_width / 2 / np.sqrt(3)
-                - self.roll.groove.depth
+            self.inscribed_circle_diameter / 2 - self.roll.groove.usable_width / 2 / np.sqrt(3) - self.roll.groove.depth
         ) * np.sqrt(3)
 
 
@@ -66,7 +59,7 @@ def height3(self: ThreeRollPass) -> float:
         -self.roll.groove.usable_width / 2,
         -math.inf,
         self.roll.groove.usable_width / 2,
-        math.inf
+        math.inf,
     )
     return abs(2 * usable_contour.bounds[1])
 
@@ -86,4 +79,3 @@ def target_cross_section_area_from_target_width3(self: ThreeRollPass) -> float:
 @ThreeRollPass.power
 def roll_power_3(self: ThreeRollPass) -> float:
     return 3 * self.roll.roll_power
-

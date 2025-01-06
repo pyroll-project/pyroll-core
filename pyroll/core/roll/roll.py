@@ -7,6 +7,8 @@ from shapely.geometry import LineString
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
 
+__all__ = ["Roll"]
+
 
 class Roll(HookHost):
     """Represents a roll."""
@@ -95,7 +97,7 @@ class Roll(HookHost):
 
     surface_y = Hook[np.ndarray]()
     """
-    Y-Values of the surface interpolation grid. Array of shape (n, m), 
+    Y-Values of the surface interpolation grid. Array of shape (n, m),
     where ``n = len(self.surface_x)`` and ``m = len(self.surface_z)``.
     """
 
@@ -123,11 +125,7 @@ class Roll(HookHost):
     ultimate_tensile_strength = Hook[float]()
     """Ultimate Tensile strength of the roll material."""
 
-    def __init__(
-            self,
-            groove: GrooveBase,
-            **kwargs
-    ):
+    def __init__(self, groove: GrooveBase, **kwargs):
         """
         :param groove: the groove object defining the shape of the roll's surface
         :param kwargs: additional hook values as keyword arguments to set explicitly
@@ -155,7 +153,7 @@ class Roll(HookHost):
         return self._contour_line
 
     def surface_interpolation(
-            self, x: Union[float, np.ndarray], z: Union[float, np.ndarray]
+        self, x: Union[float, np.ndarray], z: Union[float, np.ndarray]
     ) -> Union[float, np.ndarray]:
         """
         Calculate the linear interpolation of the roll surface at the given points.

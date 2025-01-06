@@ -2,19 +2,13 @@ import numpy as np
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r123
 
+__all__ = ["GothicGroove"]
+
 
 class GothicGroove(GenericElongationGroove):
     """Represents a square-shaped groove with curved flanks similar to a gothic arc."""
 
-    def __init__(
-            self,
-            r1: float,
-            r2: float,
-            r3: float,
-            depth: float,
-            usable_width: float,
-            pad_angle: float = 0
-    ):
+    def __init__(self, r1: float, r2: float, r3: float, depth: float, usable_width: float, pad_angle: float = 0):
         """
         Widths are always measured at the intersection of the extrapolated ground, face and flanks.
 
@@ -31,9 +25,14 @@ class GothicGroove(GenericElongationGroove):
         sol = solve_r123(r1, r2, r3, depth, usable_width, pad_angle)
 
         super().__init__(
-            usable_width=usable_width, depth=depth,
-            r1=r1, r2=r2, r3=r3,
-            flank_angle=sol["flank_angle"], alpha3=sol["alpha3"], pad_angle=pad_angle
+            usable_width=usable_width,
+            depth=depth,
+            r1=r1,
+            r2=r2,
+            r3=r3,
+            flank_angle=sol["flank_angle"],
+            alpha3=sol["alpha3"],
+            pad_angle=pad_angle,
         )
 
     @property

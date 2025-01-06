@@ -152,7 +152,7 @@ def test_refinement(monkeypatch):
 
     p2 = Profile.square(side=10, corner_radius=1)
 
-    import  matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt
 
     fig, ax = plt.subplots()
     ax.scatter(*p1.cross_section.boundary.xy, marker="+")

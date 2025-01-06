@@ -3,6 +3,8 @@ import numpy as np
 from pyroll.core.repr import ReprMixin
 from shapely import Polygon, LineString, MultiPolygon, MultiLineString
 
+__all__ = ["rectangle"]
+
 
 @property
 def height(self) -> float:
@@ -67,14 +69,9 @@ def polygon_plot_plotly(self: Polygon):
         labels={"y": "y", "x": "z"},
     )
 
-    fig.update_traces(
-        fill="toself"
-    )
+    fig.update_traces(fill="toself")
 
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1
-    )
+    fig.update_yaxes(scaleanchor="x", scaleratio=1)
 
     return fig
 
@@ -92,8 +89,8 @@ def multi_polygon_plot_matplotlib(self: MultiPolygon):
     ax.grid(lw=0.5)
 
     for g in self.geoms:
-        l = ax.plot(*g.boundary.xy)
-        ax.fill(*g.boundary.xy, alpha=0.5, color=l[0].get_color())
+        line = ax.plot(*g.boundary.xy)
+        ax.fill(*g.boundary.xy, alpha=0.5, color=line[0].get_color())
     return fig
 
 
@@ -103,20 +100,16 @@ def multi_polygon_plot_plotly(self: MultiPolygon):
     fig = pgo.Figure()
 
     for g in self.geoms:
-        fig.add_trace(pgo.Line(
-            x=np.array(g.boundary.xy[0]),
-            y=np.array(g.boundary.xy[1]),
-        ))
+        fig.add_trace(
+            pgo.Line(
+                x=np.array(g.boundary.xy[0]),
+                y=np.array(g.boundary.xy[1]),
+            )
+        )
 
-    fig.update_traces(
-        fill="toself"
-    )
+    fig.update_traces(fill="toself")
 
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1,
-        title="y"
-    )
+    fig.update_yaxes(scaleanchor="x", scaleratio=1, title="y")
 
     fig.update_xaxes(title="z")
 
@@ -148,10 +141,7 @@ def line_string_plot_plotly(self: LineString):
         labels={"y": "y", "x": "z"},
     )
 
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1
-    )
+    fig.update_yaxes(scaleanchor="x", scaleratio=1)
 
     return fig
 
@@ -179,16 +169,14 @@ def multi_line_string_plot_plotly(self: MultiLineString):
     fig = pgo.Figure()
 
     for g in self.geoms:
-        fig.add_trace(pgo.Line(
-            x=np.array(g.xy[0]),
-            y=np.array(g.xy[1]),
-        ))
+        fig.add_trace(
+            pgo.Line(
+                x=np.array(g.xy[0]),
+                y=np.array(g.xy[1]),
+            )
+        )
 
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1,
-        title="y"
-    )
+    fig.update_yaxes(scaleanchor="x", scaleratio=1, title="y")
 
     fig.update_xaxes(title="z")
 
@@ -246,14 +234,7 @@ MultiLineString._plot_matplotlib_ = multi_line_string_plot_matplotlib
 # noinspection PyProtectedMember
 MultiLineString._plot_plotly_ = multi_line_string_plot_plotly
 
-_RECTANGLE_CORNERS = np.asarray(
-    [
-        (-0.5, -0.5),
-        (0.5, -0.5),
-        (0.5, 0.5),
-        (-0.5, 0.5)
-    ]
-)
+_RECTANGLE_CORNERS = np.asarray([(-0.5, -0.5), (0.5, -0.5), (0.5, 0.5), (-0.5, 0.5)])
 
 
 def rectangle(width: float, height: float):

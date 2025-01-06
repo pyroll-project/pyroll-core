@@ -5,18 +5,20 @@ from numpy import deg2rad
 
 from ..generic_elongation import GenericElongationGroove
 
+__all__ = ["DiamondGroove"]
+
 
 class DiamondGroove(GenericElongationGroove):
     """Represent a diamond-shaped groove."""
 
     def __init__(
-            self,
-            r1: float,
-            r2: float,
-            usable_width: Optional[float] = None,
-            tip_depth: Optional[float] = None,
-            tip_angle: Optional[float] = None,
-            pad_angle: float = 0
+        self,
+        r1: float,
+        r2: float,
+        usable_width: Optional[float] = None,
+        tip_depth: Optional[float] = None,
+        tip_angle: Optional[float] = None,
+        pad_angle: float = 0,
     ):
         """
         Exactly two of usable_width, tip_depth and tip_angle must be given.
@@ -60,7 +62,9 @@ class DiamondGroove(GenericElongationGroove):
 
     @property
     def classifiers(self):
-        return {"diamond", } | super().classifiers
+        return {
+            "diamond",
+        } | super().classifiers
 
     @property
     def tip_depth(self):

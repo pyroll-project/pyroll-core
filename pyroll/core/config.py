@@ -4,6 +4,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional, Iterable, Mapping, Any, Callable
 
+__all__ = ["Config", "ConfigValue", "config", "ConfigMeta"]
+
 
 class ConfigValue:
     """Helper descriptor for storing configuration values, able to determine the value from explictly set values,
@@ -191,7 +193,7 @@ class Config:
     """Standard acceleration of gravity g0."""
 
     PROFILE_CONTOUR_REFINEMENT = 0
-    """Refine the line string of profile contours with more intermediate points. 
+    """Refine the line string of profile contours with more intermediate points.
     Higher integers mean finer. Values < 1 disable this feature."""
 
     GROOVE_RADIUS_POINT_COUNT = 20

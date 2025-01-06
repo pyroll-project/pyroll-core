@@ -62,5 +62,4 @@ def entry_point_square_oval(self: TwoRollPass):
         depth = self.roll.groove.local_depth(self.in_profile.width / 2)
         height_change = self.in_profile.height - self.gap - 2 * depth
         radius = self.roll.max_radius - depth
-        return -np.sqrt(radius * height_change - height_change ** 2 / 4)
-
+        return -np.sqrt(radius * height_change - height_change**2 / 4)

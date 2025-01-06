@@ -5,19 +5,21 @@ import numpy as np
 from ..generic_elongation import GenericElongationGroove
 from ..generic_elongation_solvers import solve_r124
 
+__all__ = ["FlatOvalGroove"]
+
 
 class FlatOvalGroove(GenericElongationGroove):
     """Represent an oval-shaped groove with a flat ground."""
 
     def __init__(
-            self,
-            r1: float,
-            r2: float,
-            depth: float,
-            usable_width: Optional[float] = None,
-            even_ground_width: Optional[float] = None,
-            pad_angle: float = 0,
-            **kwargs
+        self,
+        r1: float,
+        r2: float,
+        depth: float,
+        usable_width: Optional[float] = None,
+        even_ground_width: Optional[float] = None,
+        pad_angle: float = 0,
+        **kwargs,
     ):
         """
         Give exactly one of ``usable_width`` and ``even_ground_width``.
@@ -36,17 +38,25 @@ class FlatOvalGroove(GenericElongationGroove):
 
         if usable_width is None and even_ground_width is not None:
             super().__init__(
-                r2=sol["r2"], depth=sol["depth"], usable_width=even_ground_width + sol["width"],
-                flank_angle=sol["alpha"], even_ground_width=even_ground_width,
-                r1=r1, pad_angle=pad_angle,
-                **kwargs
+                r2=sol["r2"],
+                depth=sol["depth"],
+                usable_width=even_ground_width + sol["width"],
+                flank_angle=sol["alpha"],
+                even_ground_width=even_ground_width,
+                r1=r1,
+                pad_angle=pad_angle,
+                **kwargs,
             )
         elif even_ground_width is None and usable_width is not None:
             super().__init__(
-                r2=sol["r2"], depth=sol["depth"], usable_width=usable_width, flank_angle=sol["alpha"],
+                r2=sol["r2"],
+                depth=sol["depth"],
+                usable_width=usable_width,
+                flank_angle=sol["alpha"],
                 even_ground_width=usable_width - sol["width"],
-                r1=r1, pad_angle=pad_angle,
-                **kwargs
+                r1=r1,
+                pad_angle=pad_angle,
+                **kwargs,
             )
         else:
             raise TypeError("Give exactly one of usable_width and even_ground_width.")

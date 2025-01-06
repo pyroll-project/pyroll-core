@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from pyroll.core import config
@@ -11,9 +9,11 @@ class CustomData:
     def __init__(self, value: int):
         self.value = value
 
+
 class CustomEnum(Enum):
     A = 1
     B = 2
+
 
 @config("PYROLL_TEST")
 class Config:
@@ -129,6 +129,3 @@ def test_env_var_override(monkeypatch):
     assert type(Config).SPEC_ENV.env_var == "P_SPEC_ENV"
     monkeypatch.setenv("P_SPEC_ENV", "21")
     assert Config.SPEC_ENV == 21
-
-
-

@@ -6,17 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pytest
 
-points = [
-    (-2, 0),
-    (0, 0),
-    (1, 1),
-    (2, 2),
-    (5, 2),
-    (8, 2),
-    (9, 1),
-    (10, 0),
-    (13, 0)
-]
+points = [(-2, 0), (0, 0), (1, 1), (2, 2), (5, 2), (8, 2), (9, 1), (10, 0), (13, 0)]
 
 
 def test_spline_with_usable_width():
@@ -58,7 +48,11 @@ def test_spline_without_usable_width():
     assert "swedish_oval" in g.classifiers
 
 
-@pytest.mark.xfail(not importlib.util.find_spec("ezdxf_shapely"), reason="ezdxf not installed in current environment (extra)", raises=RuntimeError)
+@pytest.mark.xfail(
+    not importlib.util.find_spec("ezdxf_shapely"),
+    reason="ezdxf not installed in current environment (extra)",
+    raises=RuntimeError,
+)
 def test_spline_from_dxf():
     script_dir = Path(__file__).resolve().parent
     dxf_file = "swedish_oval_test_groove.dxf"

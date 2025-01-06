@@ -3,6 +3,8 @@ from typing import List, cast
 from ..hooks import Hook
 from .transport import Transport
 
+__all__ = ["CoolingPipe"]
+
 
 class CoolingPipe(Transport):
     """Represents a smooth cooling pipe."""
@@ -26,7 +28,7 @@ class CoolingPipe(Transport):
     """Temperature of the coolant."""
 
     @property
-    def disk_elements(self) -> List['CoolingPipe.DiskElement']:
+    def disk_elements(self) -> List["CoolingPipe.DiskElement"]:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -34,7 +36,7 @@ class CoolingPipe(Transport):
         """Represents a profile in context of a transport unit."""
 
         @property
-        def cooling_pipe(self) -> 'CoolingPipe':
+        def cooling_pipe(self) -> "CoolingPipe":
             """Reference to the transport. Alias for ``self.unit``."""
             return cast(CoolingPipe, self.unit)
 
@@ -48,7 +50,7 @@ class CoolingPipe(Transport):
         """Represents a disk element in a roll pass."""
 
         @property
-        def cooling_pipe(self) -> 'CoolingPipe':
+        def cooling_pipe(self) -> "CoolingPipe":
             """Reference to the transport. Alias for ``self.parent``."""
             return cast(CoolingPipe, self.parent)
 
@@ -56,12 +58,12 @@ class CoolingPipe(Transport):
             """Represents a profile in context of a disk element unit."""
 
             @property
-            def disk_element(self) -> 'CoolingPipe.DiskElement':
+            def disk_element(self) -> "CoolingPipe.DiskElement":
                 """Reference to the disk element. Alias for ``self.unit``"""
                 return cast(CoolingPipe.DiskElement, self.unit)
 
             @property
-            def cooling_pipe(self) -> 'CoolingPipe':
+            def cooling_pipe(self) -> "CoolingPipe":
                 """Reference to the transport. Alias for ``self.unit.parent``"""
                 return cast(CoolingPipe, self.unit.parent)
 

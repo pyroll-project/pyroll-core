@@ -7,35 +7,30 @@ from pyroll.core.grooves import GrooveBase
 from pyroll.core.repr import ReprMixin
 from ..config import Config
 
+__all__ = ["GenericElongationGroove"]
+
 
 class GenericElongationGroove(GrooveBase, ReprMixin):
     """Represents a groove defined by the generic elongation groove geometry."""
 
     def __init__(
-            self,
-
-            r1: float,
-            r2: float,
-
-            flank_angle: Optional[float] = None,
-            usable_width: Optional[float] = None,
-            ground_width: Optional[float] = None,
-            depth: Optional[float] = None,
-
-            r3: float = 0,
-            alpha3: float = 0,
-
-            r4: float = 0,
-            alpha4: float = 0,
-
-            indent: float = 0,
-            even_ground_width: float = 0,
-
-            pad: float = 0,
-            rel_pad: float = Config.GROOVE_PADDING,
-            pad_angle: float = 0,
-
-            classifiers: Sequence[str] = ()
+        self,
+        r1: float,
+        r2: float,
+        flank_angle: Optional[float] = None,
+        usable_width: Optional[float] = None,
+        ground_width: Optional[float] = None,
+        depth: Optional[float] = None,
+        r3: float = 0,
+        alpha3: float = 0,
+        r4: float = 0,
+        alpha4: float = 0,
+        indent: float = 0,
+        even_ground_width: float = 0,
+        pad: float = 0,
+        rel_pad: float = Config.GROOVE_PADDING,
+        pad_angle: float = 0,
+        classifiers: Sequence[str] = (),
     ):
         """
         Give any three of ``usable_width``, ``ground_width``, ``flank_angle`` and ``depth``.
@@ -66,8 +61,20 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         :param classifiers: sequence of additional type classifiers
         """
 
-        mandatory_positive_or_zero = [r1, r2, r3, r4, alpha3, alpha4, indent, even_ground_width, flank_angle,
-                                      usable_width, ground_width, depth]
+        mandatory_positive_or_zero = [
+            r1,
+            r2,
+            r3,
+            r4,
+            alpha3,
+            alpha4,
+            indent,
+            even_ground_width,
+            flank_angle,
+            usable_width,
+            ground_width,
+            depth,
+        ]
         if not all(value is None or value >= 0 for value in mandatory_positive_or_zero):
             raise ValueError("Groove arguments have to be non-negative.")
 
@@ -168,16 +175,16 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self.test_complexity_of_contour_line()
 
     def _r1_contour_line(self, z):
-        return self.y12 - np.sqrt(self.r1 ** 2 - (z - self.z12) ** 2)
+        return self.y12 - np.sqrt(self.r1**2 - (z - self.z12) ** 2)
 
     def _r2_contour_line(self, z):
-        return self.y11 + np.sqrt(self.r2 ** 2 - (z - self.z11) ** 2)
+        return self.y11 + np.sqrt(self.r2**2 - (z - self.z11) ** 2)
 
     def _r3_contour_line(self, z):
-        return self.y10 + np.sqrt(self.r3 ** 2 - (z - self.z10) ** 2)
+        return self.y10 + np.sqrt(self.r3**2 - (z - self.z10) ** 2)
 
     def _r4_contour_line(self, z):
-        return self.y8 - np.sqrt(self.r4 ** 2 - (z - self.z8) ** 2)
+        return self.y8 - np.sqrt(self.r4**2 - (z - self.z8) ** 2)
 
     def _flank_contour_line(self, z):
         return self.y3 - np.tan(self.flank_angle) * (z - self.z3)
@@ -230,10 +237,23 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
 
         return np.piecewise(
             z,
-            [z < self.z7, (self.z7 <= z) & (z < self.z6), (self.z6 <= z) & (z < self.z5),
-             (self.z5 <= z) & (z < self.z4), (self.z4 <= z) & (z < self.z3), (self.z3 <= z) & (z < self.z1)],
-            [self._ground_contour_line, self._r4_contour_line, self._r3_contour_line, self._r2_contour_line,
-             self._flank_contour_line, self._r1_contour_line, self._face_contour_line]
+            [
+                z < self.z7,
+                (self.z7 <= z) & (z < self.z6),
+                (self.z6 <= z) & (z < self.z5),
+                (self.z5 <= z) & (z < self.z4),
+                (self.z4 <= z) & (z < self.z3),
+                (self.z3 <= z) & (z < self.z1),
+            ],
+            [
+                self._ground_contour_line,
+                self._r4_contour_line,
+                self._r3_contour_line,
+                self._r2_contour_line,
+                self._flank_contour_line,
+                self._r1_contour_line,
+                self._face_contour_line,
+            ],
         )
 
     @property
@@ -266,9 +286,25 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
     @property
     def __attrs__(self):
         return {
-            n: v for n in ["r1", "r2", "r3", "r4", "alpha1", "alpha2", "alpha3", "alpha4", "depth", "indent",
-                           "even_ground_width", "usable_width", "classifiers", "flank_angle", "pad_angle",
-                           "ground_width",
-                           "contour_line"]
+            n: v
+            for n in [
+                "r1",
+                "r2",
+                "r3",
+                "r4",
+                "alpha1",
+                "alpha2",
+                "alpha3",
+                "alpha4",
+                "depth",
+                "indent",
+                "even_ground_width",
+                "usable_width",
+                "classifiers",
+                "flank_angle",
+                "pad_angle",
+                "ground_width",
+                "contour_line",
+            ]
             if (v := getattr(self, n))
         }

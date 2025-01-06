@@ -1,6 +1,5 @@
 import shapely
-import pyroll.core
-import matplotlib.pyplot as plt
+import pyroll.core  # noqa
 
 
 def test_plot_line_string_matplotlib(tmp_path):

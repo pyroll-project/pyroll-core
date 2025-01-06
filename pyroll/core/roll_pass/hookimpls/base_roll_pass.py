@@ -36,14 +36,12 @@ def default_orientation(self: BaseRollPass):
 
 @BaseRollPass.volume
 def volume(self: BaseRollPass):
-    return (self.in_profile.cross_section.area + 2 * self.out_profile.cross_section.area
-            ) / 3 * self.length
+    return (self.in_profile.cross_section.area + 2 * self.out_profile.cross_section.area) / 3 * self.length
 
 
 @BaseRollPass.surface_area
 def surface_area(self: BaseRollPass):
-    return (self.in_profile.cross_section.perimeter + 2 * self.out_profile.cross_section.perimeter
-            ) / 3 * self.length
+    return (self.in_profile.cross_section.perimeter + 2 * self.out_profile.cross_section.perimeter) / 3 * self.length
 
 
 @BaseRollPass.duration
@@ -108,7 +106,9 @@ def exit_point(self: BaseRollPass):
 @BaseRollPass.Profile.contact_lines
 def contact_contour_lines(self: BaseRollPass.Profile):
     rp = self.roll_pass
-    contact_contur_lines_possible_multilinestring = [cl.intersection(self.cross_section.exterior.buffer(1e-9)) for cl in rp.contour_lines.geoms]
+    contact_contur_lines_possible_multilinestring = [
+        cl.intersection(self.cross_section.exterior.buffer(1e-9)) for cl in rp.contour_lines.geoms
+    ]
 
     contact_contour_lines_linestring = []
     for ccl in contact_contur_lines_possible_multilinestring:

@@ -26,13 +26,7 @@ def test_cartesian_positions(tmp_path: Path, caplog, monkeypatch):
     rp = RollPass(
         label="Oval I",
         roll=Roll(
-            groove=CircularOvalGroove(
-                depth=8e-3,
-                r1=6e-3,
-                r2=40e-3
-            ),
-            nominal_radius=160e-3,
-            rotational_frequency=1
+            groove=CircularOvalGroove(depth=8e-3, r1=6e-3, r2=40e-3), nominal_radius=160e-3, rotational_frequency=1
         ),
         gap=2e-3,
         disk_element_count=5,
@@ -67,13 +61,7 @@ def test_cylindrical_positions(tmp_path: Path, caplog, monkeypatch):
     rp = RollPass(
         label="Oval I",
         roll=Roll(
-            groove=CircularOvalGroove(
-                depth=8e-3,
-                r1=6e-3,
-                r2=40e-3
-            ),
-            nominal_radius=160e-3,
-            rotational_frequency=1
+            groove=CircularOvalGroove(depth=8e-3, r1=6e-3, r2=40e-3), nominal_radius=160e-3, rotational_frequency=1
         ),
         gap=2e-3,
         disk_element_count=5,
