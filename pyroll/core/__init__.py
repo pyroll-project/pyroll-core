@@ -108,6 +108,7 @@ __all__ = [
     "ConfigValue",
     "config",
     "ConfigMeta",
+    "PlottingBackend",
 ]
 
 root_hooks.extend(

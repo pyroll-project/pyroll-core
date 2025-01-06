@@ -22,7 +22,7 @@ def width(self: RollPass.OutProfile, cycle):
     if cycle:
         return None
 
-    return self.roll_pass.in_profile.width * self.roll_pass.draught ** -0.5
+    return self.roll_pass.in_profile.width * self.roll_pass.draught**-0.5
 
 
 # noinspection DuplicatedCode

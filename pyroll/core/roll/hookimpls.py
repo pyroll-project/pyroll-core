@@ -37,13 +37,13 @@ def surface_velocity(self: Roll, cycle):
 
 
 @Roll.rotational_frequency
-def rotational_frequency(self: Roll, cycle):
+def rotational_frequency_from_surface_velocity(self: Roll, cycle):
     if not cycle:
         return self.surface_velocity / (2 * np.pi * self.nominal_radius)
 
 
 @Roll.rotational_frequency
-def rotational_frequency(self: Roll, cycle):
+def rotational_frequency_from_working_velocity(self: Roll, cycle):
     if not cycle:
         return self.working_velocity / (2 * np.pi * self.working_radius)
 

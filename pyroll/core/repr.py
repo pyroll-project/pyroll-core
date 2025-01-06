@@ -40,8 +40,7 @@ class ReprMixin(ABC):
         :return: a matplotlib figure object
         """
         plot = self._plot_matplotlib_()
-        plot.set_size_inches(Config.PLOT_WIDTH / Config.PLOT_RESOLUTION,
-                             Config.PLOT_HEIGHT / Config.PLOT_RESOLUTION)
+        plot.set_size_inches(Config.PLOT_WIDTH / Config.PLOT_RESOLUTION, Config.PLOT_HEIGHT / Config.PLOT_RESOLUTION)
         plot.set_dpi(Config.PLOT_RESOLUTION)
         return plot
 
@@ -62,7 +61,9 @@ class ReprMixin(ABC):
             except (NotImplementedError, ImportError):
                 return self.plot_plotly()
 
-        raise ValueError("Invalid value given for 'Config.PREFERRED_PLOTTING_BACKEND'. Value must be a member of the pyroll.core.PlottingBackend enumeration.")
+        raise ValueError(
+            "Invalid value given for 'Config.PREFERRED_PLOTTING_BACKEND'. Value must be a member of the pyroll.core.PlottingBackend enumeration."
+        )
 
     def __str__(self):
         return type(self).__qualname__
@@ -106,7 +107,7 @@ class ReprMixin(ABC):
 
         buf.append("</table></details>")
 
-        table = ''.join(buf)
+        table = "".join(buf)
 
         try:
             plot = self.plot()
@@ -114,6 +115,7 @@ class ReprMixin(ABC):
 
             if ns == "matplotlib":
                 import matplotlib.pyplot as plt
+
                 with StringIO() as sio:
                     plot.savefig(sio, format="svg")
                     image = sio.getvalue()
@@ -121,6 +123,7 @@ class ReprMixin(ABC):
 
             if ns == "plotly":
                 from plotly.io import to_html
+
                 image = to_html(
                     plot,
                     full_html=False,
@@ -128,13 +131,17 @@ class ReprMixin(ABC):
                 )
 
             return (
-                    "<table>"
-                    + "<tr><td style='text-align: center'>" + image + "</td></tr>"
-                    + "<tr><td style='text-align: left'>" + table + "</td></tr>"
-                    + "</table>"
+                "<table>"
+                + "<tr><td style='text-align: center'>"
+                + image
+                + "</td></tr>"
+                + "<tr><td style='text-align: left'>"
+                + table
+                + "</td></tr>"
+                + "</table>"
             )
 
-        except (NotImplementedError, ImportError, AttributeError, TypeError) as e:
+        except (NotImplementedError, ImportError, AttributeError, TypeError):
             return table
 
     def __rich_repr__(self):
