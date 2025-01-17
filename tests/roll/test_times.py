@@ -7,7 +7,7 @@ from pyroll.core import Profile, Roll, RollPass, FlatGroove
 
 
 # noinspection DuplicatedCode
-def test_contact_and_idle_time(tmp_path: Path, caplog):
+def test_contact_and_idle_duration(tmp_path: Path, caplog):
     caplog.set_level(logging.DEBUG, logger="pyroll")
 
     in_profile = Profile.box(
@@ -39,5 +39,5 @@ def test_contact_and_idle_time(tmp_path: Path, caplog):
         print(caplog.text)
 
     assert np.isclose(rp.roll.contact_length, 13.2e-3, atol=1e-3)
-    assert np.isclose(rp.roll.contact_time, 3.3e-3, atol=1e-3)
-    assert np.isclose(rp.roll.idle_time, 0.338, atol=1e-3)
+    assert np.isclose(rp.roll.contact_duration, 3.3e-3, atol=1e-3)
+    assert np.isclose(rp.roll.idle_duration, 0.338, atol=1e-3)

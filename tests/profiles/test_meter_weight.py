@@ -3,7 +3,7 @@ import numpy as np
 from pyroll.core import Profile
 
 
-def test_local_height():
+def test_mass_per_meter():
     p = Profile.round(
         diameter=30e-3,
         temperature=1200 + 273.15,
@@ -13,4 +13,4 @@ def test_local_height():
         specific_heat_capacity=690,
     )
 
-    assert np.isclose(p.meter_weight, 5.292, atol=1e-3)
+    assert np.isclose(p.mass_per_meter, 5.292, atol=1e-3)

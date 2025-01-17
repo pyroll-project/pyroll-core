@@ -111,10 +111,10 @@ class Roll(HookHost):
     neutral_point = Hook[float]()
     """Point at the roll surface where the shear stress is zero."""
 
-    contact_time = Hook[float]()
+    contact_duration = Hook[float]()
     """Time a surface point of the roll is in contact with the material surface."""
 
-    idle_time = Hook[float]()
+    idle_duration = Hook[float]()
     """Time the roll is not in """
 
     thermal_stress = Hook[float]()
