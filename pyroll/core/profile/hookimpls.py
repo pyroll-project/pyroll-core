@@ -103,3 +103,8 @@ def astm_grain_size_number(self: Profile):
         grains_per_square_inch_100x_magnification = grains_per_square_inch_1x_magnification / (100**2)
 
         return 1 + np.log2(grains_per_square_inch_100x_magnification)
+
+@Profile.mass_per_meter
+def mass_per_meter(self: Profile):
+    if self.has_set_or_cached("density"):
+        return self.cross_section.area * self.density
