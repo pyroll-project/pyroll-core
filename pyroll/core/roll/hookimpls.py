@@ -6,7 +6,7 @@ from ..config import Config
 
 @Roll.working_radius
 def working_radius(self: Roll):
-    return self.nominal_radius - self.contour_line.centroid.y
+    return self.nominal_radius - self.groove.groove_factor
 
 
 @Roll.min_radius
