@@ -1,4 +1,4 @@
-from typing import Union, Set
+from typing import Union, Set, List
 
 import numpy as np
 from scipy.interpolate import interpn
@@ -119,17 +119,11 @@ class Roll(HookHost):
     idle_duration = Hook[float]()
     """Time the roll is not in """
 
-    thermal_stress = Hook[float]()
-    """Thermal stress inside the roll body."""
+    temperature_field = Hook[List[np.ndarray[float]]]()
+    """Temperature field inside the roll body."""
 
-    centrifugal_force_stress = Hook[float]()
-    """Centrifugal stress inside the roll body."""
-
-    mounting_stress = Hook[float]()
-    """Stress inside the roll body caused by the roll mounting system."""
-
-    ultimate_tensile_strength = Hook[float]()
-    """Ultimate Tensile strength of the roll material."""
+    thermal_stress_field = Hook[List[np.ndarray[float]]]()
+    """Thermal stress field inside the roll body."""
 
     def __init__(self, groove: GrooveBase, **kwargs):
         """
@@ -159,7 +153,7 @@ class Roll(HookHost):
         return self._contour_line
 
     def surface_interpolation(
-        self, x: Union[float, np.ndarray], z: Union[float, np.ndarray]
+            self, x: Union[float, np.ndarray], z: Union[float, np.ndarray]
     ) -> Union[float, np.ndarray]:
         """
         Calculate the linear interpolation of the roll surface at the given points.
