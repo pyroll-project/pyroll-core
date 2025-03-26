@@ -104,6 +104,9 @@ class Roll(HookHost):
     heat_penetration_number = Hook[float]()
     """Mean heat penetration number of the roll material."""
 
+    coefficient_of_thermal_expansion = Hook[float]()
+    """Coefficient of thermal expansion of the roll material."""
+
     thermal_diffusivity = Hook[float]()
     """Mean thermal diffusivity of the roll material."""
 
