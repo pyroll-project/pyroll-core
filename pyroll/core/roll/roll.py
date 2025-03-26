@@ -119,6 +119,9 @@ class Roll(HookHost):
     idle_duration = Hook[float]()
     """Time the roll is not in """
 
+    peclet_number = Hook[float]()
+    """Peclet number."""
+
     temperature_field = Hook[List[np.ndarray[float]]]()
     """Temperature field inside the roll body."""
 
