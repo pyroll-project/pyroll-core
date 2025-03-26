@@ -13,6 +13,10 @@ __all__ = ["Roll"]
 class Roll(HookHost):
     """Represents a roll."""
 
+    material = Hook[Union[str, Set[str]]]()
+    """String or sequence of strings classifying the material of the roll.
+    Can be used by material databases to retrieve respective data."""
+
     nominal_radius = Hook[float]()
     """Nominal radius."""
 
