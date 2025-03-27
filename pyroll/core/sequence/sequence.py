@@ -185,8 +185,8 @@ class PassSequence(Unit, Sequence[Unit]):
         usable_cross_section_areas = np.asarray([roll_pass.usable_cross_section.area for roll_pass in self.roll_passes])
         initial_velocities = np.zeros_like(usable_cross_section_areas, dtype=float)
 
-        initial_velocities[0] = initial_speed
-        usable_cross_section_areas[0] = in_profile.cross_section.area
+        initial_velocities[0] = initial_speed * in_profile.cross_section.area / self.roll_passes[
+            0].usable_cross_section.area
 
         calculate_velocities_array(velocities=initial_velocities, cross_sections_areas=usable_cross_section_areas)
         set_velocities_to_roll_passes(roll_passes=self.roll_passes, velocities=initial_velocities)
