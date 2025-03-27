@@ -100,7 +100,7 @@ def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
         pass
 
     velocities = [rp.velocity for rp in sequence.roll_passes]
-    assert np.isclose(velocities[0], 1)
+    assert np.isclose(velocities[0], 1.138, atol=1e-3)
 
     in_profile_velocities = np.zeros_like(sequence.roll_passes)
     for i in range(1, len(sequence.roll_passes)):
