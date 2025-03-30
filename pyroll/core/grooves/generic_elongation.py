@@ -14,23 +14,23 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
     """Represents a groove defined by the generic elongation groove geometry."""
 
     def __init__(
-        self,
-        r1: float,
-        r2: float,
-        flank_angle: Optional[float] = None,
-        usable_width: Optional[float] = None,
-        ground_width: Optional[float] = None,
-        depth: Optional[float] = None,
-        r3: float = 0,
-        alpha3: float = 0,
-        r4: float = 0,
-        alpha4: float = 0,
-        indent: float = 0,
-        even_ground_width: float = 0,
-        pad: float = 0,
-        rel_pad: float = Config.GROOVE_PADDING,
-        pad_angle: float = 0,
-        classifiers: Sequence[str] = (),
+            self,
+            r1: float,
+            r2: float,
+            flank_angle: Optional[float] = None,
+            usable_width: Optional[float] = None,
+            ground_width: Optional[float] = None,
+            depth: Optional[float] = None,
+            r3: float = 0,
+            alpha3: float = 0,
+            r4: float = 0,
+            alpha4: float = 0,
+            indent: float = 0,
+            even_ground_width: float = 0,
+            pad: float = 0,
+            rel_pad: float = Config.GROOVE_PADDING,
+            pad_angle: float = 0,
+            classifiers: Sequence[str] = (),
     ):
         """
         Give any three of ``usable_width``, ``ground_width``, ``flank_angle`` and ``depth``.
@@ -175,16 +175,16 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         self.test_complexity_of_contour_line()
 
     def _r1_contour_line(self, z):
-        return self.y12 - np.sqrt(self.r1**2 - (z - self.z12) ** 2)
+        return self.y12 - np.sqrt(self.r1 ** 2 - (z - self.z12) ** 2)
 
     def _r2_contour_line(self, z):
-        return self.y11 + np.sqrt(self.r2**2 - (z - self.z11) ** 2)
+        return self.y11 + np.sqrt(self.r2 ** 2 - (z - self.z11) ** 2)
 
     def _r3_contour_line(self, z):
-        return self.y10 + np.sqrt(self.r3**2 - (z - self.z10) ** 2)
+        return self.y10 + np.sqrt(self.r3 ** 2 - (z - self.z10) ** 2)
 
     def _r4_contour_line(self, z):
-        return self.y8 - np.sqrt(self.r4**2 - (z - self.z8) ** 2)
+        return self.y8 - np.sqrt(self.r4 ** 2 - (z - self.z8) ** 2)
 
     def _flank_contour_line(self, z):
         return self.y3 - np.tan(self.flank_angle) * (z - self.z3)
@@ -231,6 +231,10 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
     @property
     def cross_section(self) -> Polygon:
         return self._cross_section
+
+    @property
+    def groove_factor(self) -> float:
+        return self.cross_section.centroid.y
 
     def local_depth(self, z) -> Union[float, np.ndarray]:
         z = np.abs(z)

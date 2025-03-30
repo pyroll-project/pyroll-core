@@ -50,6 +50,12 @@ class GrooveBase(ReprMixin):
 
     @property
     @abstractmethod
+    def groove_factor(self) -> LineString:
+        """The groove factor marks the y - position of the working radius ."""
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
     def contour_points(self) -> np.ndarray:
         """An array of the contour line's points of shape (n, 2)."""
         raise NotImplementedError

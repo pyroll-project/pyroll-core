@@ -91,6 +91,10 @@ class SplineGroove(GrooveBase):
     def contour_line(self) -> LineString:
         return self._contour_line
 
+    @property
+    def groove_factor(self) -> float:
+        return self.contour_line.centroid.y
+
     def local_depth(self, z) -> Union[float, np.ndarray]:
         return self._local_depth(z)
 
