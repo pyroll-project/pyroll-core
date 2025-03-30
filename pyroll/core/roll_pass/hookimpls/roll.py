@@ -43,8 +43,8 @@ def neutral_point(self: BaseRollPass.Roll):
         return np.sin(self.neutral_angle) * self.working_radius
 
 
-@BaseRollPass.Roll.surface_velocity
-def surface_velocity(self: BaseRollPass.Roll):
+@BaseRollPass.Roll.working_velocity
+def working_velocity(self: BaseRollPass.Roll):
     if self.roll_pass.has_set("velocity"):
         if self.has_value("neutral_angle"):
             return self.roll_pass.velocity / np.cos(self.neutral_angle)
