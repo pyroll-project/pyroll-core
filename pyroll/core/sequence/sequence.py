@@ -100,6 +100,19 @@ class PassSequence(Unit, Sequence[Unit]):
         """Remove the unit at the specified index from the sequence."""
         del self._subunits[index]
 
+    def flatten(self) -> None:
+        """Flatten the sequence."""
+        new_list = []
+        for item in self:
+            if isinstance(item, PassSequence):
+                for subitem in item:
+                    new_list.append(subitem)
+            else:
+                new_list.append(item)
+
+        del self._subunits
+        self._subunits = new_list
+
     @property
     def units(self) -> List[Unit]:
         """Returns a list of all units in this sequence."""
