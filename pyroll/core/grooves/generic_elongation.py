@@ -234,7 +234,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
 
     @property
     def groove_factor(self) -> float:
-        return self.cross_section.centroid.y
+        return self.contour_line.centroid.y
 
     def local_depth(self, z) -> Union[float, np.ndarray]:
         z = np.abs(z)
