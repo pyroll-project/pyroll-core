@@ -121,14 +121,14 @@ def contact_contour_lines(self: BaseRollPass.Profile):
     return MultiLineString(contact_contour_lines_linestring)
 
 
-@BaseRollPass.front_tension
-def default_front_tension(self: BaseRollPass):
-    return 0
-
-
-@BaseRollPass.back_tension
-def default_back_tension(self: BaseRollPass):
-    return 0
+# @BaseRollPass.front_tension
+# def default_front_tension(self: BaseRollPass):
+#     return 0
+#
+#
+# @BaseRollPass.back_tension
+# def default_back_tension(self: BaseRollPass):
+#     return 0
 
 
 @BaseRollPass.technologically_orientated_contour_lines

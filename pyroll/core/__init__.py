@@ -132,5 +132,7 @@ root_hooks.extend(
         PassSequence.log_elongation,
         BaseRollPass.OutProfile.technologically_orientated_cross_section,
         BaseRollPass.technologically_orientated_contour_lines,
+        # BaseRollPass.back_tension,
+        # BaseRollPass.front_tension
     ]
 )
