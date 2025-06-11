@@ -62,6 +62,12 @@ class Unit(HookHost):
 
         self._parent = weakref.ref(parent) if parent is not None else None
 
+        self.convergence_history = []
+        """List to store the convergence history of the unit."""
+
+        self.global_iterator = 1
+        """Global iterator for the convergence history."""
+
         self.in_profile: Optional[Unit.InProfile] = None
         """The state of the incoming profile."""
 
@@ -207,6 +213,16 @@ class Unit(HookHost):
             self.reevaluate_cache()
             self.out_profile.reevaluate_cache()
             current_results = self.get_root_hook_results()
+
+            residuum = np.max(np.abs(current_results - self._old_results) / (np.abs(self._old_results) + 1e-12))
+
+            self.convergence_history.append({
+                "iteration": self.global_iteration_counter,
+                "residuum": residuum,
+                "label": self.label
+            })
+
+            self.global_iteration_counter += 1
 
             if np.all(
                 np.abs(current_results - self._old_results) <= np.abs(self._old_results) * self.iteration_precision
