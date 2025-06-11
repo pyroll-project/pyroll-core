@@ -44,7 +44,7 @@ from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
 from .config import Config, config, PlottingBackend, ConfigValue, ConfigMeta
 
-VERSION = "3.0.2"
+VERSION = "3.0.2.post2"
 
 __all__ = [
     # grooves
