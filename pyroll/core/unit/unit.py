@@ -217,12 +217,12 @@ class Unit(HookHost):
             residuum = np.max(np.abs(current_results - self._old_results) / (np.abs(self._old_results) + 1e-12))
 
             self.convergence_history.append({
-                "iteration": self.global_iteration_counter,
+                "iteration": self.global_iterator,
                 "residuum": residuum,
                 "label": self.label
             })
 
-            self.global_iteration_counter += 1
+            self.global_iterator += 1
 
             if np.all(
                 np.abs(current_results - self._old_results) <= np.abs(self._old_results) * self.iteration_precision
