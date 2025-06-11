@@ -220,3 +220,49 @@ class PassSequence(Unit, Sequence[Unit]):
 
             if np.all(difference < 0.01):
                 break
+
+    def solve_interstand_tensions_with_given_reductions(self, in_profile: Profile, break_factor=0.2):
+
+        for i in range(self.max_iteration_count):
+
+            entry_velocities = np.asarray([roll_pass.disk_elements[0].velocity for roll_pass in self.roll_passes])[1:]
+            exit_velocities = np.asarray([roll_pass.disk_elements[-1].velocity for roll_pass in self.roll_passes])[:-1]
+            velocity_difference = np.abs(entry_velocities - exit_velocities)
+
+            if np.all(velocity_difference < 0.001):
+                self.logger.info("Finished tension calculation after: ", i + 1, "Iterations.")
+                break
+
+
+            velocity_ratio = exit_velocities / entry_velocities
+            reductions = velocity_ratio - 1
+            prior_tensions = np.asarray([[roll_pass.back_tension, roll_pass.front_tension] for roll_pass in self.roll_passes]).flatten()
+
+            updated_tensions = prior_tensions.copy()
+
+            for index in range(1, len(self.roll_passes)):
+                reduction = reductions[index - 1]
+
+                updated_tensions[2 * index - 1] -= self.in_profile.elastic_modulus * reduction * break_factor
+                updated_tensions[2 * index] -= self.in_profile.elastic_modulus * reduction * break_factor
+
+            updated_tensions[0] = 0
+            updated_tensions[-1] = 0
+
+            print("Updated Tensions: ", updated_tensions)
+
+            for index, roll_pass in enumerate(self.roll_passes):
+                roll_pass.back_tension = updated_tensions[2 * index]
+                roll_pass.front_tension = updated_tensions[2 * index + 1]
+
+            self.solve(in_profile=in_profile)
+
+            entry_velocities = np.asarray([roll_pass.disk_elements[0].velocity for roll_pass in self.roll_passes])[1:]
+            exit_velocities = np.asarray([roll_pass.disk_elements[-1].velocity for roll_pass in self.roll_passes])[:-1]
+
+            updated_velocity_difference = np.abs(entry_velocities - exit_velocities)
+            velocity_difference_ratio = updated_velocity_difference / velocity_difference
+
+            self.logger.debug("Calculated velocity difference ratios: ", velocity_difference_ratio)
+            if velocity_difference_ratio < 0.2 or velocity_difference_ratio > 1:
+                break_factor = break_factor / 2
