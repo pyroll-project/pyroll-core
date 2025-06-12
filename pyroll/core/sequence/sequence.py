@@ -233,26 +233,27 @@ class PassSequence(Unit, Sequence[Unit]):
         :param final_speed: speed of the last stand
         """
 
-        exiting_velocities = [final_speed]
+        roll_pass_velocities = [final_speed]
         for ratio in reversed(velocity_ratios):
-            previous_exiting_velocity = exiting_velocities[0] / ratio
-            exiting_velocities.insert(0, previous_exiting_velocity)
+            previous_roll_pass_velocity = roll_pass_velocities[0] / ratio
+            roll_pass_velocities.insert(0, previous_roll_pass_velocity)
 
+        roll_pass_velocities = np.array(roll_pass_velocities)
         for i, roll_pass in enumerate(self.roll_passes):
-            roll_pass.velocity = exiting_velocities[i]
+            roll_pass.velocity = roll_pass_velocities[i]
+
 
         copied_sequence = copy.copy(self)
-
         copied_sequence.solve(in_profile)
 
-        reductions = np.log(velocity_ratios)
-        tensions = np.zeros_like([[roll_pass.entry_point, roll_pass.exit_point] for roll_pass in self.roll_passes]).flatten()
+        tensions = np.zeros(len(copied_sequence.roll_passes) * 2)
+        engineering_strains = (roll_pass_velocities[1:] - roll_pass_velocities[:-1]) / roll_pass_velocities[:-1]
 
         for index in range(1, len(self.roll_passes)):
-            reduction = reductions[index - 1]
+            engineering_strain = engineering_strains[index - 1]
 
-            tensions[2 * index - 1] = copied_sequence.roll_passes[index - 1].in_profile.elastic_modulus * reduction
-            tensions[2 * index] -= copied_sequence.roll_passes[index - 1].out_profile.elastic_modulus * reduction
+            tensions[2 * index - 1] = copied_sequence.roll_passes[index - 1].in_profile.elastic_modulus * engineering_strain
+            tensions[2 * index] -= copied_sequence.roll_passes[index - 1].out_profile.elastic_modulus * engineering_strain
 
         tensions[0] = 0
         tensions[-1] = 0
