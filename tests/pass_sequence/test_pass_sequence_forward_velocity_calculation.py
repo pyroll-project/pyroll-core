@@ -99,14 +99,18 @@ def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
     except ImportError:
         pass
 
-    velocities = [rp.velocity for rp in sequence.roll_passes]
-    assert np.isclose(velocities[0], 1.138, atol=1e-3)
+    roll_pass_exiting_velocities = np.asarray([rp.velocity for rp in sequence.roll_passes])
+    out_profile_velocities = np.asarray([rp.out_profile.velocity for rp in sequence.roll_passes])
+
+
 
     in_profile_velocities = np.zeros_like(sequence.roll_passes)
     for i in range(1, len(sequence.roll_passes)):
         in_profile_velocities[i] = sequence.roll_passes[i].in_profile.velocity
 
-    out_profile_velocities = np.asarray([rp.out_profile.velocity for rp in sequence.roll_passes])
+    assert np.isclose(roll_pass_exiting_velocities.all(), out_profile_velocities.all(), atol=1e-3)
+    assert np.isclose(sequence.roll_passes[0].in_profile.velocity, 1, atol=1e-3)
 
+    assert np.isclose(roll_pass_exiting_velocities[0], 1.2438, atol=1e-3)
     for i in range(1, len(sequence.roll_passes)):
         assert np.isclose(in_profile_velocities[i], out_profile_velocities[i - 1], atol=1e-3)
