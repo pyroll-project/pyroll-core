@@ -191,13 +191,13 @@ class Profile(HookHost):
 
     @classmethod
     def from_groove(
-        cls,
-        groove: GrooveBase,
-        width: Optional[float] = None,
-        filling: Optional[float] = None,
-        height: Optional[float] = None,
-        gap: Optional[float] = None,
-        **kwargs,
+            cls,
+            groove: GrooveBase,
+            width: Optional[float] = None,
+            filling: Optional[float] = None,
+            height: Optional[float] = None,
+            gap: Optional[float] = None,
+            **kwargs,
     ) -> "Profile":
         """
         Create a profile instance based on a given groove.
@@ -242,8 +242,8 @@ class Profile(HookHost):
         poly = Polygon(np.concatenate([upper_contour_line.coords, lower_contour_line.coords]))
 
         if (
-            # one percent tolerance to bypass discretization issues
-            -width / 2 < poly.bounds[0] * 1.01 or width / 2 > poly.bounds[2] * 1.01
+                # one percent tolerance to bypass discretization issues
+                -width / 2 < poly.bounds[0] * 1.01 or width / 2 > poly.bounds[2] * 1.01
         ):
             raise ValueError(
                 "Profile's width can not be larger than its contour lines." "May be caused by critical overfilling."
@@ -294,7 +294,7 @@ class Profile(HookHost):
 
     @classmethod
     def square(
-        cls, side: Optional[float] = None, diagonal: Optional[float] = None, corner_radius: float = 0, **kwargs
+            cls, side: Optional[float] = None, diagonal: Optional[float] = None, corner_radius: float = 0, **kwargs
     ) -> "SquareProfile":
         """
         Creates a square shaped profile (a real square with rounded corners, without imperfections of square grooves).
@@ -347,12 +347,12 @@ class Profile(HookHost):
 
     @classmethod
     def hexagon(
-        cls,
-        side: Optional[float] = None,
-        height: Optional[float] = None,
-        diagonal: Optional[float] = None,
-        corner_radius: float = 0,
-        **kwargs,
+            cls,
+            side: Optional[float] = None,
+            height: Optional[float] = None,
+            diagonal: Optional[float] = None,
+            corner_radius: float = 0,
+            **kwargs,
     ) -> "HexagonProfile":
         """
         Creates a hexagonal shaped profile (a real hexagonal shape with rounded corners,
@@ -567,7 +567,7 @@ class DiamondProfile(Profile):
 
 class SquareProfile(Profile):
     def __init__(
-        self, side: Optional[float] = None, diagonal: Optional[float] = None, corner_radius: float = 0, **kwargs
+            self, side: Optional[float] = None, diagonal: Optional[float] = None, corner_radius: float = 0, **kwargs
     ):
         """
         Creates a square shaped profile (a real square with rounded corners, without imperfections of square grooves).
@@ -626,12 +626,12 @@ class SquareProfile(Profile):
 
 class HexagonProfile(Profile):
     def __init__(
-        self,
-        side: Optional[float] = None,
-        height: Optional[float] = None,
-        diagonal: Optional[float] = None,
-        corner_radius: float = 0,
-        **kwargs,
+            self,
+            side: Optional[float] = None,
+            height: Optional[float] = None,
+            diagonal: Optional[float] = None,
+            corner_radius: float = 0,
+            **kwargs,
     ):
         """
         Creates a hexagonal shaped profile (a real hexagonal shape with rounded corners,
@@ -680,7 +680,7 @@ class HexagonProfile(Profile):
             * (side, side)
         )
         polygon = Polygon(line)
-        polygon = polygon.buffer(corner_radius)
+        polygon = polygon.buffer(-corner_radius).buffer(2 * corner_radius).buffer(-corner_radius)
 
         super().__init__(cross_section=refine_cross_section(polygon), classifiers={"hexagon"}, **kwargs)
 
