@@ -223,7 +223,8 @@ class PassSequence(Unit, Sequence[Unit]):
             if np.all(difference < 0.01):
                 break
 
-    def solve_interstand_tensions_with_given_velocity_ratios(self, in_profile: Profile, velocity_ratios: np.ndarray[float], final_speed: float):
+    def solve_interstand_tensions_with_given_velocity_ratios(self, in_profile: Profile,
+                                                             velocity_ratios: np.ndarray[float], final_speed: float):
         """
         Solve method, that calculates the resulting tensions for given reductions.
         Further, it sets the velocities according to these reductions and the finishing speed.
@@ -232,8 +233,6 @@ class PassSequence(Unit, Sequence[Unit]):
         :param velocity_ratios: velocity_ratio per stand.
         :param final_speed: speed of the last stand
         """
-
-
 
         roll_pass_velocities = [final_speed]
         for ratio in reversed(velocity_ratios):
@@ -253,8 +252,10 @@ class PassSequence(Unit, Sequence[Unit]):
         for index in range(1, len(self.roll_passes)):
             engineering_strain = engineering_strains[index - 1]
 
-            tensions[2 * index - 1] = copied_sequence.roll_passes[index - 1].in_profile.elastic_modulus * engineering_strain
-            tensions[2 * index] -= copied_sequence.roll_passes[index - 1].out_profile.elastic_modulus * engineering_strain
+            tensions[2 * index - 1] = copied_sequence.roll_passes[
+                                          index - 1].in_profile.elastic_modulus * engineering_strain
+            tensions[2 * index] -= copied_sequence.roll_passes[
+                                       index - 1].out_profile.elastic_modulus * engineering_strain
 
         tensions[0] = 0
         tensions[-1] = 0
@@ -264,5 +265,3 @@ class PassSequence(Unit, Sequence[Unit]):
             roll_pass.front_tension = tensions[2 * index + 1]
 
         self.solve(in_profile=in_profile)
-
-
