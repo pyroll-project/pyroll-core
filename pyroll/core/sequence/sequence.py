@@ -233,6 +233,8 @@ class PassSequence(Unit, Sequence[Unit]):
         :param final_speed: speed of the last stand
         """
 
+
+
         roll_pass_velocities = [final_speed]
         for ratio in reversed(velocity_ratios):
             previous_roll_pass_velocity = roll_pass_velocities[0] / ratio
@@ -242,8 +244,7 @@ class PassSequence(Unit, Sequence[Unit]):
         for i, roll_pass in enumerate(self.roll_passes):
             roll_pass.velocity = roll_pass_velocities[i]
 
-
-        copied_sequence = copy.copy(self)
+        copied_sequence = copy.deepcopy(self)
         copied_sequence.solve(in_profile)
 
         tensions = np.zeros(len(copied_sequence.roll_passes) * 2)
