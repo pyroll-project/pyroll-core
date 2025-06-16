@@ -131,8 +131,10 @@ def test_hexagon():
     p1 = Profile.hexagon(side=10)
     p2 = Profile.hexagon(diagonal=20)
     p3 = Profile.hexagon(height=10 * np.sqrt(3))
+    p4 = Profile.hexagon(side=10, corner_radius=1)
     assert np.isclose(p1.cross_section.boundary.xy, p2.cross_section.boundary.xy).all()
     assert np.isclose(p1.cross_section.boundary.xy, p3.cross_section.boundary.xy).all()
+    assert np.isclose(p4.cross_section.area, 259.47, atol=1e-3)
     Profile.hexagon(side=10, corner_radius=1)
 
 
