@@ -230,3 +230,46 @@ class PassSequence(Unit, Sequence[Unit]):
                 set_velocities_to_roll_passes(roll_passes=self.roll_passes, velocities=roll_pass_velocities)
                 self.solve(in_profile)
                 break
+
+    def solve_interstand_tensions_with_given_velocity_ratios(self, in_profile: Profile,
+                                                             velocity_ratios: np.ndarray[float], final_speed: float):
+        """
+        Solve method, that calculates the resulting tensions for given reductions.
+        Further, it sets the velocities according to these reductions and the finishing speed.
+
+        :param in_profile: incoming profile
+        :param velocity_ratios: velocity_ratio per stand.
+        :param final_speed: speed of the last stand
+        """
+
+        roll_pass_velocities = [final_speed]
+        for ratio in reversed(velocity_ratios):
+            previous_roll_pass_velocity = roll_pass_velocities[0] / ratio
+            roll_pass_velocities.insert(0, previous_roll_pass_velocity)
+
+        roll_pass_velocities = np.array(roll_pass_velocities)
+        for i, roll_pass in enumerate(self.roll_passes):
+            roll_pass.velocity = roll_pass_velocities[i]
+
+        copied_sequence = copy.deepcopy(self)
+        copied_sequence.solve(in_profile)
+
+        tensions = np.zeros(len(copied_sequence.roll_passes) * 2)
+        engineering_strains = (roll_pass_velocities[1:] - roll_pass_velocities[:-1]) / roll_pass_velocities[:-1]
+
+        for index in range(1, len(self.roll_passes)):
+            engineering_strain = engineering_strains[index - 1]
+
+            tensions[2 * index - 1] = copied_sequence.roll_passes[
+                                          index - 1].in_profile.elastic_modulus * engineering_strain
+            tensions[2 * index] -= copied_sequence.roll_passes[
+                                       index - 1].out_profile.elastic_modulus * engineering_strain
+
+        tensions[0] = 0
+        tensions[-1] = 0
+
+        for index, roll_pass in enumerate(copied_sequence.roll_passes):
+            roll_pass.back_tension = tensions[2 * index]
+            roll_pass.front_tension = tensions[2 * index + 1]
+
+        self.solve(in_profile=in_profile)
