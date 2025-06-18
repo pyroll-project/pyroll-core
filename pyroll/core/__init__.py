@@ -44,7 +44,7 @@ from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
 from .config import Config, config, PlottingBackend, ConfigValue, ConfigMeta
 
-VERSION = "3.0.3"
+VERSION = "3.0.4"
 
 __all__ = [
     # grooves
@@ -131,8 +131,6 @@ root_hooks.extend(
         BaseRollPass.InProfile.velocity,
         PassSequence.log_elongation,
         BaseRollPass.OutProfile.technologically_orientated_cross_section,
-        BaseRollPass.technologically_orientated_contour_lines,
-        # BaseRollPass.back_tension,
-        # BaseRollPass.front_tension
+        BaseRollPass.technologically_orientated_contour_lines
     ]
 )

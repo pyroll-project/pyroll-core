@@ -1,9 +1,8 @@
 import logging
 import webbrowser
+from pathlib import Path
 
 import numpy as np
-
-from pathlib import Path
 
 from pyroll.core import (
     Profile,
@@ -22,12 +21,11 @@ def width(self: RollPass.OutProfile, cycle):
     if cycle:
         return None
 
-    return self.roll_pass.in_profile.width * self.roll_pass.draught**-0.5
+    return self.roll_pass.in_profile.width * self.roll_pass.draught ** -0.5
 
 
-# noinspection DuplicatedCode
-def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
-    caplog.set_level(logging.DEBUG, logger="pyroll")
+def test_solve(tmp_path: Path, caplog):
+    caplog.set_level(logging.INFO, logger="pyroll")
 
     with RollPass.OutProfile.width(width):
         root_hooks.add(RollPass.OutProfile.width)
@@ -36,7 +34,9 @@ def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
         in_profile = Profile.round(
             diameter=30e-3,
             temperature=1200 + 273.15,
+            strain=0,
             material=["C45", "steel"],
+            length=1,
             flow_stress=100e6,
         )
 
@@ -47,27 +47,28 @@ def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
                     roll=Roll(
                         groove=CircularOvalGroove(depth=8e-3, r1=6e-3, r2=40e-3),
                         nominal_radius=160e-3,
+                        rotational_frequency=1,
+                        neutral_point=-20e-3,
                     ),
                     gap=2e-3,
                 ),
-                Transport(
-                    label="I => II",
-                    length=1,
-                ),
+                Transport(label="I => II", duration=1),
                 RollPass(
                     label="Round II",
                     roll=Roll(
                         groove=RoundGroove(r1=1e-3, r2=12.5e-3, depth=11.5e-3),
                         nominal_radius=160e-3,
+                        rotational_frequency=1,
                     ),
                     gap=2e-3,
                 ),
-                Transport(label="II => III", length=1),
+                Transport(label="II => III", duration=1),
                 RollPass(
                     label="Oval III",
                     roll=Roll(
                         groove=CircularOvalGroove(depth=6e-3, r1=6e-3, r2=35e-3),
                         nominal_radius=160e-3,
+                        rotational_frequency=1,
                     ),
                     gap=2e-3,
                 ),
@@ -75,10 +76,7 @@ def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
         )
 
         try:
-            sequence.solve_velocities_forward(
-                in_profile=in_profile,
-                initial_speed=1,
-            )
+            sequence.solve(in_profile)
         finally:
             print("\nLog:")
             print(caplog.text)
@@ -99,18 +97,4 @@ def test_pass_sequence_velocity_calculation_forward(tmp_path: Path, caplog):
     except ImportError:
         pass
 
-    roll_pass_exiting_velocities = np.asarray([rp.velocity for rp in sequence.roll_passes])
-    out_profile_velocities = np.asarray([rp.out_profile.velocity for rp in sequence.roll_passes])
-
-
-
-    in_profile_velocities = np.zeros_like(sequence.roll_passes)
-    for i in range(1, len(sequence.roll_passes)):
-        in_profile_velocities[i] = sequence.roll_passes[i].in_profile.velocity
-
-    assert np.isclose(roll_pass_exiting_velocities.all(), out_profile_velocities.all(), atol=1e-3)
-    assert np.isclose(sequence.roll_passes[0].in_profile.velocity, 1, atol=1e-3)
-
-    assert np.isclose(roll_pass_exiting_velocities[0], 1.2509, atol=1e-3)
-    for i in range(1, len(sequence.roll_passes)):
-        assert np.isclose(in_profile_velocities[i], out_profile_velocities[i - 1], atol=1e-3)
+    assert not np.isclose(sequence[0].out_profile.filling_ratio, 1)
