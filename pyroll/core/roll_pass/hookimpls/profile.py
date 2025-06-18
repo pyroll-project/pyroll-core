@@ -67,8 +67,7 @@ def cross_section_error(self: BaseRollPass.OutProfile):
 @BaseRollPass.OutProfile.cross_section
 def cross_section(self: BaseRollPass.OutProfile) -> Polygon:
     half_abs_spread = (self.width - self.roll_pass.in_profile.width) / 2
-    half_in_profile_width = self.roll_pass.in_profile.width / 2
-    half_in_profile = clip_by_rect(self.roll_pass.in_profile.cross_section, 0, -np.inf, half_in_profile_width, np.inf)
+    half_in_profile = clip_by_rect(self.roll_pass.in_profile.cross_section, 0, -np.inf, np.inf, np.inf)
     out_profile_side_contour_translated = translate(half_in_profile, xoff=half_abs_spread)
     roll_pass_cross_section = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines.geoms]))
 
