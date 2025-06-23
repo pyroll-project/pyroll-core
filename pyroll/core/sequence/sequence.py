@@ -268,7 +268,7 @@ class PassSequence(Unit, Sequence[Unit]):
         tensions[0] = 0
         tensions[-1] = 0
 
-        for index, roll_pass in enumerate(copied_sequence.roll_passes):
+        for index, roll_pass in enumerate(self.roll_passes):
             roll_pass.back_tension = tensions[2 * index]
             roll_pass.front_tension = tensions[2 * index + 1]
 
