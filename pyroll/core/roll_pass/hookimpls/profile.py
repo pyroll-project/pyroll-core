@@ -1,5 +1,5 @@
 import numpy as np
-from shapely import Polygon, clip_by_rect, union
+from shapely import Polygon, clip_by_rect, union, LineString
 from shapely.affinity import translate, scale
 from shapely.errors import GEOSException
 
@@ -66,7 +66,20 @@ def cross_section_error(self: BaseRollPass.OutProfile):
 
 @BaseRollPass.OutProfile.cross_section
 def cross_section(self: BaseRollPass.OutProfile) -> Polygon:
-    half_abs_spread = (self.width - self.roll_pass.in_profile.width) / 2
+    in_profile_width = self.roll_pass.in_profile.width
+
+    try:
+        previous_roll_pass = self.roll_pass.prev_of(BaseRollPass)
+        if "square" in previous_roll_pass.classifiers and previous_roll_pass.out_profile.filling_ratio > 0.95:
+            horizontal_line = LineString([(-self.roll_pass.in_profile.width, 0), (self.roll_pass.in_profile.width, 0)])
+            intersection_at_y0 = self.roll_pass.in_profile.cross_section.intersection(horizontal_line)
+            width_at_y0 = intersection_at_y0.length
+            if width_at_y0 < in_profile_width:
+                in_profile_width = width_at_y0
+    except IndexError:
+        pass
+
+    half_abs_spread = (self.width - in_profile_width) / 2
     half_in_profile = clip_by_rect(self.roll_pass.in_profile.cross_section, 0, -np.inf, np.inf, np.inf)
     out_profile_side_contour_translated = translate(half_in_profile, xoff=half_abs_spread)
     roll_pass_cross_section = Polygon(np.concatenate([cl.coords for cl in self.roll_pass.contour_lines.geoms]))
