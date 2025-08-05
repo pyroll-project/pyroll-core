@@ -101,9 +101,10 @@ def multi_polygon_plot_plotly(self: MultiPolygon):
 
     for g in self.geoms:
         fig.add_trace(
-            pgo.Line(
+            pgo.Scatter(
                 x=np.array(g.boundary.xy[0]),
                 y=np.array(g.boundary.xy[1]),
+                                                               mode="lines"
             )
         )
 
@@ -170,9 +171,10 @@ def multi_line_string_plot_plotly(self: MultiLineString):
 
     for g in self.geoms:
         fig.add_trace(
-            pgo.Line(
+            pgo.Scatter(
                 x=np.array(g.xy[0]),
                 y=np.array(g.xy[1]),
+                                                               mode="lines"
             )
         )
 
