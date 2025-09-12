@@ -1,4 +1,5 @@
 import math
+import logging
 from typing import Optional, Union, Callable
 from collections.abc import Set
 
@@ -6,6 +7,8 @@ import numpy as np
 from shapely.affinity import translate, rotate
 from shapely.geometry import Point, LinearRing, Polygon, LineString
 from shapely.ops import clip_by_rect
+
+from shapelysmooth import chaikin_smooth
 
 from ..config import Config
 from ..grooves import GrooveBase
@@ -708,4 +711,17 @@ def refine_cross_section(cross_section: Polygon):
     if Config.PROFILE_CONTOUR_REFINEMENT < 1:
         return cross_section
 
-    return cross_section.segmentize(cross_section.boundary.length / Config.PROFILE_CONTOUR_REFINEMENT)
+
+    ring = np.array(cross_section.exterior.coords)
+    p0 = ring[:-1]
+    p1 = ring[1:]
+
+    t = np.linspace(0, 1, Config.PROFILE_CONTOUR_REFINEMENT, endpoint=False).reshape(1, Config.PROFILE_CONTOUR_REFINEMENT, 1)
+
+    coords_array = p0[:, None, :] + (p1 - p0)[:, None, :] * t
+    coords_array = coords_array.reshape(-1, 2)
+    coords_array = np.vstack([coords_array, coords_array[0]])
+
+    coords = coords_array.tolist()
+
+    return Polygon(coords)
