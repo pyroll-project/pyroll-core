@@ -78,7 +78,6 @@ def cross_section(self: BaseRollPass.OutProfile) -> Polygon:
         half_cross_section_2 = scale(half_cross_section_1, xfact=-1, yfact=-1, origin=(0, 0))
         cs = union(half_cross_section_1, half_cross_section_2)
     except GEOSException as e:
-        self.logger.warning("Infinitesimal small spreading. Continuing without bulging.")
         cs = helpers.out_cross_section(self.roll_pass, self.width)
 
     if cs.width * 1.01 < self.width:
