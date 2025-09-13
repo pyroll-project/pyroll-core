@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-
+from shapely import LineString
 import numpy as np
 
 from pyroll.core import (
@@ -9,7 +9,7 @@ from pyroll.core import (
     RollPass,
     SquareGroove,
     CircularOvalGroove,
-    PassSequence
+    PassSequence, Rotator
 )
 
 in_profile = Profile.from_groove(
@@ -19,7 +19,7 @@ in_profile = Profile.from_groove(
         r1=5e-3,
         r2=3e-3
     ),
-    filling=0.97,
+    filling=0.98,
     gap=3e-3,
     temperature=1200 + 273.15,
     strain=0,
@@ -55,4 +55,8 @@ def test_solve(tmp_path: Path, caplog):
 
     sequence.solve(in_profile)
 
+    horizontal_line_at_zero = LineString([(-sequence[0].in_profile.width / 2, 0), (sequence[0].in_profile.width / 2, 0)])
+    intersection_at_y0 = sequence[0].in_profile.cross_section.intersection(horizontal_line_at_zero)
+
     assert np.isclose(sequence.out_profile.width, sequence.out_profile.cross_section.width)
+    assert np.isclose(intersection_at_y0.length, 17.247e-3, atol=1e-3)
