@@ -24,12 +24,14 @@ def return_flank_height_and_width(flank_length: float, flank_width: float, flank
 
         def _flank_height(_alpha):
             return flank_width * np.tan(_alpha)
+
     elif flank_height is not None:
         def _flank_width(_alpha):
             return flank_height / np.tan(_alpha)
 
         def _flank_height(_alpha):
             return flank_height
+
     else:
         def _flank_width(_alpha):
             return 0.0
@@ -79,7 +81,6 @@ def solve_r124(
         r4: float = 0,
         indent: float = 0,
 ):
-
     if flank_angle is None:
 
         _flank_width, _flank_height = return_flank_height_and_width(flank_length, flank_width, flank_height)
@@ -87,7 +88,8 @@ def solve_r124(
         if width is None:
 
             def f(_alpha):
-                return depth - r2 * (1 - np.cos(_alpha)) - l23(r1, pad_angle, _alpha) * np.sin(_alpha) - _flank_height(_alpha)
+                return depth - r2 * (1 - np.cos(_alpha)) - l23(r1, pad_angle, _alpha) * np.sin(_alpha) - _flank_height(
+                    _alpha)
 
             flank_angle = root_scalar(f, bracket=(MIN_ANGLE, MAX_ANGLE)).root
 
@@ -112,7 +114,8 @@ def solve_r124(
         elif r2 is None:
 
             def f(_alpha):
-                _r2 = (depth - l23(r1, pad_angle, _alpha) * np.sin(_alpha) - _flank_height(_alpha)) / (1 - np.cos(_alpha))
+                _r2 = (depth - l23(r1, pad_angle, _alpha) * np.sin(_alpha) - _flank_height(_alpha)) / (
+                            1 - np.cos(_alpha))
                 _alpha4 = np.arccos(1 - indent / (_r2 + r4))
 
                 return (
@@ -174,8 +177,6 @@ def solve_r123(
         flank_height: Optional[float] = None,
         flank_length: Optional[float] = None,
 ):
-
-
     fw, fh = return_flank_height_and_width(flank_length, flank_width, flank_height)
 
     if flank_angle is not None:
@@ -185,7 +186,8 @@ def solve_r123(
             _alpha3 = flank_angle - _alpha
             _gamma = np.pi / 2 - flank_angle
 
-            _fw = width / 2 - r32 * np.sin(_alpha3) - r2 * np.cos(_gamma) - l23(r1, pad_angle, flank_angle) * np.cos(flank_angle)
+            _fw = width / 2 - r32 * np.sin(_alpha3) - r2 * np.cos(_gamma) - l23(r1, pad_angle, flank_angle) * np.cos(
+                flank_angle)
 
             return (
                     depth
@@ -193,7 +195,7 @@ def solve_r123(
                     + r32 * np.cos(_alpha3)
                     + r2 * np.sin(_gamma)
                     - _fw * np.tan(flank_angle)
-                    -  l23(r1, pad_angle, flank_angle) * np.sin(flank_angle)
+                    - l23(r1, pad_angle, flank_angle) * np.sin(flank_angle)
             )
 
         sol = root_scalar(f, bracket=(MIN_ANGLE, MAX_ANGLE)).root
@@ -206,7 +208,8 @@ def solve_r123(
             alpha3=alpha3,
         )
 
-    starts = [np.array([np.pi / 4, np.pi / 4]), np.array([np.pi / 6, np.pi / 3]), np.array([np.pi / 3, np.pi / 6]), np.array([0.2, 0.6])]
+    starts = [np.array([np.pi / 4, np.pi / 4]), np.array([np.pi / 6, np.pi / 3]), np.array([np.pi / 3, np.pi / 6]),
+              np.array([0.2, 0.6])]
 
     candidates = []
     for sign in (+1.0, -1.0):
@@ -252,7 +255,6 @@ def solve_r1234(
         flank_height: Optional[float] = None,
         flank_length: Optional[float] = None,
 ):
-
     if flank_angle is None:
         _flank_height, _flank_width = return_flank_height_and_width(flank_length, flank_width, flank_height)
 
@@ -272,7 +274,7 @@ def solve_r1234(
                                 + (r3 - r2) * np.cos(_alpha3 - _alpha4)
                                 + r2 * np.sin(_gamma)
                                 - _flank_height(_flank_angle)
-                                -  l23(r1, pad_angle, _flank_angle) * np.sin(_flank_angle)
+                                - l23(r1, pad_angle, _flank_angle) * np.sin(_flank_angle)
                         ),
                         (
                                 width / 2
@@ -335,7 +337,8 @@ def solve_r1234(
             _alpha4 = _alpha2 + _alpha3 - flank_angle
             _gamma = np.pi / 2 - flank_angle
 
-            _fw = width / 2 - (r3 - r2) * np.sin(_alpha3) - r2 * np.cos(_gamma) - l23(r1, pad_angle, flank_angle) * np.cos(flank_angle)
+            _fw = width / 2 - (r3 - r2) * np.sin(_alpha3) - r2 * np.cos(_gamma) - l23(r1, pad_angle,
+                                                                                      flank_angle) * np.cos(flank_angle)
 
             return np.array(
                 [
