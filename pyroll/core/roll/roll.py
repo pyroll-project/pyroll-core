@@ -86,10 +86,6 @@ class Roll(HookHost):
     density = Hook[float]()
     """Density (specific weight) of the roll material."""
 
-    material = Hook[Union[str, Set[str]]]()
-    """String or sequence of strings classifying the material of the roll.
-    Can be used by material databases to retrieve respective data."""
-
     width = Hook[float]()
     """The width of the roll face."""
 
