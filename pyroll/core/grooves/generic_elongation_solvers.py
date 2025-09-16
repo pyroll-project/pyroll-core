@@ -45,27 +45,27 @@ def l23(r1, pad_angle, _alpha):
     return r1 * np.tan((_alpha + pad_angle) / 2)
 
 
-def solve_r123_residuals(alpha_vec, r1, r2, r3, depth, width, pad_angle, fw, fh, sign_r32):
+def solve_r123_residuals(alpha_vec, r1, r2, r3, depth, width, pad_angle, flank_width, flank_height, sign_r32):
     a2, a3 = alpha_vec
     _alpha = a2 + a3
     gamma = np.pi / 2 - _alpha
     r32 = abs(r3 - r2)
-    v = (
+    vertical_condition = (
             depth - r3
             + sign_r32 * r32 * np.cos(a3)
             + r2 * np.sin(gamma)
-            - fh(_alpha)
+            - flank_height(_alpha)
             - l23(r1, pad_angle, _alpha) * np.sin(_alpha)
     )
-    h = (
+    horizontal_condition = (
             width / 2.0
             - sign_r32 * r32 * np.sin(a3)
             - r2 * np.cos(gamma)
-            - fw(_alpha)
+            - flank_width(_alpha)
             - l23(r1, pad_angle, _alpha) * np.cos(_alpha)
     )
 
-    return np.array([v, h])
+    return np.array([vertical_condition, horizontal_condition])
 
 
 def solve_r124(
@@ -115,7 +115,7 @@ def solve_r124(
 
             def f(_alpha):
                 _r2 = (depth - l23(r1, pad_angle, _alpha) * np.sin(_alpha) - _flank_height(_alpha)) / (
-                            1 - np.cos(_alpha))
+                        1 - np.cos(_alpha))
                 _alpha4 = np.arccos(1 - indent / (_r2 + r4))
 
                 return (
@@ -177,9 +177,10 @@ def solve_r123(
         flank_height: Optional[float] = None,
         flank_length: Optional[float] = None,
 ):
-    fw, fh = return_flank_height_and_width(flank_length, flank_width, flank_height)
+    _flank_width, _flank_height = return_flank_height_and_width(flank_length, flank_width, flank_height)
 
     if flank_angle is not None:
+
         def f(_alpha):
             r32 = r3 - r2
             _alpha2 = _alpha
@@ -208,37 +209,88 @@ def solve_r123(
             alpha3=alpha3,
         )
 
-    starts = [np.array([np.pi / 4, np.pi / 4]), np.array([np.pi / 6, np.pi / 3]), np.array([np.pi / 3, np.pi / 6]),
-              np.array([0.2, 0.6])]
+    else:
+        if r2 > r3:
+            starts = [np.array([np.pi / 4, np.pi / 4]), np.array([np.pi / 6, np.pi / 3]),
+                      np.array([np.pi / 3, np.pi / 6]),
+                      np.array([0.2, 0.6])]
 
-    candidates = []
-    for sign in (+1.0, -1.0):
-        for x0 in starts:
-            res = least_squares(
-                lambda a: solve_r123_residuals(a, r1, r2, r3, depth, width, pad_angle, fw, fh, sign),
-                x0=x0,
-                bounds=([MIN_ANGLE, MIN_ANGLE], [MAX_ANGLE, MAX_ANGLE]),
-                ftol=1e-12, xtol=1e-12, gtol=1e-12, max_nfev=2000
+            candidates = []
+            for sign in (+1.0, -1.0):
+                for x0 in starts:
+                    res = least_squares(
+                        lambda a: solve_r123_residuals(a, r1, r2, r3, depth, width, pad_angle, _flank_width,
+                                                       _flank_height, sign),
+                        x0=x0,
+                        bounds=([MIN_ANGLE, MIN_ANGLE], [MAX_ANGLE, MAX_ANGLE]),
+                        ftol=1e-12, xtol=1e-12, gtol=1e-12, max_nfev=2000
+                    )
+                    if not res.success:
+                        continue
+                    a2, a3 = res.x
+                    if a2 <= 0 or a3 <= 0:
+                        continue
+                    flank = a2 + a3
+                    resid_norm = np.linalg.norm(res.fun)
+                    candidates.append(
+                        {'branch': sign, 'alpha2': float(a2), 'alpha3': float(a3), 'flank_angle': float(flank),
+                         'residuum': float(resid_norm), 'start': x0})
+
+            if not candidates:
+                raise RuntimeError("No geometric feasible solution found.")
+
+            best = min(candidates, key=lambda c: c['residuum'])
+
+            alpha2 = best['alpha2']
+            alpha3 = best['alpha3']
+            flank_angle = best['flank_angle']
+
+        else:
+            r32 = r3 - r2
+
+            def f(_alpha):
+                _alpha2 = _alpha[0]
+                _alpha3 = _alpha[1]
+                _flank_angle = _alpha2 + _alpha3
+                _gamma = np.pi / 2 - _flank_angle
+
+                return np.array(
+                    [
+                        (
+                                depth
+                                - r3
+                                + r32 * np.cos(_alpha3)
+                                + r2 * np.sin(_gamma)
+                                - _flank_height(_flank_angle)
+                                - l23(r1, pad_angle, _flank_angle) * np.sin(_flank_angle)
+                        ),
+                        (
+                                width / 2
+                                - r32 * np.sin(_alpha3)
+                                - r2 * np.cos(_gamma)
+                                - _flank_width(_flank_angle)
+                                - l23(r1, pad_angle, _flank_angle) * np.cos(_flank_angle)
+                        ),
+                    ]
+                )
+
+            sol = root(
+                f,
+                np.array([np.pi / 4, np.pi / 4]),
             )
-            if not res.success:
-                continue
-            a2, a3 = res.x
-            if a2 <= 0 or a3 <= 0:
-                continue
-            flank = a2 + a3
-            resid_norm = np.linalg.norm(res.fun)
-            candidates.append({'branch': sign, 'alpha2': float(a2), 'alpha3': float(a3), 'flank_angle': float(flank),
-                               'residuum': float(resid_norm), 'start': x0})
 
-    if not candidates:
-        raise RuntimeError("No geometric feasible solution found.")
+            if not sol.success:
+                raise RuntimeError("Could not determine geometric values with given input.")
 
-    best = min(candidates, key=lambda c: c['residuum'])
-    return dict(
-        flank_angle=best['flank_angle'],
-        alpha2=best['alpha2'],
-        alpha3=best['alpha3'],
-    )
+            alpha2 = sol.x[0]
+            alpha3 = sol.x[1]
+            flank_angle = alpha2 + alpha3
+
+        return dict(
+                flank_angle=flank_angle,
+                alpha2=alpha2,
+                alpha3=alpha3,
+            )
 
 
 def solve_r1234(
