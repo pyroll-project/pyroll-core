@@ -46,3 +46,23 @@ def test_oval3radii3():
     assert isclose(g.z1, 71.27116358712432)
 
     assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
+
+def test_oval3radii_r2_greater_r3():
+    g = Oval3RadiiGroove(r1=7, r2=80, r3=70, usable_width=120, depth=30)
+
+    plt.figure(dpi=300)
+    plt.axes().set_aspect("equal")
+    plt.plot(*g.contour_line.xy)
+    plt.xlim(-100, 100)
+    plt.ylim(-40, 40)
+    plt.axline((g.z3, g.y3), slope=np.tan(-g.flank_angle), c="r", ls="--", lw=1)
+    plt.axline((g.z1, g.y1), slope=np.tan(g.pad_angle), c="r", ls="--", lw=1)
+    plt.show()
+    plt.close()
+
+    assert isclose(g.z2, 60)
+    assert isclose(rad2deg(g.flank_angle), 49.4320)
+    assert isclose(rad2deg(g.alpha2), 32.776)
+    assert isclose(rad2deg(g.alpha3), 16.6558)
+
+    assert not np.any(np.isclose(np.diff(g.contour_points[:, 0]), 0))  # test for duplicated points
