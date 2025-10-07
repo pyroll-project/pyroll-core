@@ -104,16 +104,16 @@ class PassSequence(Unit, Sequence[Unit]):
 
     def flatten(self) -> None:
         """Flatten the sequence."""
-        new_list = []
+        units = []
         for item in self:
             if isinstance(item, PassSequence):
                 for subitem in item:
-                    new_list.append(subitem)
+                    units.append(subitem)
             else:
-                new_list.append(item)
+                units.append(item)
 
         del self._subunits
-        self._subunits = new_list
+        self._subunits = self._SubUnitsList(self, units)
 
     @property
     def units(self) -> List[Unit]:
