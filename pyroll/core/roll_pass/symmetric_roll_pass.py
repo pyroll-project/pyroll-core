@@ -35,8 +35,9 @@ class SymmetricRollPass(BaseRollPass, ABC):
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
         roll_results = self.roll.evaluate_and_set_hooks()
+        engine_results = self.engine.evaluate_and_set_hooks()
 
-        return np.concatenate([super_results, roll_results], axis=0)
+        return np.concatenate([super_results, roll_results, engine_results], axis=0)
 
     def reevaluate_cache(self):
         super().reevaluate_cache()

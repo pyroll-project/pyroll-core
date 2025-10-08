@@ -72,7 +72,7 @@ class ThreeRollPass(SymmetricRollPass):
             return cast(ThreeRollPass, self._roll_pass())
 
     class Engine(SymmetricRollPass.Engine):
-        """Represents a engine applied in a :py:class:`ThreeRollPass`."""
+        """Represents an engine applied in a :py:class:`ThreeRollPass`."""
 
         @property
         def roll_pass(self) -> "ThreeRollPass":
