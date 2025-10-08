@@ -4,6 +4,7 @@ from typing import List, cast
 import numpy as np
 from .base import BaseRollPass
 from ..roll import Roll as BaseRoll
+from ..engine import Engine as BaseEngine
 
 __all__ = ["SymmetricRollPass"]
 
@@ -11,11 +12,14 @@ __all__ = ["SymmetricRollPass"]
 class SymmetricRollPass(BaseRollPass, ABC):
     """Represents a symmetric roll pass with equal upper and lower working roll."""
 
-    def __init__(self, roll: BaseRoll, label: str = "", **kwargs):
+    def __init__(self, roll: BaseRoll, engine: BaseEngine = BaseEngine(), label: str = "", **kwargs):
         super().__init__(label, **kwargs)
 
         self.roll = self.Roll(roll, self)
         """The working roll of this pass (all equal)."""
+
+        self.engine = self.Engine(engine, self)
+        """The engine of this pass."""
 
     @property
     def disk_elements(self) -> List["SymmetricRollPass.DiskElement"]:
@@ -38,6 +42,7 @@ class SymmetricRollPass(BaseRollPass, ABC):
         super().reevaluate_cache()
         self.roll.reevaluate_cache()
         self._contour_lines = None
+        self.engine.reevaluate_cache()
 
     class Profile(BaseRollPass.Profile):
         """Represents a profile in context of a roll pass."""
@@ -55,6 +60,14 @@ class SymmetricRollPass(BaseRollPass, ABC):
 
     class Roll(BaseRollPass.Roll):
         """Represents a roll applied in a :py:class:`RollPass`."""
+
+        @property
+        def roll_pass(self) -> "SymmetricRollPass":
+            """Reference to the roll pass."""
+            return cast(SymmetricRollPass, self._roll_pass())
+
+    class Engine(BaseRollPass.Engine):
+        """Represents an engine applied in a :py:class:`RollPass`."""
 
         @property
         def roll_pass(self) -> "SymmetricRollPass":

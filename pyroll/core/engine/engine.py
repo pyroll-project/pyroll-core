@@ -34,7 +34,6 @@ class Engine(HookHost):
 
     def __init__(self, **kwargs):
         """
-        :param groove: the groove object defining the shape of the roll's surface
         :param kwargs: additional hook values as keyword arguments to set explicitly
         """
         self.__dict__.update(kwargs)

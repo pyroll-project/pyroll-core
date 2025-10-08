@@ -1,5 +1,3 @@
-import numpy as np
-
 from ..base import BaseRollPass
 from ..two_roll_pass import TwoRollPass
 from ..three_roll_pass import ThreeRollPass
@@ -7,7 +5,7 @@ from ..three_roll_pass import ThreeRollPass
 
 @TwoRollPass.Engine.torque
 def engine_torque(self: BaseRollPass.Engine):
-    return 2 * self.roll_pass.roll.roll_torque / (self.spindle_efficiency * self.spindle_efficiency) + self.idle_torque
+    return 2 * self.roll_pass.roll.roll_torque / (self.spindle_efficiency * self.gear_box_efficiency) + self.idle_torque
 
 
 @ThreeRollPass.Engine.torque

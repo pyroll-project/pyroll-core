@@ -7,6 +7,7 @@ from shapely.geometry import LineString, MultiLineString
 from ..hooks import Hook
 from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
+from ..engine import Engine as BaseEngine
 
 __all__ = ["ThreeRollPass"]
 
@@ -17,8 +18,8 @@ class ThreeRollPass(SymmetricRollPass):
     inscribed_circle_diameter = Hook[float]()
     """Diameter of inscribed circle between roll barrels as alternative to roll gap definition."""
 
-    def __init__(self, roll: BaseRoll, label: str = "", **kwargs):
-        super().__init__(roll, label, **kwargs)
+    def __init__(self, roll: BaseRoll, engine: BaseEngine = BaseEngine(), label: str = "", **kwargs):
+        super().__init__(roll, engine, label, **kwargs)
 
     @property
     def contour_lines(self) -> MultiLineString:
@@ -64,6 +65,14 @@ class ThreeRollPass(SymmetricRollPass):
 
     class Roll(SymmetricRollPass.Roll):
         """Represents a roll applied in a :py:class:`ThreeRollPass`."""
+
+        @property
+        def roll_pass(self) -> "ThreeRollPass":
+            """Reference to the roll pass."""
+            return cast(ThreeRollPass, self._roll_pass())
+
+    class Engine(SymmetricRollPass.Engine):
+        """Represents a engine applied in a :py:class:`ThreeRollPass`."""
 
         @property
         def roll_pass(self) -> "ThreeRollPass":

@@ -31,6 +31,7 @@ from .roll_pass import BaseRollPass, DeformationUnit, ThreeRollPass, SymmetricRo
 from .roll_pass import TwoRollPass as RollPass
 from .unit import Unit
 from .roll import Roll
+from .engine import Engine
 from .profile import (
     Profile,
     RoundProfile,
@@ -92,6 +93,7 @@ __all__ = [
     "SymmetricRollPass",
     # roll
     "Roll",
+    "Engine",
     # sequence
     "PassSequence",
     # rotator
@@ -115,6 +117,7 @@ root_hooks.extend(
     [
         BaseRollPass.roll_force,
         BaseRollPass.Roll.roll_torque,
+        BaseRollPass.Engine.torque,
         BaseRollPass.elongation_efficiency,
         Unit.power,
         Unit.OutProfile.cross_section,

@@ -10,6 +10,7 @@ from ..disk_elements import DiskElementUnit
 from ..hooks import Hook
 from ..profile import Profile as BaseProfile
 from ..roll import Roll as BaseRoll
+from ..engine import Engine as BaseEngine
 from ..rotator import Rotator
 from .deformation_unit import DeformationUnit
 
@@ -136,6 +137,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
         super().reevaluate_cache()
         self.roll.reevaluate_cache()
         self._contour_lines = None
+        self.engine.reevaluate_cache()
 
     class Profile(DiskElementUnit.Profile, DeformationUnit.Profile):
         """Represents a profile in context of a roll pass."""
@@ -181,6 +183,20 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
         @property
         def roll_pass(self):
             """Reference to the roll pass this roll is used in."""
+            return self._roll_pass()
+
+    class Engine(BaseEngine):
+        """Represents an engine applied in a :py:class:`RollPass`."""
+
+        def __init__(self, template: BaseEngine, roll_pass: "BaseRollPass"):
+            kwargs = dict(e for e in template.__dict__.items() if not e[0].startswith("_"))
+            super().__init__(**kwargs)
+
+            self._roll_pass = weakref.ref(roll_pass)
+
+        @property
+        def roll_pass(self):
+            """Reference to the roll pass this engine is driving."""
             return self._roll_pass()
 
     class DiskElement(DiskElementUnit.DiskElement, DeformationUnit):

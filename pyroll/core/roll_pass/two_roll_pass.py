@@ -6,6 +6,7 @@ from shapely.geometry import MultiLineString
 
 from .symmetric_roll_pass import SymmetricRollPass
 from ..roll import Roll as BaseRoll
+from ..engine import Engine as BaseEngine
 
 __all__ = ["TwoRollPass"]
 
@@ -13,8 +14,8 @@ __all__ = ["TwoRollPass"]
 class TwoRollPass(SymmetricRollPass):
     """Represents a symmetric two-roll pass with equal upper and lower working roll."""
 
-    def __init__(self, roll: BaseRoll, label: str = "", **kwargs):
-        super().__init__(roll, label, **kwargs)
+    def __init__(self, roll: BaseRoll, engine: BaseEngine = BaseEngine(),  label: str = "", **kwargs):
+        super().__init__(roll, engine, label, **kwargs)
 
     @property
     def contour_lines(self) -> MultiLineString:
@@ -35,8 +36,9 @@ class TwoRollPass(SymmetricRollPass):
     def get_root_hook_results(self):
         super_results = super().get_root_hook_results()
         roll_results = self.roll.evaluate_and_set_hooks()
+        engine_results = self.engine.evaluate_and_set_hooks()
 
-        return np.concatenate([super_results, roll_results], axis=0)
+        return np.concatenate([super_results, roll_results, engine_results], axis=0)
 
     class Profile(SymmetricRollPass.Profile):
         """Represents a profile in context of a roll pass."""
@@ -54,6 +56,14 @@ class TwoRollPass(SymmetricRollPass):
 
     class Roll(SymmetricRollPass.Roll):
         """Represents a roll applied in a :py:class:`TwoRollPass`."""
+
+        @property
+        def roll_pass(self) -> "TwoRollPass":
+            """Reference to the roll pass."""
+            return cast(TwoRollPass, self._roll_pass())
+
+    class Engine(SymmetricRollPass.Engine):
+        """Represents an engine applied in a :py:class:`TwoRollPass`."""
 
         @property
         def roll_pass(self) -> "TwoRollPass":
