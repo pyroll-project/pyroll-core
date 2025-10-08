@@ -31,6 +31,15 @@ class Engine(HookHost):
     gear_box_efficiency = Hook[float]()
     """Efficiency of the gear box that drives the rolls."""
 
+    maximum_power = Hook[float]()
+    """Maximum power of the engine."""
+
+    maximum_rotational_frequency = Hook[float]()
+    """Maximum rotational frequency of the engine."""
+
+    base_speed = Hook[float]()
+    """Knee point were a DC engine switches from anchor range to field weakening range."""
+
 
     def __init__(self, **kwargs):
         """
