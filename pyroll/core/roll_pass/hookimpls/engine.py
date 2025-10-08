@@ -16,6 +16,6 @@ def engine_torque(self: BaseRollPass.Engine):
 @BaseRollPass.Engine.rotational_frequency
 def engine_rotational_frequency(self: BaseRollPass.Engine):
     if self.has_set_or_cached("gear_ratio"):
-        return self.roll_pass.roll.roll_rotational_frequency * self.gear_ratio
+        return self.roll_pass.roll.rotational_frequency * self.gear_ratio
     else:
-        return self.roll_pass.roll.roll_rotational_frequency
+        return self.roll_pass.roll.rotational_frequency

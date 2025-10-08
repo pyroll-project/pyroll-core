@@ -51,6 +51,11 @@ def working_velocity(self: BaseRollPass.Roll):
         else:
             return self.roll_pass.velocity / np.cos(self.exit_angle)
 
+@BaseRollPass.Roll.rotational_frequency
+def rotational_frequency_from_engine(self: BaseRollPass.Roll, cycle):
+    if not cycle:
+        if self.roll_pass.engine.has_set_or_cached("gear_ratio") and  self.roll_pass.engine.has_set_or_cached("rotational_frequency"):
+            return self.roll_pass.engine.rotational_frequency / self.roll_pass.engine.gear_ratio
 
 @BaseRollPass.Roll.entry_angle
 def entry_angle(self: BaseRollPass.Roll):

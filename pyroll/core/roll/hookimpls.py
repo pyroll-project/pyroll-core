@@ -48,6 +48,7 @@ def rotational_frequency_from_working_velocity(self: Roll, cycle):
         return self.working_velocity / (2 * np.pi * self.working_radius)
 
 
+
 @Roll.width
 def width(self: Roll):
     return self.groove.width
