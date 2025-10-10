@@ -10,11 +10,11 @@ class Shear(Transport):
     """Represents a shear."""
 
     cut_length = Hook[float]()
-    """Length of the material the shear cuts from the profile."""
+    """Length the shear cuts from the profile."""
 
 
     @property
-    def disk_elements(self) -> List["CoolingPipe.DiskElement"]:
+    def disk_elements(self) -> List["Shear.DiskElement"]:
         """A list of disk elements used to subdivide this unit."""
         return list(self._subunits)
 
@@ -49,7 +49,7 @@ class Shear(Transport):
                 return cast(Shear.DiskElement, self.unit)
 
             @property
-            def shear(self) -> "CoolingPipe":
+            def shear(self) -> "Shear":
                 """Reference to the transport. Alias for ``self.unit.parent``"""
                 return cast(Shear, self.unit.parent)
 

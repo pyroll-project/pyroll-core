@@ -26,7 +26,7 @@ from .grooves import (
     EquivalentRibbedGroove,
     create_groove_by_type_name,
 )
-from .transport import Transport, CoolingPipe
+from .transport import Transport, CoolingPipe, Shear
 from .roll_pass import BaseRollPass, DeformationUnit, ThreeRollPass, SymmetricRollPass, TwoRollPass
 from .roll_pass import TwoRollPass as RollPass
 from .unit import Unit
@@ -84,6 +84,7 @@ __all__ = [
     # transport
     "Transport",
     "CoolingPipe",
+    "Shear",
     # roll_pass
     "RollPass",
     "BaseRollPass",
