@@ -135,7 +135,7 @@ class BaseRollPass(DiskElementUnit, DeformationUnit, ABC):
 
     def reevaluate_cache(self):
         super().reevaluate_cache()
-        self.roll.reevaluate_cache()
+        #self.roll.reevaluate_cache()
         self._contour_lines = None
         self.engine.reevaluate_cache()
 

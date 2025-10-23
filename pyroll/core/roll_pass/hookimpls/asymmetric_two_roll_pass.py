@@ -103,7 +103,7 @@ def pass_line(self: AsymmetricTwoRollPass.InProfile) -> tuple[float, float, floa
         x_guess, y_guess, _ = self.pass_line
 
     def contact_objective(xy):
-        shifted_cross_section = shapely.affinity.translate(rp.rotated_in_profile.cross_section, yoff=xy[1])
+        shifted_cross_section = shapely.affinity.translate(rp.in_profile.cross_section, yoff=xy[1])
 
         upper_contour = shapely.geometry.LineString(np.stack([
             rp.upper_roll.surface_z,
@@ -131,7 +131,7 @@ def pass_line(self: AsymmetricTwoRollPass.InProfile) -> tuple[float, float, floa
 
 @AsymmetricTwoRollPass.InProfile.cross_section
 def in_cross_section(self:AsymmetricTwoRollPass.InProfile):
-    return shapely.affinity.translate(self.roll_pass.rotated_in_profile.cross_section, xoff=self.pass_line[2], yoff=self.pass_line[1])
+    return shapely.affinity.translate(self.roll_pass.in_profile.cross_section, xoff=self.pass_line[2], yoff=self.pass_line[1])
 
 
 @AsymmetricTwoRollPass.entry_point

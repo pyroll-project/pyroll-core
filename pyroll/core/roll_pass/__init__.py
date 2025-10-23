@@ -13,4 +13,5 @@ __all__ = [
     "ThreeRollPass",
     "DeformationUnit",
     "SymmetricRollPass",
+    "AsymmetricTwoRollPass"
 ]

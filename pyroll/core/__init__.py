@@ -27,7 +27,7 @@ from .grooves import (
     create_groove_by_type_name,
 )
 from .transport import Transport, CoolingPipe
-from .roll_pass import BaseRollPass, DeformationUnit, ThreeRollPass, SymmetricRollPass, TwoRollPass
+from .roll_pass import BaseRollPass, DeformationUnit, ThreeRollPass, SymmetricRollPass, TwoRollPass, AsymmetricTwoRollPass
 from .roll_pass import TwoRollPass as RollPass
 from .unit import Unit
 from .roll import Roll

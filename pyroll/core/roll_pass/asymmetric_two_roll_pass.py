@@ -3,32 +3,37 @@ from typing import List, cast
 import numpy as np
 from shapely.affinity import translate, scale
 from shapely.geometry import LineString
+from shapely.geometry.multilinestring import MultiLineString
 
 from .base import BaseRollPass
 from ..hooks import Hook
 from ..roll import Roll as BaseRoll
-
+from ..engine import Engine as BaseEngine
 
 class AsymmetricTwoRollPass(BaseRollPass):
-    """Represents a symmetric roll pass with equal upper and lower working roll."""
+    """Represents a symmetric roll pass with unequal upper and lower roll."""
 
     def __init__(
             self,
             upper_roll: BaseRoll,
             lower_roll: BaseRoll,
+            engine: BaseEngine = BaseEngine(),
             label: str = "",
             **kwargs
     ):
         super().__init__(label, **kwargs)
 
         self.upper_roll = self.Roll(upper_roll, self)
-        """The upper working roll of this pass."""
+        """The upper roll of this pass."""
 
         self.lower_roll = self.Roll(lower_roll, self)
-        """The upper working roll of this pass."""
+        """The lower roll of this pass."""
+
+        self.engine = self.Engine(engine, self)
+        """The engine of this pass."""
 
     @property
-    def contour_lines(self) -> List[LineString]:
+    def contour_lines(self) -> MultiLineString:
         if self._contour_lines:
             return self._contour_lines
 
@@ -38,7 +43,7 @@ class AsymmetricTwoRollPass(BaseRollPass):
             xfact=1, yfact=-1, origin=(0, 0)
         )
 
-        self._contour_lines = [upper, lower]
+        self._contour_lines = MultiLineString([upper, lower])
         return self._contour_lines
 
     @property
