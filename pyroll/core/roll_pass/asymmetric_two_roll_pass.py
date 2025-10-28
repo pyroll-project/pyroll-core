@@ -1,9 +1,9 @@
 from typing import List, cast
-
-import numpy as np
 from shapely.affinity import translate, scale
-from shapely.geometry import LineString
 from shapely.geometry.multilinestring import MultiLineString
+
+import weakref
+import numpy as np
 
 from .base import BaseRollPass
 from ..hooks import Hook
@@ -23,10 +23,10 @@ class AsymmetricTwoRollPass(BaseRollPass):
     ):
         super().__init__(label, **kwargs)
 
-        self.upper_roll = self.Roll(upper_roll, self)
+        self.upper_roll = self.UpperRoll(upper_roll, self)
         """The upper roll of this pass."""
 
-        self.lower_roll = self.Roll(lower_roll, self)
+        self.lower_roll = self.LowerRoll(lower_roll, self)
         """The lower roll of this pass."""
 
         self.engine = self.Engine(engine, self)
@@ -88,13 +88,45 @@ class AsymmetricTwoRollPass(BaseRollPass):
 
         filling_ratio = Hook[float]()
 
-    class Roll(BaseRollPass.Roll):
-        """Represents a roll applied in a :py:class:`RollPass`."""
+    class UpperRoll(BaseRoll):
+        """Represents the upper roll applied in a :py:class:`RollPass`."""
+
+        def __init__(self, template: BaseRoll, roll_pass: "AsymmetricTwoRollPass"):
+            kwargs = dict(e for e in template.__dict__.items() if not e[0].startswith("_"))
+            super().__init__(**kwargs)
+
+            self._roll_pass = weakref.ref(roll_pass)
+
+        entry_angle = Hook[float]()
+        """Angle at which the material enters the roll gap."""
+
+        exit_angle = Hook[float]()
+        """Angle at which the material exits the roll gap."""
 
         @property
-        def roll_pass(self) -> 'AsymmetricTwoRollPass':
-            """Reference to the roll pass."""
-            return cast(AsymmetricTwoRollPass, self._roll_pass())
+        def roll_pass(self):
+            """Reference to the roll pass this roll is used in."""
+            return self._roll_pass()
+
+    class LowerRoll(BaseRoll):
+        """Represents the lower roll applied in a :py:class:`RollPass`."""
+
+        def __init__(self, template: BaseRoll, roll_pass: "AsymmetricTwoRollPass"):
+            kwargs = dict(e for e in template.__dict__.items() if not e[0].startswith("_"))
+            super().__init__(**kwargs)
+
+            self._roll_pass = weakref.ref(roll_pass)
+
+        entry_angle = Hook[float]()
+        """Angle at which the material enters the roll gap."""
+
+        exit_angle = Hook[float]()
+        """Angle at which the material exits the roll gap."""
+
+        @property
+        def roll_pass(self):
+            """Reference to the roll pass this roll is used in."""
+            return self._roll_pass()
 
     class DiskElement(BaseRollPass.DiskElement):
         """Represents a disk element in a roll pass."""

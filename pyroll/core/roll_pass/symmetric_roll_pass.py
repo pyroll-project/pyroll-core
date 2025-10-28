@@ -1,7 +1,9 @@
 from abc import ABC
 from typing import List, cast
 
+import weakref
 import numpy as np
+from ..hooks import Hook
 from .base import BaseRollPass
 from ..roll import Roll as BaseRoll
 from ..engine import Engine as BaseEngine
@@ -59,13 +61,25 @@ class SymmetricRollPass(BaseRollPass, ABC):
     class OutProfile(Profile, BaseRollPass.OutProfile):
         """Represents an outgoing profile of a roll pass."""
 
-    class Roll(BaseRollPass.Roll):
+    class Roll(BaseRoll):
         """Represents a roll applied in a :py:class:`RollPass`."""
 
+        def __init__(self, template: BaseRoll, roll_pass: "SymmetricRollPass"):
+            kwargs = dict(e for e in template.__dict__.items() if not e[0].startswith("_"))
+            super().__init__(**kwargs)
+
+            self._roll_pass = weakref.ref(roll_pass)
+
+        entry_angle = Hook[float]()
+        """Angle at which the material enters the roll gap."""
+
+        exit_angle = Hook[float]()
+        """Angle at which the material exits the roll gap."""
+
         @property
-        def roll_pass(self) -> "SymmetricRollPass":
-            """Reference to the roll pass."""
-            return cast(SymmetricRollPass, self._roll_pass())
+        def roll_pass(self):
+            """Reference to the roll pass this roll is used in."""
+            return self._roll_pass()
 
     class Engine(BaseRollPass.Engine):
         """Represents an engine applied in a :py:class:`RollPass`."""

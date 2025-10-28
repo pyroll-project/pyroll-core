@@ -88,7 +88,7 @@ def roll_force(self: AsymmetricTwoRollPass):
 def pass_line(self: AsymmetricTwoRollPass.InProfile) -> tuple[float, float, float]:
     rp = self.roll_pass
 
-    if not self.has_set("pass_line"):
+    if not self.has_set_or_cached("pass_line"):
         height_change = self.height - rp.height
         x_guess = -(
             np.sqrt(height_change)
