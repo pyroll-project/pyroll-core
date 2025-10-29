@@ -47,6 +47,7 @@ def test_solve_asymmetric(tmp_path: Path, caplog):
                     rotational_frequency=1,
                     neutral_point=-20e-3
                 ),
+                lower_groove_rotation=90,
                 gap=2e-3,
             ),
         ])

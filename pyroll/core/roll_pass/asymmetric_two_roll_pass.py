@@ -1,4 +1,4 @@
-from typing import List, cast
+from typing import List, cast, Optional
 from shapely.affinity import translate, scale
 from shapely.geometry.multilinestring import MultiLineString
 
@@ -18,6 +18,7 @@ class AsymmetricTwoRollPass(BaseRollPass):
             upper_roll: BaseRoll,
             lower_roll: BaseRoll,
             engine: BaseEngine = BaseEngine(),
+            lower_groove_rotation : Optional[int] = -1,
             label: str = "",
             **kwargs
     ):
@@ -32,15 +33,24 @@ class AsymmetricTwoRollPass(BaseRollPass):
         self.engine = self.Engine(engine, self)
         """The engine of this pass."""
 
+        self.lower_groove_rotation = lower_groove_rotation
+
     @property
     def contour_lines(self) -> MultiLineString:
         if self._contour_lines:
             return self._contour_lines
 
+        if self.lower_groove_rotation == 0:
+            lower_groove_rotation = 1
+            gap_scaling = -1
+        elif self.lower_groove_rotation == 90:
+            lower_groove_rotation = -1
+            gap_scaling = 1
+
         upper = translate(self.upper_roll.contour_line, yoff=self.gap / 2)
         lower = scale(
-            translate(self.lower_roll.contour_line.reverse(), yoff=self.gap / 2),
-            xfact=1, yfact=-1, origin=(0, 0)
+            translate(self.lower_roll.contour_line.reverse(), yoff=gap_scaling * self.gap / 2),
+            xfact=1, yfact=lower_groove_rotation, origin=(0, 0)
         )
 
         self._contour_lines = MultiLineString([upper, lower])

@@ -24,6 +24,7 @@ from .grooves import (
     FlatGroove,
     HexagonalGroove,
     EquivalentRibbedGroove,
+    PreformingGroove,
     create_groove_by_type_name,
 )
 from .transport import Transport, CoolingPipe
@@ -73,6 +74,7 @@ __all__ = [
     "FlatGroove",
     "HexagonalGroove",
     "EquivalentRibbedGroove",
+    "PreformingGroove",
     "create_groove_by_type_name",
     # profile
     "Profile",
@@ -116,7 +118,7 @@ __all__ = [
 
 root_hooks.extend(
     [
-        AsymmetricTwoRollPass.InProfile.pass_line,
+        #AsymmetricTwoRollPass.InProfile.pass_line,
         AsymmetricTwoRollPass.InProfile.cross_section,
         BaseRollPass.roll_force,
         SymmetricRollPass.Roll.roll_torque,
