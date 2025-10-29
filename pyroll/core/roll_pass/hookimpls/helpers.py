@@ -1,6 +1,7 @@
 import math
 
 import numpy as np
+import shapely
 from shapely import Polygon, clip_by_rect
 from shapely.affinity import rotate
 
