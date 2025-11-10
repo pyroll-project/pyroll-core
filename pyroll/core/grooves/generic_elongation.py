@@ -31,6 +31,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
             rel_pad: float = Config.GROOVE_PADDING,
             pad_angle: float = 0,
             classifiers: Sequence[str] = (),
+            label: str = ""
     ):
         """
         Give any three of ``usable_width``, ``ground_width``, ``flank_angle`` and ``depth``.
