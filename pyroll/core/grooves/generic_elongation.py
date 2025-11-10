@@ -100,6 +100,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         except TypeError:
             raise TypeError("Exactly three of usable_width, ground_width, flank_angle and depth must be given.")
 
+        self.label = label
         self.r1 = r1
         self.r2 = r2
         self.r3 = r3
