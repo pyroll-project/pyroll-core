@@ -137,6 +137,32 @@ class PassSequence(Unit, Sequence[Unit]):
     def _ipython_key_completions_(self):
         return [u.label for u in self._subunits]
 
+    def solve_velocities_from_elongations(self, in_profile: Profile, final_speed: float, elongations: np.ndarray):
+        """
+        Solve method, that calculates all velocities of the roll pass starting from the very last roll_pass of the sequence using given elongations.
+
+        :param in_profile: incoming profile
+        :param final_speed: speed of the last stand
+        :param elongations: array of the elongations per pass, starting from the first roll pass
+        """
+
+        if len(elongations) != len(self.roll_passes) - 1:
+            raise ValueError("Number of Elongations doesn't match the number of roll passes.")
+
+        speed = final_speed
+        speeds = [final_speed]
+
+        for e in elongations:
+            speed = speed / e
+            speeds.append(speed)
+
+        speeds = np.array(speeds)
+
+        for rp, speed in zip(self.roll_passes, speeds[::-1]):
+            rp.velocity = speed
+
+        self.solve(in_profile)
+
     def solve_velocities_backward(self, in_profile: Profile, final_speed: float, final_cross_section_area: float):
         """
         Solve method, that calculates all velocities of the roll pass starting from the very last roll_pass of the sequence.
@@ -156,13 +182,17 @@ class PassSequence(Unit, Sequence[Unit]):
             for roll_pass, velocity in zip(roll_passes, velocities):
                 roll_pass.velocity = velocity
 
-        usable_cross_section_areas = np.asarray([roll_pass.usable_cross_section.area for roll_pass in copied_sequence.roll_passes])
+        usable_cross_section_areas = np.asarray(
+            [roll_pass.usable_cross_section.area for roll_pass in copied_sequence.roll_passes]
+        )
         initial_roll_pass_velocities = np.zeros_like(usable_cross_section_areas, dtype=float)
 
         initial_roll_pass_velocities[-1] = final_speed
         usable_cross_section_areas[-1] = final_cross_section_area
 
-        calculate_velocities_array(velocities=initial_roll_pass_velocities, cross_sections_areas=usable_cross_section_areas)
+        calculate_velocities_array(
+            velocities=initial_roll_pass_velocities, cross_sections_areas=usable_cross_section_areas
+        )
         set_velocities_to_roll_passes(roll_passes=copied_sequence.roll_passes, velocities=initial_roll_pass_velocities)
 
         copied_sequence.solve(in_profile)
@@ -173,7 +203,9 @@ class PassSequence(Unit, Sequence[Unit]):
             profile_areas = [roll_pass.out_profile.cross_section.area for roll_pass in copied_sequence.roll_passes]
 
             calculate_velocities_array(velocities=current_roll_pass_velocities, cross_sections_areas=profile_areas)
-            set_velocities_to_roll_passes(roll_passes=copied_sequence.roll_passes, velocities=current_roll_pass_velocities)
+            set_velocities_to_roll_passes(
+                roll_passes=copied_sequence.roll_passes, velocities=current_roll_pass_velocities
+            )
 
             copied_sequence.solve(in_profile)
 
@@ -203,12 +235,18 @@ class PassSequence(Unit, Sequence[Unit]):
             for roll_pass, velocity in zip(roll_passes, velocities):
                 roll_pass.velocity = velocity
 
-        usable_cross_section_areas = np.asarray([roll_pass.usable_cross_section.area for roll_pass in copied_sequence.roll_passes])
+        usable_cross_section_areas = np.asarray(
+            [roll_pass.usable_cross_section.area for roll_pass in copied_sequence.roll_passes]
+        )
         initial_roll_pass_velocities = np.zeros_like(usable_cross_section_areas, dtype=float)
 
-        initial_roll_pass_velocities[0] = initial_speed * in_profile.cross_section.area / copied_sequence.roll_passes[0].usable_cross_section.area
+        initial_roll_pass_velocities[0] = (
+            initial_speed * in_profile.cross_section.area / copied_sequence.roll_passes[0].usable_cross_section.area
+        )
 
-        calculate_velocities_array(velocities=initial_roll_pass_velocities, cross_sections_areas=usable_cross_section_areas)
+        calculate_velocities_array(
+            velocities=initial_roll_pass_velocities, cross_sections_areas=usable_cross_section_areas
+        )
         set_velocities_to_roll_passes(roll_passes=copied_sequence.roll_passes, velocities=initial_roll_pass_velocities)
 
         copied_sequence.solve(in_profile)
@@ -231,8 +269,9 @@ class PassSequence(Unit, Sequence[Unit]):
                 self.solve(in_profile)
                 break
 
-    def solve_interstand_tensions_with_given_velocity_ratios(self, in_profile: Profile,
-                                                             velocity_ratios: np.ndarray[float], final_speed: float):
+    def solve_interstand_tensions_with_given_velocity_ratios(
+        self, in_profile: Profile, velocity_ratios: np.ndarray[float], final_speed: float
+    ):
         """
         Solve method, that calculates the resulting tensions for given reductions.
         Further, it sets the velocities according to these reductions and the finishing speed.
@@ -260,10 +299,12 @@ class PassSequence(Unit, Sequence[Unit]):
         for index in range(1, len(self.roll_passes)):
             engineering_strain = engineering_strains[index - 1]
 
-            tensions[2 * index - 1] = copied_sequence.roll_passes[
-                                          index - 1].in_profile.elastic_modulus * engineering_strain
-            tensions[2 * index] -= copied_sequence.roll_passes[
-                                       index - 1].out_profile.elastic_modulus * engineering_strain
+            tensions[2 * index - 1] = (
+                copied_sequence.roll_passes[index - 1].in_profile.elastic_modulus * engineering_strain
+            )
+            tensions[2 * index] -= (
+                copied_sequence.roll_passes[index - 1].out_profile.elastic_modulus * engineering_strain
+            )
 
         tensions[0] = 0
         tensions[-1] = 0
