@@ -5,6 +5,7 @@ import numpy as np
 from collections.abc import Sequence
 from typing import overload, List, cast
 
+from .. import CoolingPipe
 from ..unit import Unit
 from ..roll_pass import BaseRollPass
 from ..transport import Transport
@@ -129,6 +130,11 @@ class PassSequence(Unit, Sequence[Unit]):
     def transports(self) -> List[Transport]:
         """Returns a list of all transports in this sequence."""
         return list(u for u in self._subunits if isinstance(u, Transport))
+
+    @property
+    def cooling_pipes(self) -> List[CoolingPipe]:
+        """Returns a list of all cooling pipes in this sequence."""
+        return list(u for u in self._subunits if isinstance(u, CoolingPipe))
 
     @property
     def __attrs__(self):
