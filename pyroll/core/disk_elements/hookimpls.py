@@ -24,3 +24,11 @@ def in_x(self: DiskElementUnit.DiskElement.InProfile):
     except IndexError:
         # is first disk: get from parent in_profile
         return self.disk_element.parent.in_profile.x
+
+
+@DiskElementUnit.DiskElement.InProfile.position
+def in_position(self: DiskElementUnit.DiskElement.InProfile):
+    try:
+        return self.disk_element.prev.out_profile.position
+    except IndexError:
+        return self.disk_element.parent.in_profile.position

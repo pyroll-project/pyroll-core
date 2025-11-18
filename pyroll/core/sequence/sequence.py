@@ -4,6 +4,7 @@ import numpy as np
 
 from collections.abc import Sequence
 from typing import overload, List, cast
+from scipy.interpolate import interp1d
 
 from ..unit import Unit
 from ..roll_pass import BaseRollPass
@@ -156,13 +157,17 @@ class PassSequence(Unit, Sequence[Unit]):
             for roll_pass, velocity in zip(roll_passes, velocities):
                 roll_pass.velocity = velocity
 
-        usable_cross_section_areas = np.asarray([roll_pass.usable_cross_section.area for roll_pass in copied_sequence.roll_passes])
+        usable_cross_section_areas = np.asarray(
+            [roll_pass.usable_cross_section.area for roll_pass in copied_sequence.roll_passes]
+        )
         initial_roll_pass_velocities = np.zeros_like(usable_cross_section_areas, dtype=float)
 
         initial_roll_pass_velocities[-1] = final_speed
         usable_cross_section_areas[-1] = final_cross_section_area
 
-        calculate_velocities_array(velocities=initial_roll_pass_velocities, cross_sections_areas=usable_cross_section_areas)
+        calculate_velocities_array(
+            velocities=initial_roll_pass_velocities, cross_sections_areas=usable_cross_section_areas
+        )
         set_velocities_to_roll_passes(roll_passes=copied_sequence.roll_passes, velocities=initial_roll_pass_velocities)
 
         copied_sequence.solve(in_profile)
@@ -173,7 +178,9 @@ class PassSequence(Unit, Sequence[Unit]):
             profile_areas = [roll_pass.out_profile.cross_section.area for roll_pass in copied_sequence.roll_passes]
 
             calculate_velocities_array(velocities=current_roll_pass_velocities, cross_sections_areas=profile_areas)
-            set_velocities_to_roll_passes(roll_passes=copied_sequence.roll_passes, velocities=current_roll_pass_velocities)
+            set_velocities_to_roll_passes(
+                roll_passes=copied_sequence.roll_passes, velocities=current_roll_pass_velocities
+            )
 
             copied_sequence.solve(in_profile)
 
@@ -203,12 +210,18 @@ class PassSequence(Unit, Sequence[Unit]):
             for roll_pass, velocity in zip(roll_passes, velocities):
                 roll_pass.velocity = velocity
 
-        usable_cross_section_areas = np.asarray([roll_pass.usable_cross_section.area for roll_pass in copied_sequence.roll_passes])
+        usable_cross_section_areas = np.asarray(
+            [roll_pass.usable_cross_section.area for roll_pass in copied_sequence.roll_passes]
+        )
         initial_roll_pass_velocities = np.zeros_like(usable_cross_section_areas, dtype=float)
 
-        initial_roll_pass_velocities[0] = initial_speed * in_profile.cross_section.area / copied_sequence.roll_passes[0].usable_cross_section.area
+        initial_roll_pass_velocities[0] = (
+            initial_speed * in_profile.cross_section.area / copied_sequence.roll_passes[0].usable_cross_section.area
+        )
 
-        calculate_velocities_array(velocities=initial_roll_pass_velocities, cross_sections_areas=usable_cross_section_areas)
+        calculate_velocities_array(
+            velocities=initial_roll_pass_velocities, cross_sections_areas=usable_cross_section_areas
+        )
         set_velocities_to_roll_passes(roll_passes=copied_sequence.roll_passes, velocities=initial_roll_pass_velocities)
 
         copied_sequence.solve(in_profile)
@@ -231,8 +244,9 @@ class PassSequence(Unit, Sequence[Unit]):
                 self.solve(in_profile)
                 break
 
-    def solve_interstand_tensions_with_given_velocity_ratios(self, in_profile: Profile,
-                                                             velocity_ratios: np.ndarray[float], final_speed: float):
+    def solve_interstand_tensions_with_given_velocity_ratios(
+        self, in_profile: Profile, velocity_ratios: np.ndarray[float], final_speed: float
+    ):
         """
         Solve method, that calculates the resulting tensions for given reductions.
         Further, it sets the velocities according to these reductions and the finishing speed.
@@ -260,10 +274,12 @@ class PassSequence(Unit, Sequence[Unit]):
         for index in range(1, len(self.roll_passes)):
             engineering_strain = engineering_strains[index - 1]
 
-            tensions[2 * index - 1] = copied_sequence.roll_passes[
-                                          index - 1].in_profile.elastic_modulus * engineering_strain
-            tensions[2 * index] -= copied_sequence.roll_passes[
-                                       index - 1].out_profile.elastic_modulus * engineering_strain
+            tensions[2 * index - 1] = (
+                copied_sequence.roll_passes[index - 1].in_profile.elastic_modulus * engineering_strain
+            )
+            tensions[2 * index] -= (
+                copied_sequence.roll_passes[index - 1].out_profile.elastic_modulus * engineering_strain
+            )
 
         tensions[0] = 0
         tensions[-1] = 0
@@ -273,3 +289,51 @@ class PassSequence(Unit, Sequence[Unit]):
             roll_pass.front_tension = tensions[2 * index + 1]
 
         self.solve(in_profile=in_profile)
+
+    def find_value_by_position_or_time(self, hook_name: str, position: float = None, time: float = None):
+        if position is None:
+            search_coordinate = "t"
+        else:
+            search_coordinate = "position"
+
+        coordinates = []
+        values = []
+
+        for su in self.subunits:
+            if len(su.subunits) > 0:
+                for ssu in su.subunits:
+                    coordinates.append(getattr(ssu.in_profile, search_coordinate, None))
+                    values.append(getattr(ssu.in_profile, hook_name, None))
+
+                    coordinates.append(getattr(ssu.out_profile, search_coordinate, None))
+                    values.append(getattr(ssu.out_profile, hook_name, None))
+            else:
+                coordinates.append(getattr(su.in_profile, search_coordinate, None))
+                values.append(getattr(su.in_profile, hook_name, None))
+
+                coordinates.append(getattr(su.out_profile, search_coordinate, None))
+                values.append(getattr(su.out_profile, hook_name, None))
+
+        if all(v is None for v in values):
+            raise ValueError(f"No hook with name {hook_name} found.")
+
+        closest_pos = min(coordinates, key=lambda p: abs(p - position))
+        closest_index = coordinates.index(closest_pos)
+
+        postion_array = np.array(coordinates)
+        values_array = np.array(values)
+
+        next_element = 1
+        while True:
+            if (closest_index + next_element) >= len(coordinates):
+                raise ValueError(f"Coordinate index {closest_index + next_element} out of sequence range.")
+
+            if coordinates[closest_index + next_element] >= position:
+                break
+            next_element += 1
+
+        val = values_array[closest_index : closest_index + next_element + 1]
+        pos = postion_array[closest_index : closest_index + next_element + 1]
+        interpolation = interp1d(pos, val)
+
+        return interpolation(position)
