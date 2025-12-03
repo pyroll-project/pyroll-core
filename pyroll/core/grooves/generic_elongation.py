@@ -31,6 +31,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
             rel_pad: float = Config.GROOVE_PADDING,
             pad_angle: float = 0,
             classifiers: Sequence[str] = (),
+            label: str = ""
     ):
         """
         Give any three of ``usable_width``, ``ground_width``, ``flank_angle`` and ``depth``.
@@ -99,6 +100,7 @@ class GenericElongationGroove(GrooveBase, ReprMixin):
         except TypeError:
             raise TypeError("Exactly three of usable_width, ground_width, flank_angle and depth must be given.")
 
+        self.label = label
         self.r1 = r1
         self.r2 = r2
         self.r3 = r3
