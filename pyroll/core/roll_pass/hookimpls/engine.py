@@ -19,3 +19,10 @@ def engine_rotational_frequency(self: BaseRollPass.Engine):
         return self.roll_pass.roll.rotational_frequency * self.gear_ratio
     else:
         return self.roll_pass.roll.rotational_frequency
+
+@BaseRollPass.Engine.available_power
+def available_power(self: BaseRollPass.Engine):
+    if self.has_set_or_cached("base_rotational_frequency"):
+        return self.maximum_power * (self.rotational_frequency / self.base_rotational_frequency)
+    else:
+        return self.maximum_power

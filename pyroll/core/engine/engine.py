@@ -10,8 +10,17 @@ __all__ = ["Engine"]
 class Engine(HookHost):
     """Represents an engine of a roll pass."""
 
+    label = Hook[str]()
+    """Type of the engine (DC or AC)"""
+
     rotational_frequency = Hook[float]()
     """Rotational frequency (revolutions per time)."""
+
+    base_rotational_frequency = Hook[float]()
+    """Knee point were a DC engine switches from anchor range to field weakening range."""
+
+    maximum_rotational_frequency = Hook[float]()
+    """Maximum rotational frequency of the engine."""
 
     torque = Hook[float]()
     """Engine torque."""
@@ -34,11 +43,11 @@ class Engine(HookHost):
     maximum_power = Hook[float]()
     """Maximum power of the engine."""
 
-    maximum_rotational_frequency = Hook[float]()
-    """Maximum rotational frequency of the engine."""
+    available_power = Hook[float]()
+    """Available power of the engine only relevant for DC engines."""
 
-    base_speed = Hook[float]()
-    """Knee point were a DC engine switches from anchor range to field weakening range."""
+    mean_power = Hook[float]()
+    """Mean power of the engine incorporating roll pass and transport durations."""
 
 
     def __init__(self, **kwargs):
