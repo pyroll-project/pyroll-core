@@ -4,6 +4,7 @@ import numpy as np
 
 from collections.abc import Sequence
 from typing import overload, List, cast
+from scipy.interpolate import interp1d
 
 from .. import CoolingPipe
 from ..unit import Unit
@@ -320,3 +321,51 @@ class PassSequence(Unit, Sequence[Unit]):
             roll_pass.front_tension = tensions[2 * index + 1]
 
         self.solve(in_profile=in_profile)
+
+    def find_value_by_position_or_time(self, hook_name: str, position: float = None, time: float = None):
+        if position is None:
+            search_coordinate = "t"
+        else:
+            search_coordinate = "position"
+
+        coordinates = []
+        values = []
+
+        for su in self.subunits:
+            if len(su.subunits) > 0:
+                for ssu in su.subunits:
+                    coordinates.append(getattr(ssu.in_profile, search_coordinate, None))
+                    values.append(getattr(ssu.in_profile, hook_name, None))
+
+                    coordinates.append(getattr(ssu.out_profile, search_coordinate, None))
+                    values.append(getattr(ssu.out_profile, hook_name, None))
+            else:
+                coordinates.append(getattr(su.in_profile, search_coordinate, None))
+                values.append(getattr(su.in_profile, hook_name, None))
+
+                coordinates.append(getattr(su.out_profile, search_coordinate, None))
+                values.append(getattr(su.out_profile, hook_name, None))
+
+        if all(v is None for v in values):
+            raise ValueError(f"No hook with name {hook_name} found.")
+
+        closest_pos = min(coordinates, key=lambda p: abs(p - position))
+        closest_index = coordinates.index(closest_pos)
+
+        postion_array = np.array(coordinates)
+        values_array = np.array(values)
+
+        next_element = 1
+        while True:
+            if (closest_index + next_element) >= len(coordinates):
+                raise ValueError(f"Coordinate index {closest_index + next_element} out of sequence range.")
+
+            if coordinates[closest_index + next_element] >= position:
+                break
+            next_element += 1
+
+        val = values_array[closest_index : closest_index + next_element + 1]
+        pos = postion_array[closest_index : closest_index + next_element + 1]
+        interpolation = interp1d(pos, val)
+
+        return interpolation(position)

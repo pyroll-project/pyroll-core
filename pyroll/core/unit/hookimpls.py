@@ -56,6 +56,11 @@ def out_velocity(self: Unit.OutProfile):
         return self.unit.in_profile.velocity * self.unit.in_profile.cross_section.area / self.cross_section.area
 
 
+@Unit.OutProfile.position
+def out_position(self: Unit.OutProfile):
+    return self.unit.in_profile.position + self.unit.length
+
+
 @Unit.OutProfile.x
 def out_x(self: Unit.OutProfile):
     return self.unit.in_profile.x + self.unit.length

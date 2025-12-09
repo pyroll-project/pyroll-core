@@ -125,6 +125,7 @@ root_hooks.extend(
         Unit.OutProfile.strain,
         Unit.OutProfile.length,
         Unit.OutProfile.t,
+        Unit.OutProfile.position,
         BaseRollPass.strain_rate,
         BaseRollPass.OutProfile.filling_ratio,
         BaseRollPass.OutProfile.cross_section_filling_ratio,
@@ -134,6 +135,6 @@ root_hooks.extend(
         BaseRollPass.InProfile.velocity,
         PassSequence.log_elongation,
         BaseRollPass.OutProfile.technologically_orientated_cross_section,
-        BaseRollPass.technologically_orientated_contour_lines
+        BaseRollPass.technologically_orientated_contour_lines,
     ]
 )
