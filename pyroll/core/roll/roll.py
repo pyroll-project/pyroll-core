@@ -4,6 +4,7 @@ import numpy as np
 from scipy.interpolate import interpn
 from shapely.geometry import LineString
 
+from .. import FlatGroove
 from ..grooves import GrooveBase
 from ..hooks import HookHost, Hook
 
@@ -131,17 +132,26 @@ class Roll(HookHost):
     thermal_stress_field = Hook[List[np.ndarray[float]]]()
     """Thermal stress field inside the roll body."""
 
-    def __init__(self, groove: GrooveBase, **kwargs):
+    def __init__(self, groove: GrooveBase = None, barrel_width: float = None, **kwargs):
         """
         :param groove: the groove object defining the shape of the roll's surface
+        :param barrel_width: the barrel width of the roll's surface
         :param kwargs: additional hook values as keyword arguments to set explicitly
         """
         self.__dict__.update(kwargs)
 
         super().__init__()
 
-        self.groove = groove
-        """The groove object defining the shape of the roll's surface."""
+        if groove is not None and barrel_width is not None:
+            raise ValueError("Only one of 'groove' or 'barrel_width' can be provided")
+
+        if groove is not None and barrel_width is None:
+            self.groove = groove
+            """The groove object defining the shape of the roll's surface."""
+
+        if groove is None and barrel_width is not None:
+            self.groove = FlatGroove(usable_width=barrel_width)
+            """The groove object defining the shape of the roll's surface."""
 
         self._contour_line = None
 
@@ -159,7 +169,7 @@ class Roll(HookHost):
         return self._contour_line
 
     def surface_interpolation(
-            self, x: Union[float, np.ndarray], z: Union[float, np.ndarray]
+        self, x: Union[float, np.ndarray], z: Union[float, np.ndarray]
     ) -> Union[float, np.ndarray]:
         """
         Calculate the linear interpolation of the roll surface at the given points.
