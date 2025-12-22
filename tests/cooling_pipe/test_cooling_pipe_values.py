@@ -20,7 +20,7 @@ def test_cooling_pipe_area():
 
 
 def test_cooling_pipe_coolant_velocity():
-    ip = Profile.round(radius=0.5)
+    ip = Profile.round(radius=0.5, position=0)
 
     seq = PassSequence([CoolingPipe(label="Cooling Pipe", inner_radius=1, coolant_volume_flux=1, velocity=1, length=1)])
 
@@ -30,7 +30,7 @@ def test_cooling_pipe_coolant_velocity():
 
 
 def test_cooling_pipe_coolant_flow_cross_section():
-    ip = Profile.round(radius=0.5)
+    ip = Profile.round(radius=0.5, position=0)
 
     seq = PassSequence([CoolingPipe(label="Cooling Pipe", inner_radius=1, coolant_volume_flux=1, velocity=1, length=1)])
     seq.solve(ip)

@@ -16,6 +16,7 @@ def test_solve3(tmp_path: Path, caplog):
         material=["C45", "steel"],
         flow_stress=100e6,
         length=1,
+        position=0,
     )
 
     sequence = PassSequence(

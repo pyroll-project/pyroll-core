@@ -18,7 +18,7 @@ def width(self: RollPass.OutProfile, cycle):
     if cycle:
         return None
 
-    return self.roll_pass.in_profile.width * self.roll_pass.draught ** -0.5
+    return self.roll_pass.in_profile.width * self.roll_pass.draught**-0.5
 
 
 def test_solve_round_constricted_box(tmp_path: Path, caplog):
@@ -36,6 +36,7 @@ def test_solve_round_constricted_box(tmp_path: Path, caplog):
             flow_stress=100e6,
             density=7.5e3,
             specific_heat_capcity=690,
+            position=0,
         )
 
         sequence = PassSequence(
@@ -54,12 +55,11 @@ def test_solve_round_constricted_box(tmp_path: Path, caplog):
                         ),
                         nominal_radius=160e-3,
                         rotational_frequency=1,
-                        neutral_point=-20e-3
+                        neutral_point=-20e-3,
                     ),
                     gap=4e-3,
                     disk_element_count=15,
                 ),
-
             ]
         )
 
