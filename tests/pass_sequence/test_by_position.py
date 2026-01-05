@@ -3,7 +3,17 @@ import logging
 from pathlib import Path
 
 
-from pyroll.core import Profile, Roll, RollPass, Transport, RoundGroove, CircularOvalGroove, PassSequence
+from pyroll.core import (
+    Profile,
+    Roll,
+    RollPass,
+    Transport,
+    RoundGroove,
+    CircularOvalGroove,
+    PassSequence,
+    root_hooks,
+    Unit,
+)
 
 
 def flow_stress(self: RollPass.Profile):
@@ -13,6 +23,8 @@ def flow_stress(self: RollPass.Profile):
 # noinspection DuplicatedCode
 def test_by_position(tmp_path: Path, caplog):
     caplog.set_level(logging.DEBUG, logger="pyroll")
+
+    root_hooks.append(Unit.OutProfile.position)
 
     with RollPass.Profile.flow_stress(flow_stress):
         in_profile = Profile.round(
@@ -67,8 +79,8 @@ def test_by_position(tmp_path: Path, caplog):
 
     with pytest.raises(ValueError) as exc_info:
         sequence.find_value_by_position_or_time(position=1.15, hook_name="test")
-    assert str(exc_info.value) == ("No hook with name test found.")
+    assert str(exc_info.value) == "No hook with name test found."
 
     with pytest.raises(ValueError) as exc_info:
         sequence.find_value_by_position_or_time(position=10, hook_name="temperature")
-    assert str(exc_info.value) == ("Coordinate index 10 out of sequence range.")
+    assert str(exc_info.value) == "Coordinate index 10 out of sequence range."

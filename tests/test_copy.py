@@ -71,6 +71,7 @@ def test_solve_copied():
         material=["C45", "steel"],
         flow_stress=100e6,
         length=1,
+        position=0,
     )
 
     local_sequence = PassSequence(

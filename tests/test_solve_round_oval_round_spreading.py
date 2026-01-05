@@ -21,7 +21,7 @@ def width(self: RollPass.OutProfile, cycle):
     if cycle:
         return None
 
-    return self.roll_pass.in_profile.width * self.roll_pass.draught ** -0.5
+    return self.roll_pass.in_profile.width * self.roll_pass.draught**-0.5
 
 
 def test_solve(tmp_path: Path, caplog):
@@ -38,6 +38,7 @@ def test_solve(tmp_path: Path, caplog):
             material=["C45", "steel"],
             length=1,
             flow_stress=100e6,
+            position=0,
         )
 
         sequence = PassSequence(

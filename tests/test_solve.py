@@ -16,10 +16,7 @@ def test_solve(tmp_path: Path, caplog):
 
     with RollPass.Profile.flow_stress(flow_stress):
         in_profile = Profile.round(
-            diameter=30e-3,
-            temperature=1200 + 273.15,
-            material=["C45", "steel"],
-            length=1,
+            diameter=30e-3, temperature=1200 + 273.15, material=["C45", "steel"], length=1, position=0
         )
 
         sequence = PassSequence(
