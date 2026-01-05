@@ -2,11 +2,12 @@ from .base import GrooveBase
 
 from .spline import SplineGroove
 from .generic_elongation import GenericElongationGroove
+from .generic_angle import GenericAngleGroove
 
 from .boxes import BoxGroove, ConstrictedBoxGroove, UpsetBoxGroove, ConstrictedUpsetBoxGroove
 
 from .diamonds import DiamondGroove, SquareGroove, GothicGroove
-
+from .angles import PreformingGroove
 from .ovals import (
     CircularOvalGroove,
     FlatOvalGroove,
@@ -50,6 +51,7 @@ __all__ = [
     "FlatGroove",
     "HexagonalGroove",
     "EquivalentRibbedGroove",
+    "PreformingGroove",
     "create_groove_by_type_name",
 ]
 

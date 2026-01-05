@@ -68,6 +68,15 @@ def cross_section_error(self: BaseRollPass.OutProfile):
 def cross_section(self: BaseRollPass.OutProfile) -> Polygon:
     in_profile_width = self.roll_pass.in_profile.width
 
+    if "asymmetric" in self.roll_pass.classifiers:
+        cs = helpers.out_cross_section(self.roll_pass, self.width)
+        if cs.width * 1.01 < self.width:
+            raise ValueError(
+                "Profile's width can not be larger than its contour lines."
+                "May be caused by critical overfilling."
+            )
+        return cs
+
     if "square" in self.roll_pass.in_profile.classifiers:
         horizontal_line = LineString([(-self.roll_pass.in_profile.width, 0), (self.roll_pass.in_profile.width, 0)])
         intersection_at_y0 = self.roll_pass.in_profile.cross_section.intersection(horizontal_line)
