@@ -6,7 +6,6 @@ import numpy as np
 from pyroll.core import Profile, Roll, RollPass, CircularOvalGroove
 
 
-# noinspection DuplicatedCode
 def test_cartesian_positions(tmp_path: Path, caplog):
     caplog.set_level(logging.DEBUG, logger="pyroll")
 
