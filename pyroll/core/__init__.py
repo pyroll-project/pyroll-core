@@ -26,7 +26,7 @@ from .grooves import (
     EquivalentRibbedGroove,
     create_groove_by_type_name,
 )
-from .transport import Transport, CoolingPipe
+from .transport import Transport, CoolingPipe, LayingHead
 from .roll_pass import BaseRollPass, DeformationUnit, ThreeRollPass, SymmetricRollPass, TwoRollPass
 from .roll_pass import TwoRollPass as RollPass
 from .unit import Unit
@@ -45,7 +45,7 @@ from .hooks import Hook, HookHost, HookFunction, root_hooks
 from .disk_elements import DiskElementUnit
 from .config import Config, config, PlottingBackend, ConfigValue, ConfigMeta
 
-VERSION = "3.1.0"
+VERSION = "3.1.1"
 
 __all__ = [
     # grooves
@@ -84,6 +84,7 @@ __all__ = [
     # transport
     "Transport",
     "CoolingPipe",
+    "LayingHead",
     # roll_pass
     "RollPass",
     "BaseRollPass",
