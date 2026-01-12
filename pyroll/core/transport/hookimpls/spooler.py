@@ -3,9 +3,7 @@ import numpy as np
 from ..spooler import Spooler
 
 
-@Spooler.duration(
-    trylast=True  # do not override getting from in_profile
-)
+@Spooler.duration
 def duration(self: Spooler):
     if self.has_set_or_cached("finished_coil_weight"):
         length = self.finished_coil_weight / self.in_profile.density
@@ -14,17 +12,10 @@ def duration(self: Spooler):
         return self.in_profile.length / self.velocity
 
 
-@Spooler.velocity(
-    trylast=True  # do not override getting from in_profile
-)
-def velocity(self: Spooler):
-    return self.prev.velocity
-
-
 @Spooler.windings_per_layer
 def windings_per_layer(self: Spooler):
     equivalent_diameter = self.in_profile.equivalent_radius * 2
-    return self.mandrel_width / equivalent_diameter
+    return np.round(self.mandrel_width / equivalent_diameter)
 
 
 @Spooler.finished_coil_radius
@@ -62,26 +53,35 @@ def coil_layer_bending_torques(self: Spooler):
 @Spooler.coil_layer_radii
 def coil_layer_radii(self: Spooler):
     layer_radii = []
-
     layer_number = 1
     cumulative_weight = 0
+    cumulative_length = 0
     equivalent_diameter = self.in_profile.equivalent_radius * 2
-    while cumulative_weight < self.finished_coil_weight:
+
+    while cumulative_weight < self.finished_coil_weight and cumulative_length < self.in_profile.length:
         outer_radius_current_layer = self.mandrel_radius + layer_number * equivalent_diameter
         layer_radii.append(outer_radius_current_layer)
 
-        mean_radius_current_layer = self.mandrel_radius + layer_number * equivalent_diameter
+        mean_radius_current_layer = self.mandrel_radius + (layer_number - 0.5) * equivalent_diameter
         wire_length_current_layer = self.windings_per_layer * 2 * np.pi * mean_radius_current_layer
 
-        wire_volume_current_layer = wire_length_current_layer * self.in_profile.cross_sectional_area
+        wire_volume_current_layer = wire_length_current_layer * self.in_profile.cross_section.area
         weight_current_layer = wire_volume_current_layer * self.in_profile.density
 
-        if cumulative_weight + weight_current_layer <= self.finished_coil_weight:
+        weight_ok = cumulative_weight + weight_current_layer <= self.finished_coil_weight
+        length_ok = cumulative_length + wire_length_current_layer <= self.in_profile.length
+
+        if weight_ok and length_ok:
             cumulative_weight += weight_current_layer
+            cumulative_length += wire_length_current_layer
             layer_number += 1
         else:
-            remaining_weight = self.finished_coil_weight - cumulative_weight
-            partial_layer_fraction = remaining_weight / weight_current_layer
+            if not weight_ok:
+                remaining_weight = self.finished_coil_weight - cumulative_weight
+                partial_layer_fraction = remaining_weight / weight_current_layer
+            else:
+                remaining_length = self.in_profile.length - cumulative_length
+                partial_layer_fraction = remaining_length / wire_length_current_layer
 
             final_radius = self.mandrel_radius + (layer_number - 1 + partial_layer_fraction) * equivalent_diameter
             layer_radii[-1] = final_radius
