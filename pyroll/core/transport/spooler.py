@@ -37,6 +37,12 @@ class Spooler(Transport):
     coil_layer_radii = Hook[np.ndarray]()
     """Radii of each layer as a array."""
 
+    coil_layer_torque = Hook[float]()
+    """Torque per layer"""
+
+    coil_cumulative_torque = Hook[float]()
+    """Total required Torque for all layers"""
+
     finished_coil_weight = Hook[float]()
     """Finished weight of the resulting coil."""
 

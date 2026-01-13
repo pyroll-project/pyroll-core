@@ -50,6 +50,17 @@ def coil_layer_bending_torques(self: Spooler):
     return np.array(bending_torques)
 
 
+@Spooler.coil_layer_torque
+def coil_layer_torque(self: Spooler):
+    torques_single_bending = self.coil_layer_bending_torques
+    return torques_single_bending * self.windings_per_layer
+
+
+@Spooler.coil_cumulative_torque
+def coil_cumulative_torque(self: Spooler):
+    return np.cumsum(self.coil_layer_torque)
+
+
 @Spooler.coil_layer_radii
 def coil_layer_radii(self: Spooler):
     layer_radii = []
